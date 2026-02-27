@@ -17,9 +17,11 @@ import (
 
 // AppConfig holds application configuration values
 type AppConfig struct {
-	SessionMgr            crooner.SessionManager
-	CroonerConfig         *crooner.AuthConfigParams
-	SessionSecret         string
+	// setup:feature:auth:start
+	SessionMgr    crooner.SessionManager
+	CroonerConfig *crooner.AuthConfigParams
+	// setup:feature:auth:end
+	SessionSecret string
 	AppName               string
 	ServerPort            string
 	CSRFPerRequestPaths   []string
