@@ -1,3 +1,5 @@
+// setup:feature:sse
+
 package ssebroker
 
 import (
