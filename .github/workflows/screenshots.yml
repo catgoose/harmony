@@ -68,22 +68,41 @@ jobs:
       - name: Clean up video files
         run: rm -rf docs/screenshots/videos
 
-      - name: Check for changes
-        id: check
-        run: |
-          git add docs/screenshots/
-          if git diff --staged --quiet; then
-            echo "changes=false" >> $GITHUB_OUTPUT
-          else
-            echo "changes=true" >> $GITHUB_OUTPUT
-          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: docs/screenshots/
 
-      - name: Commit screenshots
-        if: steps.check.outputs.changes == 'true'
+  publish:
+    runs-on: ubuntu-latest
+    needs: [screenshots]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: screenshots
+          path: output
+
+      - name: Checkout screenshots repo
+        uses: actions/checkout@v4
+        with:
+          repository: catgoose/screenshots
+          token: ${{ secrets.SCREENSHOTS_REPO_TOKEN }}
+          path: screenshots-repo
+
+      - name: Copy and push screenshots
         run: |
+          mkdir -p screenshots-repo/go-htmx-demo
+          cp -r output/* screenshots-repo/go-htmx-demo/
+          cd screenshots-repo
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/screenshots/
-          git commit -m "docs: update demo screenshots and recordings"
-          git pull --rebase origin ${{ github.ref_name }}
-          git push origin HEAD:${{ github.ref_name }}
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add go-htmx-demo
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Update go-htmx-demo screenshots"
+          git pull --rebase origin main
+          git push
+        env:
+          GH_TOKEN: ${{ secrets.SCREENSHOTS_REPO_TOKEN }}
