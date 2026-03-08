@@ -58,6 +58,94 @@ func (d *DB) Close() error {
 	return d.db.Close()
 }
 
+// Reset drops all tables and recreates the schema with fresh seed data.
+func (d *DB) Reset() error {
+	names, err := d.listTableNames(context.Background())
+	if err != nil {
+		return fmt.Errorf("list tables: %w", err)
+	}
+	for _, name := range names {
+		if _, err := d.db.Exec(fmt.Sprintf("DROP TABLE IF EXISTS %s", name)); err != nil {
+			return fmt.Errorf("drop %s: %w", name, err)
+		}
+	}
+	return d.initSchema()
+}
+
+// TableMeta describes a single table in the database.
+type TableMeta struct {
+	Name       string
+	RowCount   int
+	ColumnCount int
+}
+
+// SchemaInfo describes the current state of the database.
+type SchemaInfo struct {
+	Tables  []TableMeta
+	Indexes int
+}
+
+// GetSchemaInfo returns metadata about all tables and indexes in the database.
+func (d *DB) GetSchemaInfo(ctx context.Context) (SchemaInfo, error) {
+	var info SchemaInfo
+
+	// List tables
+	names, err := d.listTableNames(ctx)
+	if err != nil {
+		return info, err
+	}
+	for _, name := range names {
+		var rowCount int
+		if err := d.db.QueryRowContext(ctx, fmt.Sprintf("SELECT COUNT(*) FROM %s", name)).Scan(&rowCount); err != nil {
+			return info, fmt.Errorf("count %s: %w", name, err)
+		}
+		colCount, err := d.columnCount(ctx, name)
+		if err != nil {
+			return info, err
+		}
+		info.Tables = append(info.Tables, TableMeta{Name: name, RowCount: rowCount, ColumnCount: colCount})
+	}
+
+	// Count indexes
+	if err := d.db.QueryRowContext(ctx,
+		"SELECT COUNT(*) FROM sqlite_master WHERE type='index'").Scan(&info.Indexes); err != nil {
+		return info, fmt.Errorf("count indexes: %w", err)
+	}
+
+	return info, nil
+}
+
+func (d *DB) listTableNames(ctx context.Context) ([]string, error) {
+	rows, err := d.db.QueryContext(ctx,
+		"SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name")
+	if err != nil {
+		return nil, fmt.Errorf("list tables: %w", err)
+	}
+	defer rows.Close()
+	var names []string
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			return nil, err
+		}
+		names = append(names, name)
+	}
+	return names, rows.Err()
+}
+
+func (d *DB) columnCount(ctx context.Context, table string) (int, error) {
+	rows, err := d.db.QueryContext(ctx, fmt.Sprintf("PRAGMA table_info(%s)", table))
+	if err != nil {
+		return 0, fmt.Errorf("table_info %s: %w", table, err)
+	}
+	defer rows.Close()
+	count := 0
+	for rows.Next() {
+		count++
+	}
+	return count, rows.Err()
+}
+
 func (d *DB) initSchema() error {
 	_, err := d.db.Exec(`CREATE TABLE IF NOT EXISTS items (
 		id         INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -76,7 +164,15 @@ func (d *DB) initSchema() error {
 		return err
 	}
 	if count == 0 {
-		return d.seed()
+		if err := d.seed(); err != nil {
+			return err
+		}
+	}
+	if err := d.initPeople(); err != nil {
+		return fmt.Errorf("init people: %w", err)
+	}
+	if err := d.initVendors(); err != nil {
+		return fmt.Errorf("init vendors: %w", err)
 	}
 	return nil
 }

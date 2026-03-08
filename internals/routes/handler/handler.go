@@ -14,6 +14,7 @@ import (
 	corecomponents "catgoose/go-htmx-demo/web/components/core"
 
 	"github.com/a-h/templ"
+	"github.com/catgoose/dio"
 	"github.com/labstack/echo/v4"
 )
 
@@ -28,6 +29,12 @@ func appNavComponent(path string) templ.Component {
 				{Label: "Inventory", Href: "/tables/inventory"},
 				{Label: "Catalog", Href: "/tables/catalog"},
 				{Label: "Bulk", Href: "/tables/bulk"},
+				{Label: "People", Href: "/tables/people"},
+				{Label: "Kanban", Href: "/tables/kanban"},
+				{Label: "Approvals", Href: "/tables/approvals"},
+				{Label: "Feed", Href: "/tables/feed"},
+				{Label: "Settings", Href: "/tables/settings"},
+				{Label: "Vendors", Href: "/tables/vendors"},
 			},
 		},
 		{
@@ -40,11 +47,13 @@ func appNavComponent(path string) templ.Component {
 				{Label: "State", Href: "/hypermedia/state"},
 				{Label: "Components", Href: "/hypermedia/components"},
 				{Label: "Components 2", Href: "/hypermedia/components2"},
+				{Label: "Components 3", Href: "/hypermedia/components3"},
 				// setup:feature:sse:start
 				{Label: "Real-time", Href: "/hypermedia/realtime"},
 				// setup:feature:sse:end
 			},
 		},
+		{Label: "Admin", Href: "/admin"},
 		// setup:feature:demo:end
 	}, path)
 	return corecomponents.NavBar(items)
@@ -59,7 +68,7 @@ func RenderBaseLayout(c echo.Context, cmp templ.Component) error {
 		csrfToken = t
 	}
 	// setup:feature:csrf:end
-	return RenderComponent(c, views.Index(cmp, nav, csrfToken))
+	return RenderComponent(c, views.Index(cmp, nav, csrfToken, dio.Dev()))
 }
 
 // RenderComponent renders a templ component to the response

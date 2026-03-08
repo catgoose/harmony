@@ -8,4 +8,6 @@ const (
 	TopicDashMetrics  = "dashboard-metrics"
 	TopicDashServices = "dashboard-services"
 	TopicDashEvents   = "dashboard-events"
+	TopicPeopleUpdate = "people-update"
+	TopicActivityFeed = "activity-feed"
 )

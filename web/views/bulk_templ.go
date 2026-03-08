@@ -274,7 +274,7 @@ func BulkItemRow(item demo.Item) templ.Component {
 			templ_7745c5c3_Var7 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<tr><td><input type=\"checkbox\" name=\"ids\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<tr class=\"cursor-pointer\" _=\"on click if event.target.tagName != 'INPUT' then set cb to the first .row-check in me then set cb.checked to (not cb.checked) end\"><td><input type=\"checkbox\" name=\"ids\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

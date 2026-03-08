@@ -193,14 +193,14 @@ func searchFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) t
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<input type=\"search\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<input type=\"search\" autocomplete=\"off\" name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(field.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 70, Col: 20}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 71, Col: 20}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -213,7 +213,7 @@ func searchFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) t
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(field.Value)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 71, Col: 22}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 72, Col: 22}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -226,7 +226,7 @@ func searchFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) t
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(field.Placeholder)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 72, Col: 34}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 73, Col: 34}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -288,7 +288,7 @@ func selectFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) t
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(field.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 84, Col: 60}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 85, Col: 60}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
@@ -306,7 +306,7 @@ func selectFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) t
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(field.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 87, Col: 20}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 88, Col: 20}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
@@ -338,7 +338,7 @@ func selectFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) t
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(opt.Value)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 93, Col: 29}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 94, Col: 29}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
@@ -361,7 +361,7 @@ func selectFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) t
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(opt.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 93, Col: 70}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 94, Col: 70}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 			if templ_7745c5c3_Err != nil {
@@ -414,7 +414,7 @@ func rangeFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) te
 			var templ_7745c5c3_Var15 string
 			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(field.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 103, Col: 60}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 104, Col: 60}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 			if templ_7745c5c3_Err != nil {
@@ -432,7 +432,7 @@ func rangeFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) te
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(field.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 107, Col: 20}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 108, Col: 20}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {
@@ -445,7 +445,7 @@ func rangeFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) te
 		var templ_7745c5c3_Var17 string
 		templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(field.Min)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 108, Col: 18}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 109, Col: 18}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 		if templ_7745c5c3_Err != nil {
@@ -458,7 +458,7 @@ func rangeFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) te
 		var templ_7745c5c3_Var18 string
 		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(field.Max)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 109, Col: 18}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 110, Col: 18}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 		if templ_7745c5c3_Err != nil {
@@ -471,7 +471,7 @@ func rangeFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) te
 		var templ_7745c5c3_Var19 string
 		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(field.Step)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 110, Col: 20}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 111, Col: 20}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 		if templ_7745c5c3_Err != nil {
@@ -484,7 +484,7 @@ func rangeFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) te
 		var templ_7745c5c3_Var20 string
 		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(field.Value)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 111, Col: 22}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 112, Col: 22}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 		if templ_7745c5c3_Err != nil {
@@ -511,7 +511,7 @@ func rangeFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) te
 		var templ_7745c5c3_Var21 string
 		templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(field.Value)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 117, Col: 23}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 118, Col: 23}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 		if templ_7745c5c3_Err != nil {
@@ -559,7 +559,7 @@ func checkboxFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar)
 			var templ_7745c5c3_Var23 string
 			templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(field.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 125, Col: 41}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 126, Col: 41}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
 			if templ_7745c5c3_Err != nil {
@@ -577,7 +577,7 @@ func checkboxFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar)
 		var templ_7745c5c3_Var24 string
 		templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(field.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 129, Col: 20}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 130, Col: 20}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 		if templ_7745c5c3_Err != nil {
@@ -645,7 +645,7 @@ func dateFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) tem
 			var templ_7745c5c3_Var26 string
 			templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(field.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 143, Col: 60}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 144, Col: 60}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
 			if templ_7745c5c3_Err != nil {
@@ -663,7 +663,7 @@ func dateFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) tem
 		var templ_7745c5c3_Var27 string
 		templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs(field.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 147, Col: 20}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 148, Col: 20}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var27))
 		if templ_7745c5c3_Err != nil {
@@ -676,7 +676,7 @@ func dateFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) tem
 		var templ_7745c5c3_Var28 string
 		templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.JoinStringErrs(field.Value)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 148, Col: 22}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/filter.templ`, Line: 149, Col: 22}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var28))
 		if templ_7745c5c3_Err != nil {

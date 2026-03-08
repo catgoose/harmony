@@ -59,6 +59,7 @@ func (ar *appRoutes) InitRoutes() error {
 	ar.initControlsGalleryRoutes()
 	ar.initComponentsRoutes()
 	ar.initComponents2Routes()
+	ar.initComponents3Routes()
 	// setup:feature:demo:end
 
 	// setup:feature:demo:start
@@ -78,6 +79,15 @@ func (ar *appRoutes) InitRoutes() error {
 	ar.initInventoryRoutes(db)
 	ar.initCatalogRoutes(db)
 	ar.initBulkRoutes(db)
+
+	actLog := demo.NewActivityLog(200)
+	ar.initAdminRoutes(db, actLog, broker)
+	ar.initPeopleRoutes(db, broker, actLog)
+	ar.initKanbanRoutes(demo.NewKanbanBoard(), actLog, broker)
+	ar.initApprovalRoutes(demo.NewApprovalQueue(), actLog, broker)
+	ar.initFeedRoutes(actLog, broker)
+	ar.initSettingsRoutes(demo.NewSettingsStore())
+	ar.initVendorContactRoutes(db, actLog, broker)
 	// setup:feature:demo:end
 	return nil
 }

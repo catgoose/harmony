@@ -1,0 +1,46 @@
+// setup:feature:demo
+
+package routes
+
+import (
+	"catgoose/go-htmx-demo/internals/demo"
+	"catgoose/go-htmx-demo/internals/routes/handler"
+	"catgoose/go-htmx-demo/internals/ssebroker"
+	"catgoose/go-htmx-demo/web/views"
+	"fmt"
+	"strconv"
+
+	"github.com/labstack/echo/v4"
+)
+
+type approvalRoutes struct {
+	queue  *demo.ApprovalQueue
+	actLog *demo.ActivityLog
+	broker *ssebroker.SSEBroker
+}
+
+func (ar *appRoutes) initApprovalRoutes(queue *demo.ApprovalQueue, actLog *demo.ActivityLog, broker *ssebroker.SSEBroker) {
+	a := &approvalRoutes{queue: queue, actLog: actLog, broker: broker}
+	ar.e.GET("/tables/approvals", a.handleApprovalsPage)
+	ar.e.POST("/tables/approvals/:id/:action", a.handleApprovalAction)
+}
+
+func (a *approvalRoutes) handleApprovalsPage(c echo.Context) error {
+	requests := a.queue.AllRequests()
+	return handler.RenderBaseLayout(c, views.ApprovalsPage(requests))
+}
+
+func (a *approvalRoutes) handleApprovalAction(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return handler.HandleHypermediaError(c, 400, "Invalid request ID", err)
+	}
+	action := c.Param("action")
+	req, ok := a.queue.TransitionRequest(id, action, "Admin")
+	if !ok {
+		return handler.HandleHypermediaError(c, 400, fmt.Sprintf("Cannot %s request %d", action, id), nil)
+	}
+	evt := a.actLog.Record(action, "approval", id, req.Title, fmt.Sprintf("$%.2f %s", req.Amount, action))
+	BroadcastActivity(a.broker, evt)
+	return handler.RenderComponent(c, views.ApprovalCard(req))
+}

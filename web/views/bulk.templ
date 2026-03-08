@@ -104,7 +104,7 @@ templ BulkItemsBody(items []demo.Item) {
 
 // BulkItemRow renders a single row with a leading checkbox for bulk selection.
 templ BulkItemRow(item demo.Item) {
-	<tr>
+	<tr class="cursor-pointer" _="on click if event.target.tagName != 'INPUT' then set cb to the first .row-check in me then set cb.checked to (not cb.checked) end">
 		<td>
 			<input
 				type="checkbox"
