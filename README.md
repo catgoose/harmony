@@ -46,17 +46,17 @@ A demonstration of building modern, interactive web applications with Go and HTM
 <details>
 <summary>More screenshots</summary>
 
-| Realtime Dashboard                                                                                            | CRUD                                                                                                |
-| ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| ![Realtime](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/realtime-viewport.png)   | ![CRUD](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/crud-viewport.png) |
+| CRUD                                                                                                | Interactions                                                                                                        |
+| --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| ![CRUD](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/crud-viewport.png) | ![Interactions](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/interactions-viewport.png) |
 
-| Interactions                                                                                                        | State Patterns                                                                                          |
-| ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| ![Interactions](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/interactions-viewport.png) | ![State](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/state-viewport.png)   |
+| State Patterns                                                                                       | Bulk Operations                                                                                      |
+| ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| ![State](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/state-viewport.png) | ![Bulk](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/bulk-viewport.png) |
 
-| Bulk Operations                                                                                             | Components 3                                                                                                       |
-| ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| ![Bulk](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/bulk-viewport.png)         | ![Components 3](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/components3-viewport.png) |
+| Components 3                                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------ |
+| ![Components 3](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/components3-viewport.png) |
 
 </details>
 
