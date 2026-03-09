@@ -13,6 +13,8 @@ type TableDef struct {
 	cols          []ColumnDef
 	indexes       []IndexDef
 	hasSoftDelete bool
+	hasVersion    bool
+	hasExpiry     bool
 }
 
 // NewTable creates a new table definition.
@@ -42,6 +44,50 @@ func (t *TableDef) WithSoftDelete() *TableDef {
 // WithAuditTrail appends CreatedBy, UpdatedBy, and DeletedBy columns.
 func (t *TableDef) WithAuditTrail() *TableDef {
 	t.cols = append(t.cols, AuditColumnDefs()...)
+	return t
+}
+
+// WithVersion appends a Version column for optimistic concurrency control.
+func (t *TableDef) WithVersion() *TableDef {
+	t.hasVersion = true
+	t.cols = append(t.cols, VersionColumnDefs()...)
+	return t
+}
+
+// WithSortOrder appends a SortOrder column for manual ordering.
+func (t *TableDef) WithSortOrder() *TableDef {
+	t.cols = append(t.cols, SortOrderColumnDefs()...)
+	return t
+}
+
+// WithStatus appends a Status column with the given default value.
+func (t *TableDef) WithStatus(defaultStatus string) *TableDef {
+	t.cols = append(t.cols, StatusColumnDefs(defaultStatus)...)
+	return t
+}
+
+// WithNotes appends a nullable Notes text column.
+func (t *TableDef) WithNotes() *TableDef {
+	t.cols = append(t.cols, NotesColumnDefs()...)
+	return t
+}
+
+// WithUUID appends a UUID column (NOT NULL, UNIQUE, immutable).
+func (t *TableDef) WithUUID() *TableDef {
+	t.cols = append(t.cols, UUIDColumnDefs()...)
+	return t
+}
+
+// WithParent appends a nullable ParentID column for tree/hierarchy structures.
+func (t *TableDef) WithParent() *TableDef {
+	t.cols = append(t.cols, ParentColumnDefs()...)
+	return t
+}
+
+// WithExpiry appends a nullable ExpiresAt timestamp column.
+func (t *TableDef) WithExpiry() *TableDef {
+	t.hasExpiry = true
+	t.cols = append(t.cols, ExpiryColumnDefs()...)
 	return t
 }
 
@@ -85,6 +131,16 @@ func (t *TableDef) UpdateColumns() []string {
 // HasSoftDelete reports whether the table uses soft-delete.
 func (t *TableDef) HasSoftDelete() bool {
 	return t.hasSoftDelete
+}
+
+// HasVersion reports whether the table uses optimistic concurrency control.
+func (t *TableDef) HasVersion() bool {
+	return t.hasVersion
+}
+
+// HasExpiry reports whether the table uses expiry.
+func (t *TableDef) HasExpiry() bool {
+	return t.hasExpiry
 }
 
 // CreateSQL returns the CREATE TABLE statement followed by CREATE INDEX statements.

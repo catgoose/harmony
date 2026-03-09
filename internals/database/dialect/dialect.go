@@ -63,6 +63,16 @@ type Dialect interface {
 	//   SQLite: "TEXT"
 	VarcharType(maxLen int) string
 
+	// IntType returns the column type for an integer.
+	//   MSSQL:  "INT"
+	//   SQLite: "INTEGER"
+	IntType() string
+
+	// TextType returns the column type for unlimited text.
+	//   MSSQL:  "NVARCHAR(MAX)"
+	//   SQLite: "TEXT"
+	TextType() string
+
 	// DropTableIfExists returns the statement to drop a table if it exists.
 	//   MSSQL:  "IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Users]') ...) BEGIN DROP TABLE [dbo].[Users]; END"
 	//   SQLite: "DROP TABLE IF EXISTS Users"

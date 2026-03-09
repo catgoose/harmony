@@ -97,3 +97,46 @@ func TestWhereBuilder_NotDeleted_WithOtherConditions(t *testing.T) {
 	assert.Equal(t, "WHERE Active = @Active AND DeletedAt IS NULL", w.String())
 	assert.Len(t, w.Args(), 1)
 }
+
+func TestWhereBuilder_NotExpired(t *testing.T) {
+	w := NewWhere().NotExpired()
+	assert.Equal(t, "WHERE (ExpiresAt IS NULL OR ExpiresAt > CURRENT_TIMESTAMP)", w.String())
+	assert.Empty(t, w.Args())
+}
+
+func TestWhereBuilder_HasStatus(t *testing.T) {
+	w := NewWhere().HasStatus("active")
+	assert.Equal(t, "WHERE Status = @Status", w.String())
+	assert.Len(t, w.Args(), 1)
+}
+
+func TestWhereBuilder_IsRoot(t *testing.T) {
+	w := NewWhere().IsRoot()
+	assert.Equal(t, "WHERE ParentID IS NULL", w.String())
+	assert.Empty(t, w.Args())
+}
+
+func TestWhereBuilder_HasParent(t *testing.T) {
+	w := NewWhere().HasParent(42)
+	assert.Equal(t, "WHERE ParentID = @ParentID", w.String())
+	assert.Len(t, w.Args(), 1)
+}
+
+func TestWhereBuilder_HasVersion(t *testing.T) {
+	w := NewWhere().HasVersion(3)
+	assert.Equal(t, "WHERE Version = @Version", w.String())
+	assert.Len(t, w.Args(), 1)
+}
+
+func TestWhereBuilder_CombinedTraits(t *testing.T) {
+	w := NewWhere().
+		NotDeleted().
+		NotExpired().
+		HasStatus("active").
+		IsRoot()
+	assert.Contains(t, w.String(), "DeletedAt IS NULL")
+	assert.Contains(t, w.String(), "ExpiresAt IS NULL OR ExpiresAt > CURRENT_TIMESTAMP")
+	assert.Contains(t, w.String(), "Status = @Status")
+	assert.Contains(t, w.String(), "ParentID IS NULL")
+	assert.Len(t, w.Args(), 1) // only Status has an arg
+}

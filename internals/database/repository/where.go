@@ -93,3 +93,28 @@ func (w *WhereBuilder) HasConditions() bool {
 func (w *WhereBuilder) NotDeleted() *WhereBuilder {
 	return w.And("DeletedAt IS NULL")
 }
+
+// NotExpired adds a condition that filters out expired records.
+func (w *WhereBuilder) NotExpired() *WhereBuilder {
+	return w.And("(ExpiresAt IS NULL OR ExpiresAt > CURRENT_TIMESTAMP)")
+}
+
+// HasStatus adds a "Status = @Status" condition.
+func (w *WhereBuilder) HasStatus(status string) *WhereBuilder {
+	return w.And("Status = @Status", sql.Named("Status", status))
+}
+
+// IsRoot adds a "ParentID IS NULL" condition for tree root nodes.
+func (w *WhereBuilder) IsRoot() *WhereBuilder {
+	return w.And("ParentID IS NULL")
+}
+
+// HasParent adds a "ParentID = @ParentID" condition.
+func (w *WhereBuilder) HasParent(parentID int64) *WhereBuilder {
+	return w.And("ParentID = @ParentID", sql.Named("ParentID", parentID))
+}
+
+// HasVersion adds a "Version = @Version" condition for optimistic locking.
+func (w *WhereBuilder) HasVersion(version int) *WhereBuilder {
+	return w.And("Version = @Version", sql.Named("Version", version))
+}

@@ -120,3 +120,15 @@ func TestTypeLiteral(t *testing.T) {
 	assert.Equal(t, "BLOB", fn(dialect.SQLiteDialect{}))
 	assert.Equal(t, "BLOB", fn(dialect.MSSQLDialect{}))
 }
+
+func TestTypeInt(t *testing.T) {
+	fn := TypeInt()
+	assert.Equal(t, "INTEGER", fn(dialect.SQLiteDialect{}))
+	assert.Equal(t, "INT", fn(dialect.MSSQLDialect{}))
+}
+
+func TestTypeText(t *testing.T) {
+	fn := TypeText()
+	assert.Equal(t, "TEXT", fn(dialect.SQLiteDialect{}))
+	assert.Equal(t, "NVARCHAR(MAX)", fn(dialect.MSSQLDialect{}))
+}

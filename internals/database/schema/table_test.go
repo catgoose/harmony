@@ -183,6 +183,102 @@ func TestUsersTable_UpdateColumns(t *testing.T) {
 	assert.Contains(t, cols, "UpdatedAt")
 }
 
+func TestTableDef_WithVersion(t *testing.T) {
+	td := NewTable("Test").
+		Columns(AutoIncrCol("ID")).
+		WithVersion()
+
+	assert.True(t, td.HasVersion())
+	assert.Contains(t, td.SelectColumns(), "Version")
+	assert.Contains(t, td.UpdateColumns(), "Version")
+
+	d := dialect.SQLiteDialect{}
+	stmts := td.CreateSQL(d)
+	assert.Contains(t, stmts[0], "Version INTEGER NOT NULL DEFAULT 1")
+}
+
+func TestTableDef_WithSortOrder(t *testing.T) {
+	td := NewTable("Test").
+		Columns(AutoIncrCol("ID")).
+		WithSortOrder()
+
+	assert.Contains(t, td.SelectColumns(), "SortOrder")
+	assert.Contains(t, td.UpdateColumns(), "SortOrder")
+
+	d := dialect.SQLiteDialect{}
+	stmts := td.CreateSQL(d)
+	assert.Contains(t, stmts[0], "SortOrder INTEGER NOT NULL DEFAULT 0")
+}
+
+func TestTableDef_WithStatus(t *testing.T) {
+	td := NewTable("Test").
+		Columns(AutoIncrCol("ID")).
+		WithStatus("draft")
+
+	assert.Contains(t, td.SelectColumns(), "Status")
+	assert.Contains(t, td.UpdateColumns(), "Status")
+
+	d := dialect.SQLiteDialect{}
+	stmts := td.CreateSQL(d)
+	assert.Contains(t, stmts[0], "Status TEXT NOT NULL DEFAULT 'draft'")
+}
+
+func TestTableDef_WithNotes(t *testing.T) {
+	td := NewTable("Test").
+		Columns(AutoIncrCol("ID")).
+		WithNotes()
+
+	assert.Contains(t, td.SelectColumns(), "Notes")
+	assert.Contains(t, td.UpdateColumns(), "Notes")
+
+	d := dialect.SQLiteDialect{}
+	stmts := td.CreateSQL(d)
+	assert.Contains(t, stmts[0], "Notes TEXT")
+}
+
+func TestTableDef_WithUUID(t *testing.T) {
+	td := NewTable("Test").
+		Columns(AutoIncrCol("ID")).
+		WithUUID()
+
+	assert.Contains(t, td.SelectColumns(), "UUID")
+	// UUID is immutable
+	assert.NotContains(t, td.UpdateColumns(), "UUID")
+	// UUID is included in insert
+	assert.Contains(t, td.InsertColumns(), "UUID")
+
+	d := dialect.SQLiteDialect{}
+	stmts := td.CreateSQL(d)
+	assert.Contains(t, stmts[0], "UUID TEXT NOT NULL UNIQUE")
+}
+
+func TestTableDef_WithParent(t *testing.T) {
+	td := NewTable("Test").
+		Columns(AutoIncrCol("ID")).
+		WithParent()
+
+	assert.Contains(t, td.SelectColumns(), "ParentID")
+	assert.Contains(t, td.UpdateColumns(), "ParentID")
+
+	d := dialect.SQLiteDialect{}
+	stmts := td.CreateSQL(d)
+	assert.Contains(t, stmts[0], "ParentID INTEGER")
+}
+
+func TestTableDef_WithExpiry(t *testing.T) {
+	td := NewTable("Test").
+		Columns(AutoIncrCol("ID")).
+		WithExpiry()
+
+	assert.True(t, td.HasExpiry())
+	assert.Contains(t, td.SelectColumns(), "ExpiresAt")
+	assert.Contains(t, td.UpdateColumns(), "ExpiresAt")
+
+	d := dialect.SQLiteDialect{}
+	stmts := td.CreateSQL(d)
+	assert.Contains(t, stmts[0], "ExpiresAt TIMESTAMP")
+}
+
 func TestTableDef_TraitsComposition(t *testing.T) {
 	td := NewTable("FullFeatured").
 		Columns(

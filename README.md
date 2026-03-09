@@ -13,6 +13,13 @@
     - [Real-time SSE Dashboard](#real-time-sse-dashboard)
     - [Data Views, Filtering, and Pagination](#data-views-filtering-and-pagination)
     - [State and Interaction Patterns](#state-and-interaction-patterns)
+  - [Schema Builder](#schema-builder)
+    - [Table Traits](#table-traits)
+    - [Tags / Lookup Tables](#tags--lookup-tables)
+    - [Column Type Functions](#column-type-functions)
+    - [Domain Structs](#domain-structs)
+    - [Repository Helpers](#repository-helpers)
+    - [Where Builder](#where-builder)
   - [Quick Start](#quick-start)
     - [From Release Binary](#from-release-binary)
     - [From Source](#from-source)
@@ -144,6 +151,132 @@ Additional hypermedia patterns demonstrated:
 - **Append** -- `hx-swap="beforeend"` appends new list items without replacing existing content; form resets via `hx-on::after-request="this.reset()"`
 - **Modal** -- `hx-get` fetches a `<dialog>` fragment, `hx-on::load="this.showModal()"` opens it
 - **Dismiss** -- HyperScript (`_="on click ..."`) handles client-only UI like fade-out and element removal without a server round-trip
+
+## Schema Builder
+
+The schema builder provides a composable DDL API for defining tables with common SQL patterns as chainable traits.
+
+### Table Traits
+
+```go
+NewTable("Tasks").
+    Columns(
+        AutoIncrCol("ID"),
+        Col("Title", TypeString(255)).NotNull(),
+    ).
+    WithUUID().         // UUID VARCHAR(36) NOT NULL UNIQUE (immutable)
+    WithStatus("draft").// Status VARCHAR(50) NOT NULL DEFAULT 'draft'
+    WithSortOrder().    // SortOrder INTEGER NOT NULL DEFAULT 0
+    WithParent().       // ParentID INTEGER (nullable, for tree structures)
+    WithNotes().        // Notes TEXT (nullable)
+    WithExpiry().       // ExpiresAt TIMESTAMP (nullable)
+    WithVersion().      // Version INTEGER NOT NULL DEFAULT 1
+    WithTimestamps().   // CreatedAt, UpdatedAt TIMESTAMP NOT NULL
+    WithSoftDelete().   // DeletedAt TIMESTAMP (nullable)
+    WithAuditTrail()    // CreatedBy, UpdatedBy, DeletedBy VARCHAR(255)
+```
+
+| Method | Column(s) | DDL | Mutable |
+|---|---|---|---|
+| `WithVersion()` | Version | `INTEGER NOT NULL DEFAULT 1` | Yes |
+| `WithSortOrder()` | SortOrder | `INTEGER NOT NULL DEFAULT 0` | Yes |
+| `WithStatus(default)` | Status | `VARCHAR(50) NOT NULL DEFAULT '{default}'` | Yes |
+| `WithNotes()` | Notes | `TEXT` (nullable) | Yes |
+| `WithUUID()` | UUID | `VARCHAR(36) NOT NULL UNIQUE` | No |
+| `WithParent()` | ParentID | `INTEGER` (nullable) | Yes |
+| `WithExpiry()` | ExpiresAt | `TIMESTAMP` (nullable) | Yes |
+| `WithTimestamps()` | CreatedAt, UpdatedAt | `TIMESTAMP NOT NULL DEFAULT NOW()` | UpdatedAt only |
+| `WithSoftDelete()` | DeletedAt | `TIMESTAMP` (nullable) | Yes |
+| `WithAuditTrail()` | CreatedBy, UpdatedBy, DeletedBy | `VARCHAR(255)` | UpdatedBy, DeletedBy only |
+
+### Tags / Lookup Tables
+
+For many-to-many tagging or shared lookup tables:
+
+```go
+// Lookup table: ID, Type, Label (+ indexes on Type and Type,Label)
+tagsTable := NewTagsTable("Tags")
+
+// Join table: OwnerID, TagID (+ indexes on each)
+joinTable := NewTagJoinTable("ItemTags", "Items", "Tags")
+```
+
+### Column Type Functions
+
+| Function | SQLite | MSSQL |
+|---|---|---|
+| `TypeInt()` | `INTEGER` | `INT` |
+| `TypeText()` | `TEXT` | `NVARCHAR(MAX)` |
+| `TypeString(n)` | `TEXT` | `NVARCHAR(n)` |
+| `TypeVarchar(n)` | `TEXT` | `VARCHAR(n)` |
+| `TypeTimestamp()` | `TIMESTAMP` | `DATETIME` |
+| `TypeAutoIncrement()` | `INTEGER PRIMARY KEY AUTOINCREMENT` | `INT PRIMARY KEY IDENTITY(1,1)` |
+| `TypeLiteral(s)` | `s` | `s` |
+
+### Domain Structs
+
+Embeddable structs for domain models:
+
+```go
+type Task struct {
+    ID    int    `db:"ID"`
+    Title string `db:"Title"`
+    domain.UUID       // UUID string
+    domain.Status     // Status string
+    domain.SortOrder  // SortOrder int
+    domain.Parent     // ParentID sql.NullInt64
+    domain.Notes      // Notes sql.NullString
+    domain.Expiry     // ExpiresAt sql.NullTime
+    domain.Version    // Version int
+    domain.Timestamps // CreatedAt, UpdatedAt time.Time
+    domain.SoftDelete // DeletedAt sql.NullTime
+    domain.AuditTrail // CreatedBy, UpdatedBy, DeletedBy sql.NullString
+}
+```
+
+### Repository Helpers
+
+```go
+// Timestamps
+repository.SetCreateTimestamps(&m.CreatedAt, &m.UpdatedAt)
+repository.SetUpdateTimestamp(&m.UpdatedAt)
+
+// Soft delete
+repository.SetSoftDelete(&deletedAt)
+repository.SetDeleteAudit(&deletedAt, &deletedBy, "admin")
+
+// Versioning (optimistic concurrency)
+repository.InitVersion(&m.Version)       // sets to 1
+repository.IncrementVersion(&m.Version)  // increments by 1
+
+// Ordering
+repository.SetSortOrder(&m.SortOrder, 5)
+
+// Status
+repository.SetStatus(&m.Status, "active")
+
+// Expiry
+repository.SetExpiry(&m.ExpiresAt, time.Now().Add(24*time.Hour))
+repository.ClearExpiry(&m.ExpiresAt)
+
+// Audit trail
+repository.SetCreateAudit(&m.CreatedBy, &m.UpdatedBy, "user1")
+repository.SetUpdateAudit(&m.UpdatedBy, "user2")
+```
+
+### Where Builder
+
+Composable query filters for each trait:
+
+```go
+w := repository.NewWhere().
+    NotDeleted().           // DeletedAt IS NULL
+    NotExpired().           // ExpiresAt IS NULL OR ExpiresAt > CURRENT_TIMESTAMP
+    HasStatus("active").    // Status = @Status
+    HasVersion(3).          // Version = @Version (optimistic locking)
+    IsRoot().               // ParentID IS NULL
+    HasParent(42)           // ParentID = @ParentID
+```
 
 ## Quick Start
 

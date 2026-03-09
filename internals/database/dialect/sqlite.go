@@ -25,6 +25,10 @@ func (SQLiteDialect) StringType(_ int) string { return "TEXT" }
 
 func (SQLiteDialect) VarcharType(_ int) string { return "TEXT" }
 
+func (SQLiteDialect) IntType() string { return "INTEGER" }
+
+func (SQLiteDialect) TextType() string { return "TEXT" }
+
 func (SQLiteDialect) DropTableIfExists(table string) string {
 	return fmt.Sprintf("DROP TABLE IF EXISTS %s", table)
 }

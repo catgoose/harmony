@@ -55,3 +55,52 @@ func TestSetUpdateAudit(t *testing.T) {
 func TestSetUpdateAudit_Nil(t *testing.T) {
 	SetUpdateAudit(nil, "user2") // should not panic
 }
+
+func TestInitVersion(t *testing.T) {
+	var v int
+	InitVersion(&v)
+	assert.Equal(t, 1, v)
+}
+
+func TestInitVersion_Nil(t *testing.T) {
+	InitVersion(nil) // should not panic
+}
+
+func TestIncrementVersion(t *testing.T) {
+	v := 3
+	IncrementVersion(&v)
+	assert.Equal(t, 4, v)
+}
+
+func TestIncrementVersion_Nil(t *testing.T) {
+	IncrementVersion(nil) // should not panic
+}
+
+func TestSetSortOrder(t *testing.T) {
+	var s int
+	SetSortOrder(&s, 5)
+	assert.Equal(t, 5, s)
+}
+
+func TestSetStatus(t *testing.T) {
+	var s string
+	SetStatus(&s, "active")
+	assert.Equal(t, "active", s)
+}
+
+func TestSetExpiry(t *testing.T) {
+	var e time.Time
+	future := time.Now().Add(24 * time.Hour)
+	SetExpiry(&e, future)
+	assert.Equal(t, future, e)
+}
+
+func TestClearExpiry(t *testing.T) {
+	e := time.Now()
+	ClearExpiry(&e)
+	assert.True(t, e.IsZero())
+}
+
+func TestClearExpiry_Nil(t *testing.T) {
+	ClearExpiry(nil) // should not panic
+}

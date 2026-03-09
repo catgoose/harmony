@@ -29,6 +29,10 @@ func (MSSQLDialect) VarcharType(maxLen int) string {
 	return fmt.Sprintf("VARCHAR(%d)", maxLen)
 }
 
+func (MSSQLDialect) IntType() string { return "INT" }
+
+func (MSSQLDialect) TextType() string { return "NVARCHAR(MAX)" }
+
 func (MSSQLDialect) DropTableIfExists(table string) string {
 	return fmt.Sprintf(
 		"IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[%s]') AND type in (N'U')) BEGIN DROP TABLE [dbo].[%s]; END",

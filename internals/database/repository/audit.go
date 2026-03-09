@@ -62,3 +62,45 @@ func SetUpdateAudit(updatedBy *string, user string) {
 		*updatedBy = user
 	}
 }
+
+// InitVersion sets Version to 1 for a new record.
+func InitVersion(version *int) {
+	if version != nil {
+		*version = 1
+	}
+}
+
+// IncrementVersion increments Version by 1.
+func IncrementVersion(version *int) {
+	if version != nil {
+		*version++
+	}
+}
+
+// SetSortOrder sets the SortOrder value.
+func SetSortOrder(sortOrder *int, order int) {
+	if sortOrder != nil {
+		*sortOrder = order
+	}
+}
+
+// SetStatus sets the Status value.
+func SetStatus(status *string, value string) {
+	if status != nil {
+		*status = value
+	}
+}
+
+// SetExpiry sets ExpiresAt to the given time.
+func SetExpiry(expiresAt *time.Time, t time.Time) {
+	if expiresAt != nil {
+		*expiresAt = t
+	}
+}
+
+// ClearExpiry sets ExpiresAt to zero value (removes expiry).
+func ClearExpiry(expiresAt *time.Time) {
+	if expiresAt != nil {
+		*expiresAt = time.Time{}
+	}
+}

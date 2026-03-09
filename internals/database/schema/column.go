@@ -30,6 +30,16 @@ func TypeAutoIncrement() TypeFunc {
 	return func(d dialect.Dialect) string { return d.AutoIncrement() }
 }
 
+// TypeInt returns a TypeFunc for an integer column.
+func TypeInt() TypeFunc {
+	return func(d dialect.Dialect) string { return d.IntType() }
+}
+
+// TypeText returns a TypeFunc for an unlimited text column.
+func TypeText() TypeFunc {
+	return func(d dialect.Dialect) string { return d.TextType() }
+}
+
 // TypeLiteral returns a TypeFunc that always returns the given literal string.
 func TypeLiteral(s string) TypeFunc {
 	return func(_ dialect.Dialect) string { return s }
