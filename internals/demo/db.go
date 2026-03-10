@@ -58,6 +58,11 @@ func Open(path string) (*DB, error) {
 	return d, nil
 }
 
+// RawDB returns the underlying *sql.DB connection.
+func (d *DB) RawDB() *sql.DB {
+	return d.db
+}
+
 // Close closes the underlying database connection.
 func (d *DB) Close() error {
 	return d.db.Close()
@@ -178,6 +183,9 @@ func (d *DB) initSchema() error {
 	}
 	if err := d.initVendors(); err != nil {
 		return fmt.Errorf("init vendors: %w", err)
+	}
+	if err := d.initTasks(); err != nil {
+		return fmt.Errorf("init tasks: %w", err)
 	}
 	return nil
 }

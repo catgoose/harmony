@@ -79,6 +79,7 @@ func (ar *appRoutes) InitRoutes() error {
 	ar.initInventoryRoutes(db)
 	ar.initCatalogRoutes(db)
 	ar.initBulkRoutes(db)
+	ar.initRepositoryRoutes(db)
 
 	actLog := demo.NewActivityLog(200)
 	board := demo.NewKanbanBoard()

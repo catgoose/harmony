@@ -40,6 +40,7 @@ func appNavComponent(path string) templ.Component {
 				// setup:feature:sse:end
 			},
 		},
+		{Label: "Repository", Href: "/demo/repository"},
 		{Label: "Admin", Href: "/admin"},
 		// setup:feature:demo:end
 	}, path)
