@@ -62,8 +62,8 @@ build/
 docs/packages/
 site/
 
-# Screenshot recording intermediates
-docs/screenshots/videos/
+# Screenshots (workflow pushes these to catgoose/screenshots)
+docs/screenshots/
 
 # Playwright
 test-results/

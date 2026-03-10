@@ -95,6 +95,126 @@ async function main() {
 
   await ctx.close();
 
+  // --- Error control screenshots (require interactions) ---
+  console.log("\nCapturing error control screenshots...");
+  const errCtx = await browser.newContext({
+    viewport: { width: 1280, height: 800 },
+    deviceScaleFactor: 2,
+  });
+
+  // Reset DB before error screenshots
+  const setupPage = await errCtx.newPage();
+  try {
+    await setupPage.goto(`${baseURL}/admin/db/reinit`, { waitUntil: "networkidle" });
+  } catch { /* POST may not be navigable, use fetch below */ }
+  await setupPage.evaluate((url) => fetch(`${url}/admin/db/reinit`, { method: "POST" }), baseURL);
+  await setupPage.close();
+
+  // Helper: wait for HTMX requests to finish
+  async function waitForHtmx(page, timeout = 5000) {
+    await page.waitForFunction(
+      () => !document.querySelector(".htmx-request"),
+      { timeout },
+    ).catch(() => {});
+    await page.waitForTimeout(300);
+  }
+
+  // Default error controls
+  const defaultErrors = [
+    {
+      name: "error-400-bad-request",
+      title: "400 Bad Request",
+      action: async (page) => {
+        await page.goto(`${baseURL}/demo/repository/tasks/abc`, { waitUntil: "networkidle" });
+        await page.waitForTimeout(500);
+      },
+      fullPage: true,
+    },
+    {
+      name: "error-404-not-found",
+      title: "404 Not Found",
+      action: async (page) => {
+        await page.goto(`${baseURL}/demo/repository/tasks/99999`, { waitUntil: "networkidle" });
+        await page.waitForTimeout(500);
+      },
+      fullPage: true,
+    },
+  ];
+
+  // Custom error recovery controls (all on the controls page)
+  const recoveryErrors = [
+    {
+      name: "error-recovery-transient",
+      title: "Transient Error (Retry)",
+      selector: 'button:has-text("Save Record")',
+      resultId: "#transient-result",
+    },
+    {
+      name: "error-recovery-validation",
+      title: "Validation Error (Fix & Resubmit)",
+      selector: 'form[hx-post*="errors/validate"] button[type="submit"]',
+      resultId: "#validate-result",
+    },
+    {
+      name: "error-recovery-conflict",
+      title: "Conflict Error (Update or Copy)",
+      selector: 'button[hx-post*="errors/conflict"]',
+      resultId: "#conflict-result",
+    },
+    {
+      name: "error-recovery-stale",
+      title: "Stale Data Error (Refresh or Force)",
+      selector: 'form[hx-post*="errors/stale"] button[type="submit"]',
+      resultId: "#stale-result",
+    },
+    {
+      name: "error-recovery-cascade",
+      title: "Cascade Error (Reassign or Force Delete)",
+      selector: 'button[hx-delete*="errors/cascade"]',
+      resultId: "#cascade-result",
+    },
+  ];
+
+  // Capture default error screenshots
+  for (const { name, title, action, fullPage } of defaultErrors) {
+    const page = await errCtx.newPage();
+    try {
+      console.log(`Capturing ${title}...`);
+      await action(page);
+      await page.screenshot({
+        path: resolve(outDir, `${name}.png`),
+        fullPage: fullPage ?? false,
+      });
+      console.log(`  -> ${name}.png`);
+    } catch (err) {
+      console.warn(`  WARN: Failed to capture ${title}: ${err.message}`);
+    } finally {
+      await page.close();
+    }
+  }
+
+  // Capture recovery error screenshots (each needs a fresh controls page)
+  for (const { name, title, selector, resultId } of recoveryErrors) {
+    const page = await errCtx.newPage();
+    try {
+      console.log(`Capturing ${title}...`);
+      await page.goto(`${baseURL}/hypermedia/controls`, { waitUntil: "networkidle" });
+      await waitForHtmx(page);
+      await page.locator(selector).click();
+      await waitForHtmx(page);
+      await page.locator(resultId).screenshot({
+        path: resolve(outDir, `${name}.png`),
+      });
+      console.log(`  -> ${name}.png`);
+    } catch (err) {
+      console.warn(`  WARN: Failed to capture ${title}: ${err.message}`);
+    } finally {
+      await page.close();
+    }
+  }
+
+  await errCtx.close();
+
   await browser.close();
   console.log("\nDone. Screenshots saved to docs/screenshots/");
 }
