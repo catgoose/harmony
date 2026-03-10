@@ -15,11 +15,12 @@
     - [State and Interaction Patterns](#state-and-interaction-patterns)
   - [Schema Builder](#schema-builder)
     - [Table Traits](#table-traits)
-    - [Tags / Lookup Tables](#tags--lookup-tables)
+    - [Table Types](#table-types)
     - [Column Type Functions](#column-type-functions)
     - [Domain Structs](#domain-structs)
     - [Repository Helpers](#repository-helpers)
     - [Where Builder](#where-builder)
+    - [Schema Lifecycle](#schema-lifecycle)
   - [Quick Start](#quick-start)
     - [From Release Binary](#from-release-binary)
     - [From Source](#from-source)
@@ -164,16 +165,18 @@ NewTable("Tasks").
         AutoIncrCol("ID"),
         Col("Title", TypeString(255)).NotNull(),
     ).
-    WithUUID().         // UUID VARCHAR(36) NOT NULL UNIQUE (immutable)
-    WithStatus("draft").// Status VARCHAR(50) NOT NULL DEFAULT 'draft'
-    WithSortOrder().    // SortOrder INTEGER NOT NULL DEFAULT 0
-    WithParent().       // ParentID INTEGER (nullable, for tree structures)
-    WithNotes().        // Notes TEXT (nullable)
-    WithExpiry().       // ExpiresAt TIMESTAMP (nullable)
-    WithVersion().      // Version INTEGER NOT NULL DEFAULT 1
-    WithTimestamps().   // CreatedAt, UpdatedAt TIMESTAMP NOT NULL
-    WithSoftDelete().   // DeletedAt TIMESTAMP (nullable)
-    WithAuditTrail()    // CreatedBy, UpdatedBy, DeletedBy VARCHAR(255)
+    WithUUID().          // UUID VARCHAR(36) NOT NULL UNIQUE (immutable)
+    WithStatus("draft"). // Status VARCHAR(50) NOT NULL DEFAULT 'draft'
+    WithSortOrder().     // SortOrder INTEGER NOT NULL DEFAULT 0
+    WithParent().        // ParentID INTEGER (nullable, for tree structures)
+    WithNotes().         // Notes TEXT (nullable)
+    WithExpiry().        // ExpiresAt TIMESTAMP (nullable)
+    WithVersion().       // Version INTEGER NOT NULL DEFAULT 1
+    WithArchive().       // ArchivedAt TIMESTAMP (nullable)
+    WithReplacement().   // ReplacedByID INTEGER (nullable, entity lineage)
+    WithTimestamps().    // CreatedAt, UpdatedAt TIMESTAMP NOT NULL
+    WithSoftDelete().    // DeletedAt TIMESTAMP (nullable)
+    WithAuditTrail()     // CreatedBy, UpdatedBy, DeletedBy VARCHAR(255)
 ```
 
 | Method | Column(s) | DDL | Mutable |
@@ -185,22 +188,49 @@ NewTable("Tasks").
 | `WithUUID()` | UUID | `VARCHAR(36) NOT NULL UNIQUE` | No |
 | `WithParent()` | ParentID | `INTEGER` (nullable) | Yes |
 | `WithExpiry()` | ExpiresAt | `TIMESTAMP` (nullable) | Yes |
+| `WithArchive()` | ArchivedAt | `TIMESTAMP` (nullable) | Yes |
+| `WithReplacement()` | ReplacedByID | `INTEGER` (nullable) | Yes |
 | `WithTimestamps()` | CreatedAt, UpdatedAt | `TIMESTAMP NOT NULL DEFAULT NOW()` | UpdatedAt only |
 | `WithSoftDelete()` | DeletedAt | `TIMESTAMP` (nullable) | Yes |
 | `WithAuditTrail()` | CreatedBy, UpdatedBy, DeletedBy | `VARCHAR(255)` | UpdatedBy, DeletedBy only |
 
-### Lookup Tables
+### Table Types
 
-For many-to-many lookups or shared lookup tables:
+Pre-built table constructors for common patterns:
 
 ```go
-// Lookup table: ID + two caller-named columns (+ indexes)
-tagsTable := NewLookupTable("Tags", "Type", "Label")
-lookups   := NewLookupTable("Lookups", "Category", "Name")
+// Lookup table: ID + group/value columns (+ indexes)
+tags    := NewLookupTable("Tags", "Type", "Label")
+lookups := NewLookupTable("Lookups", "Category", "Name")
 
-// Join table: OwnerID, LookupID (+ indexes on each)
+// Lookup join table: OwnerID + LookupID (+ indexes)
 joinTable := NewLookupJoinTable("ItemTags")
+
+// Mapping table: generic M2M join with composite unique constraint
+userRoles := NewMappingTable("UserRoles", "UserID", "RoleID")
+
+// Config table: key-value settings (ID + unique key + text value)
+settings := NewConfigTable("Settings", "Key", "Value")
+
+// Event table: append-only log (all columns immutable, auto CreatedAt)
+auditLog := NewEventTable("AuditLog",
+    Col("EventType", TypeVarchar(100)).NotNull(),
+    Col("Actor", TypeVarchar(255)),
+    Col("Payload", TypeText()),
+)
+
+// Queue table: job/outbox with status, retry, scheduling
+jobs := NewQueueTable("JobQueue", "Payload")
 ```
+
+| Constructor | Columns | Indexes | Use Case |
+|---|---|---|---|
+| `NewLookupTable(name, group, value)` | ID, group, value | group; group+value | Categorized reference data |
+| `NewLookupJoinTable(name)` | OwnerID, LookupID | each column | Owner-to-lookup M2M |
+| `NewMappingTable(name, left, right)` | left, right (+ UNIQUE) | each column | Generic M2M join |
+| `NewConfigTable(name, key, value)` | ID, key (UNIQUE), value | key | App settings, feature flags |
+| `NewEventTable(name, cols...)` | ID, cols..., CreatedAt | CreatedAt | Audit logs, activity feeds |
+| `NewQueueTable(name, payload)` | ID, payload, Status, RetryCount, ScheduledAt, ProcessedAt, CreatedAt | Status; ScheduledAt; Status+ScheduledAt | Job queues, outbox pattern |
 
 ### Column Type Functions
 
@@ -222,16 +252,18 @@ Embeddable structs for domain models:
 type Task struct {
     ID    int    `db:"ID"`
     Title string `db:"Title"`
-    domain.UUID       // UUID string
-    domain.Status     // Status string
-    domain.SortOrder  // SortOrder int
-    domain.Parent     // ParentID sql.NullInt64
-    domain.Notes      // Notes sql.NullString
-    domain.Expiry     // ExpiresAt sql.NullTime
-    domain.Version    // Version int
-    domain.Timestamps // CreatedAt, UpdatedAt time.Time
-    domain.SoftDelete // DeletedAt sql.NullTime
-    domain.AuditTrail // CreatedBy, UpdatedBy, DeletedBy sql.NullString
+    domain.UUID        // UUID string
+    domain.Status      // Status string
+    domain.SortOrder   // SortOrder int
+    domain.Parent      // ParentID sql.NullInt64
+    domain.Notes       // Notes sql.NullString
+    domain.Expiry      // ExpiresAt sql.NullTime
+    domain.Version     // Version int
+    domain.Archive     // ArchivedAt sql.NullTime
+    domain.Replacement // ReplacedByID sql.NullInt64
+    domain.Timestamps  // CreatedAt, UpdatedAt time.Time
+    domain.SoftDelete  // DeletedAt sql.NullTime
+    domain.AuditTrail  // CreatedBy, UpdatedBy, DeletedBy sql.NullString
 }
 ```
 
@@ -260,6 +292,14 @@ repository.SetStatus(&m.Status, "active")
 repository.SetExpiry(&m.ExpiresAt, time.Now().Add(24*time.Hour))
 repository.ClearExpiry(&m.ExpiresAt)
 
+// Archive
+repository.SetArchive(&m.ArchivedAt)     // sets to now
+repository.ClearArchive(&m.ArchivedAt)   // unarchives
+
+// Replacement (entity lineage)
+repository.SetReplacement(&m.ReplacedByID, newID)  // marks as replaced
+repository.ClearReplacement(&m.ReplacedByID)       // clears replacement
+
 // Audit trail
 repository.SetCreateAudit(&m.CreatedBy, &m.UpdatedBy, "user1")
 repository.SetUpdateAudit(&m.UpdatedBy, "user2")
@@ -273,11 +313,39 @@ Composable query filters for each trait:
 w := repository.NewWhere().
     NotDeleted().           // DeletedAt IS NULL
     NotExpired().           // ExpiresAt IS NULL OR ExpiresAt > CURRENT_TIMESTAMP
+    NotArchived().          // ArchivedAt IS NULL
+    NotReplaced().          // ReplacedByID IS NULL
     HasStatus("active").    // Status = @Status
     HasVersion(3).          // Version = @Version (optimistic locking)
     IsRoot().               // ParentID IS NULL
-    HasParent(42)           // ParentID = @ParentID
+    HasParent(42).          // ParentID = @ParentID
+    ReplacedBy(99)          // ReplacedByID = @ReplacedByID
 ```
+
+### Schema Lifecycle
+
+Three stages for managing schemas at different points in the application lifecycle:
+
+```go
+repoManager := repository.NewManager(db, dialect, usersTable, tasksTable, ...)
+
+// Development: drop and recreate all tables (destructive)
+repoManager.InitSchema(ctx)
+
+// Production startup: create missing tables/indexes (additive, non-destructive)
+repoManager.EnsureSchema(ctx)
+
+// Production health check: validate all registered tables exist with expected columns
+if err := repoManager.ValidateSchema(ctx); err != nil {
+    log.Fatal("schema validation failed", "error", err)
+}
+```
+
+| Method | When | Behavior |
+|---|---|---|
+| `InitSchema` | Development / tests | Drops and recreates all registered tables |
+| `EnsureSchema` | Production startup | `CREATE TABLE IF NOT EXISTS` + `CREATE INDEX IF NOT EXISTS` |
+| `ValidateSchema` | Production startup | Read-only check that tables and columns exist |
 
 ## Quick Start
 
