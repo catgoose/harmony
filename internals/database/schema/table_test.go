@@ -279,6 +279,20 @@ func TestTableDef_WithExpiry(t *testing.T) {
 	assert.Contains(t, stmts[0], "ExpiresAt TIMESTAMP")
 }
 
+func TestTableDef_WithArchive(t *testing.T) {
+	td := NewTable("Test").
+		Columns(AutoIncrCol("ID")).
+		WithArchive()
+
+	assert.True(t, td.HasArchive())
+	assert.Contains(t, td.SelectColumns(), "ArchivedAt")
+	assert.Contains(t, td.UpdateColumns(), "ArchivedAt")
+
+	d := dialect.SQLiteDialect{}
+	stmts := td.CreateSQL(d)
+	assert.Contains(t, stmts[0], "ArchivedAt TIMESTAMP")
+}
+
 func TestTableDef_TraitsComposition(t *testing.T) {
 	td := NewTable("FullFeatured").
 		Columns(
@@ -383,4 +397,42 @@ func TestTableDef_CreateIfNotExistsSQL_MSSQL(t *testing.T) {
 	assert.Contains(t, stmts[0], "IF NOT EXISTS")
 	assert.Contains(t, stmts[0], "OBJECT_ID(N'[dbo].[Items]')")
 	assert.Contains(t, stmts[0], "CREATE TABLE Items")
+}
+
+func TestTableDef_WithReplacement(t *testing.T) {
+	td := NewTable("Test").
+		Columns(AutoIncrCol("ID")).
+		WithReplacement()
+
+	assert.Contains(t, td.SelectColumns(), "ReplacedByID")
+	assert.Contains(t, td.UpdateColumns(), "ReplacedByID")
+
+	d := dialect.SQLiteDialect{}
+	stmts := td.CreateSQL(d)
+	assert.Contains(t, stmts[0], "ReplacedByID INTEGER")
+}
+
+func TestTableDef_ArchiveWithReplacement(t *testing.T) {
+	td := NewTable("Versioned").
+		Columns(
+			AutoIncrCol("ID"),
+			Col("Name", TypeString(255)).NotNull(),
+		).
+		WithTimestamps().
+		WithArchive().
+		WithReplacement()
+
+	assert.True(t, td.HasArchive())
+	assert.Contains(t, td.SelectColumns(), "ArchivedAt")
+	assert.Contains(t, td.SelectColumns(), "ReplacedByID")
+
+	// Both should be mutable
+	update := td.UpdateColumns()
+	assert.Contains(t, update, "ArchivedAt")
+	assert.Contains(t, update, "ReplacedByID")
+
+	d := dialect.SQLiteDialect{}
+	stmts := td.CreateSQL(d)
+	assert.Contains(t, stmts[0], "ArchivedAt TIMESTAMP")
+	assert.Contains(t, stmts[0], "ReplacedByID INTEGER")
 }

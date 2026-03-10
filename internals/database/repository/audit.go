@@ -98,6 +98,34 @@ func SetExpiry(expiresAt *time.Time, t time.Time) {
 	}
 }
 
+// SetReplacement sets ReplacedByID to the given ID.
+func SetReplacement(replacedByID *int64, id int64) {
+	if replacedByID != nil {
+		*replacedByID = id
+	}
+}
+
+// ClearReplacement sets ReplacedByID to zero value.
+func ClearReplacement(replacedByID *int64) {
+	if replacedByID != nil {
+		*replacedByID = 0
+	}
+}
+
+// SetArchive sets ArchivedAt to the current time.
+func SetArchive(archivedAt *time.Time) {
+	if archivedAt != nil {
+		*archivedAt = GetNow()
+	}
+}
+
+// ClearArchive sets ArchivedAt to zero value (unarchives).
+func ClearArchive(archivedAt *time.Time) {
+	if archivedAt != nil {
+		*archivedAt = time.Time{}
+	}
+}
+
 // ClearExpiry sets ExpiresAt to zero value (removes expiry).
 func ClearExpiry(expiresAt *time.Time) {
 	if expiresAt != nil {

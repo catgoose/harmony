@@ -158,7 +158,6 @@ func (d *inventoryRoutes) buildInventoryContent(c echo.Context) (hypermedia.Filt
 	const perPage = 20
 	tc, err := buildTableContent(c, d.db, parseTableParams(c, perPage),
 		inventoryBase+"/items", "#inventory-table-container",
-		hypermedia.TableCol{Label: "Status"},
 		hypermedia.TableCol{Label: "Actions"},
 	)
 	if err != nil {

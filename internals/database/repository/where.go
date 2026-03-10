@@ -114,6 +114,21 @@ func (w *WhereBuilder) HasParent(parentID int64) *WhereBuilder {
 	return w.And("ParentID = @ParentID", sql.Named("ParentID", parentID))
 }
 
+// NotReplaced adds a "ReplacedByID IS NULL" condition for current (non-replaced) records.
+func (w *WhereBuilder) NotReplaced() *WhereBuilder {
+	return w.And("ReplacedByID IS NULL")
+}
+
+// ReplacedBy adds a "ReplacedByID = @ReplacedByID" condition.
+func (w *WhereBuilder) ReplacedBy(id int64) *WhereBuilder {
+	return w.And("ReplacedByID = @ReplacedByID", sql.Named("ReplacedByID", id))
+}
+
+// NotArchived adds an "ArchivedAt IS NULL" condition for archive filtering.
+func (w *WhereBuilder) NotArchived() *WhereBuilder {
+	return w.And("ArchivedAt IS NULL")
+}
+
 // HasVersion adds a "Version = @Version" condition for optimistic locking.
 func (w *WhereBuilder) HasVersion(version int) *WhereBuilder {
 	return w.And("Version = @Version", sql.Named("Version", version))

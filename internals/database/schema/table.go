@@ -26,6 +26,7 @@ type TableDef struct {
 	hasSoftDelete     bool
 	hasVersion        bool
 	hasExpiry         bool
+	hasArchive        bool
 }
 
 // NewTable creates a new table definition.
@@ -95,6 +96,19 @@ func (t *TableDef) WithParent() *TableDef {
 	return t
 }
 
+// WithReplacement appends a nullable ReplacedByID column for entity lineage tracking.
+func (t *TableDef) WithReplacement() *TableDef {
+	t.cols = append(t.cols, ReplacementColumnDefs()...)
+	return t
+}
+
+// WithArchive appends a nullable ArchivedAt timestamp column.
+func (t *TableDef) WithArchive() *TableDef {
+	t.hasArchive = true
+	t.cols = append(t.cols, ArchiveColumnDefs()...)
+	return t
+}
+
 // WithExpiry appends a nullable ExpiresAt timestamp column.
 func (t *TableDef) WithExpiry() *TableDef {
 	t.hasExpiry = true
@@ -158,6 +172,11 @@ func (t *TableDef) HasVersion() bool {
 // HasExpiry reports whether the table uses expiry.
 func (t *TableDef) HasExpiry() bool {
 	return t.hasExpiry
+}
+
+// HasArchive reports whether the table uses archive.
+func (t *TableDef) HasArchive() bool {
+	return t.hasArchive
 }
 
 // columnBody returns the formatted column definitions for use in CREATE TABLE statements.

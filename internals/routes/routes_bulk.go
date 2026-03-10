@@ -123,7 +123,6 @@ func (b *bulkRoutes) buildBulkContent(c echo.Context) (hypermedia.FilterBar, tem
 	const perPage = 20
 	tc, err := buildTableContent(c, b.db, parseTableParams(c, perPage),
 		bulkBase+"/items", "#bulk-table-container",
-		hypermedia.TableCol{Label: "Status"},
 	)
 	if err != nil {
 		return hypermedia.FilterBar{}, nil, err

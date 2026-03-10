@@ -76,3 +76,17 @@ func ExpiryColumnDefs() []ColumnDef {
 		Col("ExpiresAt", TypeTimestamp()),
 	}
 }
+
+// ReplacementColumnDefs returns a nullable ReplacedByID column for entity lineage tracking.
+func ReplacementColumnDefs() []ColumnDef {
+	return []ColumnDef{
+		Col("ReplacedByID", TypeInt()),
+	}
+}
+
+// ArchiveColumnDefs returns a nullable ArchivedAt timestamp column.
+func ArchiveColumnDefs() []ColumnDef {
+	return []ColumnDef{
+		Col("ArchivedAt", TypeTimestamp()),
+	}
+}
