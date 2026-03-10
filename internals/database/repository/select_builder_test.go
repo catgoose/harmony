@@ -6,7 +6,7 @@ import (
 	"database/sql"
 	"testing"
 
-	"catgoose/go-htmx-demo/internals/database/dialect"
+	"catgoose/harmony/internals/database/dialect"
 
 	"github.com/stretchr/testify/assert"
 )

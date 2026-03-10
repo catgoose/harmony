@@ -2,16 +2,16 @@
 package handler
 
 import (
-	log "catgoose/go-htmx-demo/internals/logger"
-	"catgoose/go-htmx-demo/internals/routes/hypermedia"
-	"catgoose/go-htmx-demo/internals/routes/middleware"
-	"catgoose/go-htmx-demo/web/views"
+	log "catgoose/harmony/internals/logger"
+	"catgoose/harmony/internals/routes/hypermedia"
+	"catgoose/harmony/internals/routes/middleware"
+	"catgoose/harmony/web/views"
 	"context"
 	"errors"
 	"fmt"
 	"net/http"
 
-	corecomponents "catgoose/go-htmx-demo/web/components/core"
+	corecomponents "catgoose/harmony/web/components/core"
 
 	"github.com/a-h/templ"
 	"github.com/catgoose/dio"

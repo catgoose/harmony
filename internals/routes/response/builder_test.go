@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"catgoose/go-htmx-demo/internals/routes/htmx"
+	"catgoose/harmony/internals/routes/htmx"
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"

@@ -2,17 +2,17 @@
 package routes
 
 import (
-	"catgoose/go-htmx-demo/internals/config"
+	"catgoose/harmony/internals/config"
 	// setup:feature:demo:start
-	"catgoose/go-htmx-demo/internals/demo"
-	"catgoose/go-htmx-demo/internals/logger"
+	"catgoose/harmony/internals/demo"
+	"catgoose/harmony/internals/logger"
 	// setup:feature:sse:start
-	"catgoose/go-htmx-demo/internals/ssebroker"
+	"catgoose/harmony/internals/ssebroker"
 	// setup:feature:sse:end
 	// setup:feature:demo:end
-	"catgoose/go-htmx-demo/internals/routes/handler"
-	"catgoose/go-htmx-demo/web/views"
-	"catgoose/go-htmx-demo/internals/routes/middleware"
+	"catgoose/harmony/internals/routes/handler"
+	"catgoose/harmony/web/views"
+	"catgoose/harmony/internals/routes/middleware"
 	"context"
 	"fmt"
 	"io/fs"

@@ -5,10 +5,10 @@ package routes
 import (
 	"fmt"
 
-	"catgoose/go-htmx-demo/internals/demo"
-	"catgoose/go-htmx-demo/internals/routes/handler"
-	"catgoose/go-htmx-demo/internals/ssebroker"
-	"catgoose/go-htmx-demo/web/views"
+	"catgoose/harmony/internals/demo"
+	"catgoose/harmony/internals/routes/handler"
+	"catgoose/harmony/internals/ssebroker"
+	"catgoose/harmony/web/views"
 
 	"github.com/labstack/echo/v4"
 )

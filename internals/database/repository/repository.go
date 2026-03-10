@@ -11,9 +11,9 @@ import (
 	"strings"
 	"time"
 
-	"catgoose/go-htmx-demo/internals/database/dialect"
-	"catgoose/go-htmx-demo/internals/database/schema"
-	"catgoose/go-htmx-demo/internals/logger"
+	"catgoose/harmony/internals/database/dialect"
+	"catgoose/harmony/internals/database/schema"
+	"catgoose/harmony/internals/logger"
 
 	"github.com/jmoiron/sqlx"
 )

@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"catgoose/go-htmx-demo/internals/logger"
+	"catgoose/harmony/internals/logger"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"

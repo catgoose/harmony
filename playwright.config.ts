@@ -17,7 +17,7 @@ export default defineConfig({
   ],
   webServer: {
     command: process.env.CI
-      ? "./go-htmx-demo --env=test"
+      ? "./harmony --env=test"
       : "go run main.go --env=test",
     url: "http://localhost:8080/health",
     reuseExistingServer: !process.env.CI,

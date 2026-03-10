@@ -13,9 +13,9 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"fmt"
 
-	"catgoose/go-htmx-demo/internals/demo"
-	"catgoose/go-htmx-demo/internals/routes/hypermedia"
-	components "catgoose/go-htmx-demo/web/components/core"
+	"catgoose/harmony/internals/demo"
+	"catgoose/harmony/internals/routes/hypermedia"
+	components "catgoose/harmony/web/components/core"
 )
 
 func VendorContactsPage(vendors []demo.Vendor, bar hypermedia.FilterBar) templ.Component {

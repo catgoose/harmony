@@ -51,7 +51,7 @@ db/*
 !db/gen_seed/
 
 # binary
-go-htmx-demo
+harmony
 build/
 
 # agents

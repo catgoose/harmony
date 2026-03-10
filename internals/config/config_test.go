@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"catgoose/go-htmx-demo/internals/logger"
+	"catgoose/harmony/internals/logger"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

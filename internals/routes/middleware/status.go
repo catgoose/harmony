@@ -3,10 +3,10 @@ package middleware
 import (
 	"net/http"
 
-	htmxpkg "catgoose/go-htmx-demo/internals/routes/htmx"
-	"catgoose/go-htmx-demo/internals/routes/hypermedia"
-	"catgoose/go-htmx-demo/internals/routes/response"
-	corecomponents "catgoose/go-htmx-demo/web/components/core"
+	htmxpkg "catgoose/harmony/internals/routes/htmx"
+	"catgoose/harmony/internals/routes/hypermedia"
+	"catgoose/harmony/internals/routes/response"
+	corecomponents "catgoose/harmony/web/components/core"
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"

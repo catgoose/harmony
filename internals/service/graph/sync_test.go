@@ -7,9 +7,9 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"catgoose/go-htmx-demo/internals/database"
-	"catgoose/go-htmx-demo/internals/domain"
-	"catgoose/go-htmx-demo/internals/logger"
+	"catgoose/harmony/internals/database"
+	"catgoose/harmony/internals/domain"
+	"catgoose/harmony/internals/logger"
 )
 
 func init() {

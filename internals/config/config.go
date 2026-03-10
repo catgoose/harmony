@@ -8,9 +8,9 @@ import (
 	"sync"
 
 	// setup:feature:database:start
-	"catgoose/go-htmx-demo/internals/database/dialect"
+	"catgoose/harmony/internals/database/dialect"
 	// setup:feature:database:end
-	"catgoose/go-htmx-demo/internals/logger"
+	"catgoose/harmony/internals/logger"
 
 	// setup:feature:auth:start
 	"github.com/catgoose/crooner"

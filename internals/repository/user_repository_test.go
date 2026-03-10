@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"catgoose/go-htmx-demo/internals/database/dialect"
-	dbrepo "catgoose/go-htmx-demo/internals/database/repository"
-	"catgoose/go-htmx-demo/internals/domain"
+	"catgoose/harmony/internals/database/dialect"
+	dbrepo "catgoose/harmony/internals/database/repository"
+	"catgoose/harmony/internals/domain"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/jmoiron/sqlx"

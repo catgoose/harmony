@@ -7,7 +7,7 @@ import (
 	"math"
 	"time"
 
-	"catgoose/go-htmx-demo/internals/ssebroker"
+	"catgoose/harmony/internals/ssebroker"
 )
 
 // --- Dashboard data types ---

@@ -1,4 +1,4 @@
-module catgoose/go-htmx-demo
+module catgoose/harmony
 
 go 1.26.1
 

@@ -1,4 +1,4 @@
-# go-htmx-demo
+# harmony
 
 Go + HTMX + Templ demo with batteries included.
 

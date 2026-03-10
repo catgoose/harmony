@@ -11,7 +11,7 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"strconv"
 
-	"catgoose/go-htmx-demo/internals/routes/hypermedia"
+	"catgoose/harmony/internals/routes/hypermedia"
 )
 
 // oobSwapValue builds the hx-swap-oob attribute value for OOB error placement.

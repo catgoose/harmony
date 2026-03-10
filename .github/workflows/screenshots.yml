@@ -41,11 +41,11 @@ jobs:
         run: go tool templ generate
 
       - name: Build application
-        run: go build -o go-htmx-demo .
+        run: go build -o harmony .
 
       - name: Start application
         run: |
-          SERVER_LISTEN_PORT=8080 ./go-htmx-demo -env production &
+          SERVER_LISTEN_PORT=8080 ./harmony -env production &
           echo "APP_PID=$!" >> $GITHUB_ENV
 
       - name: Capture screenshots and recordings
@@ -78,17 +78,17 @@ jobs:
 
       - name: Copy and push screenshots
         run: |
-          mkdir -p screenshots-repo/go-htmx-demo
-          cp -r output/* screenshots-repo/go-htmx-demo/
+          mkdir -p screenshots-repo/harmony
+          cp -r output/* screenshots-repo/harmony/
           cd screenshots-repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add go-htmx-demo
+          git add harmony
           if git diff --staged --quiet; then
             echo "No changes to commit"
             exit 0
           fi
-          git commit -m "Update go-htmx-demo screenshots"
+          git commit -m "Update harmony screenshots"
           git pull --rebase origin main
           git push
         env:

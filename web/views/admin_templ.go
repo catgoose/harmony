@@ -13,7 +13,7 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"fmt"
 
-	"catgoose/go-htmx-demo/internals/demo"
+	"catgoose/harmony/internals/demo"
 )
 
 func AdminPage(info demo.SchemaInfo) templ.Component {

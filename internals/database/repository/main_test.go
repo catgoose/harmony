@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"catgoose/go-htmx-demo/internals/logger"
+	"catgoose/harmony/internals/logger"
 )
 
 func TestMain(m *testing.M) {

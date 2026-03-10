@@ -1,9 +1,9 @@
 package main
 
 import (
-	"catgoose/go-htmx-demo/internals/config"
-	"catgoose/go-htmx-demo/internals/logger"
-	"catgoose/go-htmx-demo/internals/routes"
+	"catgoose/harmony/internals/config"
+	"catgoose/harmony/internals/logger"
+	"catgoose/harmony/internals/routes"
 	"context"
 	"net/http"
 	"net/http/httptest"

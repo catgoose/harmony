@@ -3,7 +3,7 @@ package middleware
 import (
 	"net/http"
 
-	"catgoose/go-htmx-demo/internals/routes/hypermedia"
+	"catgoose/harmony/internals/routes/hypermedia"
 
 	"github.com/labstack/echo/v4"
 )

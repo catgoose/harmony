@@ -1,8 +1,8 @@
-# go-htmx-demo
+# harmony
 
 <!--toc:start-->
 
-- [go-htmx-demo](#go-htmx-demo)
+- [harmony](#harmony)
   - [Demo](#demo)
   - [Features](#features)
   - [Hypermedia Patterns](#hypermedia-patterns)
@@ -45,34 +45,34 @@ A demonstration of building modern, interactive web applications with Go and HTM
 
 | Dashboard                                                                                                     | Home                                                                                                |
 | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| ![Dashboard](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/dashboard-viewport.png) | ![Home](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/home-viewport.png) |
+| ![Dashboard](https://raw.githubusercontent.com/catgoose/screenshots/main/harmony/dashboard-viewport.png) | ![Home](https://raw.githubusercontent.com/catgoose/screenshots/main/harmony/home-viewport.png) |
 
 | Controls Gallery                                                                                            | Inventory Table                                                                                               |
 | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| ![Controls](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/controls-viewport.png) | ![Inventory](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/inventory-viewport.png) |
+| ![Controls](https://raw.githubusercontent.com/catgoose/screenshots/main/harmony/controls-viewport.png) | ![Inventory](https://raw.githubusercontent.com/catgoose/screenshots/main/harmony/inventory-viewport.png) |
 
 <details>
 <summary>More screenshots</summary>
 
 | Kanban Board                                                                                            | Approvals                                                                                                     |
 | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| ![Kanban](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/kanban-viewport.png) | ![Approvals](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/approvals-viewport.png) |
+| ![Kanban](https://raw.githubusercontent.com/catgoose/screenshots/main/harmony/kanban-viewport.png) | ![Approvals](https://raw.githubusercontent.com/catgoose/screenshots/main/harmony/approvals-viewport.png) |
 
 | People Directory                                                                                        | Vendors & Contacts                                                                                        |
 | ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| ![People](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/people-viewport.png) | ![Vendors](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/vendors-viewport.png) |
+| ![People](https://raw.githubusercontent.com/catgoose/screenshots/main/harmony/people-viewport.png) | ![Vendors](https://raw.githubusercontent.com/catgoose/screenshots/main/harmony/vendors-viewport.png) |
 
 | Catalog                                                                                                   | Bulk Operations                                                                                     |
 | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| ![Catalog](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/catalog-viewport.png) | ![Bulk](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/bulk-viewport.png) |
+| ![Catalog](https://raw.githubusercontent.com/catgoose/screenshots/main/harmony/catalog-viewport.png) | ![Bulk](https://raw.githubusercontent.com/catgoose/screenshots/main/harmony/bulk-viewport.png) |
 
 | CRUD                                                                                                | State Patterns                                                                                        |
 | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| ![CRUD](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/crud-viewport.png) | ![State](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/state-viewport.png) |
+| ![CRUD](https://raw.githubusercontent.com/catgoose/screenshots/main/harmony/crud-viewport.png) | ![State](https://raw.githubusercontent.com/catgoose/screenshots/main/harmony/state-viewport.png) |
 
 | Components 3                                                                                                       |
 | ------------------------------------------------------------------------------------------------------------------ |
-| ![Components 3](https://raw.githubusercontent.com/catgoose/screenshots/main/go-htmx-demo/components3-viewport.png) |
+| ![Components 3](https://raw.githubusercontent.com/catgoose/screenshots/main/harmony/components3-viewport.png) |
 
 </details>
 
@@ -397,26 +397,26 @@ Download the latest release for your platform from the [Releases](../../releases
 
 ```bash
 # Linux
-chmod +x go-htmx-demo-linux-amd64
-./go-htmx-demo-linux-amd64
+chmod +x harmony-linux-amd64
+./harmony-linux-amd64
 
 # Windows
-go-htmx-demo-windows-amd64.exe
+harmony-windows-amd64.exe
 ```
 
 The app starts on `http://localhost:8080` by default. Override the port with:
 
 ```bash
-SERVER_LISTEN_PORT=3000 ./go-htmx-demo-linux-amd64
+SERVER_LISTEN_PORT=3000 ./harmony-linux-amd64
 ```
 
 ### From Source
 
 ```bash
-git clone https://github.com/catgoose/go-htmx-demo.git
-cd go-htmx-demo
-go build -o go-htmx-demo .
-./go-htmx-demo
+git clone https://github.com/catgoose/harmony.git
+cd harmony
+go build -o harmony .
+./harmony
 ```
 
 ## Tech Stack
@@ -435,7 +435,7 @@ go build -o go-htmx-demo .
 ## Project Structure
 
 ```
-go-htmx-demo/
+harmony/
 ├── main.go                    # Application entrypoint
 ├── magefile.go                # Build automation targets
 ├── internals/

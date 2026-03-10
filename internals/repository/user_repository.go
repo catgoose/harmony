@@ -7,9 +7,9 @@ import (
 	"database/sql"
 	"fmt"
 
-	"catgoose/go-htmx-demo/internals/database/repository"
-	"catgoose/go-htmx-demo/internals/database/schema"
-	"catgoose/go-htmx-demo/internals/domain"
+	"catgoose/harmony/internals/database/repository"
+	"catgoose/harmony/internals/database/schema"
+	"catgoose/harmony/internals/domain"
 
 	"github.com/jmoiron/sqlx"
 )

@@ -15,7 +15,7 @@ import (
 
 // Template identity used by setup to detect and replace module paths.
 const (
-	TemplateModule   = "catgoose/go-htmx-demo"
+	TemplateModule   = "catgoose/harmony"
 	TemplateSetupDir = "_template_setup"
 )
 
@@ -177,7 +177,7 @@ func Run(ctx context.Context, dir string, opts Options) error {
 		return fmt.Errorf("replacing module path: %w", err)
 	}
 
-	binaryNameRe := regexp.MustCompile(`binaryName\s*=\s*"go-htmx-demo"`)
+	binaryNameRe := regexp.MustCompile(`binaryName\s*=\s*"harmony"`)
 	magePath := filepath.Join(dir, "magefile.go")
 	mageData, err := os.ReadFile(magePath)
 	if err != nil {
@@ -244,8 +244,8 @@ func Run(ctx context.Context, dir string, opts Options) error {
 	}
 
 	if data, err := os.ReadFile(filepath.Join(dir, "package-lock.json")); err == nil {
-		content := strings.ReplaceAll(string(data), `"name": "go-htmx-demo"`, `"name": "`+binaryName+`"`)
-		content = regexp.MustCompile(`"name":\s*"go-htmx-demo"`).ReplaceAllString(content, `"name": "`+binaryName+`"`)
+		content := strings.ReplaceAll(string(data), `"name": "harmony"`, `"name": "`+binaryName+`"`)
+		content = regexp.MustCompile(`"name":\s*"harmony"`).ReplaceAllString(content, `"name": "`+binaryName+`"`)
 		if err := os.WriteFile(filepath.Join(dir, "package-lock.json"), []byte(content), 0644); err != nil {
 			return err
 		}
@@ -253,7 +253,7 @@ func Run(ctx context.Context, dir string, opts Options) error {
 
 	gitignorePath := filepath.Join(dir, ".gitignore")
 	if data, err := os.ReadFile(gitignorePath); err == nil {
-		content := regexp.MustCompile(`(?m)^go-htmx-demo$`).ReplaceAllString(string(data), binaryName)
+		content := regexp.MustCompile(`(?m)^harmony$`).ReplaceAllString(string(data), binaryName)
 		if err := os.WriteFile(gitignorePath, []byte(content), 0644); err != nil {
 			return err
 		}
@@ -261,7 +261,7 @@ func Run(ctx context.Context, dir string, opts Options) error {
 
 	loggerPath := filepath.Join(dir, "internals", "logger", "logger.go")
 	if data, err := os.ReadFile(loggerPath); err == nil {
-		content := strings.ReplaceAll(string(data), `appLogFile = "go-htmx-demo.log"`, `appLogFile = "`+binaryName+`.log"`)
+		content := strings.ReplaceAll(string(data), `appLogFile = "harmony.log"`, `appLogFile = "`+binaryName+`.log"`)
 		if err := os.WriteFile(loggerPath, []byte(content), 0644); err != nil {
 			return err
 		}

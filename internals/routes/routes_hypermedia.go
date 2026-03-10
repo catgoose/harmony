@@ -8,9 +8,9 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"catgoose/go-htmx-demo/internals/routes/handler"
-	"catgoose/go-htmx-demo/internals/routes/hypermedia"
-	"catgoose/go-htmx-demo/web/views"
+	"catgoose/harmony/internals/routes/handler"
+	"catgoose/harmony/internals/routes/hypermedia"
+	"catgoose/harmony/web/views"
 
 	"github.com/labstack/echo/v4"
 )

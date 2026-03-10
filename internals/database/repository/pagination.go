@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"strings"
 
-	"catgoose/go-htmx-demo/internals/database/dialect"
-	"catgoose/go-htmx-demo/internals/routes/params"
+	"catgoose/harmony/internals/database/dialect"
+	"catgoose/harmony/internals/routes/params"
 
 	"github.com/jmoiron/sqlx"
 )

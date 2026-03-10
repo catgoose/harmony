@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
-	"catgoose/go-htmx-demo/internals/domain"
-	"catgoose/go-htmx-demo/internals/logger"
+	"catgoose/harmony/internals/domain"
+	"catgoose/harmony/internals/logger"
 
 	"github.com/jmoiron/sqlx"
 )

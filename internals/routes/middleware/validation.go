@@ -8,7 +8,7 @@ import (
 	"regexp"
 	"strings"
 
-	"catgoose/go-htmx-demo/internals/logger"
+	"catgoose/harmony/internals/logger"
 
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"

@@ -1,7 +1,7 @@
 package components
 
 import (
-	"catgoose/go-htmx-demo/internals/routes/hypermedia"
+	"catgoose/harmony/internals/routes/hypermedia"
 	"github.com/a-h/templ"
 )
 

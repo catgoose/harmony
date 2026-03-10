@@ -3,7 +3,7 @@ package hypermedia_test
 import (
 	"testing"
 
-	"catgoose/go-htmx-demo/internals/routes/hypermedia"
+	"catgoose/harmony/internals/routes/hypermedia"
 )
 
 func TestSearchField_Kind(t *testing.T) {

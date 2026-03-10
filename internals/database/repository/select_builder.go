@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"catgoose/go-htmx-demo/internals/database/dialect"
+	"catgoose/harmony/internals/database/dialect"
 )
 
 // SelectBuilder constructs composable SELECT queries with WHERE, ORDER BY, and pagination.

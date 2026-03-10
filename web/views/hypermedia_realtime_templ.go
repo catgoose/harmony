@@ -11,7 +11,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"catgoose/go-htmx-demo/internals/ssebroker"
+	"catgoose/harmony/internals/ssebroker"
 	"fmt"
 )
 

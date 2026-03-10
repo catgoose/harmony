@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"catgoose/go-htmx-demo/internals/routes/hypermedia"
+	"catgoose/harmony/internals/routes/hypermedia"
 )
 
 // --- ComputeTotalPages ---

@@ -15,7 +15,7 @@ import (
 	"strconv"
 	"strings"
 
-	"catgoose/go-htmx-demo/internal/setup"
+	"catgoose/harmony/internal/setup"
 
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
@@ -25,7 +25,7 @@ import (
 var (
 	env        = envOr("ENV", "development")
 	envFile    = fmt.Sprintf(".env.%s", env)
-	binaryName = "go-htmx-demo"
+	binaryName = "harmony"
 	proxyHost  = "localhost"
 	buildPath  = "build"
 	binPath    = "./bin"

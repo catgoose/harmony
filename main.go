@@ -1,19 +1,19 @@
 package main
 
 import (
-	"catgoose/go-htmx-demo/internals/config"
+	"catgoose/harmony/internals/config"
 	// setup:feature:database:start
-	"catgoose/go-htmx-demo/internals/database"
-	"catgoose/go-htmx-demo/internals/database/dialect"
-	dbrepo "catgoose/go-htmx-demo/internals/database/repository"
-	"catgoose/go-htmx-demo/internals/database/schema"
+	"catgoose/harmony/internals/database"
+	"catgoose/harmony/internals/database/dialect"
+	dbrepo "catgoose/harmony/internals/database/repository"
+	"catgoose/harmony/internals/database/schema"
 	// setup:feature:database:end
-	log "catgoose/go-htmx-demo/internals/logger"
-	"catgoose/go-htmx-demo/internals/routes"
+	log "catgoose/harmony/internals/logger"
+	"catgoose/harmony/internals/routes"
 	// setup:feature:avatar:start
-	graphdb "catgoose/go-htmx-demo/internals/database"
-	"catgoose/go-htmx-demo/internals/domain"
-	"catgoose/go-htmx-demo/internals/service/graph"
+	graphdb "catgoose/harmony/internals/database"
+	"catgoose/harmony/internals/domain"
+	"catgoose/harmony/internals/service/graph"
 	// setup:feature:avatar:end
 	"context"
 	"embed"

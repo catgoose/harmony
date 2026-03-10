@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"catgoose/go-htmx-demo/internals/database/dialect"
+	"catgoose/harmony/internals/database/dialect"
 )
 
 // NewQueueTable creates a job/outbox queue table with status tracking and retry support.

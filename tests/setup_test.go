@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"catgoose/go-htmx-demo/internal/setup"
+	"catgoose/harmony/internal/setup"
 
 	"github.com/stretchr/testify/require"
 )
@@ -103,8 +103,8 @@ func TestSetupReplacesAppNameAndModule(t *testing.T) {
 		if err != nil {
 			return nil
 		}
-		if strings.Contains(string(data), "catgoose/go-htmx-demo") {
-			t.Errorf("file %s still contains catgoose/go-htmx-demo", rel)
+		if strings.Contains(string(data), "catgoose/harmony") {
+			t.Errorf("file %s still contains catgoose/harmony", rel)
 		}
 		return nil
 	})

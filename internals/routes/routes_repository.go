@@ -8,10 +8,10 @@ import (
 	"net/url"
 	"strconv"
 
-	"catgoose/go-htmx-demo/internals/demo"
-	"catgoose/go-htmx-demo/internals/routes/handler"
-	"catgoose/go-htmx-demo/internals/routes/hypermedia"
-	"catgoose/go-htmx-demo/web/views"
+	"catgoose/harmony/internals/demo"
+	"catgoose/harmony/internals/routes/handler"
+	"catgoose/harmony/internals/routes/hypermedia"
+	"catgoose/harmony/web/views"
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"

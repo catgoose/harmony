@@ -6,8 +6,8 @@ import (
 	"encoding/hex"
 	"time"
 
-	"catgoose/go-htmx-demo/internals/logger"
-	"catgoose/go-htmx-demo/internals/shared"
+	"catgoose/harmony/internals/logger"
+	"catgoose/harmony/internals/shared"
 
 	"github.com/labstack/echo/v4"
 )

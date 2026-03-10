@@ -91,7 +91,7 @@ jobs:
       - name: Build Linux amd64
         run: |
           CGO_ENABLED=1 GOOS=linux GOARCH=amd64 \
-            go build -ldflags="-w -s" -o go-htmx-demo-linux-amd64 .
+            go build -ldflags="-w -s" -o harmony-linux-amd64 .
 
       - name: Install mingw-w64 for Windows cross-compilation
         run: sudo apt-get update && sudo apt-get install -y gcc-mingw-w64-x86-64
@@ -99,7 +99,7 @@ jobs:
       - name: Build Windows amd64
         run: |
           CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc GOOS=windows GOARCH=amd64 \
-            go build -ldflags="-w -s" -o go-htmx-demo-windows-amd64.exe .
+            go build -ldflags="-w -s" -o harmony-windows-amd64.exe .
 
       - name: Create tag
         run: |
@@ -111,8 +111,8 @@ jobs:
       - name: Create GitHub Release
         run: |
           gh release create ${{ steps.version.outputs.version }} \
-            go-htmx-demo-linux-amd64 \
-            go-htmx-demo-windows-amd64.exe \
+            harmony-linux-amd64 \
+            harmony-windows-amd64.exe \
             --title "Release ${{ steps.version.outputs.version }}" \
             --generate-notes
         env:
