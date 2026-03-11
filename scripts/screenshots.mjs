@@ -215,6 +215,138 @@ async function main() {
 
   await errCtx.close();
 
+  // --- Errors page screenshots (random theme per shot) ---
+  console.log("\nCapturing errors page screenshots with random themes...");
+
+  const daisyThemes = [
+    "light", "dark", "cupcake", "emerald", "corporate", "synthwave",
+    "retro", "cyberpunk", "valentine", "garden", "forest", "lofi",
+    "pastel", "fantasy", "wireframe", "luxury", "dracula", "cmyk",
+    "autumn", "business", "acid", "lemonade", "night", "coffee",
+    "winter", "dim", "nord", "sunset", "caramellatte", "abyss", "silk",
+  ];
+
+  function randomTheme(exclude) {
+    const choices = exclude ? daisyThemes.filter((t) => t !== exclude) : daisyThemes;
+    return choices[Math.floor(Math.random() * choices.length)];
+  }
+
+  async function setTheme(page, theme) {
+    await page.evaluate((t) => {
+      document.documentElement.dataset.theme = t;
+    }, theme);
+    await page.waitForTimeout(200);
+  }
+
+  const errPageCtx = await browser.newContext({
+    viewport: { width: 1280, height: 800 },
+    deviceScaleFactor: 2,
+  });
+
+  // Reset DB
+  const resetPage = await errPageCtx.newPage();
+  await resetPage.goto(`${baseURL}/hypermedia/errors`, { waitUntil: "networkidle" });
+  await resetPage.evaluate((url) => fetch(`${url}/admin/db/reinit`, { method: "POST" }), baseURL);
+  await resetPage.waitForTimeout(500);
+  await resetPage.close();
+
+  const errorsPageShots = [
+    {
+      name: "errors-banner-404",
+      title: "Banner: 404 Not Found",
+      action: async (page) => {
+        await page.locator('button:has-text("Trigger 404")').click();
+        await waitForHtmx(page);
+      },
+    },
+    {
+      name: "errors-banner-400",
+      title: "Banner: 400 Bad Request",
+      action: async (page) => {
+        await page.locator('button:has-text("Trigger 400")').click();
+        await waitForHtmx(page);
+      },
+    },
+    {
+      name: "errors-banner-500",
+      title: "Banner: 500 Internal Server Error",
+      action: async (page) => {
+        await page.locator('button:has-text("Trigger 500")').click();
+        await waitForHtmx(page);
+      },
+    },
+    {
+      name: "errors-banner-403",
+      title: "Banner: 403 Forbidden",
+      action: async (page) => {
+        await page.locator('button:has-text("Trigger 403")').click();
+        await waitForHtmx(page);
+      },
+    },
+    {
+      name: "errors-inline-validation",
+      title: "Inline Form Validation (422)",
+      action: async (page) => {
+        const form = page.locator('form[hx-post*="errors/form"]');
+        await form.locator('input[name="name"]').fill("");
+        await form.locator('input[name="email"]').fill("bad-email");
+        await form.locator('button[type="submit"]').click();
+        await waitForHtmx(page);
+      },
+    },
+    {
+      name: "errors-oob-warning",
+      title: "OOB Warning + Success",
+      action: async (page) => {
+        await page.locator('button:has-text("Load with Warning")').click();
+        await waitForHtmx(page);
+      },
+    },
+    {
+      name: "errors-flaky-retry",
+      title: "Flaky Endpoint (Retry)",
+      action: async (page) => {
+        await page.locator('button:has-text("Call Flaky Endpoint")').click();
+        await waitForHtmx(page);
+      },
+    },
+    {
+      name: "errors-report-modal",
+      title: "Report Issue Modal",
+      action: async (page) => {
+        await page.locator('button:has-text("Trigger 500")').click();
+        await waitForHtmx(page);
+        await page.locator('#error-status button:has-text("Report Issue")').click();
+        await waitForHtmx(page);
+        await page.waitForTimeout(300);
+      },
+    },
+  ];
+
+  let lastTheme = null;
+  for (const { name, title, action } of errorsPageShots) {
+    const page = await errPageCtx.newPage();
+    try {
+      const theme = randomTheme(lastTheme);
+      lastTheme = theme;
+      console.log(`Capturing ${title} [theme: ${theme}]...`);
+      await page.goto(`${baseURL}/hypermedia/errors`, { waitUntil: "networkidle" });
+      await setTheme(page, theme);
+      await action(page);
+      await page.screenshot({
+        path: resolve(outDir, `${name}.png`),
+        fullPage: true,
+      });
+      console.log(`  -> ${name}.png`);
+    } catch (err) {
+      console.warn(`  WARN: Failed to capture ${title}: ${err.message}`);
+    } finally {
+      await page.close();
+    }
+  }
+
+  await errPageCtx.close();
+
   await browser.close();
   console.log("\nDone. Screenshots saved to docs/screenshots/");
 }
