@@ -13,6 +13,9 @@
   - [Schema as Code](#schema-as-code)
   - [Domain Patterns as Primitives](#domain-patterns-as-primitives)
   - [Locality of Behavior](#locality-of-behavior)
+    - [The reach-up model](#the-reach-up-model)
+    - [When client-side state is necessary](#when-client-side-state-is-necessary)
+    - [Other LoB-aligned tools](#other-lob-aligned-tools)
   - [Errors Are Hypermedia](#errors-are-hypermedia)
     - [Global banner vs. inline errors](#global-banner-vs-inline-errors)
     - [Make reporting effortless or it won't happen](#make-reporting-effortless-or-it-wont-happen)
@@ -106,6 +109,35 @@ The web already has a UI runtime. It's called the browser. It handles navigation
 This project proves you can build a real, production, offline-capable mobile application with server-rendered HTML, HTMX, and a thin native wrapper — no React, no Vue, no Angular, no virtual DOM, no build pipeline for the frontend, no node_modules black hole.
 
 The complexity budget goes toward the problem domain, not the framework.
+
+### But honestly
+
+SPAs aren't wrong. They're wrong *here*. If the UI is the product — a design tool, a collaborative editor, a code IDE — the client needs to own state, and an SPA is the right architecture. CRDTs, offline-first sync, canvas rendering, shared cursors: these are inherently client-side concerns that no server round-trip can solve.
+
+This project builds data-centric workflows — CRUD, dashboards, admin panels, form-heavy pages. That's hypermedia's home court. If it were building Figma, it would be React.
+
+Where each falls apart:
+
+```
+  Hypermedia sucks at                    SPAs suck at
+  ─────────────────────                  ────────────────────
+  Rich interactive UIs                   Content sites — rebuilt the
+    (spreadsheets, design tools)           browser for nothing
+
+  Offline-first with                     CRUD apps — two state stores
+    conflict resolution                    that drift apart
+
+  Real-time collaborative               Bundle size, hydration,
+    editing (CRDTs, OT)                    time-to-interactive
+
+  Canvas / WebGL —                       SEO and accessibility as
+    the rendering IS the client            afterthoughts bolted on
+
+  Latency-sensitive interactions         The dependency treadmill —
+    that need instant local feedback       node_modules, framework churn
+```
+
+Each side's weaknesses are the other side's strengths. Pick the architecture that matches your problem, not your identity.
 
 ## Explicit SQL, Composable Helpers
 
@@ -211,6 +243,58 @@ Separation of Concerns told us to put HTML in one file, CSS in another, and Java
 <button id="view-task-btn" class="task-action">View Task</button>
 ```
 
+### The reach-up model
+
+Every tool in this stack exists because HTML alone couldn't express something. You start at HTML and only **reach up** when the current layer can't do what you need. Each step trades simplicity for capability.
+
+Two tracks rise from their foundations — Behavior (how things interact) and Presentation (how things look):
+
+```
+   Behavior                              Presentation
+
+   ▲ reach up                            ▲ reach up
+   │                                     │
+   │  ┌──────────┐                       │  ┌──────────────┐
+   │  │ .js files │  locality broken     │  │   raw CSS    │  escape hatch
+   │  ├────────────────┐                 │  ├────────────────────┐
+   │  │ inline <script> │  locality bent │  │     Tailwind       │  layout + spacing
+   │  ├──────────────────────┐           │  ├──────────────────────────┐
+   │  │       Alpine.js      │  state    │  │         DaisyUI          │  semantic
+   │  ├────────────────────────────┐     │  ├────────────────────────────────┐
+   │  │        _hyperscript        │     │  │             CSS                │  the cascade
+   │  ├──────────────────────────────┐   │  └────────────────────────────────┘
+   │  │            HTMX              │   │    start here ▲
+   │  ├────────────────────────────────┐
+   │  │             HTTP               │
+   │  ├──────────────────────────────────┐
+   │  │              HTML                │
+   │  └──────────────────────────────────┘
+   │    start here ▲
+```
+
+Map two dimensions — **where it runs** and **what it manages** — and six domains emerge:
+
+```
+                  State               Behavior              Presentation
+           ┌──────────────────┬──────────────────────┬──────────────────────┐
+           │                  │                      │                      │
+  Server   │  Go + SQL        │  HTTP + HTMX         │  templ + DaisyUI     │
+           │  source of truth │  hypermedia controls │  semantic components │
+           │  resource state  │  resource transitions│  theme-aware markup  │
+           │                  │                      │                      │
+           ├──────────────────┼──────────────────────┼──────────────────────┤
+           │                  │                      │                      │
+  Client   │  Alpine.js       │  _hyperscript        │  Tailwind + CSS      │
+           │  view state      │  DOM interactions    │  layout, spacing     │
+           │  ephemeral       │  transitions, toggles│  visual adjustments  │
+           │                  │                      │                      │
+           └──────────────────┴──────────────────────┴──────────────────────┘
+```
+
+The left column is authority — server state is the single source of truth, client state is ephemeral view data. The middle column is interaction — the server drives transitions through hypermedia controls, the client handles what doesn't need the server. The right column is appearance — server-authored semantic markup adapts to themes, client-side utilities handle spatial layout.
+
+Structure (HTML, templ, the DOM) is not a column — it's the medium all three concerns are expressed through. You don't "reach up" to structure; it's already there the moment you write `<div>`.
+
 ### The interactivity spectrum
 
 This application has a formal structure — server-rendered HTML, typed hypermedia controls, uniform interfaces — but within that structure there are pockets of interactivity. A dismiss button. A copy-to-clipboard action. A tooltip that appears and fades. A modal that opens and closes. A theme switcher that updates the DOM and persists to the server.
@@ -303,6 +387,42 @@ Use DaisyUI classes for components. Use Tailwind utilities for layout and spacin
 DaisyUI also inherits Tailwind's core build philosophy: **only ship the CSS you use.** Tailwind scans your markup and generates only the utility classes that actually appear. DaisyUI extends this — you choose which components to include, and unused component styles never enter the bundle. A project that uses `btn`, `modal`, and `badge` doesn't pay for `carousel`, `timeline`, or `drawer`. This is the opposite of monolithic CSS frameworks that ship everything and dare you to tree-shake what you don't need. The result is a small, predictable stylesheet where every rule traces back to an element in your templates.
 
 This selectivity comes with a contract: **use DaisyUI's semantic color roles, not raw color values.** DaisyUI themes define `primary`, `secondary`, `accent`, `neutral`, `base-100/200/300`, `info`, `success`, `warning`, and `error`. Every DaisyUI component references these roles — `btn-primary` uses the theme's `primary`, `alert-error` uses the theme's `error`. If you reach for `bg-blue-600` or `text-red-500` instead, you've hard-coded a color that won't follow the theme. The theme selector switches all semantic colors at once; raw Tailwind colors don't participate. A button that uses `btn-primary` in the light theme is still correct in the dark theme, in the corporate theme, in any theme. A button that uses `bg-blue-600` is blue forever. Stick to the semantic roles and theming works for free.
+
+### When client-side state is necessary
+
+The interactivity spectrum above covers behavior — things that happen in response to events. But sometimes an element needs *state*: a dropdown that tracks whether it's open, a multi-step form that remembers which step you're on, a filter panel that holds transient selections before the user commits them to the server.
+
+This is where the philosophy bends but doesn't break. The principle isn't "no client-side state." It's "no client-side state *that the server should own*." A modal's open/closed flag is not server state. A character count on a textarea is not server state. An accordion's expanded sections are not server state. These are *view states* — local, ephemeral, and meaningless outside the current DOM.
+
+For these cases, [Alpine.js](https://alpinejs.dev/) is a natural companion. It keeps state on the element, declared inline, visible where it's used:
+
+```html
+<!-- Alpine: state and behavior are both on the element -->
+<div x-data="{ open: false }">
+  <button @click="open = !open">Toggle</button>
+  <div x-show="open" x-transition>
+    Panel content
+  </div>
+</div>
+```
+
+This is LoB-adherent. You read the element, you see the state, you see the behavior, you see the rendering logic. Delete the element, everything goes with it. No external store, no state management library, no subscription model.
+
+The key distinction: Alpine manages *view state*. HTMX manages *resource state*. They don't compete — they govern different domains. A filter panel might use Alpine to track which checkboxes are selected (view state) and HTMX to submit the selection to the server and swap in filtered results (resource state). Each tool does what it's good at, and neither pretends to be the other.
+
+We aren't enforcing Alpine.js as a requirement. The interactivity gradient still applies: if `_hyperscript` handles the interaction, use `_hyperscript`. If you need reactive client-side state that `_hyperscript` doesn't model well — conditional rendering, computed values, two-way bindings — Alpine is the tool that preserves locality. The point is not to prescribe a specific library but to provide only *discovered abstractions*: tools that emerge because they more perfectly align the UI, the user's mental model, and the data with each other. Alpine earns its place the same way `_hyperscript` does — by keeping behavior where you can see it.
+
+### Other LoB-aligned tools
+
+This project uses HTMX, `_hyperscript`, and DaisyUI. But the LoB principle is bigger than any one stack. Other projects worth knowing about:
+
+- **[Alpine.js](https://alpinejs.dev/)** — Reactive client-side state declared inline via `x-data`, `x-show`, `x-bind`, and `@click`. Complements HTMX rather than replacing it — Alpine handles view state, HTMX handles resource state. Covered in detail [above](#when-client-side-state-is-necessary).
+
+- **[Petite Vue](https://github.com/vuejs/petite-vue)** — A 6KB subset of Vue designed for progressive enhancement. Uses `v-scope` instead of a full Vue app mount. Similar to Alpine in spirit — inline reactive state on DOM elements — but with Vue's template syntax for teams already familiar with it.
+
+- **[Tailwind CSS](https://tailwindcss.com/)** — Already in this project's stack, but worth calling out explicitly as a LoB tool. Utility classes on the element replace stylesheets in separate files. You read the element, you see how it looks. DaisyUI layers semantic meaning on top, but both are LoB for styling.
+
+These tools share a conviction: **the reader should not have to leave the element to understand the element.** They differ in scope, syntax, and trade-offs, but they all reject the idea that behavior, state, and presentation should be scattered across separate files connected by naming conventions and hope.
 
 ### System space vs. user space errors
 

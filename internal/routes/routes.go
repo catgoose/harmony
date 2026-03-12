@@ -61,7 +61,10 @@ func NewAppRoutes(ctx context.Context, e *echo.Echo, reqLogStore *requestlog.Sto
 }
 
 func (ar *appRoutes) InitRoutes() error {
-	ar.e.GET("/", handler.HandleComponent(views.HomePage()))
+	ar.e.GET("/", handler.HandleComponent(views.ArchitecturePage()))
+	// setup:feature:demo:start
+	ar.e.GET("/welcome", handler.HandleComponent(views.WelcomePage()))
+	// setup:feature:demo:end
 
 	// Health check endpoint for Caddy
 	ar.e.GET("/health", func(c echo.Context) error {

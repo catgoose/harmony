@@ -21,7 +21,7 @@ import (
 // appNavComponent builds the NavBar with the active item set for the given path
 func appNavComponent(path string) templ.Component {
 	items := hypermedia.SetActiveNavItemPrefix([]hypermedia.NavItem{
-		{Label: "Home", Href: "/"},
+		{Label: "Architecture", Href: "/"},
 		// setup:feature:demo:start
 		{Label: "Dashboard", Href: "/dashboard"},
 		{
