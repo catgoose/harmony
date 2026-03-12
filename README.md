@@ -1,6 +1,6 @@
 # harmony
 
-https://github.com/catgoose/screenshots/raw/refs/heads/main/video/htmx.mp4
+<video src="https://github.com/catgoose/screenshots/raw/refs/heads/main/video/htmx.mp4" controls autoplay loop muted width="100%"></video>
 
 <!--toc:start-->
 
