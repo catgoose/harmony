@@ -7,9 +7,9 @@ import (
 	"database/sql"
 	"fmt"
 
-	dbrepo "catgoose/harmony/internal/database/repository"
-	"catgoose/harmony/internal/database/schema"
-	"catgoose/harmony/internal/domain"
+	dbrepo "catgoose/dothog/internal/database/repository"
+	"catgoose/dothog/internal/database/schema"
+	"catgoose/dothog/internal/domain"
 )
 
 // SessionSettingsRepository defines operations for session settings data access.

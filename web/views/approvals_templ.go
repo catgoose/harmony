@@ -13,9 +13,9 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"fmt"
 
-	"catgoose/harmony/internal/demo"
-	"catgoose/harmony/internal/routes/hypermedia"
-	components "catgoose/harmony/web/components/core"
+	"catgoose/dothog/internal/demo"
+	"catgoose/dothog/internal/routes/hypermedia"
+	components "catgoose/dothog/web/components/core"
 )
 
 var approvalStatusBadge = map[string]string{

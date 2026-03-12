@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"catgoose/harmony/internal/database/dialect"
+	"catgoose/dothog/internal/database/dialect"
 )
 
 // UniqueConstraint defines a composite UNIQUE constraint across multiple columns.

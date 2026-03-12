@@ -52,7 +52,7 @@ db/*
 !db/gen_seed/
 
 # binary
-harmony
+dothog
 build/
 
 # agents

@@ -7,12 +7,9 @@ templ ArchitecturePage() {
 		<div class="hero bg-base-200 rounded-box py-12">
 			<div class="hero-content text-center">
 				<div class="max-w-3xl space-y-4">
-					<h1 class="text-4xl font-bold">Two Architectures, One Goal</h1>
+					<h1 class="text-4xl font-bold">Go + HTMX + Templ</h1>
 					<p class="text-lg text-base-content/70">
-						Both build great software. The question is which model fits your problem.
-					</p>
-					<p class="text-sm text-base-content/50">
-						Drag the handle to compare.
+						Two architectures, one goal. Which model fits your problem?
 					</p>
 				</div>
 			</div>
@@ -75,8 +72,8 @@ templ ArchitecturePage() {
 					<a href="https://chartscss.org/" class="link link-primary">Charts.css</a>, a CSS-only charting framework. No JavaScript.
 				</p>
 			</div>
-			<div class="max-w-3xl mx-auto card bg-base-100 border border-base-300 shadow-sm p-6">
-				<table class="charts-css column show-labels data-spacing-8 show-data-axes" style={ templ.SafeCSS("height: 280px") }>
+			<div class="max-w-3xl mx-auto card bg-base-100 border border-base-300 shadow-sm p-3">
+				<table class="charts-css column show-labels data-spacing-8 show-data-axes" style={ templ.SafeCSS("height: 320px") }>
 					<tbody>
 						<tr>
 							<th scope="row">HTML</th>
@@ -84,27 +81,27 @@ templ ArchitecturePage() {
 						</tr>
 						<tr>
 							<th scope="row">CSS</th>
-							<td style={ templ.SafeCSS("--size: 0.82; --color: oklch(var(--s))") }></td>
+							<td style={ templ.SafeCSS("--size: 0.88; --color: oklch(var(--s))") }></td>
 						</tr>
 						<tr>
 							<th scope="row">HTTP</th>
-							<td style={ templ.SafeCSS("--size: 0.65; --color: oklch(var(--a))") }></td>
+							<td style={ templ.SafeCSS("--size: 0.74; --color: oklch(var(--a))") }></td>
 						</tr>
 						<tr>
 							<th scope="row">HTMX</th>
-							<td style={ templ.SafeCSS("--size: 0.50; --color: oklch(var(--in))") }></td>
+							<td style={ templ.SafeCSS("--size: 0.60; --color: oklch(var(--in))") }></td>
 						</tr>
 						<tr>
 							<th scope="row">HS</th>
-							<td style={ templ.SafeCSS("--size: 0.30; --color: oklch(var(--su))") }></td>
+							<td style={ templ.SafeCSS("--size: 0.42; --color: oklch(var(--su))") }></td>
 						</tr>
 						<tr>
 							<th scope="row">Alpine</th>
-							<td style={ templ.SafeCSS("--size: 0.15; --color: oklch(var(--wa))") }></td>
+							<td style={ templ.SafeCSS("--size: 0.25; --color: oklch(var(--wa))") }></td>
 						</tr>
 						<tr>
 							<th scope="row">JS</th>
-							<td style={ templ.SafeCSS("--size: 0.05; --color: oklch(var(--er))") }></td>
+							<td style={ templ.SafeCSS("--size: 0.10; --color: oklch(var(--er))") }></td>
 						</tr>
 					</tbody>
 				</table>
@@ -157,7 +154,7 @@ templ ArchitecturePage() {
 					<div class="flex justify-center gap-3 flex-wrap">
 						<a href="/dashboard" class="btn btn-primary">Dashboard</a>
 						<a href="/hypermedia/controls" class="btn btn-secondary">Controls Gallery</a>
-						<a href="/welcome" class="btn btn-ghost">About This Template</a>
+						<a href="/welcome" class="btn btn-ghost">About Dothog</a>
 					</div>
 				</div>
 			</div>
@@ -252,20 +249,27 @@ templ archCompareSlider() {
 templ hypermediaPanel() {
 	<div class="max-w-lg mx-auto space-y-6">
 		<div class="text-center space-y-1">
-			<h3 class="text-2xl md:text-3xl font-bold">Start with HTML</h3>
-			<p class="text-sm text-base-content/60">The server owns the state. The browser renders it.</p>
+			<h3 class="text-2xl md:text-3xl font-bold">The Narrowing Triangle</h3>
+			<p class="text-sm text-base-content/60">Client is thin. Server narrows from fat handler to thin repository. HTML the whole way.</p>
 		</div>
-		<!-- Pyramid -->
 		<div class="flex flex-col items-center gap-1">
-			<div class="text-[10px] text-base-content/30 tracking-widest uppercase mb-1">reach up</div>
-			@pyramidLayer("w-[20%]", "border-error/40 bg-error/15", ".js files", "")
-			@pyramidLayer("w-[30%]", "border-warning/40 bg-warning/15", "inline script", "")
-			@pyramidLayer("w-[40%]", "border-info/40 bg-info/15", "Alpine.js", "")
-			@pyramidLayer("w-[52%]", "border-accent/40 bg-accent/15", "_hyperscript", "")
-			@pyramidLayer("w-[66%]", "border-secondary/40 bg-secondary/20", "HTMX", "")
-			@pyramidLayer("w-[80%]", "border-primary/40 bg-primary/20", "HTTP", "")
-			@pyramidLayer("w-full", "border-primary/50 bg-primary/30 font-bold", "HTML", "")
-			<div class="text-[10px] text-base-content/30 tracking-widest uppercase mt-1">start here</div>
+			<!-- Server -->
+			<div class="text-[10px] text-base-content/30 tracking-widest uppercase mb-1">server</div>
+			@pyramidLayer("w-full", "border-primary/50 bg-primary/30 font-bold", "Handler", "fat controller")
+			<div class="text-[10px] text-base-content/40 text-center max-w-xs">domain logic + templates + hypermedia controls + error affordances</div>
+			<!-- Network: HTML over the wire -->
+			<div class="w-[90%] border-t-2 border-dashed border-primary/40 my-2 relative">
+				<span class="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-base-100 px-2 text-[10px] text-primary/60 uppercase tracking-widest font-bold">HTML over the wire</span>
+			</div>
+			<!-- Client: reach-up pyramid (thin, intentionally small) -->
+			<div class="text-[10px] text-base-content/30 tracking-widest uppercase">client (thin by design)</div>
+			@pyramidLayer("w-[88%]", "border-primary/50 bg-primary/30 font-bold", "HTML", "structure")
+			@pyramidLayer("w-[75%]", "border-primary/40 bg-primary/20", "HTTP", "uniform interface")
+			@pyramidLayer("w-[62%]", "border-secondary/40 bg-secondary/20", "HTMX", "completes hypertext")
+			@pyramidLayer("w-[50%]", "border-accent/40 bg-accent/15", "_hyperscript", "client behavior")
+			@pyramidLayer("w-[38%]", "border-info/40 bg-info/15", "Alpine.js", "client state")
+			@pyramidLayer("w-[28%]", "border-warning/40 bg-warning/15", "inline script", "locality bent")
+			@pyramidLayer("w-[18%]", "border-error/40 bg-error/15", ".js files", "locality broken")
 		</div>
 		<!-- Where it shines -->
 		<div class="space-y-2">
@@ -281,15 +285,15 @@ templ hypermediaPanel() {
 				</li>
 				<li class="flex gap-2">
 					<span class="text-primary shrink-0">&#9654;</span>
-					<span>Single binary, zero build pipeline, no node_modules</span>
+					<span>No serialization layer &mdash; no DTOs, no mapping, no OpenAPI</span>
 				</li>
 				<li class="flex gap-2">
 					<span class="text-primary shrink-0">&#9654;</span>
-					<span>Progressive enhancement &mdash; works without JavaScript</span>
+					<span>Each server layer does less than the one above it</span>
 				</li>
 				<li class="flex gap-2">
 					<span class="text-primary shrink-0">&#9654;</span>
-					<span>Small teams that want the browser to be what it already is</span>
+					<span>Client is intentionally thin &mdash; most behavior stays on the server</span>
 				</li>
 			</ul>
 		</div>
@@ -299,7 +303,7 @@ templ hypermediaPanel() {
 			<ul class="text-xs text-base-content/60 space-y-1.5 max-w-sm mx-auto">
 				<li class="flex gap-2">
 					<span class="text-error/60 shrink-0">&#9654;</span>
-					<span>Rich interactive UIs &mdash; a spreadsheet needs client-side state management</span>
+					<span>Rich interactive UIs &mdash; spreadsheets, design tools, canvas rendering</span>
 				</li>
 				<li class="flex gap-2">
 					<span class="text-error/60 shrink-0">&#9654;</span>
@@ -311,11 +315,7 @@ templ hypermediaPanel() {
 				</li>
 				<li class="flex gap-2">
 					<span class="text-error/60 shrink-0">&#9654;</span>
-					<span>Canvas/WebGL applications &mdash; the rendering IS the client</span>
-				</li>
-				<li class="flex gap-2">
-					<span class="text-error/60 shrink-0">&#9654;</span>
-					<span>Every round-trip is latency &mdash; some interactions need instant local feedback at scale</span>
+					<span>Every round-trip is latency &mdash; some interactions need instant local feedback</span>
 				</li>
 			</ul>
 		</div>
@@ -325,20 +325,28 @@ templ hypermediaPanel() {
 templ spaPanel() {
 	<div class="max-w-lg mx-auto space-y-6">
 		<div class="text-center space-y-1">
-			<h3 class="text-2xl md:text-3xl font-bold">Start with JavaScript</h3>
-			<p class="text-sm text-base-content/60">The client owns the experience. The server provides data.</p>
+			<h3 class="text-2xl md:text-3xl font-bold">The Inverted Triangle</h3>
+			<p class="text-sm text-base-content/60">Thin controller squeezes to JSON. Complexity detonates on the client side.</p>
 		</div>
-		<!-- Pyramid -->
 		<div class="flex flex-col items-center gap-1">
-			<div class="text-[10px] text-base-content/30 tracking-widest uppercase mb-1">reach up</div>
-			@pyramidLayer("w-[20%]", "border-info/40 bg-info/10", "Server API", "")
-			@pyramidLayer("w-[30%]", "border-info/30 bg-info/10", "Build tools", "")
-			@pyramidLayer("w-[40%]", "border-secondary/40 bg-secondary/10", "Routing", "")
-			@pyramidLayer("w-[52%]", "border-secondary/30 bg-secondary/15", "State mgmt", "")
-			@pyramidLayer("w-[66%]", "border-accent/40 bg-accent/15", "Hooks / Effects", "")
-			@pyramidLayer("w-[80%]", "border-accent/30 bg-accent/20", "Components", "")
-			@pyramidLayer("w-full", "border-secondary/50 bg-secondary/30 font-bold", "JavaScript", "")
-			<div class="text-[10px] text-base-content/30 tracking-widest uppercase mt-1">start here</div>
+			<!-- Server -->
+			<div class="text-[10px] text-base-content/30 tracking-widest uppercase mb-1">server</div>
+			@pyramidLayer("w-[55%]", "border-warning/40 bg-warning/15", "DTO / Mapping", "does not exist in hypermedia")
+			<div class="text-[10px] text-base-content/40">OpenAPI specs, validation schemas, response models</div>
+			@pyramidLayer("w-[35%]", "border-info/30 bg-info/10", "Controller", "thin API, serialize to JSON")
+			<!-- Network: JSON over the wire -->
+			<div class="w-[90%] border-t-2 border-dashed border-error/40 my-2 relative">
+				<span class="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-base-200 px-2 text-[10px] text-error/60 uppercase tracking-widest font-bold">JSON over the wire</span>
+			</div>
+			<!-- Client: inverted triangle (expands outward) -->
+			<div class="text-[10px] text-base-content/30 tracking-widest uppercase">client (complexity detonates)</div>
+			@pyramidLayer("w-[40%]", "border-secondary/30 bg-secondary/10", "API / Fetch Layer", "interceptors, retry, auth tokens")
+			@pyramidLayer("w-[55%]", "border-warning/30 bg-warning/10", "Client Router", "routes, guards, lazy loading")
+			@pyramidLayer("w-[70%]", "border-warning/40 bg-warning/10", "Parsing + Validation", "deserialize, transform, normalize")
+			@pyramidLayer("w-[85%]", "border-error/30 bg-error/10", "State Management", "store, selectors, reducers, sagas")
+			<div class="text-[10px] text-base-content/40">normalized cache, optimistic updates, stale-while-revalidate</div>
+			@pyramidLayer("w-full", "border-error/40 bg-error/15 font-bold", "Rendering", "vDOM, diffing, hydration, effects")
+			<div class="text-[10px] text-base-content/30 tracking-widest uppercase mt-1">the user sees a table of users</div>
 		</div>
 		<!-- Where it shines -->
 		<div class="space-y-2">
@@ -360,10 +368,6 @@ templ spaPanel() {
 					<span class="text-secondary shrink-0">&#9654;</span>
 					<span>Offline-first with conflict resolution and background sync</span>
 				</li>
-				<li class="flex gap-2">
-					<span class="text-secondary shrink-0">&#9654;</span>
-					<span>Large teams that need independent, deployable components</span>
-				</li>
 			</ul>
 		</div>
 		<!-- Where it sucks -->
@@ -372,11 +376,11 @@ templ spaPanel() {
 			<ul class="text-xs text-base-content/60 space-y-1.5 max-w-sm mx-auto">
 				<li class="flex gap-2">
 					<span class="text-error/60 shrink-0">&#9654;</span>
-					<span>Content sites &mdash; you rebuilt the browser's navigation, caching, and history for nothing</span>
+					<span>CRUD apps &mdash; two state stores that drift apart, connected by load-bearing JSON</span>
 				</li>
 				<li class="flex gap-2">
 					<span class="text-error/60 shrink-0">&#9654;</span>
-					<span>CRUD apps &mdash; two state stores (client + server) that drift apart</span>
+					<span>Every layer generates more layers &mdash; DB schema, Go structs, OpenAPI, TS types, Zod schemas</span>
 				</li>
 				<li class="flex gap-2">
 					<span class="text-error/60 shrink-0">&#9654;</span>
@@ -384,11 +388,11 @@ templ spaPanel() {
 				</li>
 				<li class="flex gap-2">
 					<span class="text-error/60 shrink-0">&#9654;</span>
-					<span>SEO and accessibility are afterthoughts bolted on with SSR/SSG workarounds</span>
+					<span>The DTO/mapping layer exists only to translate between what the DB knows and what JSON needs</span>
 				</li>
 				<li class="flex gap-2">
 					<span class="text-error/60 shrink-0">&#9654;</span>
-					<span>The dependency treadmill &mdash; node_modules, build configs, framework churn</span>
+					<span>Two complexity lairs instead of one &mdash; and the JSON between them is load-bearing</span>
 				</li>
 			</ul>
 		</div>

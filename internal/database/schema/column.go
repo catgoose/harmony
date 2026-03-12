@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"catgoose/harmony/internal/database/dialect"
+	"catgoose/dothog/internal/database/dialect"
 )
 
 // TypeFunc resolves a column type for a given dialect.

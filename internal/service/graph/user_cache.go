@@ -9,8 +9,8 @@ import (
 
 	"database/sql"
 
-	"catgoose/harmony/internal/domain"
-	"catgoose/harmony/internal/logger"
+	"catgoose/dothog/internal/domain"
+	"catgoose/dothog/internal/logger"
 
 	"github.com/jmoiron/sqlx"
 )

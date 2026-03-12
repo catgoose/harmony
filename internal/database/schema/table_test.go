@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"catgoose/harmony/internal/database/dialect"
+	"catgoose/dothog/internal/database/dialect"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

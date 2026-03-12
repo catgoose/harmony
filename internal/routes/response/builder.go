@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"catgoose/harmony/internal/routes/htmx"
-	"catgoose/harmony/internal/routes/hypermedia"
-	corecomponents "catgoose/harmony/web/components/core"
+	"catgoose/dothog/internal/routes/htmx"
+	"catgoose/dothog/internal/routes/hypermedia"
+	corecomponents "catgoose/dothog/web/components/core"
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"

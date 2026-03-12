@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"catgoose/harmony/internal/database/dialect"
+	"catgoose/dothog/internal/database/dialect"
 )
 
 // NewEventTable creates an append-only event/log table. All columns are immutable (no updates).

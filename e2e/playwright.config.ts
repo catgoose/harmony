@@ -17,7 +17,7 @@ export default defineConfig({
   ],
   webServer: {
     command: process.env.CI
-      ? "./harmony --env=test"
+      ? "./dothog --env=test"
       : "go run main.go --env=test",
     cwd: "..",
     url: "http://localhost:8080/health",

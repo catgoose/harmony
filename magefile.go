@@ -15,7 +15,7 @@ import (
 	"strconv"
 	"strings"
 
-	"catgoose/harmony/internal/setup"
+	"catgoose/dothog/internal/setup"
 
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
@@ -25,7 +25,7 @@ import (
 var (
 	env        = envOr("ENV", "development")
 	envFile    = fmt.Sprintf(".env.%s", env)
-	binaryName = "harmony"
+	binaryName = "dothog"
 	proxyHost  = "localhost"
 	buildPath  = "build"
 	binPath    = "./bin"

@@ -8,9 +8,9 @@ import (
 	"sync"
 	"time"
 
-	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/routes/params"
-	"catgoose/harmony/web/views"
+	"catgoose/dothog/internal/routes/handler"
+	"catgoose/dothog/internal/routes/params"
+	"catgoose/dothog/web/views"
 
 	"github.com/labstack/echo/v4"
 )

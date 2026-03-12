@@ -1,4 +1,4 @@
-module catgoose/harmony
+module catgoose/dothog
 
 go 1.26.1
 

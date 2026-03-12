@@ -13,10 +13,10 @@ import (
 	"sync"
 	"time"
 
-	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/shared"
-	"catgoose/harmony/internal/ssebroker"
-	"catgoose/harmony/web/views"
+	"catgoose/dothog/internal/routes/handler"
+	"catgoose/dothog/internal/shared"
+	"catgoose/dothog/internal/ssebroker"
+	"catgoose/dothog/web/views"
 
 	"github.com/labstack/echo/v4"
 )

@@ -3,7 +3,7 @@ package hypermedia_test
 import (
 	"testing"
 
-	"catgoose/harmony/internal/routes/hypermedia"
+	"catgoose/dothog/internal/routes/hypermedia"
 )
 
 func TestSearchField_Kind(t *testing.T) {

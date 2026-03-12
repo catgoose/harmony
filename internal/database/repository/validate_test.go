@@ -6,8 +6,8 @@ import (
 	"errors"
 	"testing"
 
-	"catgoose/harmony/internal/database/dialect"
-	"catgoose/harmony/internal/database/schema"
+	"catgoose/dothog/internal/database/dialect"
+	"catgoose/dothog/internal/database/schema"
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/assert"

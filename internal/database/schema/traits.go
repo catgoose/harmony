@@ -1,6 +1,6 @@
 package schema
 
-import "catgoose/harmony/internal/database/dialect"
+import "catgoose/dothog/internal/database/dialect"
 
 // TimestampColumnDefs returns CreatedAt and UpdatedAt column definitions.
 func TimestampColumnDefs() []ColumnDef {

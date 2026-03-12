@@ -5,10 +5,10 @@ import (
 	"errors"
 	"net/http"
 
-	"catgoose/harmony/internal/logger"
-	"catgoose/harmony/internal/routes/hypermedia"
-	"catgoose/harmony/internal/routes/response"
-	corecomponents "catgoose/harmony/web/components/core"
+	"catgoose/dothog/internal/logger"
+	"catgoose/dothog/internal/routes/hypermedia"
+	"catgoose/dothog/internal/routes/response"
+	corecomponents "catgoose/dothog/web/components/core"
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"

@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"catgoose/harmony/internal/logger"
+	"catgoose/dothog/internal/logger"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/assert"

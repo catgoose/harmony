@@ -1,9 +1,9 @@
 package main
 
 import (
-	"catgoose/harmony/internal/config"
-	"catgoose/harmony/internal/logger"
-	"catgoose/harmony/internal/routes"
+	"catgoose/dothog/internal/config"
+	"catgoose/dothog/internal/logger"
+	"catgoose/dothog/internal/routes"
 	"context"
 	"net/http"
 	"net/http/httptest"
@@ -150,7 +150,7 @@ func TestWorkflowGETRoot(t *testing.T) {
 	e.ServeHTTP(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.Contains(t, rec.Body.String(), "Harmony")
+	assert.Contains(t, rec.Body.String(), "Dothog")
 }
 
 func TestWorkflowGETHealth(t *testing.T) {

@@ -11,9 +11,9 @@ import (
 	"strings"
 	"time"
 
-	"catgoose/harmony/internal/database/dialect"
-	"catgoose/harmony/internal/database/schema"
-	"catgoose/harmony/internal/logger"
+	"catgoose/dothog/internal/database/dialect"
+	"catgoose/dothog/internal/database/schema"
+	"catgoose/dothog/internal/logger"
 
 	"github.com/jmoiron/sqlx"
 )

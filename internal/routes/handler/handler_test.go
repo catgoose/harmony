@@ -9,9 +9,9 @@ import (
 	"os"
 	"testing"
 
-	"catgoose/harmony/internal/logger"
-	"catgoose/harmony/internal/routes/hypermedia"
-	"catgoose/harmony/internal/routes/middleware"
+	"catgoose/dothog/internal/logger"
+	"catgoose/dothog/internal/routes/hypermedia"
+	"catgoose/dothog/internal/routes/middleware"
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
@@ -150,6 +150,6 @@ func TestHandleComponent(t *testing.T) {
 	err := handler(c)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.Contains(t, rec.Body.String(), "Harmony")
+	assert.Contains(t, rec.Body.String(), "Dothog")
 	assert.Contains(t, rec.Body.String(), "<span>content</span>")
 }

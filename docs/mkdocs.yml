@@ -1,9 +1,9 @@
-site_name: harmony
+site_name: dothog
 site_description: Go + HTMX + Templ demo documentation
 docs_dir: .
 site_dir: ../site
-repo_url: https://github.com/catgoose/harmony
-repo_name: catgoose/harmony
+repo_url: https://github.com/catgoose/dothog
+repo_name: catgoose/dothog
 
 theme:
   name: material

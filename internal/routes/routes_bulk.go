@@ -6,11 +6,11 @@ import (
 	"context"
 	"strconv"
 
-	"catgoose/harmony/internal/demo"
-	log "catgoose/harmony/internal/logger"
-	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/routes/hypermedia"
-	"catgoose/harmony/web/views"
+	"catgoose/dothog/internal/demo"
+	log "catgoose/dothog/internal/logger"
+	"catgoose/dothog/internal/routes/handler"
+	"catgoose/dothog/internal/routes/hypermedia"
+	"catgoose/dothog/web/views"
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"

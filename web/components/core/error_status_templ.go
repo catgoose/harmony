@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 	"strconv"
 
-	"catgoose/harmony/internal/routes/hypermedia"
+	"catgoose/dothog/internal/routes/hypermedia"
 )
 
 func errorJSON(ec hypermedia.ErrorContext) string {

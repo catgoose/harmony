@@ -13,7 +13,7 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"fmt"
 
-	"catgoose/harmony/internal/demo"
+	"catgoose/dothog/internal/demo"
 )
 
 var settingsIcons = map[string]string{

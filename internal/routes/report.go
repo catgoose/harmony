@@ -1,6 +1,6 @@
 package routes
 
-import "catgoose/harmony/internal/requestlog"
+import "catgoose/dothog/internal/requestlog"
 
 // IssueReporter handles "Report Issue" actions from the error banner.
 // Implementations decide what to do with the report — send an email, post to

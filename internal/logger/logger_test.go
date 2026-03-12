@@ -6,7 +6,7 @@ import (
 	"sync"
 	"testing"
 
-	"catgoose/harmony/internal/shared"
+	"catgoose/dothog/internal/shared"
 
 	"github.com/stretchr/testify/assert"
 )

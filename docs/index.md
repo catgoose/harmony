@@ -1,4 +1,4 @@
-# harmony
+# dothog
 
 Go + HTMX + Templ demo with batteries included.
 

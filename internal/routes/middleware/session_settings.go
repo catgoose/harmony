@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"time"
 
-	"catgoose/harmony/internal/domain"
-	log "catgoose/harmony/internal/logger"
-	"catgoose/harmony/internal/repository"
+	"catgoose/dothog/internal/domain"
+	log "catgoose/dothog/internal/logger"
+	"catgoose/dothog/internal/repository"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"

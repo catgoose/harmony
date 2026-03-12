@@ -11,10 +11,10 @@ import (
 	"sync"
 	"time"
 
-	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/routes/hypermedia"
-	"catgoose/harmony/internal/routes/middleware"
-	"catgoose/harmony/web/views"
+	"catgoose/dothog/internal/routes/handler"
+	"catgoose/dothog/internal/routes/hypermedia"
+	"catgoose/dothog/internal/routes/middleware"
+	"catgoose/dothog/web/views"
 
 	"github.com/labstack/echo/v4"
 )

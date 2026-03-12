@@ -1,23 +1,23 @@
 package main
 
 import (
-	"catgoose/harmony/internal/config"
+	"catgoose/dothog/internal/config"
 	// setup:feature:database:start
-	"catgoose/harmony/internal/database"
-	"catgoose/harmony/internal/database/dialect"
-	dbrepo "catgoose/harmony/internal/database/repository"
-	"catgoose/harmony/internal/database/schema"
+	"catgoose/dothog/internal/database"
+	"catgoose/dothog/internal/database/dialect"
+	dbrepo "catgoose/dothog/internal/database/repository"
+	"catgoose/dothog/internal/database/schema"
 	// setup:feature:database:end
-	log "catgoose/harmony/internal/logger"
-	"catgoose/harmony/internal/requestlog"
-	"catgoose/harmony/internal/routes"
+	log "catgoose/dothog/internal/logger"
+	"catgoose/dothog/internal/requestlog"
+	"catgoose/dothog/internal/routes"
 	// setup:feature:session_settings:start
-	"catgoose/harmony/internal/repository"
+	"catgoose/dothog/internal/repository"
 	// setup:feature:session_settings:end
 	// setup:feature:avatar:start
-	graphdb "catgoose/harmony/internal/database"
-	"catgoose/harmony/internal/domain"
-	"catgoose/harmony/internal/service/graph"
+	graphdb "catgoose/dothog/internal/database"
+	"catgoose/dothog/internal/domain"
+	"catgoose/dothog/internal/service/graph"
 	// setup:feature:avatar:end
 	"context"
 	"embed"

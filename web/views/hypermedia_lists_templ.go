@@ -13,8 +13,8 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"strconv"
 
-	"catgoose/harmony/internal/routes/hypermedia"
-	components "catgoose/harmony/web/components/core"
+	"catgoose/dothog/internal/routes/hypermedia"
+	components "catgoose/dothog/web/components/core"
 )
 
 // ListsDemoItem is a dummy row for the pagination demo table.

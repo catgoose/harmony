@@ -31,7 +31,7 @@ jobs:
         run: npx playwright install chromium --with-deps
 
       - name: Build Go binary
-        run: go build -o harmony .
+        run: go build -o dothog .
 
       - name: Run e2e tests
         run: npx playwright test --config e2e/playwright.config.ts

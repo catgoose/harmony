@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"time"
 
-	"catgoose/harmony/internal/database/dialect"
-	dbrepo "catgoose/harmony/internal/database/repository"
-	"catgoose/harmony/internal/database/schema"
+	"catgoose/dothog/internal/database/dialect"
+	dbrepo "catgoose/dothog/internal/database/repository"
+	"catgoose/dothog/internal/database/schema"
 )
 
 // TaskStatuses is the list of valid task statuses.

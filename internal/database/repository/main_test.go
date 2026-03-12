@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"catgoose/harmony/internal/logger"
+	"catgoose/dothog/internal/logger"
 )
 
 func TestMain(m *testing.M) {

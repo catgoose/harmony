@@ -29,7 +29,7 @@ func ArchitecturePage() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<link rel=\"stylesheet\" href=\"/public/css/charts.min.css\" type=\"text/css\"><div class=\"max-w-6xl mx-auto p-4 space-y-16 pb-16\"><!-- Hero --><div class=\"hero bg-base-200 rounded-box py-12\"><div class=\"hero-content text-center\"><div class=\"max-w-3xl space-y-4\"><h1 class=\"text-4xl font-bold\">Two Architectures, One Goal</h1><p class=\"text-lg text-base-content/70\">Both build great software. The question is which model fits your problem.</p><p class=\"text-sm text-base-content/50\">Drag the handle to compare.</p></div></div></div><!-- Comparison Slider -->")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<link rel=\"stylesheet\" href=\"/public/css/charts.min.css\" type=\"text/css\"><div class=\"max-w-6xl mx-auto p-4 space-y-16 pb-16\"><!-- Hero --><div class=\"hero bg-base-200 rounded-box py-12\"><div class=\"hero-content text-center\"><div class=\"max-w-3xl space-y-4\"><h1 class=\"text-4xl font-bold\">Go + HTMX + Templ</h1><p class=\"text-lg text-base-content/70\">Two architectures, one goal. Which model fits your problem?</p></div></div></div><!-- Comparison Slider -->")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -93,14 +93,14 @@ func ArchitecturePage() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<div class=\"text-xs text-base-content/40 mt-1 tracking-widest uppercase\">start here</div></div></div></div></section><!-- Charts.css Column Chart --><section class=\"space-y-6\"><div class=\"text-center space-y-2\"><h2 class=\"text-3xl font-bold\">Where Your Code Should Live</h2><p class=\"text-base-content/60 max-w-2xl mx-auto\">Most of your application is HTML templates with HTMX attributes. Client-side code is a thin sliver, intentionally. This chart is rendered with <a href=\"https://chartscss.org/\" class=\"link link-primary\">Charts.css</a>, a CSS-only charting framework. No JavaScript.</p></div><div class=\"max-w-3xl mx-auto card bg-base-100 border border-base-300 shadow-sm p-6\"><table class=\"charts-css column show-labels data-spacing-8 show-data-axes\" style=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<div class=\"text-xs text-base-content/40 mt-1 tracking-widest uppercase\">start here</div></div></div></div></section><!-- Charts.css Column Chart --><section class=\"space-y-6\"><div class=\"text-center space-y-2\"><h2 class=\"text-3xl font-bold\">Where Your Code Should Live</h2><p class=\"text-base-content/60 max-w-2xl mx-auto\">Most of your application is HTML templates with HTMX attributes. Client-side code is a thin sliver, intentionally. This chart is rendered with <a href=\"https://chartscss.org/\" class=\"link link-primary\">Charts.css</a>, a CSS-only charting framework. No JavaScript.</p></div><div class=\"max-w-3xl mx-auto card bg-base-100 border border-base-300 shadow-sm p-3\"><table class=\"charts-css column show-labels data-spacing-8 show-data-axes\" style=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
-		templ_7745c5c3_Var2, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(templ.SafeCSS("height: 280px"))
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(templ.SafeCSS("height: 320px"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 79, Col: 117}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 76, Col: 117}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -113,7 +113,7 @@ func ArchitecturePage() templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(templ.SafeCSS("--size: 1.0; --color: oklch(var(--p))"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 83, Col: 73}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 80, Col: 73}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -124,9 +124,9 @@ func ArchitecturePage() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
-		templ_7745c5c3_Var4, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(templ.SafeCSS("--size: 0.82; --color: oklch(var(--s))"))
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(templ.SafeCSS("--size: 0.88; --color: oklch(var(--s))"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 87, Col: 74}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 84, Col: 74}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -137,9 +137,9 @@ func ArchitecturePage() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var5 string
-		templ_7745c5c3_Var5, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(templ.SafeCSS("--size: 0.65; --color: oklch(var(--a))"))
+		templ_7745c5c3_Var5, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(templ.SafeCSS("--size: 0.74; --color: oklch(var(--a))"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 91, Col: 74}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 88, Col: 74}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -150,9 +150,9 @@ func ArchitecturePage() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var6 string
-		templ_7745c5c3_Var6, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(templ.SafeCSS("--size: 0.50; --color: oklch(var(--in))"))
+		templ_7745c5c3_Var6, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(templ.SafeCSS("--size: 0.60; --color: oklch(var(--in))"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 95, Col: 75}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 92, Col: 75}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -163,9 +163,9 @@ func ArchitecturePage() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var7 string
-		templ_7745c5c3_Var7, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(templ.SafeCSS("--size: 0.30; --color: oklch(var(--su))"))
+		templ_7745c5c3_Var7, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(templ.SafeCSS("--size: 0.42; --color: oklch(var(--su))"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 99, Col: 75}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 96, Col: 75}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -176,9 +176,9 @@ func ArchitecturePage() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var8 string
-		templ_7745c5c3_Var8, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(templ.SafeCSS("--size: 0.15; --color: oklch(var(--wa))"))
+		templ_7745c5c3_Var8, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(templ.SafeCSS("--size: 0.25; --color: oklch(var(--wa))"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 103, Col: 75}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 100, Col: 75}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -189,9 +189,9 @@ func ArchitecturePage() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var9 string
-		templ_7745c5c3_Var9, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(templ.SafeCSS("--size: 0.05; --color: oklch(var(--er))"))
+		templ_7745c5c3_Var9, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(templ.SafeCSS("--size: 0.10; --color: oklch(var(--er))"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 107, Col: 75}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 104, Col: 75}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
@@ -229,7 +229,7 @@ func ArchitecturePage() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "</div></div><p class=\"text-center text-sm text-base-content/40 max-w-xl mx-auto\">Server row: thick, authoritative. Client row: thin, ephemeral. Nothing in the bottom row pretends to be the top row.</p></section><!-- Explore CTA --><div class=\"hero bg-base-200 rounded-box py-12\"><div class=\"hero-content text-center\"><div class=\"max-w-xl space-y-4\"><h2 class=\"text-2xl font-bold\">See It In Action</h2><p class=\"text-base-content/60\">Every pattern described above is implemented in the demo. Browse the pages to see how each layer works.</p><div class=\"flex justify-center gap-3 flex-wrap\"><a href=\"/dashboard\" class=\"btn btn-primary\">Dashboard</a> <a href=\"/hypermedia/controls\" class=\"btn btn-secondary\">Controls Gallery</a> <a href=\"/welcome\" class=\"btn btn-ghost\">About This Template</a></div></div></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "</div></div><p class=\"text-center text-sm text-base-content/40 max-w-xl mx-auto\">Server row: thick, authoritative. Client row: thin, ephemeral. Nothing in the bottom row pretends to be the top row.</p></section><!-- Explore CTA --><div class=\"hero bg-base-200 rounded-box py-12\"><div class=\"hero-content text-center\"><div class=\"max-w-xl space-y-4\"><h2 class=\"text-2xl font-bold\">See It In Action</h2><p class=\"text-base-content/60\">Every pattern described above is implemented in the demo. Browse the pages to see how each layer works.</p><div class=\"flex justify-center gap-3 flex-wrap\"><a href=\"/dashboard\" class=\"btn btn-primary\">Dashboard</a> <a href=\"/hypermedia/controls\" class=\"btn btn-secondary\">Controls Gallery</a> <a href=\"/welcome\" class=\"btn btn-ghost\">About Dothog</a></div></div></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -265,7 +265,7 @@ func archCompareSlider() templ.Component {
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(templ.SafeCSS("--split: 50%"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 171, Col: 137}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 168, Col: 137}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
@@ -286,7 +286,7 @@ func archCompareSlider() templ.Component {
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(templ.SafeCSS("clip-path: inset(0 calc(100% - var(--split)) 0 0)"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 180, Col: 78}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 177, Col: 78}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {
@@ -307,7 +307,7 @@ func archCompareSlider() templ.Component {
 		var templ_7745c5c3_Var13 string
 		templ_7745c5c3_Var13, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(templ.SafeCSS("left: var(--split); transform: translateX(-50%); touch-action: none"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 188, Col: 96}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 185, Col: 96}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {
@@ -342,39 +342,47 @@ func hypermediaPanel() templ.Component {
 			templ_7745c5c3_Var14 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "<div class=\"max-w-lg mx-auto space-y-6\"><div class=\"text-center space-y-1\"><h3 class=\"text-2xl md:text-3xl font-bold\">Start with HTML</h3><p class=\"text-sm text-base-content/60\">The server owns the state. The browser renders it.</p></div><!-- Pyramid --><div class=\"flex flex-col items-center gap-1\"><div class=\"text-[10px] text-base-content/30 tracking-widest uppercase mb-1\">reach up</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "<div class=\"max-w-lg mx-auto space-y-6\"><div class=\"text-center space-y-1\"><h3 class=\"text-2xl md:text-3xl font-bold\">The Narrowing Triangle</h3><p class=\"text-sm text-base-content/60\">Client is thin. Server narrows from fat handler to thin repository. HTML the whole way.</p></div><div class=\"flex flex-col items-center gap-1\"><!-- Server --><div class=\"text-[10px] text-base-content/30 tracking-widest uppercase mb-1\">server</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = pyramidLayer("w-[20%]", "border-error/40 bg-error/15", ".js files", "").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = pyramidLayer("w-full", "border-primary/50 bg-primary/30 font-bold", "Handler", "fat controller").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = pyramidLayer("w-[30%]", "border-warning/40 bg-warning/15", "inline script", "").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<div class=\"text-[10px] text-base-content/40 text-center max-w-xs\">domain logic + templates + hypermedia controls + error affordances</div><!-- Network: HTML over the wire --><div class=\"w-[90%] border-t-2 border-dashed border-primary/40 my-2 relative\"><span class=\"absolute -top-2.5 left-1/2 -translate-x-1/2 bg-base-100 px-2 text-[10px] text-primary/60 uppercase tracking-widest font-bold\">HTML over the wire</span></div><!-- Client: reach-up pyramid (thin, intentionally small) --><div class=\"text-[10px] text-base-content/30 tracking-widest uppercase\">client (thin by design)</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = pyramidLayer("w-[40%]", "border-info/40 bg-info/15", "Alpine.js", "").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = pyramidLayer("w-[88%]", "border-primary/50 bg-primary/30 font-bold", "HTML", "structure").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = pyramidLayer("w-[52%]", "border-accent/40 bg-accent/15", "_hyperscript", "").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = pyramidLayer("w-[75%]", "border-primary/40 bg-primary/20", "HTTP", "uniform interface").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = pyramidLayer("w-[66%]", "border-secondary/40 bg-secondary/20", "HTMX", "").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = pyramidLayer("w-[62%]", "border-secondary/40 bg-secondary/20", "HTMX", "completes hypertext").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = pyramidLayer("w-[80%]", "border-primary/40 bg-primary/20", "HTTP", "").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = pyramidLayer("w-[50%]", "border-accent/40 bg-accent/15", "_hyperscript", "client behavior").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = pyramidLayer("w-full", "border-primary/50 bg-primary/30 font-bold", "HTML", "").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = pyramidLayer("w-[38%]", "border-info/40 bg-info/15", "Alpine.js", "client state").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<div class=\"text-[10px] text-base-content/30 tracking-widest uppercase mt-1\">start here</div></div><!-- Where it shines --><div class=\"space-y-2\"><h4 class=\"font-semibold text-sm text-center\">Where it shines</h4><ul class=\"text-xs text-base-content/60 space-y-1.5 max-w-sm mx-auto\"><li class=\"flex gap-2\"><span class=\"text-primary shrink-0\">&#9654;</span> <span>Pages represent resources &mdash; the server is the application</span></li><li class=\"flex gap-2\"><span class=\"text-primary shrink-0\">&#9654;</span> <span>Content and data-centric workflows with CRUD patterns</span></li><li class=\"flex gap-2\"><span class=\"text-primary shrink-0\">&#9654;</span> <span>Single binary, zero build pipeline, no node_modules</span></li><li class=\"flex gap-2\"><span class=\"text-primary shrink-0\">&#9654;</span> <span>Progressive enhancement &mdash; works without JavaScript</span></li><li class=\"flex gap-2\"><span class=\"text-primary shrink-0\">&#9654;</span> <span>Small teams that want the browser to be what it already is</span></li></ul></div><!-- Where it sucks --><div class=\"space-y-2\"><h4 class=\"font-semibold text-sm text-center text-error/70\">Where it sucks</h4><ul class=\"text-xs text-base-content/60 space-y-1.5 max-w-sm mx-auto\"><li class=\"flex gap-2\"><span class=\"text-error/60 shrink-0\">&#9654;</span> <span>Rich interactive UIs &mdash; a spreadsheet needs client-side state management</span></li><li class=\"flex gap-2\"><span class=\"text-error/60 shrink-0\">&#9654;</span> <span>Offline-first with conflict resolution &mdash; the server can't drive what it can't reach</span></li><li class=\"flex gap-2\"><span class=\"text-error/60 shrink-0\">&#9654;</span> <span>Real-time collaborative editing &mdash; CRDTs and OT live on the client</span></li><li class=\"flex gap-2\"><span class=\"text-error/60 shrink-0\">&#9654;</span> <span>Canvas/WebGL applications &mdash; the rendering IS the client</span></li><li class=\"flex gap-2\"><span class=\"text-error/60 shrink-0\">&#9654;</span> <span>Every round-trip is latency &mdash; some interactions need instant local feedback at scale</span></li></ul></div></div>")
+		templ_7745c5c3_Err = pyramidLayer("w-[28%]", "border-warning/40 bg-warning/15", "inline script", "locality bent").Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = pyramidLayer("w-[18%]", "border-error/40 bg-error/15", ".js files", "locality broken").Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "</div><!-- Where it shines --><div class=\"space-y-2\"><h4 class=\"font-semibold text-sm text-center\">Where it shines</h4><ul class=\"text-xs text-base-content/60 space-y-1.5 max-w-sm mx-auto\"><li class=\"flex gap-2\"><span class=\"text-primary shrink-0\">&#9654;</span> <span>Pages represent resources &mdash; the server is the application</span></li><li class=\"flex gap-2\"><span class=\"text-primary shrink-0\">&#9654;</span> <span>Content and data-centric workflows with CRUD patterns</span></li><li class=\"flex gap-2\"><span class=\"text-primary shrink-0\">&#9654;</span> <span>No serialization layer &mdash; no DTOs, no mapping, no OpenAPI</span></li><li class=\"flex gap-2\"><span class=\"text-primary shrink-0\">&#9654;</span> <span>Each server layer does less than the one above it</span></li><li class=\"flex gap-2\"><span class=\"text-primary shrink-0\">&#9654;</span> <span>Client is intentionally thin &mdash; most behavior stays on the server</span></li></ul></div><!-- Where it sucks --><div class=\"space-y-2\"><h4 class=\"font-semibold text-sm text-center text-error/70\">Where it sucks</h4><ul class=\"text-xs text-base-content/60 space-y-1.5 max-w-sm mx-auto\"><li class=\"flex gap-2\"><span class=\"text-error/60 shrink-0\">&#9654;</span> <span>Rich interactive UIs &mdash; spreadsheets, design tools, canvas rendering</span></li><li class=\"flex gap-2\"><span class=\"text-error/60 shrink-0\">&#9654;</span> <span>Offline-first with conflict resolution &mdash; the server can't drive what it can't reach</span></li><li class=\"flex gap-2\"><span class=\"text-error/60 shrink-0\">&#9654;</span> <span>Real-time collaborative editing &mdash; CRDTs and OT live on the client</span></li><li class=\"flex gap-2\"><span class=\"text-error/60 shrink-0\">&#9654;</span> <span>Every round-trip is latency &mdash; some interactions need instant local feedback</span></li></ul></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -403,39 +411,51 @@ func spaPanel() templ.Component {
 			templ_7745c5c3_Var15 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "<div class=\"max-w-lg mx-auto space-y-6\"><div class=\"text-center space-y-1\"><h3 class=\"text-2xl md:text-3xl font-bold\">Start with JavaScript</h3><p class=\"text-sm text-base-content/60\">The client owns the experience. The server provides data.</p></div><!-- Pyramid --><div class=\"flex flex-col items-center gap-1\"><div class=\"text-[10px] text-base-content/30 tracking-widest uppercase mb-1\">reach up</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "<div class=\"max-w-lg mx-auto space-y-6\"><div class=\"text-center space-y-1\"><h3 class=\"text-2xl md:text-3xl font-bold\">The Inverted Triangle</h3><p class=\"text-sm text-base-content/60\">Thin controller squeezes to JSON. Complexity detonates on the client side.</p></div><div class=\"flex flex-col items-center gap-1\"><!-- Server --><div class=\"text-[10px] text-base-content/30 tracking-widest uppercase mb-1\">server</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = pyramidLayer("w-[20%]", "border-info/40 bg-info/10", "Server API", "").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = pyramidLayer("w-[55%]", "border-warning/40 bg-warning/15", "DTO / Mapping", "does not exist in hypermedia").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = pyramidLayer("w-[30%]", "border-info/30 bg-info/10", "Build tools", "").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "<div class=\"text-[10px] text-base-content/40\">OpenAPI specs, validation schemas, response models</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = pyramidLayer("w-[40%]", "border-secondary/40 bg-secondary/10", "Routing", "").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = pyramidLayer("w-[35%]", "border-info/30 bg-info/10", "Controller", "thin API, serialize to JSON").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = pyramidLayer("w-[52%]", "border-secondary/30 bg-secondary/15", "State mgmt", "").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<!-- Network: JSON over the wire --><div class=\"w-[90%] border-t-2 border-dashed border-error/40 my-2 relative\"><span class=\"absolute -top-2.5 left-1/2 -translate-x-1/2 bg-base-200 px-2 text-[10px] text-error/60 uppercase tracking-widest font-bold\">JSON over the wire</span></div><!-- Client: inverted triangle (expands outward) --><div class=\"text-[10px] text-base-content/30 tracking-widest uppercase\">client (complexity detonates)</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = pyramidLayer("w-[66%]", "border-accent/40 bg-accent/15", "Hooks / Effects", "").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = pyramidLayer("w-[40%]", "border-secondary/30 bg-secondary/10", "API / Fetch Layer", "interceptors, retry, auth tokens").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = pyramidLayer("w-[80%]", "border-accent/30 bg-accent/20", "Components", "").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = pyramidLayer("w-[55%]", "border-warning/30 bg-warning/10", "Client Router", "routes, guards, lazy loading").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = pyramidLayer("w-full", "border-secondary/50 bg-secondary/30 font-bold", "JavaScript", "").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = pyramidLayer("w-[70%]", "border-warning/40 bg-warning/10", "Parsing + Validation", "deserialize, transform, normalize").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "<div class=\"text-[10px] text-base-content/30 tracking-widest uppercase mt-1\">start here</div></div><!-- Where it shines --><div class=\"space-y-2\"><h4 class=\"font-semibold text-sm text-center\">Where it shines</h4><ul class=\"text-xs text-base-content/60 space-y-1.5 max-w-sm mx-auto\"><li class=\"flex gap-2\"><span class=\"text-secondary shrink-0\">&#9654;</span> <span>The UI is the application &mdash; editors, canvases, design tools</span></li><li class=\"flex gap-2\"><span class=\"text-secondary shrink-0\">&#9654;</span> <span>Complex local state with rich drag-and-drop interactions</span></li><li class=\"flex gap-2\"><span class=\"text-secondary shrink-0\">&#9654;</span> <span>Real-time collaboration with shared cursors and CRDTs</span></li><li class=\"flex gap-2\"><span class=\"text-secondary shrink-0\">&#9654;</span> <span>Offline-first with conflict resolution and background sync</span></li><li class=\"flex gap-2\"><span class=\"text-secondary shrink-0\">&#9654;</span> <span>Large teams that need independent, deployable components</span></li></ul></div><!-- Where it sucks --><div class=\"space-y-2\"><h4 class=\"font-semibold text-sm text-center text-error/70\">Where it sucks</h4><ul class=\"text-xs text-base-content/60 space-y-1.5 max-w-sm mx-auto\"><li class=\"flex gap-2\"><span class=\"text-error/60 shrink-0\">&#9654;</span> <span>Content sites &mdash; you rebuilt the browser's navigation, caching, and history for nothing</span></li><li class=\"flex gap-2\"><span class=\"text-error/60 shrink-0\">&#9654;</span> <span>CRUD apps &mdash; two state stores (client + server) that drift apart</span></li><li class=\"flex gap-2\"><span class=\"text-error/60 shrink-0\">&#9654;</span> <span>Bundle size, hydration cost, time-to-interactive &mdash; the user pays for your architecture</span></li><li class=\"flex gap-2\"><span class=\"text-error/60 shrink-0\">&#9654;</span> <span>SEO and accessibility are afterthoughts bolted on with SSR/SSG workarounds</span></li><li class=\"flex gap-2\"><span class=\"text-error/60 shrink-0\">&#9654;</span> <span>The dependency treadmill &mdash; node_modules, build configs, framework churn</span></li></ul></div></div>")
+		templ_7745c5c3_Err = pyramidLayer("w-[85%]", "border-error/30 bg-error/10", "State Management", "store, selectors, reducers, sagas").Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "<div class=\"text-[10px] text-base-content/40\">normalized cache, optimistic updates, stale-while-revalidate</div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = pyramidLayer("w-full", "border-error/40 bg-error/15 font-bold", "Rendering", "vDOM, diffing, hydration, effects").Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "<div class=\"text-[10px] text-base-content/30 tracking-widest uppercase mt-1\">the user sees a table of users</div></div><!-- Where it shines --><div class=\"space-y-2\"><h4 class=\"font-semibold text-sm text-center\">Where it shines</h4><ul class=\"text-xs text-base-content/60 space-y-1.5 max-w-sm mx-auto\"><li class=\"flex gap-2\"><span class=\"text-secondary shrink-0\">&#9654;</span> <span>The UI is the application &mdash; editors, canvases, design tools</span></li><li class=\"flex gap-2\"><span class=\"text-secondary shrink-0\">&#9654;</span> <span>Complex local state with rich drag-and-drop interactions</span></li><li class=\"flex gap-2\"><span class=\"text-secondary shrink-0\">&#9654;</span> <span>Real-time collaboration with shared cursors and CRDTs</span></li><li class=\"flex gap-2\"><span class=\"text-secondary shrink-0\">&#9654;</span> <span>Offline-first with conflict resolution and background sync</span></li></ul></div><!-- Where it sucks --><div class=\"space-y-2\"><h4 class=\"font-semibold text-sm text-center text-error/70\">Where it sucks</h4><ul class=\"text-xs text-base-content/60 space-y-1.5 max-w-sm mx-auto\"><li class=\"flex gap-2\"><span class=\"text-error/60 shrink-0\">&#9654;</span> <span>CRUD apps &mdash; two state stores that drift apart, connected by load-bearing JSON</span></li><li class=\"flex gap-2\"><span class=\"text-error/60 shrink-0\">&#9654;</span> <span>Every layer generates more layers &mdash; DB schema, Go structs, OpenAPI, TS types, Zod schemas</span></li><li class=\"flex gap-2\"><span class=\"text-error/60 shrink-0\">&#9654;</span> <span>Bundle size, hydration cost, time-to-interactive &mdash; the user pays for your architecture</span></li><li class=\"flex gap-2\"><span class=\"text-error/60 shrink-0\">&#9654;</span> <span>The DTO/mapping layer exists only to translate between what the DB knows and what JSON needs</span></li><li class=\"flex gap-2\"><span class=\"text-error/60 shrink-0\">&#9654;</span> <span>Two complexity lairs instead of one &mdash; and the JSON between them is load-bearing</span></li></ul></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -469,7 +489,7 @@ func pyramidLayer(widthClass, colorClasses, name, desc string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "<div class=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "<div class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -482,43 +502,43 @@ func pyramidLayer(widthClass, colorClasses, name, desc string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "\"><span class=\"font-semibold\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "\"><span class=\"font-semibold\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var19 string
 		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 400, Col: 36}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 404, Col: 36}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "</span> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "</span> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if desc != "" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "<span class=\"text-base-content/40 text-xs ml-1.5 hidden sm:inline\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, "<span class=\"text-base-content/40 text-xs ml-1.5 hidden sm:inline\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var20 string
 			templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(desc)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 402, Col: 76}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 406, Col: 76}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "</span>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "</span>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -552,7 +572,7 @@ func domainCard(colorClasses, title, description string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "<div class=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "<div class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -565,33 +585,33 @@ func domainCard(colorClasses, title, description string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, "\"><div class=\"card-body p-4\"><h4 class=\"card-title text-sm\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, "\"><div class=\"card-body p-4\"><h4 class=\"card-title text-sm\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var24 string
 		templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 410, Col: 41}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 414, Col: 41}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "</h4><p class=\"text-xs text-base-content/60\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "</h4><p class=\"text-xs text-base-content/60\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var25 string
 		templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(description)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 411, Col: 56}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/architecture.templ`, Line: 415, Col: 56}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, "</p></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 39, "</p></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

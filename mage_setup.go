@@ -13,12 +13,12 @@ import (
 	"strings"
 	"time"
 
-	"catgoose/harmony/internal/setup"
+	"catgoose/dothog/internal/setup"
 
 	"github.com/magefile/mage/sh"
 )
 
-const templateModulePath = "catgoose/harmony"
+const templateModulePath = "catgoose/dothog"
 
 // featureLabels maps feature tags to human-readable gum labels.
 var featureLabels = map[string]string{

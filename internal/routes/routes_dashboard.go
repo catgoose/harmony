@@ -3,9 +3,9 @@
 package routes
 
 import (
-	"catgoose/harmony/internal/demo"
-	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/web/views"
+	"catgoose/dothog/internal/demo"
+	"catgoose/dothog/internal/routes/handler"
+	"catgoose/dothog/web/views"
 
 	"github.com/labstack/echo/v4"
 )

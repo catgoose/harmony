@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"time"
 
-	"catgoose/harmony/internal/domain"
-	"catgoose/harmony/internal/logger"
-	"catgoose/harmony/internal/shared"
+	"catgoose/dothog/internal/domain"
+	"catgoose/dothog/internal/logger"
+	"catgoose/dothog/internal/shared"
 
 	"github.com/catgoose/dio"
 )

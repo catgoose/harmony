@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"strings"
 
-	"catgoose/harmony/internal/database/dialect"
-	"catgoose/harmony/internal/routes/params"
+	"catgoose/dothog/internal/database/dialect"
+	"catgoose/dothog/internal/routes/params"
 )
 
 // BuildPaginationClause builds the pagination clause for the given dialect.

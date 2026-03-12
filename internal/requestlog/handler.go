@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"strings"
 
-	"catgoose/harmony/internal/shared"
+	"catgoose/dothog/internal/shared"
 )
 
 // Handler is a slog.Handler that captures log records into a Store

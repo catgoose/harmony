@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"time"
 
-	"catgoose/harmony/internal/logger"
+	"catgoose/dothog/internal/logger"
 
 	"github.com/catgoose/dio"
 	_ "github.com/denisenkom/go-mssqldb" // Register SQL Server driver

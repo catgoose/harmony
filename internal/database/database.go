@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"catgoose/harmony/internal/database/dialect"
+	"catgoose/dothog/internal/database/dialect"
 
 	"github.com/catgoose/dio"
 	"github.com/jmoiron/sqlx"

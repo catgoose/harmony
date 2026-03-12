@@ -2,23 +2,23 @@
 package routes
 
 import (
-	"catgoose/harmony/internal/config"
+	"catgoose/dothog/internal/config"
 	// setup:feature:demo:start
-	"catgoose/harmony/internal/demo"
-	"catgoose/harmony/internal/logger"
+	"catgoose/dothog/internal/demo"
+	"catgoose/dothog/internal/logger"
 	// setup:feature:sse:start
-	"catgoose/harmony/internal/ssebroker"
+	"catgoose/dothog/internal/ssebroker"
 	// setup:feature:sse:end
 	// setup:feature:demo:end
-	"catgoose/harmony/internal/requestlog"
-	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"catgoose/dothog/internal/requestlog"
+	"catgoose/dothog/internal/routes/handler"
+	"catgoose/dothog/internal/routes/hypermedia"
 	// setup:feature:session_settings:start
-	"catgoose/harmony/internal/repository"
+	"catgoose/dothog/internal/repository"
 	// setup:feature:session_settings:end
-	corecomponents "catgoose/harmony/web/components/core"
-	"catgoose/harmony/web/views"
-	"catgoose/harmony/internal/routes/middleware"
+	corecomponents "catgoose/dothog/web/components/core"
+	"catgoose/dothog/web/views"
+	"catgoose/dothog/internal/routes/middleware"
 	"context"
 	"fmt"
 	"io/fs"
