@@ -106,7 +106,7 @@ Access {{APP_NAME}} at:
 
 ## Enabling Crooner (Auth)
 
-Crooner (Azure AD / Entra ID auth) is **disabled by default** via the config variable `CroonerDisabled = true` in `internals/config/config.go`. To enable Crooner:
+Crooner (Azure AD / Entra ID auth) is **disabled by default** via the config variable `CroonerDisabled = true` in `internal/config/config.go`. To enable Crooner:
 
 1. Set `CroonerDisabled = false` in config (or refactor to read from an env var).
 2. Set the required env vars: `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET`, `AZURE_TENANT_ID`, `AZURE_REDIRECT_URL`, `AZURE_LOGIN_REDIRECT_URL`, `AZURE_LOGOUT_REDIRECT_URL`, `SESSION_SECRET`. Optional: `APP_NAME` (defaults to `"app"`).
@@ -117,7 +117,7 @@ When Crooner is enabled, the app errors on startup if any of the required env va
 
 ## Enabling Microsoft Graph
 
-The template includes a Microsoft Graph client (using the [Microsoft Graph SDK for Go](https://github.com/microsoftgraph/msgraph-sdk-go)) and user cache under `internals/service/graph`. Graph is **off by default** until you:
+The template includes a Microsoft Graph client (using the [Microsoft Graph SDK for Go](https://github.com/microsoftgraph/msgraph-sdk-go)) and user cache under `internal/service/graph`. Graph is **off by default** until you:
 
 1. Set Azure app-only credentials (same env vars as Crooner; used for Graph client credentials):
 

@@ -8,7 +8,7 @@ package components
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "catgoose/harmony/internals/routes/hypermedia"
+import "catgoose/harmony/internal/routes/hypermedia"
 
 // modalButtonClass returns the CSS class for a modal button based on its variant.
 func modalButtonClass(variant hypermedia.ControlVariant) string {

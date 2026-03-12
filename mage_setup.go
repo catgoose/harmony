@@ -154,6 +154,7 @@ func Setup() error {
 			return err
 		}
 		_ = os.RemoveAll(filepath.Join(absTarget, setup.TemplateSetupDir))
+		_ = os.RemoveAll(filepath.Join(absTarget, "internal", "setup"))
 		_ = os.Remove(filepath.Join(absTarget, "mage_setup.go"))
 		fmt.Println("Setup complete in", absTarget)
 		return nil
@@ -551,6 +552,9 @@ func randomBasePort() int {
 func cleanupTemplateFiles() error {
 	if err := os.RemoveAll("_template_setup"); err != nil && !os.IsNotExist(err) {
 		return fmt.Errorf("failed to remove _template_setup: %w", err)
+	}
+	if err := os.RemoveAll(filepath.Join("internal", "setup")); err != nil && !os.IsNotExist(err) {
+		return fmt.Errorf("failed to remove internal/setup: %w", err)
 	}
 	if err := os.Remove("mage_setup.go"); err != nil && !os.IsNotExist(err) {
 		return fmt.Errorf("failed to remove mage_setup.go: %w", err)

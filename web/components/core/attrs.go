@@ -1,7 +1,7 @@
 package components
 
 import (
-	"catgoose/harmony/internals/routes/hypermedia"
+	"catgoose/harmony/internal/routes/hypermedia"
 	"github.com/a-h/templ"
 )
 

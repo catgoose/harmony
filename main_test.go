@@ -1,9 +1,9 @@
 package main
 
 import (
-	"catgoose/harmony/internals/config"
-	"catgoose/harmony/internals/logger"
-	"catgoose/harmony/internals/routes"
+	"catgoose/harmony/internal/config"
+	"catgoose/harmony/internal/logger"
+	"catgoose/harmony/internal/routes"
 	"context"
 	"net/http"
 	"net/http/httptest"

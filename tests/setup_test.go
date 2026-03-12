@@ -77,7 +77,7 @@ func TestSetupReplacesAppNameAndModule(t *testing.T) {
 	require.NoError(t, err)
 	require.Contains(t, string(gitignoreBytes), "test-app")
 
-	loggerPath := filepath.Join(dest, "internals", "logger", "logger.go")
+	loggerPath := filepath.Join(dest, "internal", "logger", "logger.go")
 	loggerBytes, err := os.ReadFile(loggerPath)
 	require.NoError(t, err)
 	require.Contains(t, string(loggerBytes), `appLogFile = "test-app.log"`)
@@ -295,10 +295,10 @@ func TestSetup_FeaturesAll(t *testing.T) {
 
 	assertNoSetupMarkers(t, dest)
 	assertBuildSucceeds(t, dest)
-	assertDirExists(t, filepath.Join(dest, "internals", "ssebroker"))
-	assertDirExists(t, filepath.Join(dest, "internals", "database"))
-	assertDirExists(t, filepath.Join(dest, "internals", "service", "graph"))
-	assertDirExists(t, filepath.Join(dest, "internals", "demo"))
+	assertDirExists(t, filepath.Join(dest, "internal", "ssebroker"))
+	assertDirExists(t, filepath.Join(dest, "internal", "database"))
+	assertDirExists(t, filepath.Join(dest, "internal", "service", "graph"))
+	assertDirExists(t, filepath.Join(dest, "internal", "demo"))
 }
 
 func TestSetup_FeaturesNone(t *testing.T) {
@@ -321,17 +321,17 @@ func TestSetup_FeaturesNone(t *testing.T) {
 
 	assertNoSetupMarkers(t, dest)
 	assertBuildSucceeds(t, dest)
-	assertDirRemoved(t, filepath.Join(dest, "internals", "ssebroker"))
-	assertDirRemoved(t, filepath.Join(dest, "internals", "service", "graph"))
-	assertDirExists(t, filepath.Join(dest, "internals", "database"))          // database is implicit (always kept)
-	assertDirRemoved(t, filepath.Join(dest, "internals", "repository"))
-	assertDirRemoved(t, filepath.Join(dest, "internals", "domain"))
-	assertDirRemoved(t, filepath.Join(dest, "internals", "demo"))
+	assertDirRemoved(t, filepath.Join(dest, "internal", "ssebroker"))
+	assertDirRemoved(t, filepath.Join(dest, "internal", "service", "graph"))
+	assertDirExists(t, filepath.Join(dest, "internal", "database"))          // database is implicit (always kept)
+	assertDirRemoved(t, filepath.Join(dest, "internal", "repository"))
+	assertDirRemoved(t, filepath.Join(dest, "internal", "domain"))
+	assertDirRemoved(t, filepath.Join(dest, "internal", "demo"))
 
 	// MSSQL dialect should be removed when mssql feature not selected
-	_, err = os.Stat(filepath.Join(dest, "internals", "database", "mssql.go"))
+	_, err = os.Stat(filepath.Join(dest, "internal", "database", "mssql.go"))
 	require.True(t, os.IsNotExist(err), "mssql.go should be removed when mssql not selected")
-	_, err = os.Stat(filepath.Join(dest, "internals", "database", "dialect", "mssql.go"))
+	_, err = os.Stat(filepath.Join(dest, "internal", "database", "dialect", "mssql.go"))
 	require.True(t, os.IsNotExist(err), "dialect/mssql.go should be removed when mssql not selected")
 
 	_, err = os.Stat(filepath.Join(dest, "build", "Caddyfile"))
@@ -361,14 +361,14 @@ func TestSetup_FeaturesAuthOnly(t *testing.T) {
 
 	assertNoSetupMarkers(t, dest)
 	assertBuildSucceeds(t, dest)
-	assertDirExists(t, filepath.Join(dest, "internals", "database")) // database is implicit
-	assertDirRemoved(t, filepath.Join(dest, "internals", "service", "graph"))
-	assertDirRemoved(t, filepath.Join(dest, "internals", "ssebroker"))
+	assertDirExists(t, filepath.Join(dest, "internal", "database")) // database is implicit
+	assertDirRemoved(t, filepath.Join(dest, "internal", "service", "graph"))
+	assertDirRemoved(t, filepath.Join(dest, "internal", "ssebroker"))
 
 	_, err = os.Stat(filepath.Join(dest, "build", "Caddyfile"))
 	require.True(t, os.IsNotExist(err), "Caddyfile should be removed when caddy not selected")
 
-	configPath := filepath.Join(dest, "internals", "config", "config.go")
+	configPath := filepath.Join(dest, "internal", "config", "config.go")
 	configBytes, err := os.ReadFile(configPath)
 	require.NoError(t, err)
 	configContent := string(configBytes)
@@ -399,19 +399,19 @@ func TestSetup_FeaturesDatabaseOnly(t *testing.T) {
 
 	assertNoSetupMarkers(t, dest)
 	assertBuildSucceeds(t, dest)
-	assertDirRemoved(t, filepath.Join(dest, "internals", "ssebroker"))
-	assertDirRemoved(t, filepath.Join(dest, "internals", "service", "graph"))
-	assertDirExists(t, filepath.Join(dest, "internals", "database"))
-	assertDirExists(t, filepath.Join(dest, "internals", "database", "dialect"))
+	assertDirRemoved(t, filepath.Join(dest, "internal", "ssebroker"))
+	assertDirRemoved(t, filepath.Join(dest, "internal", "service", "graph"))
+	assertDirExists(t, filepath.Join(dest, "internal", "database"))
+	assertDirExists(t, filepath.Join(dest, "internal", "database", "dialect"))
 
 	// SQLite dialect should exist
-	_, err = os.Stat(filepath.Join(dest, "internals", "database", "dialect", "sqlite.go"))
+	_, err = os.Stat(filepath.Join(dest, "internal", "database", "dialect", "sqlite.go"))
 	require.NoError(t, err, "dialect/sqlite.go should exist (database is implicit)")
 
 	// MSSQL files should be removed
-	_, err = os.Stat(filepath.Join(dest, "internals", "database", "mssql.go"))
+	_, err = os.Stat(filepath.Join(dest, "internal", "database", "mssql.go"))
 	require.True(t, os.IsNotExist(err), "mssql.go should be removed when mssql not selected")
-	_, err = os.Stat(filepath.Join(dest, "internals", "database", "dialect", "mssql.go"))
+	_, err = os.Stat(filepath.Join(dest, "internal", "database", "dialect", "mssql.go"))
 	require.True(t, os.IsNotExist(err), "dialect/mssql.go should be removed when mssql not selected")
 }
 
@@ -436,15 +436,15 @@ func TestSetup_FeaturesMSSQL(t *testing.T) {
 
 	assertNoSetupMarkers(t, dest)
 	assertBuildSucceeds(t, dest)
-	assertDirExists(t, filepath.Join(dest, "internals", "database"))
-	assertDirExists(t, filepath.Join(dest, "internals", "database", "dialect"))
+	assertDirExists(t, filepath.Join(dest, "internal", "database"))
+	assertDirExists(t, filepath.Join(dest, "internal", "database", "dialect"))
 
 	// Both dialects should exist
-	_, err = os.Stat(filepath.Join(dest, "internals", "database", "dialect", "sqlite.go"))
+	_, err = os.Stat(filepath.Join(dest, "internal", "database", "dialect", "sqlite.go"))
 	require.NoError(t, err, "dialect/sqlite.go should exist")
-	_, err = os.Stat(filepath.Join(dest, "internals", "database", "dialect", "mssql.go"))
+	_, err = os.Stat(filepath.Join(dest, "internal", "database", "dialect", "mssql.go"))
 	require.NoError(t, err, "dialect/mssql.go should exist when mssql selected")
-	_, err = os.Stat(filepath.Join(dest, "internals", "database", "mssql.go"))
+	_, err = os.Stat(filepath.Join(dest, "internal", "database", "mssql.go"))
 	require.NoError(t, err, "mssql.go should exist when mssql selected")
 }
 
@@ -468,13 +468,13 @@ func TestSetup_FeaturesSSECaddy(t *testing.T) {
 
 	assertNoSetupMarkers(t, dest)
 	assertBuildSucceeds(t, dest)
-	assertDirExists(t, filepath.Join(dest, "internals", "ssebroker"))
+	assertDirExists(t, filepath.Join(dest, "internal", "ssebroker"))
 
 	_, err = os.Stat(filepath.Join(dest, "build", "Caddyfile"))
 	require.NoError(t, err, "Caddyfile should exist when caddy is selected")
 
-	assertDirExists(t, filepath.Join(dest, "internals", "database")) // database is implicit
-	assertDirRemoved(t, filepath.Join(dest, "internals", "service", "graph"))
+	assertDirExists(t, filepath.Join(dest, "internal", "database")) // database is implicit
+	assertDirRemoved(t, filepath.Join(dest, "internal", "service", "graph"))
 }
 
 func TestSetup_FeaturesDemo(t *testing.T) {
@@ -497,5 +497,5 @@ func TestSetup_FeaturesDemo(t *testing.T) {
 
 	assertNoSetupMarkers(t, dest)
 	assertBuildSucceeds(t, dest)
-	assertDirExists(t, filepath.Join(dest, "internals", "demo"))
+	assertDirExists(t, filepath.Join(dest, "internal", "demo"))
 }

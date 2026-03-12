@@ -19,6 +19,7 @@ export default defineConfig({
     command: process.env.CI
       ? "./harmony --env=test"
       : "go run main.go --env=test",
+    cwd: "..",
     url: "http://localhost:8080/health",
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,

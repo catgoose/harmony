@@ -3,7 +3,7 @@ package components
 import (
 	"testing"
 
-	"catgoose/harmony/internals/routes/hypermedia"
+	"catgoose/harmony/internal/routes/hypermedia"
 
 	"github.com/stretchr/testify/require"
 )

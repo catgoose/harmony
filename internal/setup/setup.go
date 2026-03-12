@@ -260,7 +260,7 @@ func Run(ctx context.Context, dir string, opts Options) error {
 		}
 	}
 
-	loggerPath := filepath.Join(dir, "internals", "logger", "logger.go")
+	loggerPath := filepath.Join(dir, "internal", "logger", "logger.go")
 	if data, err := os.ReadFile(loggerPath); err == nil {
 		content := strings.ReplaceAll(string(data), `appLogFile = "harmony.log"`, `appLogFile = "`+binaryName+`.log"`)
 		if err := os.WriteFile(loggerPath, []byte(content), 0644); err != nil {

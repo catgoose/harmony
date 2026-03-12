@@ -13,7 +13,7 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"strconv"
 
-	"catgoose/harmony/internals/routes/hypermedia"
+	"catgoose/harmony/internal/routes/hypermedia"
 	components "catgoose/harmony/web/components/core"
 )
 

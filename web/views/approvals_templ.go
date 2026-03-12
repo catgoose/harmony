@@ -13,8 +13,8 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"fmt"
 
-	"catgoose/harmony/internals/demo"
-	"catgoose/harmony/internals/routes/hypermedia"
+	"catgoose/harmony/internal/demo"
+	"catgoose/harmony/internal/routes/hypermedia"
 	components "catgoose/harmony/web/components/core"
 )
 

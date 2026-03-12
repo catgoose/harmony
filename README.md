@@ -482,7 +482,7 @@ go build -o harmony .
 harmony/
 ├── main.go                    # Application entrypoint
 ├── magefile.go                # Build automation targets
-├── internals/
+├── internal/
 │   ├── config/                # Configuration management
 │   ├── logger/                # Structured logging (slog)
 │   ├── routes/                # HTTP routes, handlers, middleware

@@ -11,7 +11,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"catgoose/harmony/internals/routes/hypermedia"
+	"catgoose/harmony/internal/routes/hypermedia"
 	components "catgoose/harmony/web/components/core"
 )
 
