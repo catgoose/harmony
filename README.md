@@ -1,6 +1,6 @@
 # DOTHOG
 
-### Or, How I Learned to Stop Worrying and Trust the Server
+## Or, How I Learned to Stop Worrying and Trust the Server
 
 **Being a Account of the Rediscovery of the ORIGINAL WEB by the HYPERMEDIA NOVICES, Hidden Disciples of the Honorable ROY T. FIELDING (Whose Dissertation We Have Read, Unlike You)**
 
@@ -21,10 +21,11 @@ _You don't just accidentally create abstractions until you suddenly have a frame
 <https://github.com/user-attachments/assets/304c2b34-9857-4647-93af-9d2f2c11a74c>
 
 <!--toc:start-->
-
-- [DOTHOG](#dothog) - [Or, How I Learned to Stop Worrying and Trust the Server](#or-how-i-learned-to-stop-worrying-and-trust-the-server)
+- [DOTHOG](#dothog)
+  - [Or, How I Learned to Stop Worrying and Trust the Server](#or-how-i-learned-to-stop-worrying-and-trust-the-server)
   - [THE PENTAVERB, Or The Five Commandments of Hypermedia](#the-pentaverb-or-the-five-commandments-of-hypermedia)
     - [The Novice's Creed](#the-novices-creed)
+  - [The Wisdom of the Uniform Interface](#the-wisdom-of-the-uniform-interface)
   - [The Recorded Sayings of Layman Grug](#the-recorded-sayings-of-layman-grug)
   - [Demo](#demo)
   - [Features, Or The Gifts of the Server](#features-or-the-gifts-of-the-server)
@@ -62,7 +63,7 @@ _You don't just accidentally create abstractions until you suddenly have a frame
   - [Testing](#testing)
   - [Mage Targets](#mage-targets)
   - [OFFICIAL DISCLAIMER](#official-disclaimer)
-  <!--toc:end-->
+<!--toc:end-->
 
 ---
 
@@ -143,17 +144,17 @@ _Their authenticity is disputed. Their contents are not. The reader is advised t
 
 HEAR ME. A resource is not a row in your database. A resource is not a file on your disk. A resource is not an endpoint. A resource is not a model. A resource is any concept important enough to be named, and naming is the first and most dangerous act of computing (cf. DNS, variable naming, and the entire history of identity management).
 
-A to-do item is a resource. The list of to-do items is a resource. The act of *searching* for to-do items is a resource. Your anxiety about to-do items is not a resource, but only because you have not yet given it a URI. If you give it a URI, it becomes one. This is the terrible power of naming. The Buddhists tried to warn you about attachment to names. You didn't listen. You were too busy naming your microservices.
+A to-do item is a resource. The list of to-do items is a resource. The act of _searching_ for to-do items is a resource. Your anxiety about to-do items is not a resource, but only because you have not yet given it a URI. If you give it a URI, it becomes one. This is the terrible power of naming. The Buddhists tried to warn you about attachment to names. You didn't listen. You were too busy naming your microservices.
 
-*(Editor's note: the original manuscript has "naming things is one of the two hard problems" in the margin, crossed out, with "three hard problems" written above it, crossed out, with "five hard problems" written above THAT, in increasingly frantic handwriting.)*
+_(Editor's note: the original manuscript has "naming things is one of the two hard problems" in the margin, crossed out, with "three hard problems" written above it, crossed out, with "five hard problems" written above THAT, in increasingly frantic handwriting.)_
 
 ---
 
 **THE FOOL asked: "What is a representation?"**
 
-A resource is the thing-in-itself, the Ding an sich, the Platonic form of your user table. You never touch it directly. You cannot. You interact with it only through *representations*, which are how the thing chooses to speak to you.
+A resource is the thing-in-itself, the Ding an sich, the Platonic form of your user table. You never touch it directly. You cannot. You interact with it only through _representations_, which are how the thing chooses to speak to you.
 
-The same resource may speak HTML to a browser and JSON to an API client and plain text to `curl` at 2 AM when you are debugging something that worked in staging. The representation is not the resource any more than a photograph is the mountain. BUT -- and here is where it gets interesting, and by "interesting" I mean "the part everyone skips" -- unlike a photograph, a representation carries CONTROLS. Instructions. *Affordances.* The next available actions. A photograph of a mountain does not contain a trail map. A proper representation does. Your JSON endpoint is a photograph of a mountain thrown at the client's face with a note that says "figure out the trails yourself, the docs are on Confluence, I think, ask Kevin."
+The same resource may speak HTML to a browser and JSON to an API client and plain text to `curl` at 2 AM when you are debugging something that worked in staging. The representation is not the resource any more than a photograph is the mountain. BUT -- and here is where it gets interesting, and by "interesting" I mean "the part everyone skips" -- unlike a photograph, a representation carries CONTROLS. Instructions. _Affordances._ The next available actions. A photograph of a mountain does not contain a trail map. A proper representation does. Your JSON endpoint is a photograph of a mountain thrown at the client's face with a note that says "figure out the trails yourself, the docs are on Confluence, I think, ask Kevin."
 
 ---
 
@@ -163,11 +164,11 @@ I WILL TELL YOU A SECRET THAT IS NOT A SECRET BECAUSE IT HAS BEEN IN PLAIN SIGHT
 
 How many web browsers know the difference between a banking application and a wiki?
 
-*None of them.*
+_None of them._
 
-NONE. Not one. Zero. And yet -- AND YET -- they operate both. They operate ALL OF THEM. EVERY WEBSITE THAT HAS EVER EXISTED. Your browser does not download a BankingApplicationSDK. Your browser does not read the WikiClientDocumentation. Your browser speaks HTTP, understands media types, and follows links. Three things. That is the uniform interface. It works on every website that has ever existed or ever will exist and it has been working this way for THIRTY YEARS and you -- *you specifically, reading this* -- are building something WORSE than this ON PURPOSE because someone on Medium told you to.
+NONE. Not one. Zero. And yet -- AND YET -- they operate both. They operate ALL OF THEM. EVERY WEBSITE THAT HAS EVER EXISTED. Your browser does not download a BankingApplicationSDK. Your browser does not read the WikiClientDocumentation. Your browser speaks HTTP, understands media types, and follows links. Three things. That is the uniform interface. It works on every website that has ever existed or ever will exist and it has been working this way for THIRTY YEARS and you -- _you specifically, reading this_ -- are building something WORSE than this ON PURPOSE because someone on Medium told you to.
 
-*(The preceding paragraph was found carved into a bathroom stall at an IEEE conference. Below it, in different handwriting: "but what about GraphQL?" Below that, in a third hand: "WHAT ABOUT IT.")*
+_(The preceding paragraph was found carved into a bathroom stall at an IEEE conference. Below it, in different handwriting: "but what about GraphQL?" Below that, in a third hand: "WHAT ABOUT IT.")_
 
 ---
 
@@ -193,13 +194,13 @@ The server sends a representation. The representation contains links and forms. 
 
 The client does not know URLs in advance. The client does not construct URLs from templates it found in the docs. The client does not read your Swagger documentation and hardcode endpoints into a generated API client that you then version and distribute and maintain and deprecate and that breaks every time you rename a field. The client receives a page, sees what it can do, and does it. Like a person. Using a website. Remember? Remember websites? You used one today. It worked. Because of this. BECAUSE OF EXACTLY THIS.
 
-*(fn. 23: It has been observed that the word "HATEOAS" looks like it should be pronounced "hate-ee-ohs," like a breakfast cereal. This is appropriate. It should be part of a balanced architecture.)*
+_(fn. 23: It has been observed that the word "HATEOAS" looks like it should be pronounced "hate-ee-ohs," like a breakfast cereal. This is appropriate. It should be part of a balanced architecture.)_
 
 ---
 
 **THE FOOL asked: "What does it mean to be stateless?"**
 
-Each request from client to server must contain ALL of the information necessary to understand the request. The server does not remember you. The server does not pine for you between requests. The server is not sitting there holding your session like a loyal retriever waiting by the door. The server has already forgotten you. The server has *moved on.*
+Each request from client to server must contain ALL of the information necessary to understand the request. The server does not remember you. The server does not pine for you between requests. The server is not sitting there holding your session like a loyal retriever waiting by the door. The server has already forgotten you. The server has _moved on._
 
 "But what about sessions?" you cry into the void.
 
@@ -209,17 +210,17 @@ Sessions are the server remembering you. This is a violation. It is a warm, comf
 
 **THE FOOL asked: "What is a media type?"**
 
-A media type is a COVENANT. A sacred compact. A pinky promise between systems. It says: "if you receive `text/html`, here is how you shall process it." It defines the processing model, the structure, the controls, the semantics. It is *the entire instruction set* for how to handle what you received.
+A media type is a COVENANT. A sacred compact. A pinky promise between systems. It says: "if you receive `text/html`, here is how you shall process it." It defines the processing model, the structure, the controls, the semantics. It is _the entire instruction set_ for how to handle what you received.
 
 Now. When your API returns `application/json`, what does that tell the client about what to do next?
 
 NOTHING.
 
-*Absolutely nothing.*
+_Absolutely nothing._
 
 JSON is a serialization format. It has no links. It has no forms. It has no inherent controls. It is a way of arranging curly braces. You have returned data in a format that carries NO INSTRUCTIONS and then written a SEPARATE DOCUMENT explaining the instructions and then put that document on a SEPARATE WEBSITE and then wondered why your clients BREAK when you CHANGE THE INSTRUCTIONS. You have invented a problem. You have then sold yourself the solution. And the solution is more JSON. It's JSON all the way down. You are in the JSON hole and you are digging.
 
-*(There is a school of thought that `application/hal+json` and similar hypermedia JSON formats solve this problem. There is a school of thought that the `<a>` tag solved this problem in 1993. These schools do not talk to each other. One has a lot more students. The other has a lot less `node_modules`.)*
+_(There is a school of thought that `application/hal+json` and similar hypermedia JSON formats solve this problem. There is a school of thought that the `<a>` tag solved this problem in 1993. These schools do not talk to each other. One has a lot more students. The other has a lot less `node_modules`.)_
 
 ---
 
@@ -227,7 +228,7 @@ JSON is a serialization format. It has no links. It has no forms. It has no inhe
 
 Out-of-band information is THE CONSPIRACY. It is the hidden knowledge. The secret handshake. The unspoken assumption.
 
-If your client must read your API docs to know which URL to `POST` to, that is out-of-band. If your client must know that `/api/v2/users/{id}` is the pattern for user resources, that is out-of-band. If your client must be recompiled when you rename a resource, you have coupled the client to the server's URI structure *and you will maintain this coupling in blood and tears until one of you is decommissioned*. This is not a metaphor. I have seen the Jira tickets. They do not end.
+If your client must read your API docs to know which URL to `POST` to, that is out-of-band. If your client must know that `/api/v2/users/{id}` is the pattern for user resources, that is out-of-band. If your client must be recompiled when you rename a resource, you have coupled the client to the server's URI structure _and you will maintain this coupling in blood and tears until one of you is decommissioned_. This is not a metaphor. I have seen the Jira tickets. They do not end.
 
 The whole point -- the ENTIRE POINT -- of hypermedia is that the server tells the client what to do next IN THE RESPONSE ITSELF. The links are RIGHT THERE. In the HTML. They have been there this whole time. You have been stepping over them to get to your OpenAPI generator. You are the man in the flood who refuses the boat, the helicopter, and the `<a href>`, waiting for God to send you a properly versioned REST client with TypeScript bindings.
 
@@ -245,9 +246,9 @@ End of transmission.
 
 `Connection: close`
 
-What they have built is RPC. With nice URLs. Some of them have built RPC with nice URLs and an OpenAPI spec and a code generator and a client library and a versioning scheme and a deprecation policy and a migration guide and a breaking changes newsletter, which is to say they have constructed an ENORMOUS and MAGNIFICENT cathedral of infrastructure for the sole purpose of avoiding putting `<a href>` in a response. The engineering effort is genuinely impressive. It is also genuinely unnecessary. It is the Rube Goldberg machine of distributed systems. The ball rolls down the chute, hits the domino, rings the bell, feeds the hamster, and the hamster *renders a table of users.*
+What they have built is RPC. With nice URLs. Some of them have built RPC with nice URLs and an OpenAPI spec and a code generator and a client library and a versioning scheme and a deprecation policy and a migration guide and a breaking changes newsletter, which is to say they have constructed an ENORMOUS and MAGNIFICENT cathedral of infrastructure for the sole purpose of avoiding putting `<a href>` in a response. The engineering effort is genuinely impressive. It is also genuinely unnecessary. It is the Rube Goldberg machine of distributed systems. The ball rolls down the chute, hits the domino, rings the bell, feeds the hamster, and the hamster _renders a table of users._
 
-*(Certain agencies within the United States government have been observed to use the term "RESTful" to describe SOAP endpoints with JSON payloads routed through an API gateway with OAuth2 and rate limiting. We do not name these agencies. They know who they are. We pray for their developers.)*
+_(Certain agencies within the United States government have been observed to use the term "RESTful" to describe SOAP endpoints with JSON payloads routed through an API gateway with OAuth2 and rate limiting. We do not name these agencies. They know who they are. We pray for their developers.)_
 
 ---
 
@@ -257,7 +258,7 @@ What they have built is RPC. With nice URLs. Some of them have built RPC with ni
 
 REST is software design on the scale of decades. DECADES. Every constraint is intended to promote longevity and independent evolution. Many of the constraints directly oppose short-term efficiency. This is by design. This is ON PURPOSE. If you are building something that will last six months, do whatever you want. Use smoke signals. Store state in a CSV. Put the database password in the URL. I do not care. You will not be around long enough for it to matter.
 
-But if you are building something that must *evolve* -- while clients depend on it, while teams change, while requirements shift, while Kevin goes on PTO and comes back and the new Kevin doesn't know the old Kevin's conventions -- then you need an architecture that permits change without breaking the contract. Hypertext IS that contract. The representation tells the client what is possible RIGHT NOW. When what is possible changes, the representation changes, and the client adapts, because the client was never hardcoded to anything except "follow the links."
+But if you are building something that must _evolve_ -- while clients depend on it, while teams change, while requirements shift, while Kevin goes on PTO and comes back and the new Kevin doesn't know the old Kevin's conventions -- then you need an architecture that permits change without breaking the contract. Hypertext IS that contract. The representation tells the client what is possible RIGHT NOW. When what is possible changes, the representation changes, and the client adapts, because the client was never hardcoded to anything except "follow the links."
 
 This is not theory. This is how the Web has worked for thirty years. You are standing on the miracle and complaining that the ground is too stable.
 
@@ -271,7 +272,7 @@ Enter the application with a single URI and a set of standardized media types. F
 
 Yes. That is the point. That has always been the point. The Dissertation is 180 pages long not because the idea is complicated but because Fielding had to PROVE it was simple, to an industry that has a financial and psychological incentive to believe that things must be complicated, because if things are simple then what have we all been doing for the last twenty years?
 
-*(Do not answer that question. The answer is "inventing problems." You know this. I know this. The `node_modules` directory knows this. It is 900 megabytes of knowledge.)*
+_(Do not answer that question. The answer is "inventing problems." You know this. I know this. The `node_modules` directory knows this. It is 900 megabytes of knowledge.)_
 
 ---
 
