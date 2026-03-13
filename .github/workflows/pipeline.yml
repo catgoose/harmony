@@ -324,4 +324,4 @@ jobs:
           git commit -m "sync: mirror from dothog" --allow-empty
 
           git remote add harmony https://x-access-token:${{ secrets.HARMONY_CI }}@github.com/catgoose/harmony.git
-          git push harmony HEAD:main --force
+          git push harmony HEAD:refs/heads/main --force
