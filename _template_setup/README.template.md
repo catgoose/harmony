@@ -1,14 +1,40 @@
 # {{APP_NAME}}
 
+<!--toc:start-->
+
+- [{{APP_NAME}}](#appname)
+  - [Template Setup](#template-setup)
+  - [Running the App](#running-the-app)
+  - [Local HTTPS & Ports](#local-https-ports)
+  - [HTTPS Development Setup](#https-development-setup)
+  - [Middleware](#middleware)
+  - [Database](#database)
+  - [Server-Sent Events (SSE)](#server-sent-events-sse)
+  - [Observability](#observability)
+  - [Enabling Crooner (Auth)](#enabling-crooner-auth)
+  - [Enabling Microsoft Graph](#enabling-microsoft-graph)
+  - [Avatar Photos](#avatar-photos)
+  - [Testing](#testing)
+    - [Go Tests](#go-tests)
+    - [E2E Tests (Playwright)](#e2e-tests-playwright)
+    - [Linting](#linting)
+  - [Updating Frontend Assets](#updating-frontend-assets)
+  - [CI/CD Workflows](#cicd-workflows)
+  - [Mage Targets](#mage-targets)
+  - [Environment Variables](#environment-variables)
+  <!--toc:end-->
+
 {{APP_NAME}} is a Go + HTMX application generated from {{TEMPLATE_REF}}.
 
 It uses:
 
-- Go + Echo
-- HTMX + templ
-- Air for live reload
-- Tailwind + DaisyUI for styling
-- Caddy (optional) for HTTPS dev proxy
+- Go + Echo (web framework)
+- HTMX + templ (type-safe HTML templating)
+- Tailwind CSS + DaisyUI (styling, 30+ themes)
+- Air (live reload)
+- Mage (build automation)
+- Playwright (E2E testing)
+- Caddy (optional HTTPS dev proxy)
 
 ## Template Setup
 
@@ -39,51 +65,6 @@ This project was bootstrapped from {{TEMPLATE_REF}}. If you are starting from th
 
    If you used the copy-and-git-init flow, add a remote when ready: `git remote add origin <url>`.
 
-## Local HTTPS & Ports
-
-The dev HTTPS stack for {{APP_NAME}} mirrors the Buckets / PTO-Calendar pattern:
-
-- Echo app (TLS): `https://localhost:{{APP_TLS_PORT}}`
-- templ HTTP proxy (internal): `http://localhost:{{TEMPL_HTTP_PORT}}`
-- Caddy TLS front: `https://localhost:{{CADDY_TLS_PORT}}`
-
-Request flow:
-
-- Browser → Caddy (`https://localhost:{{CADDY_TLS_PORT}}`)
-- Caddy (TLS termination) → templ HTTP proxy (`http://localhost:{{TEMPL_HTTP_PORT}}`)
-- templ HTTP proxy → Echo over TLS (`https://localhost:{{APP_TLS_PORT}}`)
-
-## HTTPS Development Setup
-
-When the Caddy feature is selected, `mage setup` checks for existing `localhost.crt` and
-`localhost.key` in the project root.  If they exist (e.g. already trusted by your OS), they
-are used as-is.  If missing, setup asks whether to generate new self-signed certificates.
-
-Generated certificates need to be installed in your system trust store:
-
-**Linux (Ubuntu/Debian):**
-```bash
-sudo cp localhost.crt /usr/local/share/ca-certificates/
-sudo update-ca-certificates
-```
-
-**macOS:**
-1. Open Keychain Access
-2. Drag `localhost.crt` to Keychain Access → System
-3. Double-click the certificate and set 'Trust' to 'Always Trust'
-
-**Windows:**
-1. Right-click `localhost.crt`
-2. Select 'Install Certificate'
-3. Choose 'Local Machine' and 'Trusted Root Certification Authorities'
-
-To regenerate certificates manually:
-```bash
-openssl req -x509 -newkey rsa:2048 -keyout localhost.key -out localhost.crt \
-  -days 365 -nodes -subj "/CN=localhost" \
-  -addext "subjectAltName=DNS:localhost,IP:127.0.0.1"
-```
-
 ## Running the App
 
 With `.env.dev` in place (or equivalent env vars set):
@@ -103,6 +84,102 @@ Access {{APP_NAME}} at:
 
 - Direct TLS: `https://localhost:{{APP_TLS_PORT}}`
 - Via Caddy: `https://localhost:{{CADDY_TLS_PORT}}`
+
+## Local HTTPS & Ports
+
+The dev HTTPS stack for {{APP_NAME}}:
+
+- Echo app (TLS): `https://localhost:{{APP_TLS_PORT}}`
+- templ HTTP proxy (internal): `http://localhost:{{TEMPL_HTTP_PORT}}`
+- Caddy TLS front: `https://localhost:{{CADDY_TLS_PORT}}`
+
+Request flow:
+
+- Browser → Caddy (`https://localhost:{{CADDY_TLS_PORT}}`)
+- Caddy (TLS termination) → templ HTTP proxy (`http://localhost:{{TEMPL_HTTP_PORT}}`)
+- templ HTTP proxy → Echo over TLS (`https://localhost:{{APP_TLS_PORT}}`)
+
+## HTTPS Development Setup
+
+When the Caddy feature is selected, `mage setup` checks for existing `localhost.crt` and
+`localhost.key` in the project root. If they exist (e.g. already trusted by your OS), they
+are used as-is. If missing, setup asks whether to generate new self-signed certificates.
+
+Generated certificates need to be installed in your system trust store:
+
+**Linux (Ubuntu/Debian):**
+
+```bash
+sudo cp localhost.crt /usr/local/share/ca-certificates/
+sudo update-ca-certificates
+```
+
+**macOS:**
+
+1. Open Keychain Access
+2. Drag `localhost.crt` to Keychain Access → System
+3. Double-click the certificate and set 'Trust' to 'Always Trust'
+
+**Windows:**
+
+1. Right-click `localhost.crt`
+2. Select 'Install Certificate'
+3. Choose 'Local Machine' and 'Trusted Root Certification Authorities'
+
+To regenerate certificates manually:
+
+```bash
+openssl req -x509 -newkey rsa:2048 -keyout localhost.key -out localhost.crt \
+	-days 365 -nodes -subj "/CN=localhost" \
+	-addext "subjectAltName=DNS:localhost,IP:127.0.0.1"
+```
+
+## Middleware
+
+The app includes several middleware components:
+
+- **Correlation IDs** — Each request gets a unique ID for tracing through logs
+- **CSRF protection** — Token-based CSRF with optional per-request rotation (`CSRF_ROTATE_PER_REQUEST`, `CSRF_PER_REQUEST_PATHS`)
+- **Error handling** — Centralized error display
+- **Form validation** — Request validation helpers
+- **Session settings** — Per-user session preferences
+
+## Database
+
+Database support is **disabled by default** (`ENABLE_DATABASE=false` in `.env`). When enabled, the app supports SQLite and MS SQL Server.
+
+Features include:
+
+- Schema builder with traits (timestamps, soft delete, audit trails)
+- Repository pattern with query builder (where/select)
+- Health checks and validation
+- Multi-dialect support (SQLite/MSSQL)
+
+Configure via environment variables:
+
+```bash
+ENABLE_DATABASE=true
+DB_ENGINE=sqlite # or sqlserver
+DB_HOST=...
+DB_DATABASE=...
+DB_USER=...
+DB_PASSWORD=...
+```
+
+## Server-Sent Events (SSE)
+
+When the SSE feature is selected, the app includes a real-time event broker:
+
+- Topic-based publish/subscribe
+- HTMX SSE extension integration
+- Automatic Caddy configuration for streaming
+
+## Observability
+
+- **Structured logging** — slog-based with configurable log level (`LOG_LEVEL`: DEBUG, INFO, WARN, ERROR)
+- **Request log capture** — In-memory ring buffer (512 entries) for recent request inspection
+- **Issue reporting** — `GET /report-issue/:requestID` endpoint with full request context
+- **File logging** — Rotation via lumberjack
 
 ## Enabling Crooner (Auth)
 
@@ -144,25 +221,99 @@ When the `avatar` setup feature is selected, the app downloads user profile phot
 
 ## Testing
 
-Common commands:
+### Go Tests
 
 ```bash
-go tool mage test
-go tool mage testverbose
-go tool mage testcoverage
-go tool mage testcoveragehtml
-go tool mage testbenchmark
-go tool mage testrace
-go tool mage testwatch
+go tool mage test             # Run all tests
+go tool mage testverbose      # Verbose output
+go tool mage testcoverage     # Coverage report
+go tool mage testcoveragehtml # HTML coverage report
+go tool mage testbenchmark    # Benchmarks
+go tool mage testrace         # Race condition detection
+go tool mage testwatch        # Auto-run tests on file changes
 ```
+
+### E2E Tests (Playwright)
+
+End-to-end tests live in `e2e/` and run against a live instance of the app using Playwright and Chromium.
+
+```bash
+npm ci                          # Install dependencies (first time)
+npx playwright install chromium # Install browser (first time)
+go tool mage teste2e            # Run E2E tests headless
+go tool mage teste2eheaded      # Run with visible browser
+go tool mage teste2eui          # Run with Playwright UI
+```
+
+### Linting
+
+```bash
+go tool mage lint              # Run golangci-lint, golint, fieldalignment
+go tool mage fixfieldalignment # Auto-fix struct field alignment
+go tool mage lintwatch         # Lint on file changes
+```
+
+## Updating Frontend Assets
+
+Mage targets to pull the latest versions of frontend dependencies:
+
+```bash
+go tool mage updateassets      # Update all assets
+go tool mage tailwindupdate    # Tailwind CLI binary
+go tool mage htmxupdate        # HTMX + extensions (response-targets, SSE)
+go tool mage hyperscriptupdate # Hyperscript
+go tool mage daisyupdate       # DaisyUI CSS (includes 30+ themes)
+```
+
+## CI/CD Workflows
+
+The template includes GitHub Actions workflows:
+
+- **CI** (`ci.yml`) — Build, vet, and race-condition tests on push/PR
+- **E2E** (`e2e.yml`) — Playwright end-to-end tests on push/PR
+- **Docs** (`docs.yml`) — Generate gomarkdoc API docs and publish to GitHub Pages
+- **Dependency Updates** (`main.yml`) — Weekly `go get -u`, verify build/tests, auto-commit
+- **Release** (`release.yml`) — Semantic versioning with cross-compiled binaries (Linux/Windows)
+- **Screenshots** (`screenshots.yml`) — Automated Playwright screenshot capture
 
 ## Mage Targets
 
-Key Mage targets (run with `go tool mage <target>`):
+All targets are run with `go tool mage <target>`:
 
-- `watch`      — Start dev mode with live reload (Tailwind, templ, Air)
-- `templ`      — Run templ in watch mode
-- `tailwind`   — Build Tailwind CSS
-- `test*`      — Test targets (see above)
-- `caddystart` — Start Caddy with TLS termination using the templated `Caddyfile`
-- `setup`      — Run the template setup script (for initial app configuration)
+| Target                                    | Description                                                       |
+| ----------------------------------------- | ----------------------------------------------------------------- |
+| `watch`                                   | Start dev mode with live reload (Tailwind, templ, Air)            |
+| `build`                                   | Full production build (clean, tailwind, compile, copy files)      |
+| `compile`                                 | Compile Go binary                                                 |
+| `templ` / `templwatch`                    | Run templ / templ in watch mode                                   |
+| `tailwind` / `tailwindwatch`              | Build / watch Tailwind CSS                                        |
+| `air`                                     | Start Air live reload                                             |
+| `test*`                                   | Test targets (see Testing section)                                |
+| `teste2e` / `teste2eheaded` / `teste2eui` | Playwright E2E tests                                              |
+| `lint` / `lintwatch`                      | Lint / lint on file changes                                       |
+| `fixfieldalignment`                       | Auto-fix struct field alignment                                   |
+| `updateassets`                            | Update all frontend assets (Tailwind, HTMX, DaisyUI, Hyperscript) |
+| `caddyinstall`                            | Install Caddy for local HTTPS                                     |
+| `caddystart`                              | Start Caddy with TLS termination                                  |
+| `clean` / `cleanbuild` / `cleandebug`     | Remove build artifacts                                            |
+| `setup`                                   | Run the template setup wizard                                     |
+| `envcheck`                                | Validate required environment variables                           |
+
+## Environment Variables
+
+See `.env.sample` for the full list. Key variables:
+
+| Variable                  | Description                                | Default    |
+| ------------------------- | ------------------------------------------ | ---------- |
+| `SERVER_LISTEN_PORT`      | Echo server port                           | (required) |
+| `LOG_LEVEL`               | DEBUG, INFO, WARN, ERROR                   | INFO       |
+| `ENABLE_DATABASE`         | Enable SQL backend                         | false      |
+| `DB_ENGINE`               | sqlite or sqlserver                        | —          |
+| `AZURE_CLIENT_ID`         | Azure AD app client ID                     | —          |
+| `AZURE_CLIENT_SECRET`     | Azure AD app client secret                 | —          |
+| `AZURE_TENANT_ID`         | Azure AD tenant ID                         | —          |
+| `SESSION_SECRET`          | Session encryption key                     | —          |
+| `CSRF_ROTATE_PER_REQUEST` | Rotate CSRF token per request              | false      |
+| `CSRF_PER_REQUEST_PATHS`  | Comma-separated paths for per-request CSRF | —          |
+| `AZURE_USER_REFRESH_HOUR` | Hour (0-23) for Graph user cache sync      | 5          |
+| `ENABLE_PHOTO_DOWNLOAD`   | Download user photos from Graph            | false      |
