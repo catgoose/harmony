@@ -176,7 +176,7 @@ func inlineReportControl(controls []hypermedia.Control) (hypermedia.Control, boo
 // Use this instead of ErrorStatusFromContext when the error replaces content
 // in-place (not the global banner).
 templ InlineErrorPanel(ec hypermedia.ErrorContext) {
-	<div class="rounded-lg bg-error text-error-content text-sm p-3 space-y-2">
+	<div class="alert alert-error rounded-lg text-sm p-3 space-y-2">
 		<div class="space-y-1">
 			<p class="font-semibold">
 				<span class="badge badge-sm badge-outline">{ strconv.Itoa(ec.StatusCode) }</span>
