@@ -150,7 +150,7 @@ func TestWorkflowGETRoot(t *testing.T) {
 	e.ServeHTTP(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.Contains(t, rec.Body.String(), "Dothog")
+	assert.Contains(t, rec.Body.String(), "Demo")
 }
 
 func TestWorkflowGETHealth(t *testing.T) {

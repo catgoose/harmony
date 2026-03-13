@@ -139,10 +139,22 @@ templ bannerControlButtonsRight(controls []hypermedia.Control) {
 	</div>
 }
 
-// inlineDismissControl returns the first Dismiss or HTMX control (used as restore action).
+// inlineActionControls returns controls that are NOT dismiss or report.
+// These are rendered as standalone buttons above the unified bar (e.g. Retry).
+func inlineActionControls(controls []hypermedia.Control) []hypermedia.Control {
+	var out []hypermedia.Control
+	for _, c := range controls {
+		if c.Kind != hypermedia.ControlKindDismiss && c.Kind != hypermedia.ControlKindReport {
+			out = append(out, c)
+		}
+	}
+	return out
+}
+
+// inlineDismissControl returns the first Dismiss control.
 func inlineDismissControl(controls []hypermedia.Control) (hypermedia.Control, bool) {
 	for _, c := range controls {
-		if c.Kind == hypermedia.ControlKindHTMX || c.Kind == hypermedia.ControlKindDismiss {
+		if c.Kind == hypermedia.ControlKindDismiss {
 			return c, true
 		}
 	}
@@ -181,15 +193,26 @@ templ InlineErrorPanel(ec hypermedia.ErrorContext) {
 	</div>
 }
 
-// inlineErrorActions renders Dismiss + Report as a unified joined button group
-// on the last row of the inline error panel.
+// inlineErrorActions renders action controls (Retry, etc.) followed by a
+// unified Dismiss | Report joined button group on the last row.
 templ inlineErrorActions(controls []hypermedia.Control) {
-	<div class="flex justify-end">
+	<div class="flex items-center justify-between gap-2">
+		<div class="flex flex-wrap gap-2">
+			for _, ctrl := range inlineActionControls(controls) {
+				<button
+					{ hxAttrsFromControl(ctrl)... }
+					class="btn btn-sm border-error-content/20 bg-error-content/10 text-error-content hover:bg-error-content/20"
+					disabled?={ ctrl.Disabled }
+				>
+					{ ctrl.Label }
+				</button>
+			}
+		</div>
 		<div class="join">
 			if dismiss, ok := inlineDismissControl(controls); ok {
 				<button
-					{ hxAttrsFromControl(dismiss)... }
 					class="join-item btn btn-sm border-error-content/20 bg-error-content/10 text-error-content hover:bg-error-content/20"
+					_="on click set the closest parent <div[id]/>'s innerHTML to ''"
 				>
 					{ dismiss.Label }
 				</button>

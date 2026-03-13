@@ -403,6 +403,7 @@ func (gs *controlsGalleryState) handleErrTransient(c echo.Context) error {
 				hypermedia.RetryButton("Retry Save", hypermedia.HxMethodPost,
 					"/hypermedia/controls/errors/transient", "#"+resultIDTransient).
 					WithErrorTarget("#" + resultIDTransient),
+				hypermedia.DismissButton(hypermedia.LabelDismiss),
 				hypermedia.ReportIssueButton(hypermedia.LabelReportIssue, requestID),
 			},
 		}
@@ -445,6 +446,7 @@ func (gs *controlsGalleryState) handleErrValidate(c echo.Context) error {
 					ErrorTarget: "#" + resultIDValidate,
 					HxRequest:   hypermedia.HxGet(fixURL, "#"+resultIDValidate),
 				},
+				hypermedia.DismissButton(hypermedia.LabelDismiss),
 				hypermedia.ReportIssueButton(hypermedia.LabelReportIssue, requestID),
 			},
 		}
@@ -491,6 +493,7 @@ func (gs *controlsGalleryState) handleErrConflict(c echo.Context) error {
 				ErrorTarget: "#" + resultIDConflict,
 				HxRequest:   hypermedia.HxPost("/hypermedia/controls/errors/conflict/copy", "#"+resultIDConflict),
 			},
+			hypermedia.DismissButton(hypermedia.LabelDismiss),
 			hypermedia.ReportIssueButton(hypermedia.LabelReportIssue, requestID),
 		},
 	}
@@ -552,6 +555,7 @@ func (gs *controlsGalleryState) handleErrStale(c echo.Context) error {
 						Target: "#" + resultIDStale,
 					},
 				},
+				hypermedia.DismissButton(hypermedia.LabelDismiss),
 				hypermedia.ReportIssueButton(hypermedia.LabelReportIssue, requestID),
 			},
 		}
@@ -623,6 +627,7 @@ func (gs *controlsGalleryState) handleErrCascade(c echo.Context) error {
 				"/hypermedia/controls/errors/cascade/force", "#"+resultIDCascade,
 				fmt.Sprintf("Delete 'Electronics' AND all %d items?", len(cascadeDependents))).
 				WithErrorTarget("#" + resultIDCascade),
+			hypermedia.DismissButton(hypermedia.LabelDismiss),
 			hypermedia.ReportIssueButton(hypermedia.LabelReportIssue, requestID),
 		},
 	}

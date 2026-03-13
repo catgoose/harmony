@@ -311,23 +311,12 @@ templ RowEditFragment(item GalleryRowItem) {
 
 // ─── Section 13: HATEOAS Error Recovery ─────────────────────────────────────
 
-// GalleryErrorPanel renders an inline error using DaisyUI alert semantics with
-// hypermedia controls.  Each panel has its own ID so multiple can coexist.
+// GalleryErrorPanel renders an inline error with a stacked layout and a unified
+// Dismiss + Report joined button group. Each panel has its own ID so multiple
+// can coexist.
 templ GalleryErrorPanel(panelID string, ec hypermedia.ErrorContext) {
-	<div id={ panelID } role="alert" class="alert alert-error text-sm">
-		<div class="space-y-1">
-			<p class="font-semibold">
-				<span class="badge badge-sm">{ strconv.Itoa(ec.StatusCode) }</span>
-				{ ec.Message }
-			</p>
-			if ec.Err != nil {
-				<p class="text-xs opacity-80">{ ec.Err.Error() }</p>
-			}
-			if ec.Route != "" {
-				<p class="text-xs opacity-60">Route: { ec.Route }</p>
-			}
-		</div>
-		@components.InlineAlertControls(ec.Controls)
+	<div id={ panelID }>
+		@components.InlineErrorPanel(ec)
 	</div>
 }
 
