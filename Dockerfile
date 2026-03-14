@@ -8,14 +8,14 @@ RUN go mod download
 
 COPY . .
 RUN go tool templ generate
-RUN CGO_ENABLED=1 go build -ldflags="-w -s" -o /dothog .
+RUN CGO_ENABLED=1 go build -ldflags="-w -s" -o /harmony .
 
 FROM alpine:latest
 
 RUN apk add --no-cache ca-certificates tzdata
-COPY --from=build /dothog /usr/local/bin/dothog
+COPY --from=build /harmony /usr/local/bin/harmony
 
 ENV SERVER_LISTEN_PORT=8080
 EXPOSE 8080
 
-ENTRYPOINT ["dothog"]
+ENTRYPOINT ["harmony"]

@@ -38,11 +38,11 @@ jobs:
         run: go tool templ generate
 
       - name: Build application
-        run: go build -o dothog .
+        run: go build -o harmony .
 
       - name: Start application
         run: |
-          SERVER_LISTEN_PORT=8080 ./dothog -env production &
+          SERVER_LISTEN_PORT=8080 ./harmony -env production &
           echo "APP_PID=$!" >> $GITHUB_ENV
 
       - name: Capture screenshots and recordings

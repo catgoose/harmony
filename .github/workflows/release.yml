@@ -146,7 +146,7 @@ jobs:
             local goos=$1 goarch=$2 cc=$3 ext=$4
             echo "Building ${goos}/${goarch}..."
             CGO_ENABLED=1 GOOS=$goos GOARCH=$goarch CC="$cc" \
-              go build -ldflags="-w -s" -o "dothog-${goos}-${goarch}${ext}" .
+              go build -ldflags="-w -s" -o "harmony-${goos}-${goarch}${ext}" .
           }
 
           build linux   amd64 "zig cc -target x86_64-linux-musl"       ""
@@ -165,11 +165,11 @@ jobs:
       - name: Create GitHub Release
         run: |
           gh release create ${{ steps.version.outputs.version }} \
-            dothog-linux-amd64 \
-            dothog-linux-arm64 \
-            dothog-darwin-amd64 \
-            dothog-darwin-arm64 \
-            dothog-windows-amd64.exe \
+            harmony-linux-amd64 \
+            harmony-linux-arm64 \
+            harmony-darwin-amd64 \
+            harmony-darwin-arm64 \
+            harmony-windows-amd64.exe \
             --title "Release ${{ steps.version.outputs.version }}" \
             --generate-notes
         env:
