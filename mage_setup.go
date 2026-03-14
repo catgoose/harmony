@@ -233,14 +233,7 @@ func runWizard() (*setup.Options, error) {
 					if name == "" {
 						return ""
 					}
-					binary := binaryNameFromApp(name)
-					suggested := currentModule
-					if suggested == "" {
-						suggested = fmt.Sprintf("github.com/you/%s", binary)
-					} else if suggested == templateModulePath {
-						suggested = fmt.Sprintf("%s-%s", templateModulePath, binary)
-					}
-					return fmt.Sprintf("Leave blank to use: %s", suggested)
+					return fmt.Sprintf("Leave blank to use: github.com/you/%s", binaryNameFromApp(name))
 				}, &appName).
 				Value(&modulePath),
 
@@ -337,23 +330,16 @@ func runWizard() (*setup.Options, error) {
 }
 
 // resolveModulePath determines the final module path from user input and defaults.
-func resolveModulePath(appName, modulePathInput, currentModule string) string {
+func resolveModulePath(appName, modulePathInput, _ string) string {
 	modulePathInput = strings.TrimSpace(modulePathInput)
 	if modulePathInput != "" {
 		return modulePathInput
 	}
 	name := strings.TrimSpace(appName)
 	if name == "" {
-		return currentModule
+		return ""
 	}
-	binary := binaryNameFromApp(name)
-	if currentModule == "" {
-		return fmt.Sprintf("github.com/you/%s", binary)
-	}
-	if currentModule == templateModulePath {
-		return fmt.Sprintf("%s-%s", templateModulePath, binary)
-	}
-	return currentModule
+	return fmt.Sprintf("github.com/you/%s", binaryNameFromApp(name))
 }
 
 // describeFeatures returns a human-readable summary of selected features.
