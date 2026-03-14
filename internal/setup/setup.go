@@ -252,13 +252,7 @@ func Run(ctx context.Context, dir string, opts Options) error {
 		}
 	}
 
-	gitignorePath := filepath.Join(dir, ".gitignore")
-	if data, err := os.ReadFile(gitignorePath); err == nil {
-		content := regexp.MustCompile(`(?m)^dothog$`).ReplaceAllString(string(data), binaryName)
-		if err := os.WriteFile(gitignorePath, []byte(content), 0644); err != nil {
-			return err
-		}
-	}
+
 
 	loggerPath := filepath.Join(dir, "internal", "logger", "logger.go")
 	if data, err := os.ReadFile(loggerPath); err == nil {

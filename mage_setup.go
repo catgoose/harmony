@@ -82,12 +82,12 @@ func Setup() error {
 			if err := cleanupTemplateFiles(); err != nil {
 				return err
 			}
-			fmt.Println("Template setup files removed. You can delete mage_setup.go if you no longer need the setup target.")
+			fmt.Println("Template setup files removed.")
 		}
 		return nil
 	}
 
-	copyFirst, err := huhConfirm("Copy template to a new directory before setting up?")
+	copyFirst, err := huhConfirmDefault("Copy template to a new directory before setting up?", true)
 	if err != nil {
 		return err
 	}
@@ -147,12 +147,14 @@ func Setup() error {
 			cmd.Dir = absTarget
 			_ = cmd.Run()
 		}
-		if err := setup.Run(context.Background(), absTarget, *opts); err != nil {
-			return err
-		}
+		// Remove setup-only files before running setup so that go mod tidy
+		// does not see the rewritten mage_setup.go import.
 		_ = os.RemoveAll(filepath.Join(absTarget, setup.TemplateSetupDir))
 		_ = os.RemoveAll(filepath.Join(absTarget, "internal", "setup"))
 		_ = os.Remove(filepath.Join(absTarget, "mage_setup.go"))
+		if err := setup.Run(context.Background(), absTarget, *opts); err != nil {
+			return err
+		}
 		fmt.Println("Setup complete in", absTarget)
 		return nil
 	}
@@ -191,7 +193,7 @@ func runWizard() (*setup.Options, error) {
 		basePort   string
 		features   []string
 		force      bool
-		confirm    bool
+		confirm    = true
 	)
 
 	currentModule := goModulePath()
@@ -227,13 +229,12 @@ func runWizard() (*setup.Options, error) {
 
 			huh.NewInput().
 				Title("Module path").
-				Placeholder("github.com/you/my-app").
-				DescriptionFunc(func() string {
+				PlaceholderFunc(func() string {
 					name := strings.TrimSpace(appName)
 					if name == "" {
-						return ""
+						return "github.com/you/my-app"
 					}
-					return fmt.Sprintf("Leave blank to use: github.com/you/%s", binaryNameFromApp(name))
+					return fmt.Sprintf("github.com/you/%s", binaryNameFromApp(name))
 				}, &appName).
 				Value(&modulePath),
 
@@ -482,9 +483,17 @@ func setupScriptArgsFromCLI() []string {
 
 // huhConfirm prompts the user with a yes/no confirmation using huh.
 func huhConfirm(message string) (bool, error) {
-	var confirmed bool
+	return huhConfirmDefault(message, false)
+}
+
+// huhConfirmDefault prompts the user with a yes/no confirmation using huh,
+// with a configurable default value.
+func huhConfirmDefault(message string, def bool) (bool, error) {
+	confirmed := def
 	err := huh.NewConfirm().
 		Title(message).
+		Affirmative("Yes").
+		Negative("No").
 		Value(&confirmed).
 		Run()
 	if err != nil {

@@ -75,7 +75,9 @@ func TestSetupReplacesAppNameAndModule(t *testing.T) {
 	gitignorePath := filepath.Join(dest, ".gitignore")
 	gitignoreBytes, err := os.ReadFile(gitignorePath)
 	require.NoError(t, err)
-	require.Contains(t, string(gitignoreBytes), "test-app")
+	// .gitignore should not contain a bare binary name entry; build/ covers compiled output
+	require.NotContains(t, string(gitignoreBytes), "\ntest-app\n",
+		".gitignore should not have a bare binary name entry")
 
 	loggerPath := filepath.Join(dest, "internal", "logger", "logger.go")
 	loggerBytes, err := os.ReadFile(loggerPath)
@@ -271,6 +273,80 @@ func assertBuildSucceeds(t *testing.T, dir string) {
 // ---------------------------------------------------------------------------
 // Feature-combo integration tests
 // ---------------------------------------------------------------------------
+
+// TestSetup_NoBareBinaryInGitignore verifies that .gitignore does not contain
+// a bare binary name entry after setup. The build/ directory covers compiled output.
+func TestSetup_NoBareBinaryInGitignore(t *testing.T) {
+	repoRoot, err := findRepoRoot()
+	require.NoError(t, err)
+
+	dest := t.TempDir()
+	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
+	require.NoError(t, err)
+
+	err = setup.Run(context.Background(), dest, setup.Options{
+		AppName:    "Gitignore Test App",
+		ModulePath: "github.com/test/gitignore-test-app",
+		BasePort:   "20700",
+		Force:      true,
+		Features:   setup.AllFeatures,
+	})
+	require.NoError(t, err)
+
+	gitignoreBytes, err := os.ReadFile(filepath.Join(dest, ".gitignore"))
+	require.NoError(t, err)
+	content := string(gitignoreBytes)
+
+	// Should not have a bare binary name line (old behavior wrote "dothog" or the new binary name)
+	for _, line := range strings.Split(content, "\n") {
+		trimmed := strings.TrimSpace(line)
+		require.NotEqual(t, "gitignore-test-app", trimmed,
+			".gitignore should not contain a bare binary name entry")
+		require.NotEqual(t, "dothog", trimmed,
+			".gitignore should not contain the template binary name")
+	}
+
+	// build/ should still be present to cover compiled output
+	require.Contains(t, content, "build/")
+}
+
+// TestSetup_MageSetupAndInternalSetupRemovable verifies that after setup.Run,
+// the target directory can have mage_setup.go and internal/setup removed
+// and still build successfully with mage. This simulates the copy-to-new-directory
+// flow where these files are removed before the user runs mage.
+func TestSetup_MageSetupAndInternalSetupRemovable(t *testing.T) {
+	repoRoot, err := findRepoRoot()
+	require.NoError(t, err)
+
+	dest := t.TempDir()
+	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
+	require.NoError(t, err)
+
+	// Remove setup-only files before running setup (mimics the copy flow in mage_setup.go)
+	_ = os.RemoveAll(filepath.Join(dest, "_template_setup"))
+	_ = os.RemoveAll(filepath.Join(dest, "internal", "setup"))
+	_ = os.Remove(filepath.Join(dest, "mage_setup.go"))
+
+	err = setup.Run(context.Background(), dest, setup.Options{
+		AppName:    "Mage Clean App",
+		ModulePath: "github.com/test/mage-clean-app",
+		BasePort:   "20800",
+		Force:      true,
+		Features:   setup.AllFeatures,
+	})
+	require.NoError(t, err)
+
+	// mage_setup.go should not exist in the target
+	_, err = os.Stat(filepath.Join(dest, "mage_setup.go"))
+	require.True(t, os.IsNotExist(err), "mage_setup.go should not exist after removal")
+
+	// internal/setup should not exist in the target
+	_, err = os.Stat(filepath.Join(dest, "internal", "setup"))
+	require.True(t, os.IsNotExist(err), "internal/setup should not exist after removal")
+
+	// The project should still build without mage_setup.go and internal/setup
+	assertBuildSucceeds(t, dest)
+}
 
 func TestSetup_FeaturesAll(t *testing.T) {
 	repoRoot, err := findRepoRoot()

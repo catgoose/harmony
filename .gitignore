@@ -51,8 +51,7 @@ db/*
 !db/demo.db
 !db/gen_seed/
 
-# binary
-dothog
+# build output
 build/
 
 # agents
