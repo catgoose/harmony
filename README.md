@@ -379,7 +379,7 @@ settings := NewConfigTable("Settings", "Key", "Value").
 
 ### Prerequisites
 
-- Go 1.24+ (latest)
+- Go 1.26+ (latest)
 - Node.js 22+ (for Playwright E2E tests)
 - [Mage](https://magefile.org/) (`go install github.com/magefile/mage@latest`)
 
