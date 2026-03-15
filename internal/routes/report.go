@@ -9,14 +9,14 @@ import "catgoose/dothog/internal/requestlog"
 type IssueReporter interface {
 	// Report is called when a user submits the Report Issue modal.
 	// requestID identifies the failing request. description is user-provided
-	// context about what they were doing. entries contains the captured log
-	// trail for that request (may be empty if the request aged out of the
-	// ring buffer). Implementations should not modify entries.
-	Report(requestID string, description string, entries []requestlog.Entry) error
+	// context about what they were doing. trace contains the full error trace
+	// including the error chain, request metadata, and captured log entries
+	// (may be nil if the request aged out of the store).
+	Report(requestID string, description string, trace *requestlog.ErrorTrace) error
 }
 
 // defaultReporter is a no-op implementation used when no IssueReporter is configured.
 // It always succeeds — the endpoint still triggers the browser alert.
 type defaultReporter struct{}
 
-func (defaultReporter) Report(string, string, []requestlog.Entry) error { return nil }
+func (defaultReporter) Report(string, string, *requestlog.ErrorTrace) error { return nil }

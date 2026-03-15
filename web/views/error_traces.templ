@@ -1,0 +1,193 @@
+package views
+
+import (
+	"fmt"
+	"strconv"
+
+	"catgoose/dothog/internal/requestlog"
+	"catgoose/dothog/internal/routes/hypermedia"
+	components "catgoose/dothog/web/components/core"
+)
+
+// ErrorTracesPage is the full page for /admin/error-traces.
+templ ErrorTracesPage(bar hypermedia.FilterBar, tableContainer templ.Component) {
+	<div class="p-4 space-y-4">
+		<div class="flex items-center justify-between">
+			<h1 class="text-2xl font-bold">Error Traces</h1>
+		</div>
+		<p class="text-sm text-base-content/60">
+			Captured error traces with full request context and log entries. Errors are automatically recorded when requests fail.
+		</p>
+		@components.FilterBar(bar)
+		@tableContainer
+	</div>
+}
+
+// ErrorTracesTableContainer is the HTMX-replaceable fragment.
+templ ErrorTracesTableContainer(cols []hypermedia.TableCol, body templ.Component, info hypermedia.PageInfo) {
+	<div id="error-traces-table-container">
+		@components.Table(cols, body, info)
+	</div>
+}
+
+// ErrorTracesBody renders the <tbody> rows.
+templ ErrorTracesBody(traces []requestlog.TraceSummary) {
+	<tbody>
+		if len(traces) == 0 {
+			<tr>
+				<td colspan="7" class="text-center text-base-content/50 py-8">
+					No error traces found
+				</td>
+			</tr>
+		}
+		for _, t := range traces {
+			@ErrorTraceRow(t)
+			<tr id={ "detail-row-" + t.RequestID }></tr>
+		}
+	</tbody>
+}
+
+// ErrorTraceRow renders a single summary row.
+templ ErrorTraceRow(t requestlog.TraceSummary) {
+	{{ detailURL := fmt.Sprintf("/admin/error-traces/%s", t.RequestID) }}
+	{{ detailTarget := "#detail-row-" + t.RequestID }}
+	{{ deleteURL := fmt.Sprintf("/admin/error-traces/%s", t.RequestID) }}
+	<tr id={ "trace-row-" + t.RequestID } class="hover">
+		<td class="text-xs font-mono whitespace-nowrap">{ t.CreatedAt }</td>
+		<td>
+			@statusBadge(t.StatusCode)
+		</td>
+		<td class="font-mono text-xs">{ t.Method }</td>
+		<td class="font-mono text-xs max-w-xs truncate" title={ t.Route }>{ t.Route }</td>
+		<td class="text-xs max-w-sm truncate" title={ t.ErrorChain }>{ t.ErrorChain }</td>
+		<td class="text-xs text-base-content/60">{ t.RemoteIP }</td>
+		<td class="flex gap-1">
+			<button
+				class="btn btn-xs btn-ghost"
+				hx-get={ detailURL }
+				hx-target={ detailTarget }
+				hx-swap="innerHTML"
+			>
+				Details
+			</button>
+			<button
+				class="btn btn-xs btn-ghost text-error"
+				hx-delete={ deleteURL }
+				hx-target="#error-traces-table-container"
+				hx-swap="outerHTML"
+				hx-confirm="Delete this error trace?"
+			>
+				Delete
+			</button>
+		</td>
+	</tr>
+}
+
+// statusBadge renders a colored badge for the HTTP status code.
+templ statusBadge(code int) {
+	if code >= 500 {
+		<span class="badge badge-error badge-sm font-mono">{ strconv.Itoa(code) }</span>
+	} else if code >= 400 {
+		<span class="badge badge-warning badge-sm font-mono">{ strconv.Itoa(code) }</span>
+	} else {
+		<span class="badge badge-sm font-mono">{ strconv.Itoa(code) }</span>
+	}
+}
+
+// ErrorTraceDetailContent renders the expandable detail panel.
+templ ErrorTraceDetailContent(trace *requestlog.ErrorTrace) {
+	{{ detailRowSelector := "#detail-row-" + trace.RequestID }}
+	<td colspan="7" class="bg-base-200 p-4">
+		<div class="space-y-4">
+			<div class="flex items-start justify-between">
+				<h3 class="text-lg font-semibold">Error Trace Details</h3>
+				<button
+					class="btn btn-sm btn-ghost"
+					_={ "on click set innerHTML of " + detailRowSelector + " to ''" }
+				>
+					Close
+				</button>
+			</div>
+			<div class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2 text-sm">
+				<div>
+					<span class="font-medium text-base-content/60">Request ID</span>
+					<p class="font-mono text-xs break-all">{ trace.RequestID }</p>
+				</div>
+				<div>
+					<span class="font-medium text-base-content/60">Status</span>
+					<p>@statusBadge(trace.StatusCode)</p>
+				</div>
+				<div>
+					<span class="font-medium text-base-content/60">Method</span>
+					<p class="font-mono">{ trace.Method }</p>
+				</div>
+				<div>
+					<span class="font-medium text-base-content/60">Route</span>
+					<p class="font-mono text-xs">{ trace.Route }</p>
+				</div>
+				<div>
+					<span class="font-medium text-base-content/60">Remote IP</span>
+					<p class="font-mono text-xs">{ trace.RemoteIP }</p>
+				</div>
+				<div>
+					<span class="font-medium text-base-content/60">User</span>
+					<p class="text-xs">
+						if trace.UserID != "" {
+							{ trace.UserID }
+						} else {
+							<span class="text-base-content/40">anonymous</span>
+						}
+					</p>
+				</div>
+				<div class="col-span-2">
+					<span class="font-medium text-base-content/60">User Agent</span>
+					<p class="text-xs truncate" title={ trace.UserAgent }>{ trace.UserAgent }</p>
+				</div>
+			</div>
+			<div>
+				<span class="font-medium text-sm text-base-content/60">Error Chain</span>
+				<pre class="mt-1 p-3 bg-base-300 rounded-lg text-xs font-mono whitespace-pre-wrap break-all">{ trace.ErrorChain }</pre>
+			</div>
+			if len(trace.Entries) > 0 {
+				<div>
+					<span class="font-medium text-sm text-base-content/60">Log Entries ({ strconv.Itoa(len(trace.Entries)) })</span>
+					<div class="mt-1 overflow-x-auto">
+						<table class="table table-xs table-zebra w-full">
+							<thead>
+								<tr>
+									<th>Level</th>
+									<th>Message</th>
+									<th>Attributes</th>
+								</tr>
+							</thead>
+							<tbody>
+								for _, entry := range trace.Entries {
+									<tr>
+										<td>
+											@logLevelBadge(entry.Level)
+										</td>
+										<td class="text-xs">{ entry.Message }</td>
+										<td class="text-xs font-mono text-base-content/60 max-w-md truncate" title={ entry.Attrs }>{ entry.Attrs }</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			}
+		</div>
+	</td>
+}
+
+// logLevelBadge renders a colored badge for the log level.
+templ logLevelBadge(level string) {
+	if level == "ERROR" {
+		<span class="badge badge-error badge-xs">{ level }</span>
+	} else if level == "WARN" {
+		<span class="badge badge-warning badge-xs">{ level }</span>
+	} else if level == "INFO" {
+		<span class="badge badge-info badge-xs">{ level }</span>
+	} else {
+		<span class="badge badge-ghost badge-xs">{ level }</span>
+	}
+}

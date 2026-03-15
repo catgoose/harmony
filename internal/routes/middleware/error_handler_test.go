@@ -32,7 +32,7 @@ func TestErrorHandlerMiddleware_NoError(t *testing.T) {
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 
-	mw := ErrorHandlerMiddleware()
+	mw := ErrorHandlerMiddleware(nil)
 	handler := mw(func(c echo.Context) error {
 		return c.String(http.StatusOK, "all good")
 	})
@@ -51,7 +51,7 @@ func TestErrorHandlerMiddleware_NoError(t *testing.T) {
 func TestErrorHandlerMiddleware_EchoHTTPError_HTMX(t *testing.T) {
 	e := echo.New()
 	e.Use(RequestIDMiddleware())
-	e.Use(ErrorHandlerMiddleware())
+	e.Use(ErrorHandlerMiddleware(nil))
 	e.GET("/test", func(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, "not found")
 	})
@@ -77,7 +77,7 @@ func TestErrorHandlerMiddleware_EchoHTTPError_HTMX(t *testing.T) {
 func TestErrorHandlerMiddleware_EchoHTTPError_NonHTMX(t *testing.T) {
 	e := echo.New()
 	e.Use(RequestIDMiddleware())
-	e.Use(ErrorHandlerMiddleware())
+	e.Use(ErrorHandlerMiddleware(nil))
 	e.GET("/test", func(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "bad request")
 	})
@@ -102,7 +102,7 @@ func TestErrorHandlerMiddleware_EchoHTTPError_NonHTMX(t *testing.T) {
 func TestErrorHandlerMiddleware_HypermediaHTTPError(t *testing.T) {
 	e := echo.New()
 	e.Use(RequestIDMiddleware())
-	e.Use(ErrorHandlerMiddleware())
+	e.Use(ErrorHandlerMiddleware(nil))
 	e.GET("/test", func(c echo.Context) error {
 		he := hypermedia.NewHTTPError(hypermedia.ErrorContext{
 			StatusCode: 404,
@@ -137,7 +137,7 @@ func TestErrorHandlerMiddleware_HypermediaHTTPError(t *testing.T) {
 func TestErrorHandlerMiddleware_HypermediaHTTPError_NonHTMX(t *testing.T) {
 	e := echo.New()
 	e.Use(RequestIDMiddleware())
-	e.Use(ErrorHandlerMiddleware())
+	e.Use(ErrorHandlerMiddleware(nil))
 	e.GET("/test", func(c echo.Context) error {
 		he := hypermedia.NewHTTPError(hypermedia.ErrorContext{
 			StatusCode: 403,
@@ -171,7 +171,7 @@ func TestErrorHandlerMiddleware_HypermediaHTTPError_NonHTMX(t *testing.T) {
 func TestErrorHandlerMiddleware_GenericError_HTMX(t *testing.T) {
 	e := echo.New()
 	e.Use(RequestIDMiddleware())
-	e.Use(ErrorHandlerMiddleware())
+	e.Use(ErrorHandlerMiddleware(nil))
 	e.GET("/test", func(c echo.Context) error {
 		return errors.New("internal failure")
 	})
@@ -192,7 +192,7 @@ func TestErrorHandlerMiddleware_GenericError_HTMX(t *testing.T) {
 func TestErrorHandlerMiddleware_GenericError_NonHTMX(t *testing.T) {
 	e := echo.New()
 	e.Use(RequestIDMiddleware())
-	e.Use(ErrorHandlerMiddleware())
+	e.Use(ErrorHandlerMiddleware(nil))
 	e.GET("/test", func(c echo.Context) error {
 		return errors.New("internal failure")
 	})
@@ -213,7 +213,7 @@ func TestErrorHandlerMiddleware_GenericError_NonHTMX(t *testing.T) {
 
 func TestErrorHandlerMiddleware_ResponseCommitted(t *testing.T) {
 	e := echo.New()
-	e.Use(ErrorHandlerMiddleware())
+	e.Use(ErrorHandlerMiddleware(nil))
 	e.GET("/test", func(c echo.Context) error {
 		// Write something to commit the response
 		c.Response().WriteHeader(http.StatusOK)
@@ -245,7 +245,7 @@ func TestErrorHandlerMiddleware_ContextCanceled(t *testing.T) {
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 
-	mw := ErrorHandlerMiddleware()
+	mw := ErrorHandlerMiddleware(nil)
 	handler := mw(func(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, "not found")
 	})

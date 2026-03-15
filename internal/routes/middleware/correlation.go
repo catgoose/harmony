@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"catgoose/dothog/internal/logger"
+	"catgoose/dothog/internal/requestlog"
 	"catgoose/dothog/internal/shared"
 
 	"github.com/labstack/echo/v4"
@@ -30,6 +31,7 @@ func RequestIDMiddleware() echo.MiddlewareFunc {
 			c.Response().Header().Set("X-Request-ID", requestID)
 
 			ctx := context.WithValue(c.Request().Context(), shared.RequestIDKeyValue, requestID)
+			ctx = requestlog.NewBufferContext(ctx)
 			c.SetRequest(c.Request().WithContext(ctx))
 
 			start := time.Now()

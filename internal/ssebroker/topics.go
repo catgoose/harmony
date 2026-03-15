@@ -10,4 +10,5 @@ const (
 	TopicDashEvents   = "dashboard-events"
 	TopicPeopleUpdate = "people-update"
 	TopicActivityFeed = "activity-feed"
+	TopicErrorTraces  = "error-traces"
 )

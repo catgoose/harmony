@@ -78,11 +78,11 @@ func (ar *appRoutes) InitRoutes() error {
 	reportHandler := func(c echo.Context) error {
 		requestID := c.Param("requestID")
 		description := c.FormValue("description")
-		var entries []requestlog.Entry
+		var trace *requestlog.ErrorTrace
 		if ar.reqLogStore != nil && requestID != "" {
-			entries = ar.reqLogStore.Get(requestID)
+			trace = ar.reqLogStore.Get(requestID)
 		}
-		if err := ar.issueReporter.Report(requestID, description, entries); err != nil {
+		if err := ar.issueReporter.Report(requestID, description, trace); err != nil {
 			logger.WithContext(c.Request().Context()).Error("Issue report failed",
 				"reported_request_id", requestID, "error", err)
 			c.Response().Header().Set("HX-Trigger", `{"showAlert":"Failed to submit report. Please try again."}`)
@@ -103,7 +103,10 @@ func (ar *appRoutes) InitRoutes() error {
 		return handler.RenderComponent(c, corecomponents.ReportIssueModal(cfg))
 	})
 
+	ar.initErrorTracesRoutes()
+
 	// setup:feature:demo:start
+	ar.initLoggingRoutes()
 	ar.initControlsGalleryRoutes()
 	ar.initComponentsRoutes()
 	ar.initComponents2Routes()
@@ -150,6 +153,7 @@ func InitEcho(ctx context.Context, staticFS fs.FS, cfg *config.AppConfig,
 	// setup:feature:session_settings:start
 	settingsRepo repository.SessionSettingsRepository,
 	// setup:feature:session_settings:end
+	reqLogStore *requestlog.Store,
 ) (*echo.Echo, error) {
 	e := echo.New()
 
@@ -184,7 +188,7 @@ func InitEcho(ctx context.Context, staticFS fs.FS, cfg *config.AppConfig,
 	}
 	// setup:feature:auth:end
 
-	e.Use(middleware.ErrorHandlerMiddleware())
+	e.Use(middleware.ErrorHandlerMiddleware(reqLogStore))
 
 	// setup:feature:session_settings:start
 	if settingsRepo != nil {

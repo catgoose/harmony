@@ -35,7 +35,7 @@ func setupAppEcho(t *testing.T) *echo.Echo {
 	require.NotNil(t, cfg)
 
 	ctx := context.Background()
-	e, err := routes.InitEcho(ctx, staticFS, cfg, nil)
+	e, err := routes.InitEcho(ctx, staticFS, cfg, nil, nil)
 	require.NoError(t, err)
 	require.NotNil(t, e)
 
@@ -60,7 +60,7 @@ func TestApplicationStartup(t *testing.T) {
 	require.NoError(t, err)
 	assert.NotNil(t, cfg)
 
-	e, err := routes.InitEcho(context.Background(), staticFS, cfg, nil)
+	e, err := routes.InitEcho(context.Background(), staticFS, cfg, nil, nil)
 	require.NoError(t, err)
 	assert.NotNil(t, e)
 
@@ -237,6 +237,6 @@ func BenchmarkServerStartup(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		cfg, _ := config.GetConfig()
-		_, _ = routes.InitEcho(context.Background(), staticFS, cfg, nil)
+		_, _ = routes.InitEcho(context.Background(), staticFS, cfg, nil, nil)
 	}
 }

@@ -1,0 +1,200 @@
+// setup:feature:demo
+package views
+
+import (
+	"fmt"
+	"strconv"
+
+	"catgoose/dothog/internal/requestlog"
+)
+
+// LoggingPage is the full-page layout for /demo/logging.
+templ LoggingPage() {
+	<div class="p-4 space-y-6 max-w-5xl mx-auto">
+		<div class="flex items-center justify-between mb-4">
+			<h1 class="text-2xl font-bold">Retrospective Logging</h1>
+		</div>
+		<div role="alert" class="alert alert-info text-sm">
+			<div>
+				<p>Demonstrates <strong>promote-on-error</strong> log capture. Logs are buffered per-request in memory.
+				Only when a request fails are the logs persisted to SQLite for debugging.</p>
+				<p class="mt-1">Trigger errors below, then view the captured traces and simulate a support report.</p>
+			</div>
+		</div>
+
+		<!-- SSE connection for live error trace updates -->
+		// setup:feature:sse:start
+		<div hx-ext="sse" sse-connect="/sse/error-traces">
+			<div sse-swap="error-trace" style="display:none"></div>
+		</div>
+		// setup:feature:sse:end
+
+		<!-- Error Generators -->
+		<div class="card bg-base-100 shadow border border-base-300">
+			<div class="card-body p-4">
+				<h2 class="card-title text-base">Generate Errors</h2>
+				<p class="text-sm text-base-content/70 mb-3">
+					Each button triggers a real server error with contextual slog entries along the way.
+					The per-request log buffer is promoted to the error trace store on failure.
+					New traces appear below in real-time via SSE.
+				</p>
+				<div class="flex flex-wrap gap-2">
+					<button
+						class="btn btn-sm btn-error btn-outline"
+						hx-get="/demo/logging/trigger/404"
+						hx-target="#logging-trigger-result"
+						hx-swap="innerHTML"
+					>404 Not Found</button>
+					<button
+						class="btn btn-sm btn-error btn-outline"
+						hx-get="/demo/logging/trigger/400"
+						hx-target="#logging-trigger-result"
+						hx-swap="innerHTML"
+					>400 Bad Request</button>
+					<button
+						class="btn btn-sm btn-error btn-outline"
+						hx-get="/demo/logging/trigger/500"
+						hx-target="#logging-trigger-result"
+						hx-swap="innerHTML"
+					>500 Internal Error</button>
+					<button
+						class="btn btn-sm btn-error btn-outline"
+						hx-get="/demo/logging/trigger/403"
+						hx-target="#logging-trigger-result"
+						hx-swap="innerHTML"
+					>403 Forbidden</button>
+				</div>
+				<div id="logging-trigger-result" class="mt-2"></div>
+			</div>
+		</div>
+
+		<!-- Recent Error Traces -->
+		<div class="card bg-base-100 shadow border border-base-300">
+			<div class="card-body p-4">
+				<div class="flex items-center justify-between mb-3">
+					<h2 class="card-title text-base">Captured Error Traces</h2>
+					<button
+						class="btn btn-sm btn-ghost"
+						hx-get="/demo/logging/traces"
+						hx-target="#logging-traces-list"
+						hx-swap="innerHTML"
+					>Refresh</button>
+				</div>
+				<p class="text-sm text-base-content/70 mb-3">
+					Error traces persisted to SQLite. Click <strong>View Report</strong> to see the JSON payload
+					that would be sent to support (email attachment, Teams webhook, ticket system, etc).
+				</p>
+				<div id="logging-traces-list" hx-get="/demo/logging/traces" hx-trigger="load" hx-swap="innerHTML">
+					<div class="text-center text-base-content/50 py-4">Loading...</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Simulated Report Output -->
+		<div id="logging-report-output"></div>
+
+		<!-- How It Works -->
+		<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+			@loggingPatternCard("Buffer", "Per-request slog buffer on ctx", "Every slog call during a request is captured in a lightweight buffer. No shared locks on the hot path.")
+			@loggingPatternCard("Promote", "ErrorHandlerMiddleware", "When a request returns an error, the buffer is persisted to SQLite with the full error chain and request metadata.")
+			@loggingPatternCard("Report", "IssueReporter interface", "When a user clicks Report Issue, the trace is retrieved and sent to the configured reporter (email, Teams, tickets).")
+		</div>
+	</div>
+}
+
+templ loggingPatternCard(title, method, desc string) {
+	<div class="card bg-base-100 shadow border border-base-300">
+		<div class="card-body p-4">
+			<h3 class="font-semibold text-sm">{ title }</h3>
+			<code class="text-xs text-primary bg-base-200 px-2 py-1 rounded">{ method }</code>
+			<p class="text-sm text-base-content/70">{ desc }</p>
+		</div>
+	</div>
+}
+
+// LoggingTracesList renders the list of recent error traces.
+templ LoggingTracesList(traces []requestlog.TraceSummary) {
+	if len(traces) == 0 {
+		<div class="text-center text-base-content/50 py-4">
+			No error traces yet. Trigger some errors above to see them captured here.
+		</div>
+	} else {
+		<div class="overflow-x-auto">
+			<table class="table table-xs table-zebra w-full">
+				<thead>
+					<tr>
+						<th>Time</th>
+						<th>Status</th>
+						<th>Method</th>
+						<th>Route</th>
+						<th>Error</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody id="logging-traces-tbody">
+					for _, t := range traces {
+						@loggingTraceRow(t)
+					}
+				</tbody>
+			</table>
+		</div>
+	}
+}
+
+templ loggingTraceRow(t requestlog.TraceSummary) {
+	{{ reportURL := fmt.Sprintf("/demo/logging/report/%s", t.RequestID) }}
+	<tr>
+		<td class="text-xs font-mono whitespace-nowrap">{ t.CreatedAt }</td>
+		<td>
+			@loggingStatusBadge(t.StatusCode)
+		</td>
+		<td class="font-mono text-xs">{ t.Method }</td>
+		<td class="font-mono text-xs max-w-xs truncate" title={ t.Route }>{ t.Route }</td>
+		<td class="text-xs max-w-sm truncate" title={ t.ErrorChain }>{ t.ErrorChain }</td>
+		<td>
+			<button
+				class="btn btn-xs btn-primary btn-outline"
+				hx-get={ reportURL }
+				hx-target="#logging-report-output"
+				hx-swap="innerHTML"
+			>View Report</button>
+		</td>
+	</tr>
+}
+
+// LoggingTraceRowOOB renders a new trace row as an OOB swap that prepends to the tbody.
+templ LoggingTraceRowOOB(t requestlog.TraceSummary) {
+	<tbody id="logging-traces-tbody" hx-swap-oob="afterbegin">
+		@loggingTraceRow(t)
+	</tbody>
+}
+
+templ loggingStatusBadge(code int) {
+	if code >= 500 {
+		<span class="badge badge-error badge-sm font-mono">{ strconv.Itoa(code) }</span>
+	} else if code >= 400 {
+		<span class="badge badge-warning badge-sm font-mono">{ strconv.Itoa(code) }</span>
+	} else {
+		<span class="badge badge-sm font-mono">{ strconv.Itoa(code) }</span>
+	}
+}
+
+// LoggingReportOutput renders the simulated support report as formatted JSON.
+templ LoggingReportOutput(trace *requestlog.ErrorTrace, jsonPayload string) {
+	<div class="card bg-base-100 shadow border border-base-300 mt-4">
+		<div class="card-body p-4">
+			<div class="flex items-center justify-between">
+				<h3 class="card-title text-base">Simulated Support Report</h3>
+				<span class="badge badge-ghost text-xs font-mono">{ trace.RequestID }</span>
+			</div>
+			<p class="text-sm text-base-content/70">
+				This is the JSON payload that would be attached to a support email, Teams message, or ticket.
+				The <code class="text-xs bg-base-200 px-1 rounded">IssueReporter</code> interface receives this data
+				when a user clicks "Report Issue" from an error banner.
+			</p>
+			<div class="mt-2">
+				<pre class="p-4 bg-base-300 rounded-lg text-xs font-mono overflow-x-auto whitespace-pre max-h-96 overflow-y-auto">{ jsonPayload }</pre>
+			</div>
+		</div>
+	</div>
+}

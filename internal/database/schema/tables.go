@@ -12,6 +12,26 @@ var SessionSettingsTable = NewTable("SessionSettings").
 
 // setup:feature:session_settings:end
 
+var ErrorTracesTable = NewTable("ErrorTraces").
+	Columns(
+		AutoIncrCol("Id"),
+		Col("RequestID", TypeVarchar(64)).NotNull().Unique(),
+		Col("ErrorChain", TypeText()).NotNull(),
+		Col("StatusCode", TypeInt()).NotNull(),
+		Col("Route", TypeString(500)).NotNull(),
+		Col("Method", TypeString(10)).NotNull(),
+		Col("UserAgent", TypeText()),
+		Col("RemoteIP", TypeString(45)),
+		Col("UserID", TypeString(255)),
+		Col("Entries", TypeText()).NotNull(),
+	).
+	WithTimestamps().
+	Indexes(
+		Index("idx_error_traces_request_id", "RequestID"),
+		Index("idx_error_traces_created_at", "CreatedAt"),
+		Index("idx_error_traces_user_id", "UserID"),
+	)
+
 var UsersTable = NewTable("Users").
 	Columns(
 		AutoIncrCol("ID"),

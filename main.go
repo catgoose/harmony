@@ -47,9 +47,8 @@ func must(fs fs.FS, err error) fs.FS {
 }
 
 func main() {
-	reqLogStore := requestlog.NewStore(512)
 	logger.SetHandlerWrapper(func(h slog.Handler) slog.Handler {
-		return requestlog.NewHandler(h, reqLogStore)
+		return requestlog.NewHandler(h)
 	})
 	logger.Init()
 	flag.Parse()
@@ -74,6 +73,30 @@ func main() {
 
 	appCtx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
+	// Error trace store — persists error request logs to SQLite for debugging.
+	traceDB, err := database.OpenSQLite(appCtx, "db/error_traces.db")
+	if err != nil {
+		logger.Fatal("Failed to open error traces database", "error", err)
+	}
+	defer func() {
+		if closeErr := traceDB.Close(); closeErr != nil {
+			logger.Info("Error closing error traces database", "error", closeErr)
+		}
+	}()
+	traceDialect, err := dialect.New(dialect.SQLite)
+	if err != nil {
+		logger.Fatal("Failed to create error traces dialect", "error", err)
+	}
+	traceManager := dbrepo.NewManager(traceDB, traceDialect, schema.ErrorTracesTable)
+	if err := traceManager.EnsureSchema(appCtx); err != nil {
+		logger.Fatal("Failed to ensure error traces schema", "error", err)
+	}
+	reqLogStore := requestlog.NewStore(traceDB)
+	reqLogStore.StartCleanup(appCtx, 24*time.Hour, 1*time.Hour)
+	// setup:feature:demo:start
+	routes.SeedErrorTraces(reqLogStore)
+	// setup:feature:demo:end
 
 	// setup:feature:database:start
 	if cfg.EnableDatabase {
@@ -142,6 +165,7 @@ func main() {
 		// setup:feature:session_settings:start
 		settingsRepo,
 		// setup:feature:session_settings:end
+		reqLogStore,
 	)
 	if err != nil {
 		logger.Fatal("Failed to initialize Echo", "error", err)

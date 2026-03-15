@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"catgoose/dothog/internal/logger"
+	"catgoose/dothog/internal/requestlog"
 	"catgoose/dothog/internal/routes/hypermedia"
 	"catgoose/dothog/internal/routes/response"
 	corecomponents "catgoose/dothog/web/components/core"
@@ -96,13 +97,53 @@ func handleErrorWithContext(c echo.Context, ec hypermedia.ErrorContext) error {
 		Send()
 }
 
-// ErrorHandlerMiddleware automatically wraps errors returned by handlers in HandleError
-func ErrorHandlerMiddleware() echo.MiddlewareFunc {
+// ErrorHandlerMiddleware automatically wraps errors returned by handlers in HandleError.
+// When a reqLogStore is provided, the per-request log buffer is promoted to
+// the shared store on error so it can be retrieved for issue reports.
+func ErrorHandlerMiddleware(reqLogStore *requestlog.Store) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			err := next(c)
 			if err == nil {
 				return nil
+			}
+
+			// Determine status code from error type before promoting.
+			statusCode := http.StatusInternalServerError
+			var hhe *hypermedia.HTTPError
+			var he *echo.HTTPError
+			if errors.As(err, &hhe) {
+				statusCode = hhe.EC.StatusCode
+			} else if errors.As(err, &he) {
+				statusCode = he.Code
+			}
+
+			// Promote per-request log buffer to the shared store on error.
+			if reqLogStore != nil {
+				requestID := GetRequestID(c)
+				if requestID != "" {
+					var entries []requestlog.Entry
+					if buf := requestlog.GetBuffer(c.Request().Context()); buf != nil {
+						entries = buf.Entries
+					}
+					userID, _ := c.Get("azureId").(string)
+				// setup:feature:auth:start
+				if userID == "" {
+					logger.WithContext(c.Request().Context()).Warn("Error trace missing UserID: azureId not set on echo context")
+				}
+				// setup:feature:auth:end
+					reqLogStore.Promote(requestlog.ErrorTrace{
+						RequestID:  requestID,
+						ErrorChain: err.Error(),
+						StatusCode: statusCode,
+						Route:      c.Request().URL.Path,
+						Method:     c.Request().Method,
+						UserAgent:  c.Request().UserAgent(),
+						RemoteIP:   c.RealIP(),
+						UserID:     userID,
+						Entries:    entries,
+					})
+				}
 			}
 
 			// If the response is already committed, don't modify it
@@ -111,14 +152,12 @@ func ErrorHandlerMiddleware() echo.MiddlewareFunc {
 			}
 
 			// 1. HTTPError — rich error with hypermedia controls
-			var hhe *hypermedia.HTTPError
-			if errors.As(err, &hhe) {
+			if hhe != nil {
 				return handleErrorWithContext(c, hhe.EC)
 			}
 
 			// 2. echo.HTTPError — convert to HTML for HTMX requests
-			var he *echo.HTTPError
-			if errors.As(err, &he) {
+			if he != nil {
 				message := ""
 				if he.Message != nil {
 					if msg, ok := he.Message.(string); ok {

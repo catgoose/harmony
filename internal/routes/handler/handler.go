@@ -41,8 +41,10 @@ func appNavComponent(path string) templ.Component {
 				// setup:feature:sse:end
 			},
 		},
+		{Label: "Logging", Href: "/demo/logging"},
 		{Label: "Repository", Href: "/demo/repository"},
 		{Label: "Admin", Href: "/admin"},
+		{Label: "Error Traces", Href: "/admin/error-traces"},
 		// setup:feature:demo:end
 	}, path)
 	return corecomponents.NavBar(items)
