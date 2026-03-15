@@ -38,6 +38,8 @@ const pages = [
   { path: "/hypermedia/state", name: "state", title: "State Patterns" },
   { path: "/hypermedia/components3", name: "components3", title: "Components 3" },
   { path: "/hypermedia/realtime", name: "realtime", title: "Realtime Dashboard" },
+  { path: "/demo/logging", name: "logging", title: "Retrospective Logging" },
+  { path: "/admin/error-traces", name: "error-traces", title: "Error Traces" },
 ];
 
 async function waitForApp(url, maxRetries = 30) {

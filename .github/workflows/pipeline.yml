@@ -153,6 +153,8 @@ jobs:
 
       - name: Run e2e tests
         run: npx playwright test --config e2e/playwright.config.ts
+        env:
+          APP_BINARY: harmony
 
       - name: Upload test report
         uses: actions/upload-artifact@v6
