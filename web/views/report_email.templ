@@ -1,0 +1,64 @@
+// setup:feature:demo
+package views
+
+// ReportEmailData holds the simulated email content for the report demo.
+type ReportEmailData struct {
+	To          string
+	From        string
+	Subject     string
+	Description string
+	RequestID   string
+	Attachment  string
+}
+
+// ReportEmailModal renders a modal showing what a support email would look like.
+// It is swapped OOB into #report-email-container and auto-opens via hyperscript.
+templ ReportEmailModal(data ReportEmailData) {
+	<div id="report-email-container" hx-swap-oob="innerHTML">
+		<dialog id="report-email-modal" class="modal" _="on load call me.showModal()">
+			<div class="modal-box max-w-3xl">
+				<form method="dialog">
+					<button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">X</button>
+				</form>
+				<h3 class="text-lg font-bold mb-4">Simulated Support Email</h3>
+				<p class="text-sm text-base-content/60 mb-4">
+					This is what an <code class="text-xs bg-base-200 px-1 rounded">IssueReporter</code> implementation would send to your support team.
+				</p>
+				<div class="space-y-3 text-sm">
+					<div class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 border-b border-base-300 pb-3">
+						<span class="font-medium text-base-content/60">To:</span>
+						<span>{ data.To }</span>
+						<span class="font-medium text-base-content/60">From:</span>
+						<span>
+							if data.From != "" {
+								{ data.From }
+							} else {
+								<span class="text-base-content/40">anonymous user</span>
+							}
+						</span>
+						<span class="font-medium text-base-content/60">Subject:</span>
+						<span class="font-semibold">{ data.Subject }</span>
+					</div>
+					if data.Description != "" {
+						<div>
+							<span class="font-medium text-base-content/60">User Description:</span>
+							<p class="mt-1 p-3 bg-base-200 rounded-lg text-sm">{ data.Description }</p>
+						</div>
+					}
+					<div>
+						<div class="flex items-center gap-2 mb-1">
+							<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-base-content/40" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13"></path>
+							</svg>
+							<span class="font-medium text-base-content/60">Attachment: error_trace_{ data.RequestID }.json</span>
+						</div>
+						<pre class="p-3 bg-base-300 rounded-lg text-xs font-mono overflow-x-auto whitespace-pre max-h-64 overflow-y-auto">{ data.Attachment }</pre>
+					</div>
+				</div>
+			</div>
+			<form method="dialog" class="modal-backdrop">
+				<button>close</button>
+			</form>
+		</dialog>
+	</div>
+}

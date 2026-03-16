@@ -3,11 +3,26 @@ package views
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"catgoose/dothog/internal/requestlog"
 	"catgoose/dothog/internal/routes/hypermedia"
 	components "catgoose/dothog/web/components/core"
 )
+
+// parseAttrs splits a "key=value key2=value2" string into pairs.
+func parseAttrs(attrs string) [][]string {
+	if attrs == "" {
+		return nil
+	}
+	var pairs [][]string
+	for _, part := range strings.Fields(attrs) {
+		if k, v, ok := strings.Cut(part, "="); ok {
+			pairs = append(pairs, []string{k, v})
+		}
+	}
+	return pairs
+}
 
 // ErrorTracesPage is the full page for /admin/error-traces.
 templ ErrorTracesPage(bar hypermedia.FilterBar, tableContainer templ.Component) {
@@ -47,12 +62,22 @@ templ ErrorTracesBody(traces []requestlog.TraceSummary) {
 	</tbody>
 }
 
-// ErrorTraceRow renders a single summary row.
+// ErrorTraceRow renders a single summary row with an expand chevron.
 templ ErrorTraceRow(t requestlog.TraceSummary) {
 	{{ detailURL := fmt.Sprintf("/admin/error-traces/%s", t.RequestID) }}
 	{{ detailTarget := "#detail-row-" + t.RequestID }}
-	{{ deleteURL := fmt.Sprintf("/admin/error-traces/%s", t.RequestID) }}
-	<tr id={ "trace-row-" + t.RequestID } class="hover">
+	{{ chevronID := "chevron-" + t.RequestID }}
+	<tr id={ "trace-row-" + t.RequestID } class="hover cursor-pointer"
+		hx-get={ detailURL }
+		hx-target={ detailTarget }
+		hx-swap="innerHTML"
+		_={ "on click toggle .rotate-90 on #" + chevronID }
+	>
+		<td class="px-1">
+			<svg id={ chevronID } class="w-4 h-4 text-base-content/40 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+				<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path>
+			</svg>
+		</td>
 		<td class="text-xs font-mono whitespace-nowrap">{ t.CreatedAt }</td>
 		<td>
 			@statusBadge(t.StatusCode)
@@ -61,25 +86,6 @@ templ ErrorTraceRow(t requestlog.TraceSummary) {
 		<td class="font-mono text-xs max-w-xs truncate" title={ t.Route }>{ t.Route }</td>
 		<td class="text-xs max-w-sm truncate" title={ t.ErrorChain }>{ t.ErrorChain }</td>
 		<td class="text-xs text-base-content/60">{ t.RemoteIP }</td>
-		<td class="flex gap-1">
-			<button
-				class="btn btn-xs btn-ghost"
-				hx-get={ detailURL }
-				hx-target={ detailTarget }
-				hx-swap="innerHTML"
-			>
-				Details
-			</button>
-			<button
-				class="btn btn-xs btn-ghost text-error"
-				hx-delete={ deleteURL }
-				hx-target="#error-traces-table-container"
-				hx-swap="outerHTML"
-				hx-confirm="Delete this error trace?"
-			>
-				Delete
-			</button>
-		</td>
 	</tr>
 }
 
@@ -101,12 +107,23 @@ templ ErrorTraceDetailContent(trace *requestlog.ErrorTrace) {
 		<div class="space-y-4">
 			<div class="flex items-start justify-between">
 				<h3 class="text-lg font-semibold">Error Trace Details</h3>
-				<button
-					class="btn btn-sm btn-ghost"
-					_={ "on click set innerHTML of " + detailRowSelector + " to ''" }
-				>
-					Close
-				</button>
+				<div class="flex gap-1">
+					<button
+						class="btn btn-sm btn-error btn-outline"
+						hx-delete={ "/admin/error-traces/" + trace.RequestID }
+						hx-target="#error-traces-table-container"
+						hx-swap="outerHTML"
+						hx-confirm="Delete this error trace?"
+					>
+						Delete
+					</button>
+					<button
+						class="btn btn-sm btn-ghost"
+						_={ "on click set innerHTML of " + detailRowSelector + " to '' then remove .rotate-90 from #chevron-" + trace.RequestID }
+					>
+						Close
+					</button>
+				</div>
 			</div>
 			<div class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2 text-sm">
 				<div>
@@ -151,27 +168,42 @@ templ ErrorTraceDetailContent(trace *requestlog.ErrorTrace) {
 			if len(trace.Entries) > 0 {
 				<div>
 					<span class="font-medium text-sm text-base-content/60">Log Entries ({ strconv.Itoa(len(trace.Entries)) })</span>
-					<div class="mt-1 overflow-x-auto">
-						<table class="table table-xs table-zebra w-full">
-							<thead>
-								<tr>
-									<th>Level</th>
-									<th>Message</th>
-									<th>Attributes</th>
-								</tr>
-							</thead>
-							<tbody>
-								for _, entry := range trace.Entries {
-									<tr>
-										<td>
-											@logLevelBadge(entry.Level)
-										</td>
-										<td class="text-xs">{ entry.Message }</td>
-										<td class="text-xs font-mono text-base-content/60 max-w-md truncate" title={ entry.Attrs }>{ entry.Attrs }</td>
-									</tr>
+					<div class="mt-1 space-y-1">
+						for i, entry := range trace.Entries {
+							{{ entryID := fmt.Sprintf("entry-attrs-%s-%d", trace.RequestID, i) }}
+							{{ pairs := parseAttrs(entry.Attrs) }}
+							<div class={ "rounded-lg border p-2", templ.KV("border-error/30 bg-error/5", entry.Level == "ERROR"), templ.KV("border-warning/30 bg-warning/5", entry.Level == "WARN"), templ.KV("border-base-300 bg-base-200", entry.Level != "ERROR" && entry.Level != "WARN") }>
+								<div
+									class="flex items-center gap-2 cursor-pointer select-none"
+									if len(pairs) > 0 {
+										_={ "on click toggle .hidden on #" + entryID + " then toggle .rotate-90 on .chevron in me" }
+									}
+								>
+									if len(pairs) > 0 {
+										<svg class="chevron w-3 h-3 text-base-content/40 transition-transform shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path>
+										</svg>
+									} else {
+										<div class="w-3"></div>
+									}
+									@logLevelBadge(entry.Level)
+									<span class="text-xs">{ entry.Message }</span>
+									if len(pairs) > 0 {
+										<span class="text-xs text-base-content/30 ml-auto">{ strconv.Itoa(len(pairs)) } attrs</span>
+									}
+								</div>
+								if len(pairs) > 0 {
+									<div id={ entryID } class="hidden mt-2 ml-5 pl-3 border-l-2 border-base-300">
+										<div class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-0.5">
+											for _, pair := range pairs {
+												<span class="text-xs font-mono text-base-content/50">{ pair[0] }</span>
+												<span class="text-xs font-mono break-all">{ pair[1] }</span>
+											}
+										</div>
+									</div>
 								}
-							</tbody>
-						</table>
+							</div>
+						}
 					</div>
 				</div>
 			}

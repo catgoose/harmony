@@ -10,12 +10,16 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
+	"time"
 
+	// setup:feature:demo:start
 	"catgoose/dothog/internal/setup"
+	// setup:feature:demo:end
 
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
@@ -313,11 +317,7 @@ func Templ() error {
 
 // TemplWatch runs Templ in watch mode
 func TemplWatch() error {
-	openBrowser := os.Getenv("OPEN_BROWSER")
 	cmd := getTemplCmd()
-	if openBrowser == "false" {
-		cmd = append(cmd, "--open-browser=false")
-	}
 	return sh.RunV(cmd[0], cmd[1:]...)
 }
 
@@ -450,6 +450,15 @@ func Watch() error {
 		errc <- CaddyStart()
 	}()
 
+	if os.Getenv("OPEN_BROWSER") != "false" {
+		go func() {
+			time.Sleep(2 * time.Second)
+			url := "https://localhost:" + resolvePort(caddyTLSPort, 2)
+			fmt.Println("Opening browser at:", url)
+			openBrowserURL(url)
+		}()
+	}
+
 	// Wait for all commands to complete or error
 	for range 4 {
 		if err := <-errc; err != nil {
@@ -457,6 +466,20 @@ func Watch() error {
 		}
 	}
 	return nil
+}
+
+// openBrowserURL opens the given URL in the default browser.
+func openBrowserURL(url string) {
+	var cmd *exec.Cmd
+	switch runtime.GOOS {
+	case "darwin":
+		cmd = exec.Command("open", url)
+	case "windows":
+		cmd = exec.Command("rundll32", "url.dll,FileProtocolHandler", url)
+	default:
+		cmd = exec.Command("xdg-open", url)
+	}
+	_ = cmd.Start()
 }
 
 func nodeModulesCheck() error {
@@ -564,6 +587,8 @@ func downloadFile(url, filepath string) error {
 	return sh.Run("curl", "-Lso", filepath, url)
 }
 
+// setup:feature:demo:start
+
 // SetupTo copies the template to dest, runs setup there, and leaves this repo
 // untouched. Use it to preview exactly what a consumer gets after running setup.
 //
@@ -668,6 +693,8 @@ func parseFeatureFlag(val string) []string {
 	}
 	return features
 }
+
+// setup:feature:demo:end
 
 // Lint runs static analysis and style checks on the codebase.
 func Lint() error {

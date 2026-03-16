@@ -224,7 +224,9 @@ test.describe("Repository Demo Page", () => {
 
   test("navigation includes Repository link", async ({ page }) => {
     await navigateTo(page, "/demo/repository");
-    const navLink = page.locator('a:has-text("Repository")');
+    // Open the Demo dropdown to reveal the link
+    await page.locator('nav summary:has-text("Demo")').click();
+    const navLink = page.locator('nav a:has-text("Repository")');
     await expect(navLink).toBeVisible();
   });
 });

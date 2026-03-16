@@ -87,10 +87,20 @@ func buildConfig() (*AppConfig, error) {
 	}
 	// setup:feature:graph:end
 
+	appName := dio.EnvWithDefault("APP_NAME", "")
+	// setup:feature:demo:start
+	if appName == "" {
+		appName = "dothog"
+	}
+	// setup:feature:demo:end
+	if appName == "" {
+		return nil, fmt.Errorf("APP_NAME is required")
+	}
+
 	// setup:feature:auth:start
 	croonerDisabled := true
 	var croonerConfig *crooner.AuthConfigParams
-	var sessionSecret, appName string
+	var sessionSecret string
 	if !croonerDisabled {
 		azureClientID, err := getEnvVar("AZURE_CLIENT_ID", "azure client id")
 		if err != nil {
@@ -119,10 +129,6 @@ func buildConfig() (*AppConfig, error) {
 		sessionSecret, err = getEnvVar("SESSION_SECRET", "session secret")
 		if err != nil {
 			return nil, err
-		}
-		appName = "app"
-		if name, err := dio.Env("APP_NAME"); err == nil && name != "" {
-			appName = name
 		}
 		croonerConfig = &crooner.AuthConfigParams{
 			ClientID:          azureClientID,

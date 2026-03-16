@@ -59,24 +59,24 @@ chmod +x harmony-linux-amd64
 harmony-windows-amd64.exe
 ```
 
-The server starts on `http://localhost:8080` by default. Override with:
+The server starts on `http://localhost:3000` by default. Override with:
 
 ```bash
-SERVER_LISTEN_PORT=3000 ./harmony-linux-amd64
+SERVER_LISTEN_PORT=8080 ./harmony-linux-amd64
 ```
 
 ### From Docker
 
 ```bash
 docker pull ghcr.io/catgoose/harmony:latest
-docker run -p 8080:8080 ghcr.io/catgoose/harmony:latest
+docker run -p 3000:3000 ghcr.io/catgoose/harmony:latest
 ```
 
 Or build it yourself:
 
 ```bash
 docker build -t harmony .
-docker run -p 8080:8080 harmony
+docker run -p 3000:3000 harmony
 ```
 
 ### From Source
@@ -394,7 +394,7 @@ settings := NewConfigTable("Settings", "Key", "Value").
 
 ### Prerequisites
 
-- Go 1.26+ (latest)
+- Go 1.24+ (latest)
 - Node.js 22+ (for Playwright E2E tests)
 - [Mage](https://magefile.org/) (`go install github.com/magefile/mage@latest`)
 
