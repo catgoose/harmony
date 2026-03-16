@@ -11,6 +11,7 @@ See [PHILOSOPHY.md](docs/PHILOSOPHY.md) for the architectural principles behind 
 - [Harmony](#harmony)
   - [Quick Start](#quick-start)
     - [From Release Binary](#from-release-binary)
+    - [From Docker](#from-docker)
     - [From Source](#from-source)
   - [Template Setup](#template-setup)
   - [Features](#features)
@@ -62,6 +63,20 @@ The server starts on `http://localhost:8080` by default. Override with:
 
 ```bash
 SERVER_LISTEN_PORT=3000 ./harmony-linux-amd64
+```
+
+### From Docker
+
+```bash
+docker pull ghcr.io/catgoose/harmony:latest
+docker run -p 8080:8080 ghcr.io/catgoose/harmony:latest
+```
+
+Or build it yourself:
+
+```bash
+docker build -t harmony .
+docker run -p 8080:8080 harmony
 ```
 
 ### From Source
@@ -379,7 +394,7 @@ settings := NewConfigTable("Settings", "Key", "Value").
 
 ### Prerequisites
 
-- Go 1.26+ (latest)
+- Go 1.24+ (latest)
 - Node.js 22+ (for Playwright E2E tests)
 - [Mage](https://magefile.org/) (`go install github.com/magefile/mage@latest`)
 
