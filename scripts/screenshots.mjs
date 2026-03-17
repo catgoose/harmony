@@ -40,6 +40,7 @@ const pages = [
   { path: "/hypermedia/realtime", name: "realtime", title: "Realtime Dashboard" },
   { path: "/demo/logging", name: "logging", title: "Retrospective Logging" },
   { path: "/admin/error-traces", name: "error-traces", title: "Error Traces" },
+  { path: "/demo/people?from=3", name: "breadcrumbs", title: "Breadcrumb Origin Tracking" },
 ];
 
 async function waitForApp(url, maxRetries = 30) {
@@ -62,21 +63,10 @@ async function main() {
 
   const browser = await chromium.launch();
 
-  // --- Theme helpers (random DaisyUI theme per screenshot) ---
-  const daisyThemes = [
-    "light", "dark", "cupcake", "emerald", "corporate", "synthwave",
-    "retro", "cyberpunk", "valentine", "garden", "forest", "lofi",
-    "pastel", "fantasy", "wireframe", "luxury", "dracula", "cmyk",
-    "autumn", "business", "acid", "lemonade", "night", "coffee",
-    "winter", "dim", "nord", "sunset", "caramellatte", "abyss", "silk",
-  ];
-
-  let lastTheme = null;
+  // Use a consistent theme for reproducible screenshots.
+  const defaultTheme = "light";
   function randomTheme() {
-    const choices = lastTheme ? daisyThemes.filter((t) => t !== lastTheme) : daisyThemes;
-    const theme = choices[Math.floor(Math.random() * choices.length)];
-    lastTheme = theme;
-    return theme;
+    return defaultTheme;
   }
 
   async function setTheme(page, theme) {

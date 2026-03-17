@@ -4,7 +4,7 @@ A Go + HTMX application template for building server-driven hypermedia applicati
 
 Harmony runs as a single binary with all assets embedded. No external runtime dependencies, no configuration files required to start.
 
-See [PHILOSOPHY.md](docs/PHILOSOPHY.md) for the architectural principles behind the project.
+See [PHILOSOPHY.md](PHILOSOPHY.md) for the architectural principles behind the project.
 
 <!--toc:start-->
 
@@ -394,7 +394,7 @@ settings := NewConfigTable("Settings", "Key", "Value").
 
 ### Prerequisites
 
-- Go 1.26+ (latest)
+- Go 1.24+ (latest)
 - Node.js 22+ (for Playwright E2E tests)
 - [Mage](https://magefile.org/) (`go install github.com/magefile/mage@latest`)
 
