@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"sync"
 
 	corecomponents "catgoose/dothog/web/components/core"
 
@@ -104,7 +105,8 @@ func RenderBaseLayout(c echo.Context, cmp templ.Component) error {
 
 	var crumbs []hypermedia.Breadcrumb
 	from := c.QueryParam("from")
-	pathCrumbs := buildPathCrumbs(c.Request().URL.Path, from)
+	routes := routeSet(c.Echo())
+	pathCrumbs := buildPathCrumbs(c.Request().URL.Path, from, routes)
 
 	if mask := hypermedia.ParseFromParam(from); mask != 0 {
 		// Prepend registered origins when ?from= is present.
@@ -123,45 +125,64 @@ func RenderBaseLayout(c echo.Context, cmp templ.Component) error {
 	return RenderComponent(c, views.Index(cmp, nav, csrfToken, dio.Dev(), theme, crumbs, version.Version))
 }
 
-// skipSegments are path prefixes that don't produce meaningful breadcrumb labels.
-var skipSegments = map[string]bool{
-	"demo": true, "admin": true, "hypermedia": true, "api": true,
+var (
+	getRoutes     map[string]bool
+	getRoutesOnce sync.Once
+)
+
+// routeSet returns the set of GET-routable paths registered with the Echo
+// instance. The set is built once on first call and cached for the process
+// lifetime (routes are fixed after startup).
+func routeSet(e *echo.Echo) map[string]bool {
+	getRoutesOnce.Do(func() {
+		getRoutes = make(map[string]bool)
+		for _, r := range e.Routes() {
+			if r.Method == http.MethodGet {
+				getRoutes[r.Path] = true
+			}
+		}
+	})
+	return getRoutes
 }
 
-// buildPathCrumbs derives breadcrumb segments from the URL path, skipping
-// non-meaningful prefixes. The terminal segment has no href. The from param
-// is forwarded on intermediate links.
-func buildPathCrumbs(path, from string) []hypermedia.Breadcrumb {
+// buildPathCrumbs derives breadcrumb segments from the URL path. Only
+// intermediate segments that correspond to a registered GET route produce a
+// linked breadcrumb; segments with no route are silently skipped. The terminal
+// segment always appears (unlinked). The from param is forwarded on
+// intermediate links.
+func buildPathCrumbs(path, from string, routes map[string]bool) []hypermedia.Breadcrumb {
 	trimmed := strings.Trim(path, "/")
 	if trimmed == "" {
 		return nil
 	}
-	allSegments := strings.Split(trimmed, "/")
-
-	// Skip non-meaningful prefix segments (demo, admin, etc.).
-	start := 0
-	for start < len(allSegments) && skipSegments[allSegments[start]] {
-		start++
-	}
-	visible := allSegments[start:]
-	if len(visible) == 0 {
+	segments := strings.Split(trimmed, "/")
+	if len(segments) <= 1 {
 		return nil
 	}
 
-	crumbs := make([]hypermedia.Breadcrumb, len(visible))
-	for i, seg := range visible {
-		label := seg
+	var crumbs []hypermedia.Breadcrumb
+	// Intermediate segments: only include if the path is a real route.
+	for i := 0; i < len(segments)-1; i++ {
+		fullPath := "/" + strings.Join(segments[:i+1], "/")
+		if !routes[fullPath] {
+			continue
+		}
+		label := segments[i]
 		if len(label) > 0 {
 			label = strings.ToUpper(label[:1]) + label[1:]
 		}
-		href := ""
-		if i < len(visible)-1 {
-			// Reconstruct full path including the skipped prefix.
-			fullPath := "/" + strings.Join(allSegments[:start+i+1], "/")
-			href = hypermedia.FromNav(fullPath, from)
-		}
-		crumbs[i] = hypermedia.Breadcrumb{Label: label, Href: href}
+		crumbs = append(crumbs, hypermedia.Breadcrumb{
+			Label: label,
+			Href:  hypermedia.FromNav(fullPath, from),
+		})
 	}
+
+	// Terminal segment: always present, never linked.
+	terminal := segments[len(segments)-1]
+	if len(terminal) > 0 {
+		terminal = strings.ToUpper(terminal[:1]) + terminal[1:]
+	}
+	crumbs = append(crumbs, hypermedia.Breadcrumb{Label: terminal})
 	return crumbs
 }
 
