@@ -428,8 +428,9 @@ func CopyFiles() error {
 
 // Compile builds the Go project
 func Compile() error {
+	ldflags := "-w -X catgoose/dothog/internal/version.BuildDate=" + time.Now().UTC().Format("2006-01-02")
 	return sh.Run("go", "build",
-		"-ldflags", "-w",
+		"-ldflags", ldflags,
 		"-o", filepath.Join(buildPath, binaryName),
 		"main.go")
 }

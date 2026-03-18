@@ -120,7 +120,7 @@ func RenderBaseLayout(c echo.Context, cmp templ.Component) error {
 		crumbs[len(crumbs)-1].Label = label
 	}
 
-	return RenderComponent(c, views.Index(cmp, nav, csrfToken, dio.Dev(), theme, crumbs, version.Version, appName))
+	return RenderComponent(c, views.Index(cmp, nav, csrfToken, dio.Dev(), theme, crumbs, version.Display(), appName))
 }
 
 var (
