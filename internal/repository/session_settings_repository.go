@@ -18,6 +18,8 @@ type SessionSettingsRepository interface {
 	Upsert(ctx context.Context, s *domain.SessionSettings) error
 	Touch(ctx context.Context, uuid string) error
 	DeleteStale(ctx context.Context, days int) (int64, error)
+	ListAll(ctx context.Context) ([]domain.SessionSettings, error)
+	GetMostRecent(ctx context.Context) (*domain.SessionSettings, error)
 }
 
 // sessionSettingsRepository implements SessionSettingsRepository.
@@ -107,6 +109,31 @@ func (r *sessionSettingsRepository) Touch(ctx context.Context, uuid string) erro
 		return fmt.Errorf("touch session settings: %w", err)
 	}
 	return nil
+}
+
+// ListAll returns all session settings rows ordered by most recently updated.
+func (r *sessionSettingsRepository) ListAll(ctx context.Context) ([]domain.SessionSettings, error) {
+	query, args := dbrepo.NewSelect(tableName, selectCols).OrderBy("UpdatedAt DESC").Build()
+	var rows []domain.SessionSettings
+	err := r.repo.GetDB().SelectContext(ctx, &rows, query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("list session settings: %w", err)
+	}
+	return rows, nil
+}
+
+// GetMostRecent returns the most recently updated session settings row, or nil if none exist.
+func (r *sessionSettingsRepository) GetMostRecent(ctx context.Context) (*domain.SessionSettings, error) {
+	query, args := dbrepo.NewSelect(tableName, selectCols).OrderBy("UpdatedAt DESC").Paginate(1, 0).Build()
+	var s domain.SessionSettings
+	err := r.repo.GetDB().GetContext(ctx, &s, query, args...)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("get most recent session settings: %w", err)
+	}
+	return &s, nil
 }
 
 // DeleteStale removes session settings rows not updated in the given number of days.

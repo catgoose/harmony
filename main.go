@@ -171,7 +171,11 @@ func main() {
 		logger.Fatal("Failed to initialize Echo", "error", err)
 	}
 
-	ar := routes.NewAppRoutes(appCtx, e, reqLogStore, nil)
+	ar := routes.NewAppRoutes(appCtx, e, reqLogStore, nil,
+		// setup:feature:session_settings:start
+		settingsRepo,
+		// setup:feature:session_settings:end
+	)
 	if err := ar.InitRoutes(); err != nil {
 		logger.Fatal("Failed to setup routes", "error", err)
 	}

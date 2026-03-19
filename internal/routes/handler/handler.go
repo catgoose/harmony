@@ -78,6 +78,7 @@ func appNavComponent(path string) templ.Component {
 				{Label: "SQLite", Href: "/admin"},
 				// setup:feature:demo:end
 				{Label: "Error Traces", Href: "/admin/error-traces"},
+				{Label: "Sessions", Href: "/admin/sessions"},
 				{Label: "System", Href: "/admin/system"},
 				{Label: "Config", Href: "/admin/config"},
 			},

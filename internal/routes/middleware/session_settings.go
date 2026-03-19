@@ -3,44 +3,44 @@
 package middleware
 
 import (
-	"net/http"
 	"time"
 
 	"catgoose/dothog/internal/domain"
 	"catgoose/dothog/internal/logger"
 	"catgoose/dothog/internal/repository"
 
-	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
 
 const (
-	sessionUUIDCookie  = "session_uuid"
 	settingsContextKey = "sessionSettings"
+	// sharedSessionUUID is used for all visitors so the demo behaves as a
+	// single-user application — every browser reads/writes the same row.
+	sharedSessionUUID = "00000000-0000-0000-0000-000000000000"
 )
 
-// SessionSettingsMiddleware reads (or creates) a session UUID cookie,
-// loads settings from the repository, and stores them on the echo context.
+// SessionSettingsMiddleware loads the shared session settings row and stores
+// it on the echo context. All visitors share the same settings.
 func SessionSettingsMiddleware(repo repository.SessionSettingsRepository) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			sessionUUID, isNew := getOrCreateSessionUUID(c)
+			ctx := c.Request().Context()
 
-			settings, err := repo.GetByUUID(c.Request().Context(), sessionUUID)
+			settings, err := repo.GetByUUID(ctx, sharedSessionUUID)
 			if err != nil {
-				logger.WithContext(c.Request().Context()).Error("Failed to load session settings", "error", err)
-				settings = domain.NewDefaultSettings(sessionUUID)
+				logger.WithContext(ctx).Error("Failed to load session settings", "error", err)
+				settings = domain.NewDefaultSettings(sharedSessionUUID)
 			}
 			if settings == nil {
-				settings = domain.NewDefaultSettings(sessionUUID)
-				if err := repo.Upsert(c.Request().Context(), settings); err != nil {
-					logger.WithContext(c.Request().Context()).Error("Failed to create session settings", "error", err)
+				settings = domain.NewDefaultSettings(sharedSessionUUID)
+				if err := repo.Upsert(ctx, settings); err != nil {
+					logger.WithContext(ctx).Error("Failed to create session settings", "error", err)
 				}
 			}
 
 			// Touch if last update was more than 24 hours ago to keep the row fresh.
-			if !isNew && time.Since(settings.UpdatedAt) > 24*time.Hour {
-				_ = repo.Touch(c.Request().Context(), sessionUUID)
+			if time.Since(settings.UpdatedAt) > 24*time.Hour {
+				_ = repo.Touch(ctx, sharedSessionUUID)
 			}
 
 			c.Set(settingsContextKey, settings)
@@ -49,27 +49,10 @@ func SessionSettingsMiddleware(repo repository.SessionSettingsRepository) echo.M
 	}
 }
 
-// getOrCreateSessionUUID reads the session UUID cookie or creates a new one.
-func getOrCreateSessionUUID(c echo.Context) (string, bool) {
-	if cookie, err := c.Cookie(sessionUUIDCookie); err == nil && cookie.Value != "" {
-		return cookie.Value, false
-	}
-	id := uuid.New().String()
-	c.SetCookie(&http.Cookie{
-		Name:     sessionUUIDCookie,
-		Value:    id,
-		Path:     "/",
-		MaxAge:   86400 * 90, // 90 days
-		HttpOnly: true,
-		SameSite: http.SameSiteLaxMode,
-	})
-	return id, true
-}
-
 // GetSessionSettings returns the session settings from the echo context.
 func GetSessionSettings(c echo.Context) *domain.SessionSettings {
 	if s, ok := c.Get(settingsContextKey).(*domain.SessionSettings); ok {
 		return s
 	}
-	return domain.NewDefaultSettings("")
+	return domain.NewDefaultSettings(sharedSessionUUID)
 }

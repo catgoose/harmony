@@ -4,6 +4,7 @@ package routes
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"catgoose/dothog/internal/demo"
@@ -66,7 +67,7 @@ func (b *bulkRoutes) handleBulkActivateItems(c echo.Context) error {
 	failedIDs := b.doBulkAction(c, func(ctx context.Context, id int) error {
 		item, err := b.db.GetItem(ctx, id)
 		if err != nil {
-			return err
+			return fmt.Errorf("get item %d for activation: %w", id, err)
 		}
 		item.Active = true
 		return b.db.UpdateItem(ctx, item)
@@ -87,7 +88,7 @@ func (b *bulkRoutes) handleBulkDeactivateItems(c echo.Context) error {
 	failedIDs := b.doBulkAction(c, func(ctx context.Context, id int) error {
 		item, err := b.db.GetItem(ctx, id)
 		if err != nil {
-			return err
+			return fmt.Errorf("get item %d for deactivation: %w", id, err)
 		}
 		item.Active = false
 		return b.db.UpdateItem(ctx, item)

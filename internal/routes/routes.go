@@ -43,12 +43,19 @@ type appRoutes struct {
 	reqLogStore   *requestlog.Store
 	issueReporter IssueReporter
 	startTime     time.Time
+	// setup:feature:session_settings:start
+	settingsRepo repository.SessionSettingsRepository
+	// setup:feature:session_settings:end
 }
 
 // NewAppRoutes initializes routes.
 // reqLogStore may be nil if request log capture is disabled.
 // reporter may be nil; a default no-op reporter is used.
-func NewAppRoutes(ctx context.Context, e *echo.Echo, reqLogStore *requestlog.Store, reporter IssueReporter) AppRoutes {
+func NewAppRoutes(ctx context.Context, e *echo.Echo, reqLogStore *requestlog.Store, reporter IssueReporter,
+	// setup:feature:session_settings:start
+	settingsRepo repository.SessionSettingsRepository,
+	// setup:feature:session_settings:end
+) AppRoutes {
 	if reporter == nil {
 		reporter = defaultReporter{}
 	}
@@ -57,7 +64,10 @@ func NewAppRoutes(ctx context.Context, e *echo.Echo, reqLogStore *requestlog.Sto
 		ctx:           ctx,
 		reqLogStore:   reqLogStore,
 		issueReporter: reporter,
-		startTime:     time.Now(),
+		startTime: time.Now(),
+		// setup:feature:session_settings:start
+		settingsRepo: settingsRepo,
+		// setup:feature:session_settings:end
 	}
 }
 
@@ -132,6 +142,9 @@ func (ar *appRoutes) InitRoutes() error {
 	ar.initErrorsRoutes()
 	// setup:feature:sse:start
 	ar.initRealtimeRoutes(broker)
+	// setup:feature:session_settings:start
+	ar.initThemeRoutes(broker)
+	// setup:feature:session_settings:end
 	// setup:feature:sse:end
 
 	db, err := demo.Open("db/demo.db")
@@ -210,7 +223,6 @@ func InitEcho(ctx context.Context, staticFS fs.FS, cfg *config.AppConfig,
 	// setup:feature:session_settings:start
 	if settingsRepo != nil {
 		e.Use(middleware.SessionSettingsMiddleware(settingsRepo))
-		e.POST("/settings/theme", handleTheme(settingsRepo))
 	}
 	// setup:feature:session_settings:end
 
@@ -225,33 +237,3 @@ func InitEcho(ctx context.Context, staticFS fs.FS, cfg *config.AppConfig,
 	return e, nil
 }
 
-// setup:feature:session_settings:start
-
-// handleTheme updates the Theme session setting and redirects back.
-func handleTheme(repo repository.SessionSettingsRepository) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		theme := c.FormValue("theme")
-		valid := false
-		for _, t := range views.DaisyThemes {
-			if t == theme {
-				valid = true
-				break
-			}
-		}
-		if !valid {
-			theme = "light"
-		}
-		settings := middleware.GetSessionSettings(c)
-		settings.Theme = theme
-		if repo != nil {
-			_ = repo.Upsert(c.Request().Context(), settings)
-		}
-		referer := c.Request().Header.Get("Referer")
-		if referer == "" {
-			referer = "/"
-		}
-		return c.Redirect(http.StatusSeeOther, referer)
-	}
-}
-
-// setup:feature:session_settings:end

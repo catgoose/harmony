@@ -70,7 +70,7 @@ func (r *RepoManager) WithTransaction(ctx context.Context, fn func(ctx context.C
 	}
 	if err := fn(txCtx, tx); err != nil {
 		_ = tx.Rollback()
-		return err
+		return fmt.Errorf("transaction failed: %w", err)
 	}
 	if err := tx.Commit(); err != nil {
 		return fmt.Errorf("failed to commit transaction: %w", err)
@@ -226,7 +226,7 @@ func (r *RepoManager) createTable(ctx context.Context, td *schema.TableDef) erro
 
 	for _, stmt := range td.CreateSQL(r.dialect) {
 		if _, err := r.db.ExecContext(ctx, stmt); err != nil {
-			return err
+			return fmt.Errorf("create table %s: %w", td.Name, err)
 		}
 	}
 	return nil

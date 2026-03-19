@@ -1,0 +1,88 @@
+// setup:feature:sse
+
+package routes
+
+import (
+	"fmt"
+	"net/http"
+
+	// setup:feature:session_settings:start
+	"catgoose/dothog/internal/routes/handler"
+	"catgoose/dothog/internal/routes/middleware"
+	"catgoose/dothog/web/views"
+	// setup:feature:session_settings:end
+	"catgoose/dothog/internal/ssebroker"
+
+	"github.com/labstack/echo/v4"
+)
+
+// setup:feature:session_settings:start
+
+func (ar *appRoutes) initThemeRoutes(broker *ssebroker.SSEBroker) {
+	ar.e.POST("/settings/theme", ar.handleTheme(broker))
+	ar.e.GET("/sse/theme", handleSSETheme(broker))
+}
+
+// handleTheme updates the shared theme setting and broadcasts to all browsers.
+func (ar *appRoutes) handleTheme(broker *ssebroker.SSEBroker) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		theme := c.FormValue("theme")
+		valid := false
+		for _, t := range views.DaisyThemes {
+			if t == theme {
+				valid = true
+				break
+			}
+		}
+		if !valid {
+			theme = "light"
+		}
+		settings := middleware.GetSessionSettings(c)
+		settings.Theme = theme
+		if ar.settingsRepo != nil {
+			_ = ar.settingsRepo.Upsert(c.Request().Context(), settings)
+		}
+
+		// Broadcast theme change to all connected browsers.
+		if broker.HasSubscribers(ssebroker.TopicThemeChange) {
+			msg := ssebroker.NewSSEMessage("theme-change", theme).String()
+			broker.Publish(ssebroker.TopicThemeChange, msg)
+		}
+
+		return handler.RenderComponent(c, views.ThemeChanged(theme))
+	}
+}
+
+// setup:feature:session_settings:end
+
+// handleSSETheme streams theme-change events to all connected browsers.
+func handleSSETheme(broker *ssebroker.SSEBroker) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		c.Response().Header().Set("Content-Type", "text/event-stream")
+		c.Response().Header().Set("Cache-Control", "no-cache")
+		c.Response().Header().Set("Connection", "keep-alive")
+		c.Response().WriteHeader(http.StatusOK)
+
+		flusher, ok := c.Response().Writer.(http.Flusher)
+		if !ok {
+			return fmt.Errorf("streaming unsupported")
+		}
+
+		ch, unsub := broker.Subscribe(ssebroker.TopicThemeChange)
+		defer unsub()
+
+		ctx := c.Request().Context()
+		for {
+			select {
+			case <-ctx.Done():
+				return nil
+			case msg, ok := <-ch:
+				if !ok {
+					return nil
+				}
+				fmt.Fprint(c.Response(), msg)
+				flusher.Flush()
+			}
+		}
+	}
+}

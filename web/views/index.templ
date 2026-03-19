@@ -89,6 +89,24 @@ templ header(csrfToken string, devMode bool, appName string) {
 		if devMode {
 			<script src="/public/js/dev-logging.js"></script>
 		}
+		// setup:feature:sse:start
+		// setup:feature:session_settings:start
+		<script defer>
+			/**
+			 * Listen for server-sent theme-change events and apply them to the
+			 * document so all open browsers stay in sync.
+			 * @listens theme-change
+			 */
+			(function() {
+				/** @type {EventSource} */
+				var es = new EventSource("/sse/theme");
+				es.addEventListener("theme-change", function(/** @type {MessageEvent} */ e) {
+					document.documentElement.dataset.theme = e.data;
+				});
+			})();
+		</script>
+		// setup:feature:session_settings:end
+		// setup:feature:sse:end
 	</head>
 }
 
@@ -97,6 +115,11 @@ templ Layout(content templ.Component) {
 	<div id="base-content">
 		@content
 	</div>
+}
+
+// ThemeChanged is returned by the POST /settings/theme handler.
+templ ThemeChanged(theme string) {
+	<span class="hidden">{ theme }</span>
 }
 
 // DaisyThemes is the list of available DaisyUI themes for the picker.

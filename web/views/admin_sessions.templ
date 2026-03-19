@@ -1,0 +1,67 @@
+// setup:feature:session_settings
+
+package views
+
+import (
+	"catgoose/dothog/internal/domain"
+	"fmt"
+	"time"
+)
+
+// AdminSessionsPage displays all session settings rows.
+templ AdminSessionsPage(sessions []domain.SessionSettings) {
+	<div class="p-4 space-y-6 max-w-4xl mx-auto">
+		<h1 class="text-2xl font-bold">Session Settings</h1>
+		<p class="text-sm text-base-content/60">
+			{ fmt.Sprintf("%d session(s) stored. All visitors share a single session.", len(sessions)) }
+		</p>
+
+		<div class="card bg-base-100 shadow border border-base-300">
+			<div class="card-body p-4">
+				<div class="overflow-x-auto">
+					<table class="table table-sm table-zebra w-full">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Session UUID</th>
+								<th>Theme</th>
+								<th>Last Active</th>
+							</tr>
+						</thead>
+						<tbody>
+							for _, s := range sessions {
+								<tr>
+									<td class="font-mono text-xs">{ fmt.Sprintf("%d", s.ID) }</td>
+									<td class="font-mono text-xs">{ s.SessionUUID }</td>
+									<td>
+										<span class="badge badge-sm badge-outline">{ s.Theme }</span>
+									</td>
+									<td class="text-xs">{ formatAge(s.UpdatedAt) }</td>
+								</tr>
+							}
+							if len(sessions) == 0 {
+								<tr>
+									<td colspan="4" class="text-center text-base-content/60 py-4">No sessions found</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+func formatAge(t time.Time) string {
+	d := time.Since(t)
+	switch {
+	case d < time.Minute:
+		return "just now"
+	case d < time.Hour:
+		return fmt.Sprintf("%dm ago", int(d.Minutes()))
+	case d < 24*time.Hour:
+		return fmt.Sprintf("%dh ago", int(d.Hours()))
+	default:
+		return fmt.Sprintf("%dd ago", int(d.Hours()/24))
+	}
+}

@@ -19,6 +19,9 @@ func (ar *appRoutes) initAdminCoreRoutes() {
 	ar.e.GET("/admin/system", ar.handleSystemInfo)
 	ar.e.GET("/admin/system/check-update", ar.handleCheckUpdate)
 	ar.e.GET("/admin/config", ar.handleConfigInfo)
+	// setup:feature:session_settings:start
+	ar.e.GET("/admin/sessions", ar.handleSessionsPage)
+	// setup:feature:session_settings:end
 }
 
 
@@ -91,6 +94,21 @@ func (ar *appRoutes) handleConfigInfo(c echo.Context) error {
 
 	return handler.RenderBaseLayout(c, views.AdminConfigPage(entries))
 }
+
+// setup:feature:session_settings:start
+
+func (ar *appRoutes) handleSessionsPage(c echo.Context) error {
+	if ar.settingsRepo == nil {
+		return handler.HandleHypermediaError(c, 500, "Session settings not configured", nil)
+	}
+	sessions, err := ar.settingsRepo.ListAll(c.Request().Context())
+	if err != nil {
+		return handler.HandleHypermediaError(c, 500, "Failed to load sessions", err)
+	}
+	return handler.RenderBaseLayout(c, views.AdminSessionsPage(sessions))
+}
+
+// setup:feature:session_settings:end
 
 func formatUptime(d time.Duration) string {
 	days := int(d.Hours()) / 24
