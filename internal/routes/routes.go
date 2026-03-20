@@ -165,6 +165,7 @@ func (ar *appRoutes) InitRoutes() error {
 	ar.initKanbanRoutes(board, actLog, broker)
 	ar.initApprovalRoutes(queue, actLog, broker)
 	ar.initFeedRoutes(actLog, broker)
+	ar.initCanvasRoutes(demo.NewPixelCanvas(), broker)
 	ar.initSettingsRoutes(demo.NewSettingsStore())
 	ar.initVendorContactRoutes(db, actLog, broker)
 	ar.initDashboardRoutes(db, board, queue, actLog)
