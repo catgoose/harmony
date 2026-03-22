@@ -1,6 +1,6 @@
 package routes
 
-import "catgoose/dothog/internal/requestlog"
+import "github.com/catgoose/tracy"
 
 // IssueReporter handles "Report Issue" actions from the error banner.
 // Implementations decide what to do with the report — send an email, post to
@@ -12,11 +12,11 @@ type IssueReporter interface {
 	// context about what they were doing. trace contains the full error trace
 	// including the error chain, request metadata, and captured log entries
 	// (may be nil if the request aged out of the store).
-	Report(requestID string, description string, trace *requestlog.ErrorTrace) error
+	Report(requestID string, description string, trace *tracy.ErrorTrace) error
 }
 
 // defaultReporter is a no-op implementation used when no IssueReporter is configured.
 // It always succeeds — the endpoint still triggers the browser alert.
 type defaultReporter struct{}
 
-func (defaultReporter) Report(string, string, *requestlog.ErrorTrace) error { return nil }
+func (defaultReporter) Report(string, string, *tracy.ErrorTrace) error { return nil }

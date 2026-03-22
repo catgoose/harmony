@@ -30,6 +30,7 @@ const (
 	FeatureGraph    = "graph"
 	FeatureDatabase = "database"
 	FeatureMSSQL    = "mssql"
+	FeaturePostgres = "postgres"
 	FeatureSSE      = "sse"
 	FeatureCaddy    = "caddy"
 	FeatureAvatar   = "avatar"
@@ -40,7 +41,7 @@ const (
 
 // AllFeatures lists every selectable feature tag.
 // "database" is always included (implied by the base template) and is not user-selectable.
-var AllFeatures = []string{FeatureAuth, FeatureGraph, FeatureDatabase, FeatureMSSQL, FeatureSSE, FeatureCaddy, FeatureAvatar, FeatureDemo, FeatureSessionSettings, FeatureAlpine}
+var AllFeatures = []string{FeatureAuth, FeatureGraph, FeatureDatabase, FeatureMSSQL, FeaturePostgres, FeatureSSE, FeatureCaddy, FeatureAvatar, FeatureDemo, FeatureSessionSettings, FeatureAlpine}
 
 // ImplicitFeatures are always selected and not presented to the user.
 // "database" is implicit because SQLite is the base database engine.
@@ -239,6 +240,10 @@ func Run(ctx context.Context, dir string, opts Options) error {
 		content = strings.ReplaceAll(content, "{{APP_TLS_PORT}}", appTLSPort)
 		content = strings.ReplaceAll(content, "{{TEMPL_HTTP_PORT}}", templHTTPPort)
 		content = strings.ReplaceAll(content, "{{CADDY_TLS_PORT}}", caddyTLSPort)
+		// Ensure APP_NAME is set in the generated env file
+		if !strings.Contains(content, "APP_NAME=") {
+			content += "\n# Application\nAPP_NAME=" + opts.AppName + "\n"
+		}
 		for _, envTarget := range []string{".env.dev", ".env.development"} {
 			if err := os.WriteFile(filepath.Join(dir, envTarget), []byte(content), 0644); err != nil {
 				return err

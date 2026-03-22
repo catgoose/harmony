@@ -13,9 +13,9 @@ import (
 	"strconv"
 	"strings"
 
-	"catgoose/dothog/internal/requestlog"
 	"catgoose/dothog/internal/routes/hypermedia"
 	components "catgoose/dothog/web/components/core"
+	"github.com/catgoose/tracy"
 )
 
 // parseAttrs splits a "key=value key2=value2" string into pairs.
@@ -113,7 +113,7 @@ func ErrorTracesTableContainer(cols []hypermedia.TableCol, body templ.Component,
 }
 
 // ErrorTracesBody renders the <tbody> rows.
-func ErrorTracesBody(traces []requestlog.TraceSummary) templ.Component {
+func ErrorTracesBody(traces []tracy.TraceSummary) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -159,7 +159,7 @@ func ErrorTracesBody(traces []requestlog.TraceSummary) templ.Component {
 }
 
 // ErrorTraceRow renders a single summary row with an expand chevron.
-func ErrorTraceRow(t requestlog.TraceSummary) templ.Component {
+func ErrorTraceRow(t tracy.TraceSummary) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -383,7 +383,7 @@ func statusBadge(code int) templ.Component {
 }
 
 // ErrorTraceDetailContent renders the expandable detail panel.
-func ErrorTraceDetailContent(trace *requestlog.ErrorTrace) templ.Component {
+func ErrorTraceDetailContent(trace *tracy.ErrorTrace) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

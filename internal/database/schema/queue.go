@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"catgoose/dothog/internal/database/dialect"
+	dialect "github.com/catgoose/fraggle"
 )
 
 // NewQueueTable creates a job/outbox queue table with status tracking and retry support.

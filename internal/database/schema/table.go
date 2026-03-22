@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"catgoose/dothog/internal/database/dialect"
+	dialect "github.com/catgoose/fraggle"
 )
 
 // UniqueConstraint defines a composite UNIQUE constraint across multiple columns.

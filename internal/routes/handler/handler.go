@@ -79,7 +79,9 @@ func appNavComponent(path string) templ.Component {
 				{Label: "SQLite", Href: "/admin"},
 				// setup:feature:demo:end
 				{Label: "Error Traces", Href: "/admin/error-traces"},
+				// setup:feature:session_settings:start
 				{Label: "Sessions", Href: "/admin/sessions"},
+				// setup:feature:session_settings:end
 				{Label: "System", Href: "/admin/system"},
 				{Label: "Config", Href: "/admin/config"},
 			},
@@ -88,10 +90,30 @@ func appNavComponent(path string) templ.Component {
 	return corecomponents.NavBar(items)
 }
 
-// RenderBaseLayout wraps the component in a base layout and renders it.
-// If the request carries a ?from= query parameter matching a registered origin,
-// breadcrumbs are rendered between the navbar and the page content.
+// LayoutFunc renders a page component into a full HTML page.
+// The default layout uses the dothog Index template with nav, breadcrumbs, and theme.
+// Derived apps can override this via SetLayout to use their own page wrapper.
+type LayoutFunc func(c echo.Context, cmp templ.Component) error
+
+var customLayout LayoutFunc
+
+// SetLayout overrides the default page layout. Call once at startup before
+// serving requests. Pass nil to restore the default dothog layout.
+func SetLayout(fn LayoutFunc) {
+	customLayout = fn
+}
+
+// RenderBaseLayout wraps the component in a page layout and renders it.
+// If a custom layout was set via SetLayout, it is used instead of the default.
 func RenderBaseLayout(c echo.Context, cmp templ.Component) error {
+	if customLayout != nil {
+		return customLayout(c, cmp)
+	}
+	return renderDefaultLayout(c, cmp)
+}
+
+// renderDefaultLayout is the standard dothog layout with nav, breadcrumbs, and theme.
+func renderDefaultLayout(c echo.Context, cmp templ.Component) error {
 	nav := appNavComponent(c.Request().URL.Path)
 	var csrfToken string
 	// setup:feature:csrf:start

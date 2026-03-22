@@ -14,7 +14,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"catgoose/dothog/internal/requestlog"
+	"github.com/catgoose/tracy"
 )
 
 // LoggingPage is the full-page layout for /demo/logging.
@@ -132,7 +132,7 @@ func loggingPatternCard(title, method, desc string) templ.Component {
 }
 
 // LoggingTracesList renders the list of recent error traces.
-func LoggingTracesList(traces []requestlog.TraceSummary) templ.Component {
+func LoggingTracesList(traces []tracy.TraceSummary) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -178,7 +178,7 @@ func LoggingTracesList(traces []requestlog.TraceSummary) templ.Component {
 	})
 }
 
-func loggingTraceRow(t requestlog.TraceSummary) templ.Component {
+func loggingTraceRow(t tracy.TraceSummary) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -308,7 +308,7 @@ func loggingTraceRow(t requestlog.TraceSummary) templ.Component {
 }
 
 // LoggingTraceRowOOB renders a new trace row as an OOB swap that prepends to the tbody.
-func LoggingTraceRowOOB(t requestlog.TraceSummary) templ.Component {
+func LoggingTraceRowOOB(t tracy.TraceSummary) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -426,7 +426,7 @@ func loggingStatusBadge(code int) templ.Component {
 }
 
 // LoggingReportOutput renders the simulated support report as formatted JSON.
-func LoggingReportOutput(trace *requestlog.ErrorTrace, jsonPayload string) templ.Component {
+func LoggingReportOutput(trace *tracy.ErrorTrace, jsonPayload string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

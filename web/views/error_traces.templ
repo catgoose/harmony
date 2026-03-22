@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"catgoose/dothog/internal/requestlog"
+	"github.com/catgoose/tracy"
 	"catgoose/dothog/internal/routes/hypermedia"
 	components "catgoose/dothog/web/components/core"
 )
@@ -46,7 +46,7 @@ templ ErrorTracesTableContainer(cols []hypermedia.TableCol, body templ.Component
 }
 
 // ErrorTracesBody renders the <tbody> rows.
-templ ErrorTracesBody(traces []requestlog.TraceSummary) {
+templ ErrorTracesBody(traces []tracy.TraceSummary) {
 	if len(traces) == 0 {
 		<tbody>
 			<tr>
@@ -65,7 +65,7 @@ templ ErrorTracesBody(traces []requestlog.TraceSummary) {
 }
 
 // ErrorTraceRow renders a single summary row with an expand chevron.
-templ ErrorTraceRow(t requestlog.TraceSummary) {
+templ ErrorTraceRow(t tracy.TraceSummary) {
 	{{ detailURL := fmt.Sprintf("/admin/error-traces/%s", t.RequestID) }}
 	<tr
 		class="hover cursor-pointer select-none"
@@ -103,7 +103,7 @@ templ statusBadge(code int) {
 }
 
 // ErrorTraceDetailContent renders the expandable detail panel.
-templ ErrorTraceDetailContent(trace *requestlog.ErrorTrace) {
+templ ErrorTraceDetailContent(trace *tracy.ErrorTrace) {
 	<td colspan="7" class="bg-base-200 p-4">
 		<div class="space-y-4">
 			<div class="flex items-start justify-between">

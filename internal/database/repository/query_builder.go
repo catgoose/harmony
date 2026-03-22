@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"catgoose/dothog/internal/database/dialect"
+	dialect "github.com/catgoose/fraggle"
 	"catgoose/dothog/internal/routes/params"
 )
 

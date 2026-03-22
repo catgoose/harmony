@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"catgoose/dothog/internal/database/dialect"
+	dialect "github.com/catgoose/fraggle"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

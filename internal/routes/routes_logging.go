@@ -11,7 +11,7 @@ import (
 	"net/http"
 
 	"catgoose/dothog/internal/logger"
-	"catgoose/dothog/internal/requestlog"
+	"github.com/catgoose/tracy"
 	"catgoose/dothog/internal/routes/handler"
 	"catgoose/dothog/internal/shared"
 	"catgoose/dothog/internal/ssebroker"
@@ -28,7 +28,7 @@ func (ar *appRoutes) initLoggingRoutes() {
 
 	// Wire up SSE broadcasting on error trace promotion.
 	if ar.reqLogStore != nil {
-		ar.reqLogStore.SetOnPromote(func(summary requestlog.TraceSummary) {
+		ar.reqLogStore.SetOnPromote(func(summary tracy.TraceSummary) {
 			broadcastErrorTrace(broker, summary)
 		})
 	}
@@ -90,7 +90,7 @@ func (ar *appRoutes) initLoggingRoutes() {
 		if ar.reqLogStore == nil {
 			return handler.RenderComponent(c, views.LoggingTracesList(nil))
 		}
-		traces, _, err := ar.reqLogStore.ListTraces(requestlog.TraceFilter{
+		traces, _, err := ar.reqLogStore.ListTraces(tracy.TraceFilter{
 			Sort: "CreatedAt", Dir: "desc", Page: 1, PerPage: 20,
 		})
 		if err != nil {
@@ -159,7 +159,7 @@ func handleErrorTracesSSE(broker *ssebroker.SSEBroker) echo.HandlerFunc {
 	}
 }
 
-func broadcastErrorTrace(broker *ssebroker.SSEBroker, summary requestlog.TraceSummary) {
+func broadcastErrorTrace(broker *ssebroker.SSEBroker, summary tracy.TraceSummary) {
 	if !broker.HasSubscribers(ssebroker.TopicErrorTraces) {
 		return
 	}

@@ -1,6 +1,6 @@
 package schema
 
-import "catgoose/dothog/internal/database/dialect"
+import dialect "github.com/catgoose/fraggle"
 
 // TimestampColumnDefs returns CreatedAt and UpdatedAt column definitions.
 func TimestampColumnDefs() []ColumnDef {

@@ -150,6 +150,6 @@ func TestHandleComponent(t *testing.T) {
 	err := handler(c)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.Contains(t, rec.Body.String(), "Demo")
+	assert.Contains(t, rec.Body.String(), "Admin")
 	assert.Contains(t, rec.Body.String(), "<span>content</span>")
 }

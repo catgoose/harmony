@@ -10,7 +10,7 @@ import (
 	"catgoose/dothog/internal/ssebroker"
 	// setup:feature:sse:end
 	// setup:feature:demo:end
-	"catgoose/dothog/internal/requestlog"
+	"github.com/catgoose/tracy"
 	"catgoose/dothog/internal/routes/handler"
 	"catgoose/dothog/internal/routes/hypermedia"
 	// setup:feature:session_settings:start
@@ -40,7 +40,7 @@ type AppRoutes interface {
 type appRoutes struct {
 	e             *echo.Echo
 	ctx           context.Context
-	reqLogStore   *requestlog.Store
+	reqLogStore   *tracy.Store
 	issueReporter IssueReporter
 	startTime     time.Time
 	// setup:feature:session_settings:start
@@ -51,7 +51,7 @@ type appRoutes struct {
 // NewAppRoutes initializes routes.
 // reqLogStore may be nil if request log capture is disabled.
 // reporter may be nil; a default no-op reporter is used.
-func NewAppRoutes(ctx context.Context, e *echo.Echo, reqLogStore *requestlog.Store, reporter IssueReporter,
+func NewAppRoutes(ctx context.Context, e *echo.Echo, reqLogStore *tracy.Store, reporter IssueReporter,
 	// setup:feature:session_settings:start
 	settingsRepo repository.SessionSettingsRepository,
 	// setup:feature:session_settings:end
@@ -74,7 +74,9 @@ func NewAppRoutes(ctx context.Context, e *echo.Echo, reqLogStore *requestlog.Sto
 func (ar *appRoutes) InitRoutes() error {
 	// Register known origins for ?from= breadcrumb resolution.
 	// Home (bit 0) is pre-registered. Additional pages register here.
+	// setup:feature:demo:start
 	hypermedia.RegisterFrom(hypermedia.FromDashboard, hypermedia.Breadcrumb{Label: "Dashboard", Href: "/dashboard"})
+	// setup:feature:demo:end
 
 	ar.e.GET("/", handler.HandleComponent(views.ArchitecturePage()))
 	// setup:feature:session_settings:start
@@ -97,7 +99,7 @@ func (ar *appRoutes) InitRoutes() error {
 	reportHandler := func(c echo.Context) error {
 		requestID := c.Param("requestID")
 		description := c.FormValue("description")
-		var trace *requestlog.ErrorTrace
+		var trace *tracy.ErrorTrace
 		if ar.reqLogStore != nil && requestID != "" {
 			trace = ar.reqLogStore.Get(requestID)
 		}
@@ -184,7 +186,7 @@ func InitEcho(ctx context.Context, staticFS fs.FS, cfg *config.AppConfig,
 	// setup:feature:session_settings:start
 	settingsRepo repository.SessionSettingsRepository,
 	// setup:feature:session_settings:end
-	reqLogStore *requestlog.Store,
+	reqLogStore *tracy.Store,
 ) (*echo.Echo, error) {
 	e := echo.New()
 

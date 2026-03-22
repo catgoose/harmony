@@ -1,3 +1,4 @@
+// setup:feature:demo
 package routes
 
 import (

@@ -6,7 +6,7 @@ import (
 	"database/sql"
 	"testing"
 
-	"catgoose/dothog/internal/database/dialect"
+	dialect "github.com/catgoose/fraggle"
 
 	"github.com/stretchr/testify/assert"
 )

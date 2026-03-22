@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"catgoose/dothog/internal/database/dialect"
+	dialect "github.com/catgoose/fraggle"
 )
 
 // NewEventTable creates an append-only event/log table. All columns are immutable (no updates).

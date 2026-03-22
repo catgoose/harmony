@@ -35,7 +35,11 @@ func setupAppEcho(t *testing.T) *echo.Echo {
 	require.NotNil(t, cfg)
 
 	ctx := context.Background()
-	e, err := routes.InitEcho(ctx, staticFS, cfg, nil, nil)
+	e, err := routes.InitEcho(ctx, staticFS, cfg,
+		// setup:feature:session_settings:start
+		nil,
+		// setup:feature:session_settings:end
+		nil)
 	require.NoError(t, err)
 	require.NotNil(t, e)
 
@@ -64,7 +68,11 @@ func TestApplicationStartup(t *testing.T) {
 	require.NoError(t, err)
 	assert.NotNil(t, cfg)
 
-	e, err := routes.InitEcho(context.Background(), staticFS, cfg, nil, nil)
+	e, err := routes.InitEcho(context.Background(), staticFS, cfg,
+		// setup:feature:session_settings:start
+		nil,
+		// setup:feature:session_settings:end
+		nil)
 	require.NoError(t, err)
 	assert.NotNil(t, e)
 
@@ -158,7 +166,9 @@ func TestWorkflowGETRoot(t *testing.T) {
 	e.ServeHTTP(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
+	// setup:feature:demo:start
 	assert.Contains(t, rec.Body.String(), "Demo")
+	// setup:feature:demo:end
 }
 
 func TestWorkflowGETHealth(t *testing.T) {
@@ -245,6 +255,10 @@ func BenchmarkServerStartup(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		cfg, _ := config.GetConfig()
-		_, _ = routes.InitEcho(context.Background(), staticFS, cfg, nil, nil)
+		_, _ = routes.InitEcho(context.Background(), staticFS, cfg,
+		// setup:feature:session_settings:start
+		nil,
+		// setup:feature:session_settings:end
+		nil)
 	}
 }

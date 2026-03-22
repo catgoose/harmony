@@ -6,6 +6,7 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/catgoose/tracy"
 	"catgoose/dothog/internal/shared"
 
 	"github.com/stretchr/testify/assert"
@@ -81,7 +82,7 @@ func TestWithContext(t *testing.T) {
 	assert.NotNil(t, log)
 
 	// Test with context containing request ID
-	ctx = context.WithValue(context.Background(), shared.RequestIDKeyValue, "test-request-123")
+	ctx = context.WithValue(context.Background(), tracy.RequestIDKey, "test-request-123")
 	log = WithContext(ctx)
 	assert.NotNil(t, log)
 
@@ -96,7 +97,7 @@ func TestWithContext(t *testing.T) {
 	assert.NotNil(t, log)
 
 	// Test with all context values
-	ctx = context.WithValue(context.Background(), shared.RequestIDKeyValue, "test-request-123")
+	ctx = context.WithValue(context.Background(), tracy.RequestIDKey, "test-request-123")
 	ctx = context.WithValue(ctx, shared.ContextIDKeyValue, "test-context-456")
 	ctx = context.WithValue(ctx, shared.ContextDescriptionKeyValue, "test-description")
 	log = WithContext(ctx)

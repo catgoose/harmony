@@ -17,11 +17,13 @@ templ NotFoundPage(path string) {
 				<p class="text-sm text-base-content/60">You can navigate to any of these resources:</p>
 				<div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
 					@notFoundLink("Home", "/")
+					// setup:feature:demo:start
 					@notFoundLink("Dashboard", "/dashboard")
 					@notFoundLink("Inventory", "/demo/inventory")
 					@notFoundLink("People", "/demo/people")
 					@notFoundLink("Kanban", "/demo/kanban")
 					@notFoundLink("Approvals", "/demo/approvals")
+					// setup:feature:demo:end
 				</div>
 			</div>
 		</div>

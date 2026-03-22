@@ -1,4 +1,9 @@
 // Package config provides configuration management for the application.
+// AppConfig is a flat struct read once at startup via GetConfig(). Each field
+// has a sensible Go default that can be overridden by environment variables.
+// Derived apps extend AppConfig with additional fields and read additional
+// env vars in buildConfig(). The setup wizard controls which fields exist
+// via feature gate comments.
 package config
 
 import (
@@ -7,9 +12,6 @@ import (
 	"strings"
 	"sync"
 
-	// setup:feature:database:start
-	"catgoose/dothog/internal/database/dialect"
-	// setup:feature:database:end
 	"catgoose/dothog/internal/logger"
 
 	// setup:feature:auth:start
@@ -18,28 +20,140 @@ import (
 	"github.com/catgoose/dio"
 )
 
-// AppConfig holds application configuration values
+// AppConfig holds all application configuration. Flat struct, globally
+// accessible via GetConfig()/MustGetConfig(). Extend by adding fields
+// and reading them in buildConfig().
 type AppConfig struct {
+	// Core
+	ServerPort string
+	AppName    string
+
+	// Sessions
+	SessionSecret string
+
 	// setup:feature:auth:start
 	SessionMgr    crooner.SessionManager
 	CroonerConfig *crooner.AuthConfigParams
+	CroonerDisabled bool
 	// setup:feature:auth:end
-	SessionSecret string
-	AppName               string
-	ServerPort            string
-	CSRFPerRequestPaths   []string
-	CSRFExemptPaths       []string
+
 	// setup:feature:database:start
-	DBEngine dialect.Engine
+	DatabaseURL    string
+	EnableDatabase bool
+	InitRepo       bool
 	// setup:feature:database:end
-	AzureRefreshUsersHour int
-	CSRFRotatePerRequest  bool
-	EnableDatabase        bool
-	InitRepo              bool
-	CroonerDisabled       bool
+
+	// setup:feature:csrf:start
+	CSRFRotatePerRequest bool
+	CSRFPerRequestPaths  []string
+	CSRFExemptPaths      []string
+	// setup:feature:csrf:end
+
+	// setup:feature:graph:start
+	GraphUserCacheRefreshHour int
+	// setup:feature:graph:end
 }
 
-// getEnvVar safely retrieves an environment variable and logs errors consistently
+func buildConfig() (*AppConfig, error) {
+	cfg := &AppConfig{
+		// Defaults — override with env vars
+		ServerPort:  env("SERVER_LISTEN_PORT", "3000"),
+		AppName:     env("APP_NAME", ""),
+		DatabaseURL: env("DATABASE_URL", "sqlite:///db/app.db"),
+	}
+
+	// APP_NAME: required unless demo provides a fallback
+	// setup:feature:demo:start
+	if cfg.AppName == "" {
+		cfg.AppName = "dothog"
+	}
+	// setup:feature:demo:end
+	if cfg.AppName == "" {
+		return nil, fmt.Errorf("APP_NAME is required")
+	}
+
+	// setup:feature:database:start
+	cfg.EnableDatabase = envBool("ENABLE_DATABASE", false)
+	// setup:feature:database:end
+
+	// setup:feature:auth:start
+	cfg.CroonerDisabled = true
+	issuerURL := env("OIDC_ISSUER_URL", "")
+	clientID := env("OIDC_CLIENT_ID", "")
+	if issuerURL != "" && clientID != "" {
+		cfg.CroonerDisabled = false
+		secret, err := getEnvVar("SESSION_SECRET", "session secret")
+		if err != nil {
+			return nil, err
+		}
+		cfg.SessionSecret = secret
+		cfg.CroonerConfig = &crooner.AuthConfigParams{
+			IssuerURL:         issuerURL,
+			ClientID:          clientID,
+			ClientSecret:      env("OIDC_CLIENT_SECRET", ""),
+			RedirectURL:       env("OIDC_REDIRECT_URL", ""),
+			LogoutURLRedirect: env("OIDC_LOGOUT_REDIRECT_URL", "/"),
+			LoginURLRedirect:  env("OIDC_LOGIN_REDIRECT_URL", "/"),
+			AuthRoutes: &crooner.AuthRoutes{
+				Login:    "/login",
+				Logout:   "/logout",
+				Callback: "/callback",
+			},
+		}
+	}
+	// setup:feature:auth:end
+
+	// setup:feature:csrf:start
+	cfg.CSRFRotatePerRequest = envBool("CSRF_ROTATE_PER_REQUEST", false)
+	cfg.CSRFPerRequestPaths = envList("CSRF_PER_REQUEST_PATHS")
+	cfg.CSRFExemptPaths = []string{"/login", "/callback", "/logout"}
+	// setup:feature:csrf:end
+
+	// setup:feature:graph:start
+	cfg.GraphUserCacheRefreshHour = envInt("GRAPH_USERCACHE_REFRESH_HOUR", 5)
+	// setup:feature:graph:end
+
+	return cfg, nil
+}
+
+// --- Env helpers ---
+
+func env(key, fallback string) string {
+	return dio.EnvWithDefault(key, fallback)
+}
+
+func envBool(key string, fallback bool) bool {
+	if v, err := dio.Env(key); err == nil {
+		if parsed, err := strconv.ParseBool(v); err == nil {
+			return parsed
+		}
+	}
+	return fallback
+}
+
+func envInt(key string, fallback int) int {
+	if v, err := dio.Env(key); err == nil {
+		if parsed, err := strconv.Atoi(v); err == nil {
+			return parsed
+		}
+	}
+	return fallback
+}
+
+func envList(key string) []string {
+	v, err := dio.Env(key)
+	if err != nil || v == "" {
+		return nil
+	}
+	var result []string
+	for _, p := range strings.Split(v, ",") {
+		if p = strings.TrimSpace(p); p != "" {
+			result = append(result, p)
+		}
+	}
+	return result
+}
+
 func getEnvVar(key string, description string) (string, error) {
 	value, err := dio.Env(key)
 	if err != nil {
@@ -48,165 +162,17 @@ func getEnvVar(key string, description string) (string, error) {
 	return value, nil
 }
 
-func buildConfig() (*AppConfig, error) {
-	port, err := getEnvVar("SERVER_LISTEN_PORT", "server listen port")
-	if err != nil {
-		return nil, fmt.Errorf("error getting server listen port: %w", err)
-	}
-
-	// setup:feature:database:start
-	// Database configuration (disabled by default so the template runs without a DB)
-	enableDatabase := false
-	if v, err := dio.Env("ENABLE_DATABASE"); err == nil {
-		if parsed, err := strconv.ParseBool(v); err == nil {
-			enableDatabase = parsed
-		}
-	}
-
-	// DB_ENGINE selects the database engine: "sqlite"/"sqlite3" or "sqlserver"/"mssql".
-	// Defaults to "sqlite".
-	dbEngine := dialect.SQLite
-	if v, err := dio.Env("DB_ENGINE"); err == nil && v != "" {
-		parsed, err := dialect.ParseEngine(v)
-		if err != nil {
-			return nil, fmt.Errorf("invalid DB_ENGINE: %w", err)
-		}
-		dbEngine = parsed
-	}
-	// setup:feature:database:end
-
-	// setup:feature:graph:start
-	// Azure user refresh hour configuration (default: 5 AM)
-	refreshHour := 5
-	if refreshHourStr, err := dio.Env("AZURE_USER_REFRESH_HOUR"); err == nil {
-		if h, err := strconv.Atoi(refreshHourStr); err == nil && h >= 0 && h < 24 {
-			refreshHour = h
-		} else {
-			return nil, fmt.Errorf("invalid AZURE_USER_REFRESH_HOUR value: %q (must be integer 0-23)", refreshHourStr)
-		}
-	}
-	// setup:feature:graph:end
-
-	appName := dio.EnvWithDefault("APP_NAME", "")
-	// setup:feature:demo:start
-	if appName == "" {
-		appName = "dothog"
-	}
-	// setup:feature:demo:end
-	if appName == "" {
-		return nil, fmt.Errorf("APP_NAME is required")
-	}
-
-	// setup:feature:auth:start
-	croonerDisabled := true
-	var croonerConfig *crooner.AuthConfigParams
-	var sessionSecret string
-	if !croonerDisabled {
-		azureClientID, err := getEnvVar("AZURE_CLIENT_ID", "azure client id")
-		if err != nil {
-			return nil, err
-		}
-		azureClientSecret, err := getEnvVar("AZURE_CLIENT_SECRET", "azure client secret")
-		if err != nil {
-			return nil, err
-		}
-		azureTenantID, err := getEnvVar("AZURE_TENANT_ID", "azure tenant id")
-		if err != nil {
-			return nil, err
-		}
-		redirectURL, err := getEnvVar("AZURE_REDIRECT_URL", "azure redirect url")
-		if err != nil {
-			return nil, err
-		}
-		logoutURLRedirect, err := getEnvVar("AZURE_LOGOUT_REDIRECT_URL", "azure logout redirect url")
-		if err != nil {
-			return nil, err
-		}
-		loginURLRedirect, err := getEnvVar("AZURE_LOGIN_REDIRECT_URL", "azure login redirect url")
-		if err != nil {
-			return nil, err
-		}
-		sessionSecret, err = getEnvVar("SESSION_SECRET", "session secret")
-		if err != nil {
-			return nil, err
-		}
-		croonerConfig = &crooner.AuthConfigParams{
-			ClientID:          azureClientID,
-			ClientSecret:      azureClientSecret,
-			TenantID:          azureTenantID,
-			RedirectURL:       redirectURL,
-			LogoutURLRedirect: logoutURLRedirect,
-			LoginURLRedirect:  loginURLRedirect,
-			AuthRoutes: &crooner.AuthRoutes{
-				Login:    "/login",
-				Logout:   "/logout",
-				Callback: "/callback",
-			},
-			SessionValueClaims: []map[string]string{
-				{"azureId": "oid"},
-				{"groups": "roles"},
-			},
-			SecurityHeaders: &crooner.SecurityHeadersConfig{
-				ContentSecurityPolicy: "img-src 'self' data: https://login.microsoftonline.com;",
-			},
-		}
-	}
-	// setup:feature:auth:end
-
-	// setup:feature:csrf:start
-	csrfRotatePerRequest := false
-	if v, err := dio.Env("CSRF_ROTATE_PER_REQUEST"); err == nil {
-		if parsed, err := strconv.ParseBool(v); err == nil {
-			csrfRotatePerRequest = parsed
-		}
-	}
-	csrfPerRequestPaths := []string{}
-	if v, err := dio.Env("CSRF_PER_REQUEST_PATHS"); err == nil && v != "" {
-		for _, p := range strings.Split(v, ",") {
-			if p = strings.TrimSpace(p); p != "" {
-				csrfPerRequestPaths = append(csrfPerRequestPaths, p)
-			}
-		}
-	}
-	csrfExemptPaths := []string{"/login", "/callback", "/logout"}
-	// setup:feature:csrf:end
-
-	return &AppConfig{
-		ServerPort: port,
-		// setup:feature:graph:start
-		AzureRefreshUsersHour: refreshHour,
-		// setup:feature:graph:end
-		// setup:feature:database:start
-		EnableDatabase: enableDatabase,
-		DBEngine:       dbEngine,
-		// setup:feature:database:end
-		// setup:feature:auth:start
-		CroonerDisabled: croonerDisabled,
-		CroonerConfig:   croonerConfig,
-		SessionSecret:   sessionSecret,
-		AppName:         appName,
-		// setup:feature:auth:end
-		// setup:feature:csrf:start
-		CSRFRotatePerRequest: csrfRotatePerRequest,
-		CSRFPerRequestPaths:  csrfPerRequestPaths,
-		CSRFExemptPaths:      csrfExemptPaths,
-		// setup:feature:csrf:end
-		// setup:feature:database:start
-		InitRepo: false,
-		// setup:feature:database:end
-	}, nil
-}
+// --- Singleton ---
 
 var getConfig = sync.OnceValues(buildConfig)
 
 // GetConfig returns the singleton configuration instance.
-// The config is built on first call and cached for all subsequent calls.
 func GetConfig() (*AppConfig, error) {
 	return getConfig()
 }
 
 // MustGetConfig returns the singleton configuration instance.
-// It panics if the config cannot be loaded.
+// Panics if configuration cannot be loaded.
 func MustGetConfig() *AppConfig {
 	config, err := GetConfig()
 	if err != nil {
@@ -215,8 +181,7 @@ func MustGetConfig() *AppConfig {
 	return config
 }
 
-// ResetForTesting resets the singleton instance for testing purposes.
-// This should only be used in tests.
+// ResetForTesting resets the singleton for testing purposes.
 func ResetForTesting() {
 	getConfig = sync.OnceValues(buildConfig)
 }

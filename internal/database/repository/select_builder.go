@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"catgoose/dothog/internal/database/dialect"
+	dialect "github.com/catgoose/fraggle"
 )
 
 // SelectBuilder constructs composable SELECT queries with WHERE, ORDER BY, and pagination.

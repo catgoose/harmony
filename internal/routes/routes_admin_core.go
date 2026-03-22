@@ -80,18 +80,26 @@ func (ar *appRoutes) handleConfigInfo(c echo.Context) error {
 	entries := []admininfo.ConfigEntry{
 		{Key: "SERVER_LISTEN_PORT", Value: cfg.ServerPort},
 		{Key: "APP_NAME", Value: defaultStr(cfg.AppName, "(not set)")},
+		// setup:feature:database:start
 		{Key: "ENABLE_DATABASE", Value: fmt.Sprintf("%t", cfg.EnableDatabase)},
-		{Key: "INIT_REPO", Value: fmt.Sprintf("%t", cfg.InitRepo)},
+		{Key: "DATABASE_URL", Value: cfg.DatabaseURL},
+		// setup:feature:database:end
+		// setup:feature:auth:start
 		{Key: "CROONER_DISABLED", Value: fmt.Sprintf("%t", cfg.CroonerDisabled)},
 		{Key: "SESSION_SECRET", Value: maskSecret(cfg.SessionSecret)},
+		// setup:feature:auth:end
+		// setup:feature:csrf:start
 		{Key: "CSRF_ROTATE_PER_REQUEST", Value: fmt.Sprintf("%t", cfg.CSRFRotatePerRequest)},
+		// setup:feature:csrf:end
 	}
+	// setup:feature:csrf:start
 	if len(cfg.CSRFPerRequestPaths) > 0 {
 		entries = append(entries, admininfo.ConfigEntry{Key: "CSRF_PER_REQUEST_PATHS", Value: fmt.Sprintf("%v", cfg.CSRFPerRequestPaths)})
 	}
 	if len(cfg.CSRFExemptPaths) > 0 {
 		entries = append(entries, admininfo.ConfigEntry{Key: "CSRF_EXEMPT_PATHS", Value: fmt.Sprintf("%v", cfg.CSRFExemptPaths)})
 	}
+	// setup:feature:csrf:end
 
 	return handler.RenderBaseLayout(c, views.AdminConfigPage(entries))
 }

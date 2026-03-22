@@ -404,11 +404,6 @@ func TestSetup_FeaturesNone(t *testing.T) {
 	assertDirRemoved(t, filepath.Join(dest, "internal", "domain"))
 	assertDirRemoved(t, filepath.Join(dest, "internal", "demo"))
 
-	// MSSQL dialect should be removed when mssql feature not selected
-	_, err = os.Stat(filepath.Join(dest, "internal", "database", "mssql.go"))
-	require.True(t, os.IsNotExist(err), "mssql.go should be removed when mssql not selected")
-	_, err = os.Stat(filepath.Join(dest, "internal", "database", "dialect", "mssql.go"))
-	require.True(t, os.IsNotExist(err), "dialect/mssql.go should be removed when mssql not selected")
 
 	_, err = os.Stat(filepath.Join(dest, "config", "Caddyfile"))
 	require.True(t, os.IsNotExist(err), "Caddyfile should be removed when no features selected")
@@ -478,17 +473,9 @@ func TestSetup_FeaturesDatabaseOnly(t *testing.T) {
 	assertDirRemoved(t, filepath.Join(dest, "internal", "ssebroker"))
 	assertDirRemoved(t, filepath.Join(dest, "internal", "service", "graph"))
 	assertDirExists(t, filepath.Join(dest, "internal", "database"))
-	assertDirExists(t, filepath.Join(dest, "internal", "database", "dialect"))
 
-	// SQLite dialect should exist
-	_, err = os.Stat(filepath.Join(dest, "internal", "database", "dialect", "sqlite.go"))
-	require.NoError(t, err, "dialect/sqlite.go should exist (database is implicit)")
 
 	// MSSQL files should be removed
-	_, err = os.Stat(filepath.Join(dest, "internal", "database", "mssql.go"))
-	require.True(t, os.IsNotExist(err), "mssql.go should be removed when mssql not selected")
-	_, err = os.Stat(filepath.Join(dest, "internal", "database", "dialect", "mssql.go"))
-	require.True(t, os.IsNotExist(err), "dialect/mssql.go should be removed when mssql not selected")
 }
 
 func TestSetup_FeaturesMSSQL(t *testing.T) {
@@ -513,15 +500,7 @@ func TestSetup_FeaturesMSSQL(t *testing.T) {
 	assertNoSetupMarkers(t, dest)
 	assertBuildSucceeds(t, dest)
 	assertDirExists(t, filepath.Join(dest, "internal", "database"))
-	assertDirExists(t, filepath.Join(dest, "internal", "database", "dialect"))
 
-	// Both dialects should exist
-	_, err = os.Stat(filepath.Join(dest, "internal", "database", "dialect", "sqlite.go"))
-	require.NoError(t, err, "dialect/sqlite.go should exist")
-	_, err = os.Stat(filepath.Join(dest, "internal", "database", "dialect", "mssql.go"))
-	require.NoError(t, err, "dialect/mssql.go should exist when mssql selected")
-	_, err = os.Stat(filepath.Join(dest, "internal", "database", "mssql.go"))
-	require.NoError(t, err, "mssql.go should exist when mssql selected")
 }
 
 func TestSetup_FeaturesSSECaddy(t *testing.T) {
