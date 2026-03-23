@@ -11,8 +11,9 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/catgoose/tracy"
 	"catgoose/dothog/internal/shared"
+
+	"github.com/catgoose/promolog"
 
 	"github.com/catgoose/dio"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -122,11 +123,10 @@ func Get() *slog.Logger {
 	}
 	mu.RUnlock()
 
-	mu.Lock()
-	defer mu.Unlock()
-	if logger == nil {
-		Init()
-	}
+	Init()
+
+	mu.RLock()
+	defer mu.RUnlock()
 	return logger
 }
 
@@ -166,7 +166,7 @@ func WithContext(ctx context.Context) *slog.Logger {
 	args := make([]any, 0)
 
 	// Add request ID if available
-	if requestID := ctx.Value(tracy.RequestIDKey); requestID != nil {
+	if requestID := ctx.Value(promolog.RequestIDKey); requestID != nil {
 		args = append(args, "request_id", requestID)
 	}
 
