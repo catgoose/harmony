@@ -295,7 +295,7 @@ func (d *DB) initTasks() error {
 		return err
 	}
 	if count == 0 {
-		for _, stmt := range TasksTable.SeedSQL() {
+		for _, stmt := range TasksTable.SeedSQL(sqliteDialect) {
 			if _, err := d.db.Exec(stmt); err != nil {
 				return fmt.Errorf("seed tasks: %w", err)
 			}

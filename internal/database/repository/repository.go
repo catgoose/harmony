@@ -133,7 +133,7 @@ func (r *RepoManager) SeedSchema(ctx context.Context) error {
 
 	seeded := 0
 	for _, td := range r.tables {
-		for _, stmt := range td.SeedSQL() {
+		for _, stmt := range td.SeedSQL(r.dialect) {
 			if _, err := r.db.ExecContext(ctx, stmt); err != nil {
 				return fmt.Errorf("failed to seed %s: %w", td.Name, err)
 			}
