@@ -20,7 +20,7 @@ func TestSetupReplacesAppNameAndModule(t *testing.T) {
 	repoRoot, err := findRepoRoot()
 	require.NoError(t, err)
 
-	dest := t.TempDir()
+	dest := setupTempDir(t)
 	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
 	require.NoError(t, err)
 
@@ -118,7 +118,7 @@ func TestSetupUsesRandomPortWhenPOmitted(t *testing.T) {
 	repoRoot, err := findRepoRoot()
 	require.NoError(t, err)
 
-	dest := t.TempDir()
+	dest := setupTempDir(t)
 	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
 	require.NoError(t, err)
 
@@ -263,6 +263,20 @@ func assertDirRemoved(t *testing.T, dir string) {
 	require.True(t, os.IsNotExist(err), "directory should not exist: %s", dir)
 }
 
+// setupTempDir creates a temp directory and registers a cleanup that removes
+// node_modules first. On CI, t.TempDir()'s cleanup can hang for minutes
+// deleting thousands of small files from node_modules. Removing it explicitly
+// before the framework cleanup prevents test timeout from os.RemoveAll.
+func setupTempDir(t *testing.T) string {
+	t.Helper()
+	dest := t.TempDir()
+	t.Cleanup(func() {
+		// LIFO: runs before t.TempDir()'s own RemoveAll
+		_ = os.RemoveAll(filepath.Join(dest, "node_modules"))
+	})
+	return dest
+}
+
 func assertBuildSucceeds(t *testing.T, dir string) {
 	t.Helper()
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
@@ -283,7 +297,7 @@ func TestSetup_NoBareBinaryInGitignore(t *testing.T) {
 	repoRoot, err := findRepoRoot()
 	require.NoError(t, err)
 
-	dest := t.TempDir()
+	dest := setupTempDir(t)
 	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
 	require.NoError(t, err)
 
@@ -321,7 +335,7 @@ func TestSetup_MageSetupAndInternalSetupRemovable(t *testing.T) {
 	repoRoot, err := findRepoRoot()
 	require.NoError(t, err)
 
-	dest := t.TempDir()
+	dest := setupTempDir(t)
 	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
 	require.NoError(t, err)
 
@@ -355,7 +369,7 @@ func TestSetup_FeaturesAll(t *testing.T) {
 	repoRoot, err := findRepoRoot()
 	require.NoError(t, err)
 
-	dest := t.TempDir()
+	dest := setupTempDir(t)
 	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
 	require.NoError(t, err)
 
@@ -384,7 +398,7 @@ func TestSetup_FeaturesNone(t *testing.T) {
 	repoRoot, err := findRepoRoot()
 	require.NoError(t, err)
 
-	dest := t.TempDir()
+	dest := setupTempDir(t)
 	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
 	require.NoError(t, err)
 
@@ -419,7 +433,7 @@ func TestSetup_FeaturesAuthOnly(t *testing.T) {
 	repoRoot, err := findRepoRoot()
 	require.NoError(t, err)
 
-	dest := t.TempDir()
+	dest := setupTempDir(t)
 	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
 	require.NoError(t, err)
 
@@ -456,7 +470,7 @@ func TestSetup_FeaturesDatabaseOnly(t *testing.T) {
 	repoRoot, err := findRepoRoot()
 	require.NoError(t, err)
 
-	dest := t.TempDir()
+	dest := setupTempDir(t)
 	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
 	require.NoError(t, err)
 
@@ -485,7 +499,7 @@ func TestSetup_FeaturesMSSQL(t *testing.T) {
 	repoRoot, err := findRepoRoot()
 	require.NoError(t, err)
 
-	dest := t.TempDir()
+	dest := setupTempDir(t)
 	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
 	require.NoError(t, err)
 
@@ -510,7 +524,7 @@ func TestSetup_FeaturesSSECaddy(t *testing.T) {
 	repoRoot, err := findRepoRoot()
 	require.NoError(t, err)
 
-	dest := t.TempDir()
+	dest := setupTempDir(t)
 	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
 	require.NoError(t, err)
 
@@ -539,7 +553,7 @@ func TestSetup_FeaturesDemo(t *testing.T) {
 	repoRoot, err := findRepoRoot()
 	require.NoError(t, err)
 
-	dest := t.TempDir()
+	dest := setupTempDir(t)
 	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
 	require.NoError(t, err)
 
