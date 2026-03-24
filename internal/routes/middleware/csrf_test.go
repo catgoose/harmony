@@ -6,7 +6,6 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/catgoose/crooner"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/require"
 )
@@ -191,4 +190,4 @@ func Test_pathPerRequest(t *testing.T) {
 	require.False(t, pathPerRequest(paths, "/form/1"))
 }
 
-var _ crooner.SessionManager = (*mockSessionManager)(nil)
+var _ CSRFSessionStore = (*mockSessionManager)(nil)

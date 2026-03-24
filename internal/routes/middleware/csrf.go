@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/catgoose/crooner"
 	"github.com/labstack/echo/v4"
 )
 
@@ -22,6 +21,13 @@ var safeMethods = map[string]bool{
 	http.MethodTrace:   true,
 }
 
+// CSRFSessionStore provides get/set for string session values.
+// Any session implementation (crooner, SCS, cookie-based, etc.) can satisfy this.
+type CSRFSessionStore interface {
+	Get(c echo.Context, key string) (any, error)
+	Set(c echo.Context, key string, value any) error
+}
+
 // CSRFConfig holds CSRF middleware configuration.
 type CSRFConfig struct {
 	PerRequestPaths  []string
@@ -29,12 +35,12 @@ type CSRFConfig struct {
 	RotatePerRequest bool
 }
 
-// CSRF returns Echo middleware that generates and validates CSRF tokens using the session.
-// When sm is nil the middleware is a no-op. Requires crooner session (CSRF requires crooner).
-func CSRF(sm crooner.SessionManager, cfg CSRFConfig) echo.MiddlewareFunc {
+// CSRF returns Echo middleware that generates and validates CSRF tokens using a session store.
+// When ss is nil the middleware is a no-op.
+func CSRF(ss CSRFSessionStore, cfg CSRFConfig) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			if sm == nil {
+			if ss == nil {
 				return next(c)
 			}
 			path := c.Request().URL.Path
@@ -42,7 +48,7 @@ func CSRF(sm crooner.SessionManager, cfg CSRFConfig) echo.MiddlewareFunc {
 				return next(c)
 			}
 			if safeMethods[c.Request().Method] {
-				token, err := getOrCreateToken(c, sm, cfg, path)
+				token, err := getOrCreateToken(c, ss, cfg, path)
 				if err != nil {
 					return err
 				}
@@ -53,8 +59,8 @@ func CSRF(sm crooner.SessionManager, cfg CSRFConfig) echo.MiddlewareFunc {
 			if reqToken == "" {
 				reqToken = c.Request().FormValue("_csrf")
 			}
-			sessionToken, err := crooner.GetString(sm, c, csrfTokenSessionKey)
-			if err != nil || sessionToken == "" || subtle.ConstantTimeCompare([]byte(sessionToken), []byte(reqToken)) != 1 {
+			sessionToken, _ := getSessionString(ss, c, csrfTokenSessionKey)
+			if sessionToken == "" || subtle.ConstantTimeCompare([]byte(sessionToken), []byte(reqToken)) != 1 {
 				return c.NoContent(http.StatusForbidden)
 			}
 			return next(c)
@@ -80,10 +86,10 @@ func pathPerRequest(paths []string, path string) bool {
 	return false
 }
 
-func getOrCreateToken(c echo.Context, sm crooner.SessionManager, cfg CSRFConfig, path string) (string, error) {
+func getOrCreateToken(c echo.Context, ss CSRFSessionStore, cfg CSRFConfig, path string) (string, error) {
 	rotate := cfg.RotatePerRequest || pathPerRequest(cfg.PerRequestPaths, path)
 	if !rotate {
-		existing, err := crooner.GetString(sm, c, csrfTokenSessionKey)
+		existing, err := getSessionString(ss, c, csrfTokenSessionKey)
 		if err == nil && existing != "" {
 			return existing, nil
 		}
@@ -92,10 +98,19 @@ func getOrCreateToken(c echo.Context, sm crooner.SessionManager, cfg CSRFConfig,
 	if err != nil {
 		return "", err
 	}
-	if err := sm.Set(c, csrfTokenSessionKey, token); err != nil {
+	if err := ss.Set(c, csrfTokenSessionKey, token); err != nil {
 		return "", err
 	}
 	return token, nil
+}
+
+func getSessionString(ss CSRFSessionStore, c echo.Context, key string) (string, error) {
+	val, err := ss.Get(c, key)
+	if err != nil {
+		return "", err
+	}
+	s, _ := val.(string)
+	return s, nil
 }
 
 func generateToken() (string, error) {
@@ -105,4 +120,3 @@ func generateToken() (string, error) {
 	}
 	return hex.EncodeToString(b), nil
 }
-
