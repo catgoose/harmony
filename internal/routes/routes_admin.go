@@ -21,7 +21,7 @@ type adminRoutes struct {
 
 func (ar *appRoutes) initAdminRoutes(db *demo.DB, actLog *demo.ActivityLog, broker *ssebroker.SSEBroker) {
 	a := &adminRoutes{db: db, actLog: actLog, broker: broker}
-	ar.e.GET("/admin", a.handleAdminPage)
+	ar.e.GET("/admin/sqlite", a.handleAdminPage)
 	ar.e.POST("/admin/db/reinit", a.handleReinit)
 }
 
