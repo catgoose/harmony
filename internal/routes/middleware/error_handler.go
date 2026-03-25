@@ -191,5 +191,8 @@ func errorPageTheme(c echo.Context) string {
 		return s.Theme
 	}
 	// setup:feature:session_settings:end
-	return "light"
+	if t, ok := c.Get("theme").(string); ok && t != "" {
+		return t
+	}
+	return "dark"
 }

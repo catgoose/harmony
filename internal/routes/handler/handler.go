@@ -82,7 +82,10 @@ func getLayoutCtx(c echo.Context) layoutCtx {
 		csrfToken = t
 	}
 	// setup:feature:csrf:end
-	theme := "light"
+	theme := "dark"
+	if t, ok := c.Get("theme").(string); ok && t != "" {
+		theme = t
+	}
 	// setup:feature:session_settings:start
 	theme = middleware.GetSessionSettings(c).Theme
 	// setup:feature:session_settings:end
