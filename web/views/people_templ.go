@@ -507,85 +507,85 @@ func PersonEditForm(p demo.Person) templ.Component {
 		ctx = templ.ClearChildren(ctx)
 		saveURL := fmt.Sprintf("/demo/people/%d", p.ID)
 		cancelURL := fmt.Sprintf("/demo/people/%d/card", p.ID)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "<div id=\"person-profile-card\"><div class=\"card bg-base-200 shadow-md\"><div class=\"card-body\"><h2 class=\"card-title text-2xl\">Edit Profile</h2><div class=\"grid grid-cols-1 md:grid-cols-2 gap-4 mt-4\"><div><label class=\"label label-text text-xs\">First Name</label> <input type=\"text\" name=\"first_name\" class=\"input input-sm input-bordered w-full\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "<div id=\"person-profile-card\"><div class=\"card bg-base-200 shadow-md\"><div class=\"card-body\"><h2 class=\"card-title text-2xl\">Edit Profile</h2><div class=\"grid grid-cols-1 md:grid-cols-2 gap-4 mt-4\"><div><label class=\"label label-text text-xs\">First Name</label> <input type=\"text\" name=\"first_name\" class=\"input input-sm w-full\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var25 string
 		templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(p.FirstName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/people.templ`, Line: 116, Col: 107}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/people.templ`, Line: 116, Col: 92}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, "\"></div><div><label class=\"label label-text text-xs\">Last Name</label> <input type=\"text\" name=\"last_name\" class=\"input input-sm input-bordered w-full\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, "\"></div><div><label class=\"label label-text text-xs\">Last Name</label> <input type=\"text\" name=\"last_name\" class=\"input input-sm w-full\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var26 string
 		templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(p.LastName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/people.templ`, Line: 120, Col: 105}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/people.templ`, Line: 120, Col: 90}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "\"></div><div><label class=\"label label-text text-xs\">Email</label> <input type=\"email\" name=\"email\" class=\"input input-sm input-bordered w-full\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "\"></div><div><label class=\"label label-text text-xs\">Email</label> <input type=\"email\" name=\"email\" class=\"input input-sm w-full\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var27 string
 		templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs(p.Email)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/people.templ`, Line: 124, Col: 99}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/people.templ`, Line: 124, Col: 84}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var27))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, "\"></div><div><label class=\"label label-text text-xs\">Phone</label> <input type=\"text\" name=\"phone\" class=\"input input-sm input-bordered w-full\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, "\"></div><div><label class=\"label label-text text-xs\">Phone</label> <input type=\"text\" name=\"phone\" class=\"input input-sm w-full\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var28 string
 		templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.JoinStringErrs(p.Phone)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/people.templ`, Line: 128, Col: 98}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/people.templ`, Line: 128, Col: 83}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var28))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "\"></div><div><label class=\"label label-text text-xs\">City</label> <input type=\"text\" name=\"city\" class=\"input input-sm input-bordered w-full\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "\"></div><div><label class=\"label label-text text-xs\">City</label> <input type=\"text\" name=\"city\" class=\"input input-sm w-full\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var29 string
 		templ_7745c5c3_Var29, templ_7745c5c3_Err = templ.JoinStringErrs(p.City)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/people.templ`, Line: 132, Col: 96}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/people.templ`, Line: 132, Col: 81}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var29))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, "\"></div><div><label class=\"label label-text text-xs\">State</label> <input type=\"text\" name=\"state\" class=\"input input-sm input-bordered w-full\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, "\"></div><div><label class=\"label label-text text-xs\">State</label> <input type=\"text\" name=\"state\" class=\"input input-sm w-full\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var30 string
 		templ_7745c5c3_Var30, templ_7745c5c3_Err = templ.JoinStringErrs(p.State)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/people.templ`, Line: 136, Col: 98}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/people.templ`, Line: 136, Col: 83}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var30))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "\"></div><div><label class=\"label label-text text-xs\">Department</label> <select name=\"department\" class=\"select select-sm select-bordered w-full\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "\"></div><div><label class=\"label label-text text-xs\">Department</label> <select name=\"department\" class=\"select select-sm w-full\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -631,27 +631,27 @@ func PersonEditForm(p demo.Person) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 44, "</select></div><div><label class=\"label label-text text-xs\">Job Title</label> <input type=\"text\" name=\"job_title\" class=\"input input-sm input-bordered w-full\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 44, "</select></div><div><label class=\"label label-text text-xs\">Job Title</label> <input type=\"text\" name=\"job_title\" class=\"input input-sm w-full\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var33 string
 		templ_7745c5c3_Var33, templ_7745c5c3_Err = templ.JoinStringErrs(p.JobTitle)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/people.templ`, Line: 148, Col: 105}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/people.templ`, Line: 148, Col: 90}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var33))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 45, "\"></div></div><div class=\"mt-4\"><label class=\"label label-text text-xs\">Bio</label> <textarea name=\"bio\" class=\"textarea textarea-bordered w-full\" rows=\"3\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 45, "\"></div></div><div class=\"mt-4\"><label class=\"label label-text text-xs\">Bio</label> <textarea name=\"bio\" class=\"textarea w-full\" rows=\"3\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var34 string
 		templ_7745c5c3_Var34, templ_7745c5c3_Err = templ.JoinStringErrs(p.Bio)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/people.templ`, Line: 153, Col: 84}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/people.templ`, Line: 153, Col: 66}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var34))
 		if templ_7745c5c3_Err != nil {

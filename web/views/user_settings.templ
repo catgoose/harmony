@@ -22,24 +22,24 @@ templ UserSettingsPage(prefs admininfo.UserPreferences) {
 					hx-swap="innerHTML"
 					class="space-y-4"
 				>
-					<div class="form-control">
-						<label class="label"><span class="label-text">Items per page</span></label>
-						<select name="page_size" class="select select-bordered select-sm w-full max-w-xs">
+					<div class="fieldset">
+						<label class="label">Items per page</label>
+						<select name="page_size" class="select select-sm w-full max-w-xs">
 							<option value="10" selected?={ prefs.PageSize == 10 }>10</option>
 							<option value="20" selected?={ prefs.PageSize == 20 }>20</option>
 							<option value="50" selected?={ prefs.PageSize == 50 }>50</option>
 							<option value="100" selected?={ prefs.PageSize == 100 }>100</option>
 						</select>
 					</div>
-					<div class="form-control">
-						<label class="label"><span class="label-text">Date format</span></label>
-						<select name="date_format" class="select select-bordered select-sm w-full max-w-xs">
+					<div class="fieldset">
+						<label class="label">Date format</label>
+						<select name="date_format" class="select select-sm w-full max-w-xs">
 							<option value="relative" selected?={ prefs.DateFormat == "relative" }>Relative (2 hours ago)</option>
 							<option value="short" selected?={ prefs.DateFormat == "short" }>Short (Mar 16, 2026)</option>
 							<option value="iso" selected?={ prefs.DateFormat == "iso" }>ISO (2026-03-16)</option>
 						</select>
 					</div>
-					<div class="form-control">
+					<div class="fieldset">
 						<label class="label cursor-pointer justify-start gap-3">
 							<input type="checkbox" name="compact_tables" value="true" class="checkbox checkbox-sm" checked?={ prefs.CompactTables } />
 							<span class="label-text">Compact table rows</span>
@@ -49,13 +49,13 @@ templ UserSettingsPage(prefs admininfo.UserPreferences) {
 
 					<!-- Notifications -->
 					<h3 class="font-semibold text-sm">Notifications</h3>
-					<div class="form-control">
+					<div class="fieldset">
 						<label class="label cursor-pointer justify-start gap-3">
 							<input type="checkbox" name="email_on_error" value="true" class="checkbox checkbox-sm" checked?={ prefs.EmailOnError } />
 							<span class="label-text">Email me when an error is reported</span>
 						</label>
 					</div>
-					<div class="form-control">
+					<div class="fieldset">
 						<label class="label cursor-pointer justify-start gap-3">
 							<input type="checkbox" name="desktop_notifications" value="true" class="checkbox checkbox-sm" checked?={ prefs.DesktopNotifications } />
 							<span class="label-text">Desktop notifications for real-time events</span>
@@ -65,13 +65,13 @@ templ UserSettingsPage(prefs admininfo.UserPreferences) {
 
 					<!-- Accessibility -->
 					<h3 class="font-semibold text-sm">Accessibility</h3>
-					<div class="form-control">
+					<div class="fieldset">
 						<label class="label cursor-pointer justify-start gap-3">
 							<input type="checkbox" name="reduce_motion" value="true" class="checkbox checkbox-sm" checked?={ prefs.ReduceMotion } />
 							<span class="label-text">Reduce motion and animations</span>
 						</label>
 					</div>
-					<div class="form-control">
+					<div class="fieldset">
 						<label class="label cursor-pointer justify-start gap-3">
 							<input type="checkbox" name="high_contrast" value="true" class="checkbox checkbox-sm" checked?={ prefs.HighContrast } />
 							<span class="label-text">High contrast mode</span>

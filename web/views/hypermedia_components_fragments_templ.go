@@ -263,7 +263,7 @@ func TabContentFragment(tab string) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		case "settings":
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "<h3 class=\"font-semibold mb-2\">Settings</h3><p class=\"text-sm text-base-content/70\">Configure preferences here. This content was fetched on demand — no page reload necessary.</p><div class=\"form-control mt-2\"><label class=\"label cursor-pointer justify-start gap-3\"><input type=\"checkbox\" class=\"toggle toggle-sm toggle-primary\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "<h3 class=\"font-semibold mb-2\">Settings</h3><p class=\"text-sm text-base-content/70\">Configure preferences here. This content was fetched on demand — no page reload necessary.</p><div class=\"fieldset mt-2\"><label class=\"label cursor-pointer justify-start gap-3\"><input type=\"checkbox\" class=\"toggle toggle-sm toggle-primary\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

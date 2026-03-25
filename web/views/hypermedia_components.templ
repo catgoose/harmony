@@ -38,7 +38,7 @@ templ ComponentsPage(data ComponentsPageData) {
 			<div class="card-body p-4">
 				<h2 class="card-title text-base">Tabs — Lazy-loaded Content</h2>
 				<p class="text-sm text-base-content/70 mb-3">Each tab button uses <code class="text-xs bg-base-200 px-1 rounded">hx-get</code> to fetch content on demand. Active class managed via HyperScript.</p>
-				<div role="tablist" class="tabs tabs-bordered">
+				<div role="tablist" class="tabs tabs-border">
 					<button
 						role="tab"
 						class="tab tab-active"
@@ -107,7 +107,7 @@ templ ComponentsPage(data ComponentsPageData) {
 					hx-on::after-request="this.reset()"
 					class="flex gap-2 mt-2"
 				>
-					<input type="text" name="chat-msg" placeholder="Type a message…" class="input input-sm input-bordered flex-1" autocomplete="off"/>
+					<input type="text" name="chat-msg" placeholder="Type a message…" class="input input-sm flex-1" autocomplete="off"/>
 					<button type="submit" class="btn btn-sm btn-primary">Send</button>
 				</form>
 			</div>

@@ -61,9 +61,9 @@ templ filterField(field hypermedia.FilterField, bar hypermedia.FilterBar) {
 
 // searchFilterField renders a DaisyUI text search input with label.
 templ searchFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) {
-	<label class="form-control w-full max-w-xs">
+	<label class="fieldset w-full max-w-xs">
 		if field.Label != "" {
-			<div class="label"><span class="label-text">{ field.Label }</span></div>
+			<label class="label">{ field.Label }</label>
 		}
 		<input
 			type="search"
@@ -71,7 +71,7 @@ templ searchFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) 
 			name={ field.Name }
 			value={ field.Value }
 			placeholder={ field.Placeholder }
-			class="input input-bordered input-sm"
+			class="input input-sm"
 			{ filterHxAttrs(field, bar)... }
 			disabled?={ field.Disabled }
 		/>
@@ -81,9 +81,9 @@ templ searchFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) 
 // selectFilterField renders a DaisyUI <select> dropdown with label.
 // The wrapping label carries data-filter={name} for OOB targeting by FilterGroup.
 templ selectFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) {
-	<label class="form-control w-full max-w-xs" data-filter={ field.Name }>
+	<label class="fieldset w-full max-w-xs" data-filter={ field.Name }>
 		if field.Label != "" {
-			<div class="label"><span class="label-text">{ field.Label }</span></div>
+			<label class="label">{ field.Label }</label>
 		}
 		@selectFilterOptions(field, bar)
 	</label>
@@ -93,7 +93,7 @@ templ selectFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) 
 templ selectFilterOptions(field hypermedia.FilterField, bar hypermedia.FilterBar) {
 	<select
 		name={ field.Name }
-		class="select select-bordered select-sm"
+		class="select select-sm"
 		{ filterHxAttrs(field, bar)... }
 		disabled?={ field.Disabled }
 	>
@@ -109,7 +109,7 @@ templ FilterGroupOOB(group hypermedia.FilterGroup) {
 	for _, field := range group.SelectFields() {
 		<div hx-swap-oob={ "innerHTML:[data-filter='" + field.Name + "']" }>
 			if field.Label != "" {
-				<div class="label"><span class="label-text">{ field.Label }</span></div>
+				<label class="label">{ field.Label }</label>
 			}
 			@selectFilterOptions(field, group.Bar)
 		</div>
@@ -118,9 +118,9 @@ templ FilterGroupOOB(group hypermedia.FilterGroup) {
 
 // rangeFilterField renders a DaisyUI range slider with live value display via HyperScript.
 templ rangeFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) {
-	<label class="form-control w-full max-w-xs">
+	<label class="fieldset w-full max-w-xs">
 		if field.Label != "" {
-			<div class="label"><span class="label-text">{ field.Label }</span></div>
+			<label class="label">{ field.Label }</label>
 		}
 		<input
 			type="range"
@@ -158,15 +158,15 @@ templ checkboxFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar
 
 // dateFilterField renders a DaisyUI date input with label.
 templ dateFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) {
-	<label class="form-control w-full max-w-xs">
+	<label class="fieldset w-full max-w-xs">
 		if field.Label != "" {
-			<div class="label"><span class="label-text">{ field.Label }</span></div>
+			<label class="label">{ field.Label }</label>
 		}
 		<input
 			type="date"
 			name={ field.Name }
 			value={ field.Value }
-			class="input input-bordered input-sm"
+			class="input input-sm"
 			{ filterHxAttrs(field, bar)... }
 			disabled?={ field.Disabled }
 		/>

@@ -319,7 +319,7 @@ func dismissButton(ctrl hypermedia.Control) templ.Component {
 			templ_7745c5c3_Var10 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "<button class=\"inline-flex items-center px-3 py-1.5 text-sm font-medium rounded text-error-content/70 hover:text-error-content hover:underline focus:outline-none\" x-on:click=\"document.getElementById('error-status').innerHTML = ''\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "<button class=\"inline-flex items-center px-3 py-1.5 text-sm font-medium rounded text-error-content/70 hover:text-error-content hover:underline focus:outline-none\" _=\"on click set #error-status.innerHTML to ''\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

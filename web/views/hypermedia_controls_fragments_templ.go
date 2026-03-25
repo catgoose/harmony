@@ -339,27 +339,27 @@ func ResourceEditFragment(name, desc string) templ.Component {
 			templ_7745c5c3_Var14 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<form id=\"resource-edit-form\" class=\"p-4 bg-base-200 rounded space-y-3\"><div class=\"form-control\"><label class=\"label label-text text-sm\">Name</label> <input type=\"text\" name=\"name\" class=\"input input-sm input-bordered w-full\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<form id=\"resource-edit-form\" class=\"p-4 bg-base-200 rounded space-y-3\"><div class=\"fieldset\"><label class=\"label label-text text-sm\">Name</label> <input type=\"text\" name=\"name\" class=\"input input-sm w-full\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var15 string
 		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_controls_fragments.templ`, Line: 105, Col: 91}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_controls_fragments.templ`, Line: 105, Col: 76}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "\"></div><div class=\"form-control\"><label class=\"label label-text text-sm\">Description</label> <input type=\"text\" name=\"desc\" class=\"input input-sm input-bordered w-full\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "\"></div><div class=\"fieldset\"><label class=\"label label-text text-sm\">Description</label> <input type=\"text\" name=\"desc\" class=\"input input-sm w-full\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(desc)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_controls_fragments.templ`, Line: 109, Col: 91}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_controls_fragments.templ`, Line: 109, Col: 76}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {
@@ -424,7 +424,7 @@ func FormDemoFragment() templ.Component {
 			templ_7745c5c3_Var18 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "<form hx-post=\"/hypermedia/controls/form\" hx-target=\"#form-demo\" hx-swap=\"innerHTML\" class=\"space-y-3\"><div class=\"grid grid-cols-2 gap-3\"><div class=\"form-control\"><label class=\"label label-text text-sm\">Label</label> <input name=\"label\" class=\"input input-sm input-bordered\" value=\"Widget\"></div><div class=\"form-control\"><label class=\"label label-text text-sm\">Value</label> <input name=\"value\" class=\"input input-sm input-bordered\" value=\"42\"></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "<form hx-post=\"/hypermedia/controls/form\" hx-target=\"#form-demo\" hx-swap=\"innerHTML\" class=\"space-y-3\"><div class=\"grid grid-cols-2 gap-3\"><div class=\"fieldset\"><label class=\"label label-text text-sm\">Label</label> <input name=\"label\" class=\"input input-sm\" value=\"Widget\"></div><div class=\"fieldset\"><label class=\"label label-text text-sm\">Value</label> <input name=\"value\" class=\"input input-sm\" value=\"42\"></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -881,20 +881,20 @@ func RowEditFragment(item GalleryRowItem) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 54, "\"><td><input type=\"text\" name=\"name\" class=\"input input-sm input-bordered w-full\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 54, "\"><td><input type=\"text\" name=\"name\" class=\"input input-sm w-full\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var39 string
 		templ_7745c5c3_Var39, templ_7745c5c3_Err = templ.JoinStringErrs(item.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_controls_fragments.templ`, Line: 289, Col: 99}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_controls_fragments.templ`, Line: 289, Col: 84}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var39))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 55, "\"></td><td><select name=\"category\" class=\"select select-sm select-bordered\"><option value=\"Electronics\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 55, "\"></td><td><select name=\"category\" class=\"select select-sm\"><option value=\"Electronics\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -944,14 +944,14 @@ func RowEditFragment(item GalleryRowItem) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 65, ">Sports</option></select></td><td><input type=\"number\" name=\"price\" step=\"0.01\" class=\"input input-sm input-bordered w-24\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 65, ">Sports</option></select></td><td><input type=\"number\" name=\"price\" step=\"0.01\" class=\"input input-sm w-24\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var40 string
 		templ_7745c5c3_Var40, templ_7745c5c3_Err = templ.JoinStringErrs(item.Price)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_controls_fragments.templ`, Line: 299, Col: 113}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_controls_fragments.templ`, Line: 299, Col: 98}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var40))
 		if templ_7745c5c3_Err != nil {
@@ -1144,27 +1144,27 @@ func ValidationFixForm(name, price string) templ.Component {
 			templ_7745c5c3_Var47 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 79, "<div class=\"p-4 bg-base-200 rounded-lg space-y-3\"><p class=\"text-sm font-medium\">Fix the data and resubmit:</p><form hx-post=\"/hypermedia/controls/errors/validate\" hx-target=\"#validate-result\" hx-swap=\"innerHTML\" class=\"space-y-2\"><div class=\"grid grid-cols-2 gap-3\"><div class=\"form-control\"><label class=\"label label-text text-xs\">Name (min 3 chars)</label> <input name=\"name\" class=\"input input-sm input-bordered\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 79, "<div class=\"p-4 bg-base-200 rounded-lg space-y-3\"><p class=\"text-sm font-medium\">Fix the data and resubmit:</p><form hx-post=\"/hypermedia/controls/errors/validate\" hx-target=\"#validate-result\" hx-swap=\"innerHTML\" class=\"space-y-2\"><div class=\"grid grid-cols-2 gap-3\"><div class=\"fieldset\"><label class=\"label label-text text-xs\">Name (min 3 chars)</label> <input name=\"name\" class=\"input input-sm\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var48 string
 		templ_7745c5c3_Var48, templ_7745c5c3_Err = templ.JoinStringErrs(name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_controls_fragments.templ`, Line: 353, Col: 74}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_controls_fragments.templ`, Line: 353, Col: 59}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var48))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 80, "\"></div><div class=\"form-control\"><label class=\"label label-text text-xs\">Price (positive)</label> <input name=\"price\" type=\"number\" step=\"0.01\" class=\"input input-sm input-bordered\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 80, "\"></div><div class=\"fieldset\"><label class=\"label label-text text-xs\">Price (positive)</label> <input name=\"price\" type=\"number\" step=\"0.01\" class=\"input input-sm\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var49 string
 		templ_7745c5c3_Var49, templ_7745c5c3_Err = templ.JoinStringErrs(price)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_controls_fragments.templ`, Line: 357, Col: 102}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_controls_fragments.templ`, Line: 357, Col: 87}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var49))
 		if templ_7745c5c3_Err != nil {
@@ -1213,14 +1213,14 @@ func StaleRefreshForm(name string, version int) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 83, ") — edit and save:</p><form hx-post=\"/hypermedia/controls/errors/stale\" hx-target=\"#stale-result\" hx-swap=\"innerHTML\" class=\"space-y-2\"><input name=\"name\" class=\"input input-sm input-bordered w-full\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 83, ") — edit and save:</p><form hx-post=\"/hypermedia/controls/errors/stale\" hx-target=\"#stale-result\" hx-swap=\"innerHTML\" class=\"space-y-2\"><input name=\"name\" class=\"input input-sm w-full\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var52 string
 		templ_7745c5c3_Var52, templ_7745c5c3_Err = templ.JoinStringErrs(name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_controls_fragments.templ`, Line: 378, Col: 79}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_controls_fragments.templ`, Line: 378, Col: 64}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var52))
 		if templ_7745c5c3_Err != nil {
@@ -1292,7 +1292,7 @@ func CascadeReassignForm(items []string) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 89, "</ul><form hx-post=\"/hypermedia/controls/errors/cascade/reassign\" hx-target=\"#cascade-result\" hx-swap=\"innerHTML\" class=\"flex items-end gap-2\"><div class=\"form-control\"><label class=\"label label-text text-xs\">Move to</label> <select name=\"new-category\" class=\"select select-sm select-bordered\"><option value=\"General\">General</option> <option value=\"Clearance\">Clearance</option> <option value=\"Archive\">Archive</option></select></div><button type=\"submit\" class=\"btn btn-sm btn-primary\">Reassign &amp; Delete</button></form></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 89, "</ul><form hx-post=\"/hypermedia/controls/errors/cascade/reassign\" hx-target=\"#cascade-result\" hx-swap=\"innerHTML\" class=\"flex items-end gap-2\"><div class=\"fieldset\"><label class=\"label label-text text-xs\">Move to</label> <select name=\"new-category\" class=\"select select-sm\"><option value=\"General\">General</option> <option value=\"Clearance\">Clearance</option> <option value=\"Archive\">Archive</option></select></div><button type=\"submit\" class=\"btn btn-sm btn-primary\">Reassign &amp; Delete</button></form></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

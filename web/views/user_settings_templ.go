@@ -34,7 +34,7 @@ func UserSettingsPage(prefs admininfo.UserPreferences) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"p-4 space-y-6 max-w-3xl mx-auto\"><h1 class=\"text-2xl font-bold\">Preferences</h1><p class=\"text-sm text-base-content/60\">Customize your experience. Settings are saved per browser session.</p><!-- Appearance --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Appearance</h2><form hx-put=\"/user/settings\" hx-target=\"#settings-result\" hx-swap=\"innerHTML\" class=\"space-y-4\"><div class=\"form-control\"><label class=\"label\"><span class=\"label-text\">Items per page</span></label> <select name=\"page_size\" class=\"select select-bordered select-sm w-full max-w-xs\"><option value=\"10\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"p-4 space-y-6 max-w-3xl mx-auto\"><h1 class=\"text-2xl font-bold\">Preferences</h1><p class=\"text-sm text-base-content/60\">Customize your experience. Settings are saved per browser session.</p><!-- Appearance --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Appearance</h2><form hx-put=\"/user/settings\" hx-target=\"#settings-result\" hx-swap=\"innerHTML\" class=\"space-y-4\"><div class=\"fieldset\"><label class=\"label\">Items per page</label> <select name=\"page_size\" class=\"select select-sm w-full max-w-xs\"><option value=\"10\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -74,7 +74,7 @@ func UserSettingsPage(prefs admininfo.UserPreferences) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, ">100</option></select></div><div class=\"form-control\"><label class=\"label\"><span class=\"label-text\">Date format</span></label> <select name=\"date_format\" class=\"select select-bordered select-sm w-full max-w-xs\"><option value=\"relative\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, ">100</option></select></div><div class=\"fieldset\"><label class=\"label\">Date format</label> <select name=\"date_format\" class=\"select select-sm w-full max-w-xs\"><option value=\"relative\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -104,7 +104,7 @@ func UserSettingsPage(prefs admininfo.UserPreferences) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, ">ISO (2026-03-16)</option></select></div><div class=\"form-control\"><label class=\"label cursor-pointer justify-start gap-3\"><input type=\"checkbox\" name=\"compact_tables\" value=\"true\" class=\"checkbox checkbox-sm\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, ">ISO (2026-03-16)</option></select></div><div class=\"fieldset\"><label class=\"label cursor-pointer justify-start gap-3\"><input type=\"checkbox\" name=\"compact_tables\" value=\"true\" class=\"checkbox checkbox-sm\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -114,7 +114,7 @@ func UserSettingsPage(prefs admininfo.UserPreferences) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "> <span class=\"label-text\">Compact table rows</span></label></div><div class=\"divider my-0\"></div><!-- Notifications --><h3 class=\"font-semibold text-sm\">Notifications</h3><div class=\"form-control\"><label class=\"label cursor-pointer justify-start gap-3\"><input type=\"checkbox\" name=\"email_on_error\" value=\"true\" class=\"checkbox checkbox-sm\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "> <span class=\"label-text\">Compact table rows</span></label></div><div class=\"divider my-0\"></div><!-- Notifications --><h3 class=\"font-semibold text-sm\">Notifications</h3><div class=\"fieldset\"><label class=\"label cursor-pointer justify-start gap-3\"><input type=\"checkbox\" name=\"email_on_error\" value=\"true\" class=\"checkbox checkbox-sm\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -124,7 +124,7 @@ func UserSettingsPage(prefs admininfo.UserPreferences) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "> <span class=\"label-text\">Email me when an error is reported</span></label></div><div class=\"form-control\"><label class=\"label cursor-pointer justify-start gap-3\"><input type=\"checkbox\" name=\"desktop_notifications\" value=\"true\" class=\"checkbox checkbox-sm\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "> <span class=\"label-text\">Email me when an error is reported</span></label></div><div class=\"fieldset\"><label class=\"label cursor-pointer justify-start gap-3\"><input type=\"checkbox\" name=\"desktop_notifications\" value=\"true\" class=\"checkbox checkbox-sm\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -134,7 +134,7 @@ func UserSettingsPage(prefs admininfo.UserPreferences) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "> <span class=\"label-text\">Desktop notifications for real-time events</span></label></div><div class=\"divider my-0\"></div><!-- Accessibility --><h3 class=\"font-semibold text-sm\">Accessibility</h3><div class=\"form-control\"><label class=\"label cursor-pointer justify-start gap-3\"><input type=\"checkbox\" name=\"reduce_motion\" value=\"true\" class=\"checkbox checkbox-sm\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "> <span class=\"label-text\">Desktop notifications for real-time events</span></label></div><div class=\"divider my-0\"></div><!-- Accessibility --><h3 class=\"font-semibold text-sm\">Accessibility</h3><div class=\"fieldset\"><label class=\"label cursor-pointer justify-start gap-3\"><input type=\"checkbox\" name=\"reduce_motion\" value=\"true\" class=\"checkbox checkbox-sm\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -144,7 +144,7 @@ func UserSettingsPage(prefs admininfo.UserPreferences) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "> <span class=\"label-text\">Reduce motion and animations</span></label></div><div class=\"form-control\"><label class=\"label cursor-pointer justify-start gap-3\"><input type=\"checkbox\" name=\"high_contrast\" value=\"true\" class=\"checkbox checkbox-sm\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "> <span class=\"label-text\">Reduce motion and animations</span></label></div><div class=\"fieldset\"><label class=\"label cursor-pointer justify-start gap-3\"><input type=\"checkbox\" name=\"high_contrast\" value=\"true\" class=\"checkbox checkbox-sm\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

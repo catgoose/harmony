@@ -52,7 +52,7 @@ templ Components2Page(data Components2PageData) {
 					type="text"
 					name="q"
 					placeholder="Search languages…"
-					class="input input-bordered input-sm w-full max-w-xs"
+					class="input input-sm w-full max-w-xs"
 					autocomplete="off"
 					hx-get="/hypermedia/components2/dropdown/search"
 					hx-trigger="keyup changed delay:300ms, load"
@@ -67,11 +67,11 @@ templ Components2Page(data Components2PageData) {
 				<h2 class="card-title text-base">Cascading Select — Dependent Dropdowns</h2>
 				<p class="text-sm text-base-content/70 mb-3">Selecting a country populates the city dropdown via <code class="text-xs bg-base-200 px-1 rounded">hx-get</code>. The second select's options are loaded from the server.</p>
 				<div class="flex gap-3 items-end flex-wrap">
-					<div class="form-control">
-						<label class="label"><span class="label-text text-sm">Country</span></label>
+					<div class="fieldset">
+						<label class="label">Country</label>
 						<select
 							id="country-select"
-							class="select select-bordered select-sm"
+							class="select select-sm"
 							hx-get="/hypermedia/components2/cascading/placeholder"
 							hx-target="#sub-select"
 							hx-swap="innerHTML"
@@ -84,9 +84,9 @@ templ Components2Page(data Components2PageData) {
 							}
 						</select>
 					</div>
-					<div class="form-control">
-						<label class="label"><span class="label-text text-sm">City</span></label>
-						<select id="sub-select" class="select select-bordered select-sm">
+					<div class="fieldset">
+						<label class="label">City</label>
+						<select id="sub-select" class="select select-sm">
 							<option disabled selected>Select country first</option>
 						</select>
 					</div>
@@ -125,7 +125,7 @@ templ Components2Page(data Components2PageData) {
 					hx-target="#upload-result"
 					class="flex gap-3 items-end flex-wrap"
 				>
-					<input type="file" name="file" class="file-input file-input-bordered file-input-sm w-full max-w-xs"/>
+					<input type="file" name="file" class="file-input file-input-sm w-full max-w-xs"/>
 					<button type="submit" class="btn btn-sm btn-primary">Upload</button>
 				</form>
 				<div id="upload-result" class="mt-2"></div>

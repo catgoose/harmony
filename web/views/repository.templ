@@ -183,20 +183,20 @@ templ RepositoryEditRow(task demo.Task, isNew bool, saveURL, cancelURL string) {
 	}
 	<tr id={ rowID }>
 		<td>
-			<input type="text" name="title" class="input input-sm input-bordered w-full" value={ task.Title } placeholder="Task title"/>
+			<input type="text" name="title" class="input input-sm w-full" value={ task.Title } placeholder="Task title"/>
 		</td>
 		<td>
-			<input type="text" name="description" class="input input-sm input-bordered w-full" value={ task.Description.String } placeholder="Description"/>
+			<input type="text" name="description" class="input input-sm w-full" value={ task.Description.String } placeholder="Description"/>
 		</td>
 		<td>
-			<select name="status" class="select select-sm select-bordered">
+			<select name="status" class="select select-sm">
 				for _, s := range []string{"draft", "active", "done"} {
 					<option value={ s } selected?={ task.Status == s }>{ s }</option>
 				}
 			</select>
 		</td>
 		<td>
-			<input type="number" name="sortorder" class="input input-sm input-bordered w-16" value={ strconv.Itoa(task.SortOrder) }/>
+			<input type="number" name="sortorder" class="input input-sm w-16" value={ strconv.Itoa(task.SortOrder) }/>
 		</td>
 		<td class="text-center">
 			if !isNew {
@@ -204,7 +204,7 @@ templ RepositoryEditRow(task demo.Task, isNew bool, saveURL, cancelURL string) {
 			}
 		</td>
 		<td>
-			<input type="text" name="notes" class="input input-sm input-bordered w-full" value={ task.Notes.String } placeholder="Notes"/>
+			<input type="text" name="notes" class="input input-sm w-full" value={ task.Notes.String } placeholder="Notes"/>
 		</td>
 		<td></td>
 		<td>

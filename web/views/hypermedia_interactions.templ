@@ -24,17 +24,17 @@ templ InteractionsPage(comments []string) {
 						hx-swap="outerHTML"
 						class="space-y-3"
 					>
-						<div class="form-control">
+						<div class="fieldset">
 							<label class="label label-text text-sm" for="contact-name">Name</label>
-							<input id="contact-name" type="text" name="contact-name" placeholder="Your name" class="input input-sm input-bordered w-full max-w-sm"/>
+							<input id="contact-name" type="text" name="contact-name" placeholder="Your name" class="input input-sm w-full max-w-sm"/>
 						</div>
-						<div class="form-control">
+						<div class="fieldset">
 							<label class="label label-text text-sm" for="contact-email">Email</label>
-							<input id="contact-email" type="email" name="contact-email" placeholder="you@example.com" class="input input-sm input-bordered w-full max-w-sm"/>
+							<input id="contact-email" type="email" name="contact-email" placeholder="you@example.com" class="input input-sm w-full max-w-sm"/>
 						</div>
-						<div class="form-control">
+						<div class="fieldset">
 							<label class="label label-text text-sm" for="contact-message">Message</label>
-							<textarea id="contact-message" name="contact-message" rows="3" placeholder="Say something…" class="textarea textarea-bordered textarea-sm w-full max-w-sm"></textarea>
+							<textarea id="contact-message" name="contact-message" rows="3" placeholder="Say something…" class="textarea textarea-sm w-full max-w-sm"></textarea>
 						</div>
 						<div class="flex gap-2">
 							<button type="submit" class="btn btn-sm btn-primary">Submit</button>
@@ -80,7 +80,7 @@ templ InteractionsPage(comments []string) {
 							name="preview-text"
 							rows="5"
 							placeholder="Type markdown-like text…"
-							class="textarea textarea-bordered textarea-sm w-full"
+							class="textarea textarea-sm w-full"
 							hx-post="/hypermedia/interactions/preview"
 							hx-target="#preview-output"
 							hx-swap="innerHTML"
@@ -106,7 +106,7 @@ templ InteractionsPage(comments []string) {
 					hx-on::after-request="this.reset()"
 					class="flex gap-2 mb-3"
 				>
-					<input type="text" name="comment-text" placeholder="Add a comment…" class="input input-sm input-bordered flex-1"/>
+					<input type="text" name="comment-text" placeholder="Add a comment…" class="input input-sm flex-1"/>
 					<button type="submit" class="btn btn-sm btn-primary">Post</button>
 				</form>
 				<ul id="comment-list" class="space-y-1">

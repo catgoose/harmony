@@ -119,9 +119,9 @@ templ CRUDEditRow(item CRUDViewItem) {
 	{{ cancelURL := fmt.Sprintf("/hypermedia/crud/items/%d", item.ID) }}
 	<tr id={ rowID }>
 		<td class="text-base-content/50 text-xs">{ fmt.Sprintf("%d", item.ID) }</td>
-		<td><input type="text" name="name" class="input input-xs input-bordered w-full" value={ item.Name }/></td>
+		<td><input type="text" name="name" class="input input-xs w-full" value={ item.Name }/></td>
 		<td class="text-base-content/50 text-xs">{ item.Status }</td>
-		<td><input type="text" name="notes" class="input input-xs input-bordered w-full" value={ item.Notes }/></td>
+		<td><input type="text" name="notes" class="input input-xs w-full" value={ item.Notes }/></td>
 		<td>
 			<div class="flex items-center gap-1">
 				<button

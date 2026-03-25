@@ -111,20 +111,20 @@ templ InventoryEditRow(item demo.Item, isNew bool, saveURL, cancelURL string) {
 	}
 	<tr id={ rowID }>
 		<td>
-			<input type="text" name="name" class="input input-sm input-bordered w-full" value={ item.Name }/>
+			<input type="text" name="name" class="input input-sm w-full" value={ item.Name }/>
 		</td>
 		<td>
-			<select name="category" class="select select-sm select-bordered">
+			<select name="category" class="select select-sm">
 				for _, cat := range []string{"Electronics", "Clothing", "Food", "Books", "Sports"} {
 					<option value={ cat } selected?={ item.Category == cat }>{ cat }</option>
 				}
 			</select>
 		</td>
 		<td>
-			<input type="number" name="price" step="0.01" class="input input-sm input-bordered w-24" value={ fmt.Sprintf("%.2f", item.Price) }/>
+			<input type="number" name="price" step="0.01" class="input input-sm w-24" value={ fmt.Sprintf("%.2f", item.Price) }/>
 		</td>
 		<td>
-			<input type="number" name="stock" class="input input-sm input-bordered w-20" value={ strconv.Itoa(item.Stock) }/>
+			<input type="number" name="stock" class="input input-sm w-20" value={ strconv.Itoa(item.Stock) }/>
 		</td>
 		<td>
 			<input type="checkbox" name="active" value="true" class="toggle toggle-sm" checked?={ item.Active }/>

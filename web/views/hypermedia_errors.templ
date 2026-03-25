@@ -65,13 +65,13 @@ templ ErrorsPage() {
 					hx-swap="innerHTML"
 					class="space-y-3 max-w-sm"
 				>
-					<div class="form-control">
-						<label class="label"><span class="label-text text-sm">Name (required)</span></label>
-						<input type="text" name="name" class="input input-sm input-bordered w-full" placeholder="Leave empty to trigger error"/>
+					<div class="fieldset">
+						<label class="label">Name (required)</label>
+						<input type="text" name="name" class="input input-sm w-full" placeholder="Leave empty to trigger error"/>
 					</div>
-					<div class="form-control">
-						<label class="label"><span class="label-text text-sm">Email (must contain @)</span></label>
-						<input type="text" name="email" class="input input-sm input-bordered w-full" placeholder="bad-email"/>
+					<div class="fieldset">
+						<label class="label">Email (must contain @)</label>
+						<input type="text" name="email" class="input input-sm w-full" placeholder="bad-email"/>
 					</div>
 					<button type="submit" class="btn btn-sm btn-primary">Submit</button>
 					<div id="errors-form-result"></div>

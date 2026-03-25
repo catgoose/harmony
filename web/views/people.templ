@@ -113,31 +113,31 @@ templ PersonEditForm(p demo.Person) {
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
 					<div>
 						<label class="label label-text text-xs">First Name</label>
-						<input type="text" name="first_name" class="input input-sm input-bordered w-full" value={ p.FirstName }/>
+						<input type="text" name="first_name" class="input input-sm w-full" value={ p.FirstName }/>
 					</div>
 					<div>
 						<label class="label label-text text-xs">Last Name</label>
-						<input type="text" name="last_name" class="input input-sm input-bordered w-full" value={ p.LastName }/>
+						<input type="text" name="last_name" class="input input-sm w-full" value={ p.LastName }/>
 					</div>
 					<div>
 						<label class="label label-text text-xs">Email</label>
-						<input type="email" name="email" class="input input-sm input-bordered w-full" value={ p.Email }/>
+						<input type="email" name="email" class="input input-sm w-full" value={ p.Email }/>
 					</div>
 					<div>
 						<label class="label label-text text-xs">Phone</label>
-						<input type="text" name="phone" class="input input-sm input-bordered w-full" value={ p.Phone }/>
+						<input type="text" name="phone" class="input input-sm w-full" value={ p.Phone }/>
 					</div>
 					<div>
 						<label class="label label-text text-xs">City</label>
-						<input type="text" name="city" class="input input-sm input-bordered w-full" value={ p.City }/>
+						<input type="text" name="city" class="input input-sm w-full" value={ p.City }/>
 					</div>
 					<div>
 						<label class="label label-text text-xs">State</label>
-						<input type="text" name="state" class="input input-sm input-bordered w-full" value={ p.State }/>
+						<input type="text" name="state" class="input input-sm w-full" value={ p.State }/>
 					</div>
 					<div>
 						<label class="label label-text text-xs">Department</label>
-						<select name="department" class="select select-sm select-bordered w-full">
+						<select name="department" class="select select-sm w-full">
 							for _, d := range demo.Departments {
 								<option value={ d } selected?={ p.Department == d }>{ d }</option>
 							}
@@ -145,12 +145,12 @@ templ PersonEditForm(p demo.Person) {
 					</div>
 					<div>
 						<label class="label label-text text-xs">Job Title</label>
-						<input type="text" name="job_title" class="input input-sm input-bordered w-full" value={ p.JobTitle }/>
+						<input type="text" name="job_title" class="input input-sm w-full" value={ p.JobTitle }/>
 					</div>
 				</div>
 				<div class="mt-4">
 					<label class="label label-text text-xs">Bio</label>
-					<textarea name="bio" class="textarea textarea-bordered w-full" rows="3">{ p.Bio }</textarea>
+					<textarea name="bio" class="textarea w-full" rows="3">{ p.Bio }</textarea>
 				</div>
 				<div class="card-actions mt-4">
 					@components.Controls([]hypermedia.Control{

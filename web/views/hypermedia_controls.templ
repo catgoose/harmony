@@ -254,13 +254,13 @@ templ HypermediaControlsPage() {
 							hx-swap="innerHTML"
 							class="flex items-end gap-2"
 						>
-							<div class="form-control">
+							<div class="fieldset">
 								<label class="label label-text text-xs">Name</label>
-								<input name="name" class="input input-sm input-bordered w-28" value="ab"/>
+								<input name="name" class="input input-sm w-28" value="ab"/>
 							</div>
-							<div class="form-control">
+							<div class="fieldset">
 								<label class="label label-text text-xs">Price</label>
-								<input name="price" type="number" step="0.01" class="input input-sm input-bordered w-24" value="-5"/>
+								<input name="price" type="number" step="0.01" class="input input-sm w-24" value="-5"/>
 							</div>
 							<button type="submit" class="btn btn-sm btn-error">Submit</button>
 						</form>
@@ -292,9 +292,9 @@ templ HypermediaControlsPage() {
 							hx-swap="innerHTML"
 							class="flex items-end gap-2"
 						>
-							<div class="form-control">
+							<div class="fieldset">
 								<label class="label label-text text-xs">Name</label>
-								<input name="name" class="input input-sm input-bordered w-40" value="My Widget"/>
+								<input name="name" class="input input-sm w-40" value="My Widget"/>
 							</div>
 							<input type="hidden" name="version" value="0"/>
 							<button type="submit" class="btn btn-sm btn-error">Save (v0)</button>
