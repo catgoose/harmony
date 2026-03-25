@@ -5,11 +5,11 @@ import (
 	"errors"
 	"net/http"
 
-	"catgoose/dothog/internal/logger"
+	"catgoose/harmony/internal/logger"
 	"github.com/catgoose/promolog"
-	"catgoose/dothog/internal/routes/hypermedia"
-	"catgoose/dothog/internal/routes/response"
-	corecomponents "catgoose/dothog/web/components/core"
+	"catgoose/harmony/internal/routes/hypermedia"
+	"catgoose/harmony/internal/routes/response"
+	corecomponents "catgoose/harmony/web/components/core"
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"

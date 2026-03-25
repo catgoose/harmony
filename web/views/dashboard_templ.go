@@ -13,8 +13,8 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"fmt"
 
-	"catgoose/dothog/internal/demo"
-	"catgoose/dothog/internal/routes/hypermedia"
+	"catgoose/harmony/internal/demo"
+	"catgoose/harmony/internal/routes/hypermedia"
 )
 
 // dashFromMask is the breadcrumb bitmask for links originating from the dashboard.

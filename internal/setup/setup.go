@@ -15,7 +15,7 @@ import (
 
 // Template identity used by setup to detect and replace module paths.
 const (
-	TemplateModule   = "catgoose/dothog"
+	TemplateModule   = "catgoose/harmony"
 	TemplateSetupDir = "_template_setup"
 )
 

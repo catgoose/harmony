@@ -3,7 +3,7 @@ package middleware
 import (
 	"net/http"
 
-	"catgoose/dothog/internal/routes/hypermedia"
+	"catgoose/harmony/internal/routes/hypermedia"
 
 	"github.com/labstack/echo/v4"
 )

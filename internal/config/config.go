@@ -12,7 +12,7 @@ import (
 	"strings"
 	"sync"
 
-	"catgoose/dothog/internal/logger"
+	"catgoose/harmony/internal/logger"
 
 	// setup:feature:auth:start
 	"github.com/catgoose/crooner"

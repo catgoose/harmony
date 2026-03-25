@@ -1,26 +1,26 @@
 package main
 
 import (
-	"catgoose/dothog/internal/config"
+	"catgoose/harmony/internal/config"
 	dialect "github.com/catgoose/fraggle"
 	// setup:feature:session_settings:start
-	"catgoose/dothog/internal/database"
+	"catgoose/harmony/internal/database"
 	// setup:feature:session_settings:end
 	// setup:feature:database:start
-	dbrepo "catgoose/dothog/internal/database/repository"
-	"catgoose/dothog/internal/database/schema"
+	dbrepo "catgoose/harmony/internal/database/repository"
+	"catgoose/harmony/internal/database/schema"
 	"github.com/jmoiron/sqlx"
 	// setup:feature:database:end
-	"catgoose/dothog/internal/logger"
+	"catgoose/harmony/internal/logger"
 	"github.com/catgoose/promolog"
-	"catgoose/dothog/internal/routes"
+	"catgoose/harmony/internal/routes"
 	// setup:feature:session_settings:start
-	"catgoose/dothog/internal/repository"
+	"catgoose/harmony/internal/repository"
 	// setup:feature:session_settings:end
 	// setup:feature:avatar:start
-	graphdb "catgoose/dothog/internal/database"
-	"catgoose/dothog/internal/domain"
-	"catgoose/dothog/internal/service/graph"
+	graphdb "catgoose/harmony/internal/database"
+	"catgoose/harmony/internal/domain"
+	"catgoose/harmony/internal/service/graph"
 	// setup:feature:avatar:end
 	"context"
 	"embed"

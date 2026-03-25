@@ -10,8 +10,8 @@ import (
 	"strings"
 	"testing"
 
-	"catgoose/dothog/internal/logger"
-	"catgoose/dothog/internal/routes/hypermedia"
+	"catgoose/harmony/internal/logger"
+	"catgoose/harmony/internal/routes/hypermedia"
 
 	"github.com/catgoose/promolog"
 	"github.com/labstack/echo/v4"

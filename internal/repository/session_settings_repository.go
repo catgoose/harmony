@@ -7,9 +7,9 @@ import (
 	"database/sql"
 	"fmt"
 
-	dbrepoManager "catgoose/dothog/internal/database/repository"
-	"catgoose/dothog/internal/database/schema"
-	"catgoose/dothog/internal/domain"
+	dbrepoManager "catgoose/harmony/internal/database/repository"
+	"catgoose/harmony/internal/database/schema"
+	"catgoose/harmony/internal/domain"
 
 	"github.com/catgoose/fraggle/dbrepo"
 )

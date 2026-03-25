@@ -8,15 +8,15 @@ import (
 	"strings"
 	"time"
 
-	"catgoose/dothog/internal/logger"
+	"catgoose/harmony/internal/logger"
 	"github.com/catgoose/promolog"
-	"catgoose/dothog/internal/routes/handler"
-	"catgoose/dothog/internal/routes/hypermedia"
-	"catgoose/dothog/internal/routes/response"
-	"catgoose/dothog/web/views"
+	"catgoose/harmony/internal/routes/handler"
+	"catgoose/harmony/internal/routes/hypermedia"
+	"catgoose/harmony/internal/routes/response"
+	"catgoose/harmony/web/views"
 
-	hx "catgoose/dothog/internal/routes/htmx"
-	corecomponents "catgoose/dothog/web/components/core"
+	hx "catgoose/harmony/internal/routes/htmx"
+	corecomponents "catgoose/harmony/web/components/core"
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"

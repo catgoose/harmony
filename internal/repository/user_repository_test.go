@@ -8,8 +8,8 @@ import (
 	"time"
 
 	dialect "github.com/catgoose/fraggle"
-	dbrepo "catgoose/dothog/internal/database/repository"
-	"catgoose/dothog/internal/domain"
+	dbrepo "catgoose/harmony/internal/database/repository"
+	"catgoose/harmony/internal/domain"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/jmoiron/sqlx"

@@ -6,10 +6,10 @@ import (
 	"sort"
 	"time"
 
-	"catgoose/dothog/internal/routes/handler"
-	"catgoose/dothog/internal/ssebroker"
-	"catgoose/dothog/internal/version"
-	"catgoose/dothog/web/views"
+	"catgoose/harmony/internal/routes/handler"
+	"catgoose/harmony/internal/ssebroker"
+	"catgoose/harmony/internal/version"
+	"catgoose/harmony/web/views"
 
 	"github.com/labstack/echo/v4"
 )

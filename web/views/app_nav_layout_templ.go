@@ -8,8 +8,8 @@ package views
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "catgoose/dothog/internal/routes/hypermedia"
-import components "catgoose/dothog/web/components/core"
+import "catgoose/harmony/internal/routes/hypermedia"
+import components "catgoose/harmony/web/components/core"
 
 // AppNavLayout is a responsive page layout with CSS-driven auto-positioning:
 // bottom nav bar on mobile, sticky top bar on desktop. Derived apps opt in

@@ -14,9 +14,9 @@ import (
 	"fmt"
 	"strconv"
 
-	"catgoose/dothog/internal/demo"
-	"catgoose/dothog/internal/routes/hypermedia"
-	components "catgoose/dothog/web/components/core"
+	"catgoose/harmony/internal/demo"
+	"catgoose/harmony/internal/routes/hypermedia"
+	components "catgoose/harmony/web/components/core"
 )
 
 // bulkColAttrs builds templ.Attributes for a sortable column header link in the bulk table.

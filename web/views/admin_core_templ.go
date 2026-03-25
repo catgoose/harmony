@@ -12,8 +12,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"catgoose/dothog/internal/admininfo"
-	"catgoose/dothog/internal/version"
+	"catgoose/harmony/internal/admininfo"
+	"catgoose/harmony/internal/version"
 )
 
 // AdminSystemPage displays runtime system information.
@@ -265,7 +265,7 @@ func UpdateCheckResult(info version.UpdateInfo, err error) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "\" target=\"_blank\" rel=\"noopener\" class=\"link link-primary text-xs\">View release notes</a><div class=\"mockup-code text-xs mt-1\"><pre><code>docker pull ghcr.io/catgoose/dothog:latest docker compose up -d</code></pre></div></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "\" target=\"_blank\" rel=\"noopener\" class=\"link link-primary text-xs\">View release notes</a><div class=\"mockup-code text-xs mt-1\"><pre><code>docker pull ghcr.io/catgoose/harmony:latest docker compose up -d</code></pre></div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

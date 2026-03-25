@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"catgoose/dothog/internal/setup"
+	"catgoose/harmony/internal/setup"
 
 	"github.com/stretchr/testify/require"
 )
@@ -107,8 +107,8 @@ func TestSetupReplacesAppNameAndModule(t *testing.T) {
 		if err != nil {
 			return nil
 		}
-		if strings.Contains(string(data), "catgoose/dothog") {
-			t.Errorf("file %s still contains catgoose/dothog", rel)
+		if strings.Contains(string(data), "catgoose/harmony") {
+			t.Errorf("file %s still contains catgoose/harmony", rel)
 		}
 		return nil
 	})

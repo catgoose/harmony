@@ -6,12 +6,12 @@ import (
 	"runtime/pprof"
 	"time"
 
-	"catgoose/dothog/internal/admininfo"
-	"catgoose/dothog/internal/config"
-	"catgoose/dothog/internal/health"
-	"catgoose/dothog/internal/routes/handler"
-	"catgoose/dothog/internal/version"
-	"catgoose/dothog/web/views"
+	"catgoose/harmony/internal/admininfo"
+	"catgoose/harmony/internal/config"
+	"catgoose/harmony/internal/health"
+	"catgoose/harmony/internal/routes/handler"
+	"catgoose/harmony/internal/version"
+	"catgoose/harmony/web/views"
 
 	"github.com/labstack/echo/v4"
 )

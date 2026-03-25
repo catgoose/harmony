@@ -5,7 +5,7 @@ package repository
 import (
 	"context"
 
-	"catgoose/dothog/internal/domain"
+	"catgoose/harmony/internal/domain"
 
 	"github.com/jmoiron/sqlx"
 )

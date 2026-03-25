@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"catgoose/dothog/internal/domain"
+	"catgoose/harmony/internal/domain"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/microsoft/kiota-abstractions-go"

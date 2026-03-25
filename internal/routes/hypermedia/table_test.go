@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"catgoose/dothog/internal/routes/hypermedia"
+	"catgoose/harmony/internal/routes/hypermedia"
 )
 
 // --- ComputeTotalPages ---

@@ -6,10 +6,10 @@ import (
 	"strconv"
 	"sync"
 
-	"catgoose/dothog/internal/admininfo"
-	"catgoose/dothog/internal/routes/handler"
-	"catgoose/dothog/internal/routes/middleware"
-	"catgoose/dothog/web/views"
+	"catgoose/harmony/internal/admininfo"
+	"catgoose/harmony/internal/routes/handler"
+	"catgoose/harmony/internal/routes/middleware"
+	"catgoose/harmony/web/views"
 
 	"github.com/labstack/echo/v4"
 )

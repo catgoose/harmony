@@ -1,9 +1,9 @@
 package main
 
 import (
-	"catgoose/dothog/internal/config"
-	"catgoose/dothog/internal/logger"
-	"catgoose/dothog/internal/routes"
+	"catgoose/harmony/internal/config"
+	"catgoose/harmony/internal/logger"
+	"catgoose/harmony/internal/routes"
 	"context"
 	"net/http"
 	"net/http/httptest"

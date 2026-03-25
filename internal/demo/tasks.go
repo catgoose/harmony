@@ -10,7 +10,7 @@ import (
 
 	dialect "github.com/catgoose/fraggle"
 	"github.com/catgoose/fraggle/dbrepo"
-	"catgoose/dothog/internal/database/schema"
+	"catgoose/harmony/internal/database/schema"
 )
 
 // TaskStatuses is the list of valid task statuses.

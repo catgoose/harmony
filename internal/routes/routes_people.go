@@ -9,13 +9,13 @@ import (
 	"net/http"
 	"strconv"
 
-	"catgoose/dothog/internal/demo"
-	"catgoose/dothog/internal/routes/handler"
-	"catgoose/dothog/internal/routes/hypermedia"
-	"catgoose/dothog/internal/routes/params"
-	"catgoose/dothog/internal/shared"
-	"catgoose/dothog/internal/ssebroker"
-	"catgoose/dothog/web/views"
+	"catgoose/harmony/internal/demo"
+	"catgoose/harmony/internal/routes/handler"
+	"catgoose/harmony/internal/routes/hypermedia"
+	"catgoose/harmony/internal/routes/params"
+	"catgoose/harmony/internal/shared"
+	"catgoose/harmony/internal/ssebroker"
+	"catgoose/harmony/web/views"
 
 	"github.com/labstack/echo/v4"
 )

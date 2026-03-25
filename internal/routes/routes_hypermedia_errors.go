@@ -9,12 +9,12 @@ import (
 	"strings"
 	"sync/atomic"
 
-	"catgoose/dothog/internal/logger"
-	"catgoose/dothog/internal/routes/handler"
-	"catgoose/dothog/internal/routes/hypermedia"
-	"catgoose/dothog/internal/routes/middleware"
-	"catgoose/dothog/internal/routes/response"
-	"catgoose/dothog/web/views"
+	"catgoose/harmony/internal/logger"
+	"catgoose/harmony/internal/routes/handler"
+	"catgoose/harmony/internal/routes/hypermedia"
+	"catgoose/harmony/internal/routes/middleware"
+	"catgoose/harmony/internal/routes/response"
+	"catgoose/harmony/web/views"
 
 	"github.com/labstack/echo/v4"
 )

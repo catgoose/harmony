@@ -6,13 +6,13 @@ import (
 	"fmt"
 	"net/http"
 
-	"catgoose/dothog/internal/logger"
+	"catgoose/harmony/internal/logger"
 	// setup:feature:session_settings:start
-	"catgoose/dothog/internal/routes/handler"
-	"catgoose/dothog/internal/routes/middleware"
-	"catgoose/dothog/web/views"
+	"catgoose/harmony/internal/routes/handler"
+	"catgoose/harmony/internal/routes/middleware"
+	"catgoose/harmony/web/views"
 	// setup:feature:session_settings:end
-	"catgoose/dothog/internal/ssebroker"
+	"catgoose/harmony/internal/ssebroker"
 
 	"github.com/labstack/echo/v4"
 )

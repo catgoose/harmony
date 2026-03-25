@@ -4,8 +4,8 @@ import (
 	"context"
 	"io"
 
-	"catgoose/dothog/internal/routes/hypermedia"
-	corecomponents "catgoose/dothog/web/components/core"
+	"catgoose/harmony/internal/routes/hypermedia"
+	corecomponents "catgoose/harmony/web/components/core"
 
 	"github.com/a-h/templ"
 )

@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/catgoose/promolog"
-	"catgoose/dothog/internal/shared"
+	"catgoose/harmony/internal/shared"
 
 	"github.com/stretchr/testify/assert"
 )

@@ -18,7 +18,7 @@ type UpdateInfo struct {
 	NewerAvail bool
 }
 
-const releaseAPI = "https://api.github.com/repos/catgoose/dothog/releases/latest"
+const releaseAPI = "https://api.github.com/repos/catgoose/harmony/releases/latest"
 
 // CheckLatest queries the GitHub API for the latest release and compares it
 // against the running version.

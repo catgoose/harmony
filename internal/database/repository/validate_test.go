@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	dialect "github.com/catgoose/fraggle"
-	"catgoose/dothog/internal/database/schema"
+	"catgoose/harmony/internal/database/schema"
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/assert"

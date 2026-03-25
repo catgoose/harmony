@@ -18,7 +18,7 @@ import (
 	"time"
 
 	// setup:feature:demo:start
-	"catgoose/dothog/internal/setup"
+	"catgoose/harmony/internal/setup"
 	// setup:feature:demo:end
 
 	"github.com/magefile/mage/mg"
@@ -29,7 +29,7 @@ import (
 var (
 	env        = envOr("ENV", "development")
 	envFile    = fmt.Sprintf(".env.%s", env)
-	binaryName = "dothog"
+	binaryName = "harmony"
 	proxyHost  = "localhost"
 	buildPath  = "build"
 	binPath    = "./bin"
@@ -428,7 +428,7 @@ func CopyFiles() error {
 
 // Compile builds the Go project
 func Compile() error {
-	ldflags := "-w -X catgoose/dothog/internal/version.BuildDate=" + time.Now().UTC().Format("2006-01-02")
+	ldflags := "-w -X catgoose/harmony/internal/version.BuildDate=" + time.Now().UTC().Format("2006-01-02")
 	return sh.Run("go", "build",
 		"-ldflags", ldflags,
 		"-o", filepath.Join(buildPath, binaryName),

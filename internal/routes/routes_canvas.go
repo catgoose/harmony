@@ -13,10 +13,10 @@ import (
 	"strconv"
 	"time"
 
-	"catgoose/dothog/internal/demo"
-	"catgoose/dothog/internal/routes/handler"
-	"catgoose/dothog/internal/ssebroker"
-	"catgoose/dothog/web/views"
+	"catgoose/harmony/internal/demo"
+	"catgoose/harmony/internal/routes/handler"
+	"catgoose/harmony/internal/ssebroker"
+	"catgoose/harmony/web/views"
 
 	"github.com/labstack/echo/v4"
 )

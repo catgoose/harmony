@@ -9,8 +9,8 @@ import (
 	"os"
 	"testing"
 
-	"catgoose/dothog/internal/logger"
-	"catgoose/dothog/internal/routes/hypermedia"
+	"catgoose/harmony/internal/logger"
+	"catgoose/harmony/internal/routes/hypermedia"
 
 	"github.com/a-h/templ"
 	"github.com/catgoose/promolog"

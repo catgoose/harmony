@@ -12,8 +12,8 @@ import (
 	"time"
 
 	dialect "github.com/catgoose/fraggle"
-	"catgoose/dothog/internal/database/schema"
-	"catgoose/dothog/internal/logger"
+	"catgoose/harmony/internal/database/schema"
+	"catgoose/harmony/internal/logger"
 
 	"github.com/jmoiron/sqlx"
 )

@@ -5,10 +5,10 @@ import (
 	"net/url"
 	"strconv"
 
-	"catgoose/dothog/internal/demo"
-	"catgoose/dothog/internal/routes/hypermedia"
+	"catgoose/harmony/internal/demo"
+	"catgoose/harmony/internal/routes/hypermedia"
 
-	hx "catgoose/dothog/internal/routes/htmx"
+	hx "catgoose/harmony/internal/routes/htmx"
 
 	"github.com/labstack/echo/v4"
 )

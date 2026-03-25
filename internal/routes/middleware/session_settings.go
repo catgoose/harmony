@@ -6,8 +6,8 @@ import (
 	"context"
 	"time"
 
-	"catgoose/dothog/internal/domain"
-	"catgoose/dothog/internal/logger"
+	"catgoose/harmony/internal/domain"
+	"catgoose/harmony/internal/logger"
 
 	"github.com/labstack/echo/v4"
 )

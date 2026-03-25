@@ -10,12 +10,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"catgoose/dothog/internal/logger"
+	"catgoose/harmony/internal/logger"
 	"github.com/catgoose/promolog"
-	"catgoose/dothog/internal/routes/handler"
-	"catgoose/dothog/internal/shared"
-	"catgoose/dothog/internal/ssebroker"
-	"catgoose/dothog/web/views"
+	"catgoose/harmony/internal/routes/handler"
+	"catgoose/harmony/internal/shared"
+	"catgoose/harmony/internal/ssebroker"
+	"catgoose/harmony/web/views"
 
 	"github.com/labstack/echo/v4"
 )

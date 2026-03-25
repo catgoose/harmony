@@ -8,9 +8,9 @@ import (
 	"errors"
 	"fmt"
 
-	"catgoose/dothog/internal/database/repository"
-	"catgoose/dothog/internal/database/schema"
-	"catgoose/dothog/internal/domain"
+	"catgoose/harmony/internal/database/repository"
+	"catgoose/harmony/internal/database/schema"
+	"catgoose/harmony/internal/domain"
 
 	"github.com/catgoose/fraggle/dbrepo"
 	"github.com/jmoiron/sqlx"

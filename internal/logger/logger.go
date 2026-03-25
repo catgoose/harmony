@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	"catgoose/dothog/internal/shared"
+	"catgoose/harmony/internal/shared"
 
 	"github.com/catgoose/promolog"
 
@@ -37,7 +37,7 @@ func SetHandlerWrapper(w HandlerWrapper) {
 	handlerWrapper = w
 }
 
-const appLogFile = "dothog.log"
+const appLogFile = "harmony.log"
 
 // Init initializes the global logger with appropriate configuration
 func Init() {

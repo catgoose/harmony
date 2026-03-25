@@ -9,8 +9,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"catgoose/dothog/internal/routes/hypermedia"
-	components "catgoose/dothog/web/components/core"
+	"catgoose/harmony/internal/routes/hypermedia"
+	components "catgoose/harmony/web/components/core"
 )
 
 // Root template

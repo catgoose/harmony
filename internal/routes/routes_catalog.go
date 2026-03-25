@@ -3,11 +3,11 @@
 package routes
 
 import (
-	"catgoose/dothog/internal/demo"
-	"catgoose/dothog/internal/routes/handler"
-	"catgoose/dothog/internal/routes/hypermedia"
-	"catgoose/dothog/internal/routes/params"
-	"catgoose/dothog/web/views"
+	"catgoose/harmony/internal/demo"
+	"catgoose/harmony/internal/routes/handler"
+	"catgoose/harmony/internal/routes/hypermedia"
+	"catgoose/harmony/internal/routes/params"
+	"catgoose/harmony/web/views"
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"

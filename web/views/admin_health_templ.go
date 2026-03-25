@@ -8,7 +8,7 @@ package views
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "catgoose/dothog/internal/health"
+import "catgoose/harmony/internal/health"
 
 // AdminHealthPage renders the /admin/health page with live health status.
 func AdminHealthPage(h health.Response) templ.Component {

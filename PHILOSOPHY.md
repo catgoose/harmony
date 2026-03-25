@@ -387,6 +387,8 @@ Every tool in this stack exists because HTML alone couldn't express something. Y
 
 This is [Gall's Law](https://en.wikipedia.org/wiki/John_Gall_(author)#Gall's_law) in practice: *a complex system that works is invariably found to have evolved from a simple system that worked. A complex system designed from scratch never works and cannot be patched up to make it work.* You didn't design a five-layer interactivity stack from scratch — you discovered it by writing HTML, hitting its limits, reaching for HTMX, hitting its limits, reaching for \_hyperscript, and so on. Each layer earned its place by solving a problem the layer below couldn't. The same applies to Controls: raw `hx-*` attributes came first. Factory functions came later, only when the repetition made them worth encoding.
 
+[YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it) — You Aren't Gonna Need It — is the temporal cousin of Gall's Law. Gall's Law says complex systems must evolve from simple ones. YAGNI says don't build the complex one until you have evidence the simple one isn't enough. A feature without a user, an abstraction without a second use case, a configuration option nobody has asked to configure — these aren't investments, they're liabilities with carrying costs. Build what the problem requires today. When the problem changes, the code can change with it.
+
 Two tracks rise from their foundations — Behavior (how things interact) and Presentation (how things look):
 
 ```

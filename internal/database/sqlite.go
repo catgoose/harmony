@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"catgoose/dothog/internal/logger"
+	"catgoose/harmony/internal/logger"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3" // Register SQLite driver

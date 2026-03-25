@@ -13,8 +13,8 @@ import (
 	"strconv"
 	"strings"
 
-	"catgoose/dothog/internal/routes/hypermedia"
-	components "catgoose/dothog/web/components/core"
+	"catgoose/harmony/internal/routes/hypermedia"
+	components "catgoose/harmony/web/components/core"
 	"github.com/catgoose/promolog"
 )
 

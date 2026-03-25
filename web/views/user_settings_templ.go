@@ -10,7 +10,7 @@ package views
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "catgoose/dothog/internal/admininfo"
+import "catgoose/harmony/internal/admininfo"
 
 // UserSettingsPage renders the user preferences dashboard.
 func UserSettingsPage(prefs admininfo.UserPreferences) templ.Component {

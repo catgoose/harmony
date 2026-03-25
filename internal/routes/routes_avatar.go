@@ -5,7 +5,7 @@ package routes
 import (
 	"net/http"
 
-	"catgoose/dothog/internal/service/graph"
+	"catgoose/harmony/internal/service/graph"
 
 	"github.com/labstack/echo/v4"
 )
