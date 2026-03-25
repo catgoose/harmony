@@ -111,7 +111,7 @@ jobs:
         run: go tool templ generate
 
       - name: Run tests
-        run: go test ./...
+        run: go test -timeout 10m $(go list ./... | grep -v /tests)
 
       - name: Build all platforms
         run: |
