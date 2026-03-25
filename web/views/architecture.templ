@@ -208,8 +208,9 @@ templ archCompareSlider() {
 				if (!handle || !container) return;
 
 				/**
+				 * Convert a pointer X position to a split percentage within the container.
 				 * @param {number} clientX - Pointer X coordinate
-				 * @returns {number} Clamped percentage (2–98)
+				 * @returns {number} Clamped percentage (2-98)
 				 */
 				function calcPercent(clientX) {
 					const rect = container.getBoundingClientRect();

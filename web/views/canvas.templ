@@ -79,7 +79,11 @@ templ CanvasPage(startColor string) {
 
 				window._canvasColor = canvas.dataset.defaultColor;
 
-				/** @param {number} x @param {number} y */
+				/**
+				 * Paint a single pixel and broadcast the placement to the server.
+				 * @param {number} x - Grid column index
+				 * @param {number} y - Grid row index
+				 */
 				function paint(x, y) {
 					var color = window._canvasColor;
 					ctx.fillStyle = color;
@@ -90,7 +94,11 @@ templ CanvasPage(startColor string) {
 					});
 				}
 
-				/** @param {MouseEvent|Touch} e @returns {{x:number,y:number}|null} */
+				/**
+				 * Convert a pointer event to grid coordinates.
+				 * @param {MouseEvent|Touch} e - Pointer or touch event
+				 * @returns {{x: number, y: number}|null} Grid cell, or null if out of bounds
+				 */
 				function gridCoords(e) {
 					var rect = canvas.getBoundingClientRect();
 					var x = Math.floor((e.clientX - rect.left) * size / rect.width);

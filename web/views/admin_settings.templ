@@ -238,10 +238,18 @@ templ debugScript() {
 		(function() {
 			var KEY = 'dothog_debug';
 
+			/**
+			 * Load persisted debug toggle state from localStorage.
+			 * @returns {Object<string, boolean>} Map of toggle keys to enabled state
+			 */
 			function load() {
 				try { return JSON.parse(localStorage.getItem(KEY)) || {}; }
 				catch(e) { return {}; }
 			}
+			/**
+			 * Persist debug toggle state to localStorage.
+			 * @param {Object<string, boolean>} state - Map of toggle keys to enabled state
+			 */
 			function save(state) {
 				localStorage.setItem(KEY, JSON.stringify(state));
 			}
@@ -299,6 +307,11 @@ templ debugScript() {
 				'debug-alpine': 'alpine-events'
 			};
 
+			/**
+			 * Toggle a single debug feature on or off and persist the change.
+			 * @param {string} key - Handler key (e.g. 'htmx-log')
+			 * @param {boolean} enabled - Whether to enable or disable
+			 */
 			function toggle(key, enabled) {
 				var state = load();
 				state[key] = enabled;
@@ -306,6 +319,10 @@ templ debugScript() {
 				if (enabled) handlers[key].on(); else handlers[key].off();
 			}
 
+			/**
+			 * Toggle all debug features on or off, updating each checkbox.
+			 * @param {boolean} enabled - Whether to enable or disable all toggles
+			 */
 			function toggleAll(enabled) {
 				for (var id in checkboxMap) {
 					var key = checkboxMap[id];
