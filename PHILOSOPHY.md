@@ -6,12 +6,20 @@
   - [Go](#go)
   - [Hypermedia-Driven Architecture](#hypermedia-driven-architecture)
   - [Uniform Interface](#uniform-interface)
+  - [Self-Descriptive Methods](#self-descriptive-methods)
+  - [Resource Identification](#resource-identification)
+  - [Chesterton's Fence](#chestertons-fence)
   - [Server-Side State, Client-Side Rendering](#server-side-state-client-side-rendering)
+  - [Content Negotiation](#content-negotiation)
+  - [Mutations Redirect](#mutations-redirect)
+  - [Postel's Law](#postels-law-be-conservative-in-what-you-send-liberal-in-what-you-accept)
   - [The Stack](#the-stack)
   - [Why Not an SPA?](#why-not-an-spa)
   - [Explicit SQL, Composable Helpers](#explicit-sql-composable-helpers)
   - [Schema as Code](#schema-as-code)
   - [Domain Patterns as Primitives](#domain-patterns-as-primitives)
+  - [The Document Is the Resource](#the-document-is-the-resource)
+  - [Cacheability](#cacheability)
   - [Locality of Behavior](#locality-of-behavior)
     - [The reach-up model](#the-reach-up-model)
     - [When client-side state is necessary](#when-client-side-state-is-necessary)
@@ -52,6 +60,8 @@ The server returns HTML with embedded hypermedia controls that tell the client w
 
 **You do not need a single-page application.** The browser is already a hypermedia client. HTMX extends it to handle the cases where a full page reload is wasteful. The result is a simpler, more maintainable architecture that leverages what the web was designed to do.
 
+This also preserves the [Principle of Least Astonishment](https://en.wikipedia.org/wiki/Principle_of_least_astonishment). Hypermedia respects the web's native interaction model: links navigate, forms submit, the back button goes back, the URL reflects where you are, refresh shows the current state. These aren't features — they're expectations that browsers have trained into users over three decades. SPAs break these expectations by default and then spend engineering effort rebuilding them (client-side routing, history management, scroll restoration, form state preservation). A hypermedia architecture gets them for free because it never took them away.
+
 ## Uniform Interface
 
 Controls (buttons, links, form actions) share a uniform interface via the `hypermedia.Control` struct:
@@ -85,11 +95,69 @@ This isn't a rule. There's no enforcement layer. It's the natural progression of
 
 Because hypermedia drives the application, navigational chrome like breadcrumbs and action bars should either flow from the parent representation or be derivable from the navigation structure itself. The server already knows where the user is — the route, the resource, the hierarchy. Breadcrumbs are just that hierarchy rendered as links. Action bars are just the available transitions for the current resource state. These aren't independent pieces of UI that each handler assembles from scratch; they're projections of document state. A task's edit page knows it sits under `/tasks/{id}`, which sits under `/tasks` — the breadcrumb trail writes itself. The action bar knows whether the resource is in draft or published state and offers the transitions that make sense. Local modifications — an extra button for a specific workflow, a contextual link that only applies here — are fine, but the baseline should come from the resource's position in the navigation graph, not from per-handler boilerplate.
 
+[Hyrum's Law](https://www.hyrumslaw.com/) applies here with unusual force: *with a sufficient number of users of an API, all observable behaviors of your system will be depended on by somebody.* In a hypermedia architecture, the HTML *is* the API. Every element ID, every CSS class, every `hx-target` selector, every swap mode is an observable behavior. Change `#task-detail` to `#task-content` and every OOB swap targeting it breaks. Rename a DaisyUI class and \_hyperscript selectors that reference it stop working. The explicit contract — Controls, factory functions, semantic classes — exists precisely to manage this. Changes flow through a single point rather than requiring a grep across templates. But outside the explicit contract, the implicit one is larger than you think.
+
+## Self-Descriptive Methods
+
+HTTP methods carry semantics. They're not just verbs to put on a request — they're a contract between client and server that constrains what the request can do before the handler runs a single line of code.
+
+**GET is safe.** It has no side effects. It doesn't create, update, or delete anything. It's idempotent — calling it once is the same as calling it a hundred times. Because it's safe, browsers prefetch it, crawlers follow it, caches store it, and CSRF middleware skips it. A GET handler that mutates state isn't just a bad practice — it violates the self-descriptive constraint of REST. The method *is* part of the message.
+
+**POST creates.** It's the only non-idempotent method. Submitting it twice may create two resources. This is why mutations redirect after completion — a refresh on a POST result would double-submit.
+
+**PUT replaces.** It's idempotent — sending the same PUT twice produces the same state. The entire resource is overwritten with the request body.
+
+**PATCH modifies partially.** It updates specific fields without replacing the whole resource.
+
+**DELETE removes.** It's idempotent — deleting an already-deleted resource is a no-op, not an error.
+
+The CSRF middleware encodes this distinction directly: safe methods (GET, HEAD, OPTIONS, TRACE) bypass token validation because they cannot change state. Unsafe methods require a valid token. This isn't an implementation detail — it's the HTTP specification applied as architecture.
+
+## Resource Identification
+
+URLs identify resources, not actions. `/tasks/42` is a resource. The HTTP method is the verb — GET retrieves it, PUT replaces it, DELETE removes it. The URL is the noun; the method is the sentence.
+
+This means no verb-based URLs. `/api/getTask`, `/tasks/delete/42`, `/tasks/42/archive` — these encode the action in the address. The address should be stable regardless of what you're doing to the resource. `/tasks/42` is the same resource whether you're reading it, updating it, or deleting it.
+
+Query parameters represent views of a collection. `/tasks?sort=name&dir=asc&page=2` isn't a different resource — it's the same collection, sorted and paginated. The base URL `/tasks` identifies the collection; the parameters select a projection of it.
+
+Sub-resources nest hierarchically. `/people/7/edit` is the edit representation of person 7. `/tasks/42/notes` would be the notes belonging to task 42. The URL path mirrors the resource graph — you can read the hierarchy by reading the path segments.
+
+URLs should be bookmarkable, shareable, and stable. A user should be able to copy the address bar, send it to a colleague, and that colleague should see the same resource. This is a consequence of stateless requests and resource identification working together — the URL contains enough information to reconstruct the view.
+
+## Chesterton's Fence
+
+[Chesterton's Fence](https://en.wikipedia.org/wiki/G._K._Chesterton#Chesterton's_fence) is a principle of reform: *don't remove something until you understand why it was put there.* In the original formulation, if you encounter a fence across a road and can't see the reason for it, that's not an argument for removing it — it's an argument for finding out why it exists before you touch it.
+
+In a hypermedia system, patterns exist for reasons that aren't always visible from the element alone. An `hx-target` that looks wrong might account for an OOB swap elsewhere on the page. A swap mode that seems redundant might prevent a layout shift during a transition. A control factory that seems over-engineered might encode a consistency guarantee across twenty pages. Before removing or simplifying a pattern, trace why it exists. The cost of understanding is low. The cost of breaking a silent invariant is high.
+
+This applies at every level: the `From` query parameter on breadcrumbs, the `ErrorTarget` field on Controls, the `OOBTarget` on error contexts — each of these exists because a specific interaction broke without it. If you can't explain why it's there, you haven't yet earned the right to take it away.
+
 ## Server-Side State, Client-Side Rendering
 
 State lives on the server. The client is a thin rendering layer. When state changes, the server sends new HTML. The browser's job is to display it and let the user interact with the controls embedded in it.
 
 No client-side routing. No client-side state management. No `useState`, no Redux, no Zustand, no Pinia. The URL is the state. The HTML is the API.
+
+Each request is stateless — it contains everything the server needs to process it. The server doesn't remember what happened last request. Session identity comes from a cookie, but session state is loaded fresh from the store on every request. Request context — the request ID, CSRF token, session settings — is established by middleware each time, not carried forward from a previous interaction. A handler cannot assume that another handler ran first, or that the client has seen a particular response. Every request stands alone.
+
+## Content Negotiation
+
+The same resource serves different representations based on client capabilities. This is [content negotiation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Content_negotiation), and in a hypermedia architecture it's how the server maintains progressive enhancement without maintaining two codebases.
+
+When a request carries the `HX-Request: true` header, the server knows the client is HTMX-capable. It returns a partial — just the fragment that changed, targeted at a specific element. When the same URL is requested via standard browser navigation (no `HX-Request` header), the server returns a full page: layout, navigation, content, the works. Same resource, same URL, different representations. The handler decides based on what the client can handle.
+
+This is also how error responses work. An HTMX request that fails gets an out-of-band swap to the error banner — the page stays put, the error appears. A non-HTMX request that fails gets a full error page with navigation controls. Both surfaces carry the same information (error message, request ID, recovery actions), but the representation fits the client's rendering model.
+
+The key constraint: every resource must be reachable without JavaScript. Links are `<a>` tags. Forms are `<form>` tags. HTMX enhances them with `hx-get`, `hx-post`, and targeted swaps, but if HTMX fails to load, the page still works — links navigate, forms submit, the server returns full pages. Progressive enhancement isn't a bonus feature. It's the baseline.
+
+## Mutations Redirect
+
+After a mutation — a POST, PUT, or DELETE that changes server state — the response should redirect the client to the new representation, not return it directly. This is the [POST/Redirect/GET](https://en.wikipedia.org/wiki/Post/Redirect/Get) pattern, and in HTMX it's implemented via the `HX-Redirect` response header with a `303 See Other` status.
+
+The redirect does three things. First, it prevents double-submission: if the user refreshes the page, the browser re-sends a GET to the redirect target, not the original POST. Second, it keeps the URL bar honest — after creating a task, the browser shows `/tasks/42`, not `/tasks/create`. Third, it respects the browser's history stack — the back button takes you to a resource, not to a mutation endpoint.
+
+This matters more in HTMX than it does in traditional forms because returning a partial from a POST *feels* natural — the swap just works. But the swap doesn't fix the URL, doesn't fix the history stack, and doesn't prevent double-submit. The redirect does. Reach for `response.Builder.Redirect()` after mutations, not `response.Builder.Component()`.
 
 ## Postel's Law: Be Conservative in What You Send, Liberal in What You Accept
 
@@ -162,6 +230,8 @@ This project proves you can build a real, production, offline-capable mobile app
 
 The complexity budget goes toward the problem domain, not the framework.
 
+[Tesler's Law](https://en.wikipedia.org/wiki/Law_of_conservation_of_complexity) (the Law of Conservation of Complexity) says that every application has an inherent amount of complexity that cannot be removed or hidden — it can only be moved. SPAs don't reduce complexity. They move it to the client. Now the client manages routing, state, caching, authentication, error handling, and data synchronization — all concerns the server already handles. The total complexity is the same or greater. This project moves complexity to the server, where Go's type system, structured logging, and single-process model make it tractable. The complexity budget is fixed; the question is where it lives.
+
 ### But honestly
 
 SPAs aren't wrong. They're wrong *here*. If the UI is the product — a design tool, a collaborative editor, a code IDE — the client needs to own state, and an SPA is the right architecture. CRDTs, offline-first sync, canvas rendering, shared cursors: these are inherently client-side concerns that no server round-trip can solve.
@@ -215,6 +285,10 @@ This means:
 - You can **copy it into a query tool** and run it directly
 - You can **add database-specific hints** without fighting the abstraction
 - You can **switch databases** by swapping the dialect, not rewriting queries
+
+Joel Spolsky's [Law of Leaky Abstractions](https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/) explains why: *all non-trivial abstractions, to some degree, are leaky.* An ORM abstracts SQL behind method chains and objects. When it works, you don't think about SQL. When it leaks — a slow query, an unexpected N+1, a missing join, a dialect-specific feature you need today — you're debugging the ORM's generated SQL, not your own. You need to understand two systems: the abstraction and the thing it abstracts. The leaky abstraction made the easy case easier and the hard case harder.
+
+This reasoning applies throughout the stack. HTMX abstracts HTTP, but `hx-swap`, `hx-target`, and response headers are HTTP concepts that leak through — and that's fine, because knowing HTTP is the point. DaisyUI abstracts Tailwind, but layout and spacing still require raw utilities. The project's philosophy isn't "no abstractions" — it's "choose abstractions whose leaks are useful rather than surprising." `SelectBuilder.Build()` leaks SQL intentionally — you can read it, copy it, run it. An ORM leaks SQL accidentally — you discover it in a slow query log at 2 AM.
 
 ## Schema as Code
 
@@ -279,6 +353,18 @@ The server decides **what changed**, **who needs to know**, and **what HTML to s
 
 This extends beyond live updates. HTMX response headers let the server direct client behavior after any mutation — redirect, refresh a section, push a new URL, trigger a client-side event. The server is in control because the server is the authority. The client and server aren't two systems negotiating over JSON — they're one system where the server speaks and the browser renders.
 
+SSE is essential to this model because it eliminates drift. Without it, the client's representation ages with every passing second — stale data masquerading as current state. With SSE, the server pushes new representations the moment state changes. There is no polling interval where drift can accumulate, no cache TTL to guess at, no "refresh to see changes" banner. The document on screen is the resource, continuously. This is what server-owned state actually means: not just that the server stores the data, but that the server is responsible for keeping every client's view current.
+
+## Cacheability
+
+[Cacheability](https://roy.gbiv.com/pubs/dissertation/fielding_dissertation.pdf) is one of Fielding's six REST constraints, and it's a correctness constraint, not just a performance optimization. Responses must declare themselves cacheable or not, because a stale cache violates the "document is the resource" principle — the user sees something that is no longer true.
+
+Static assets — JavaScript, CSS, images, fonts — are fingerprinted by the build process. Their URLs change when their content changes. This makes them safe to cache aggressively: `Cache-Control: public, max-age=31536000, immutable`. The browser stores them forever and never asks again. When the content changes, it gets a new URL, and the old cached version is simply never requested.
+
+Dynamic HTML representations are the opposite. They reflect current resource state, and current means *right now*. Caching a list page means a user might not see the item they just created. Caching a detail page means a user might see data that another user just updated. Dynamic responses carry no cache headers — every request goes to the server, and the server returns the truth. SSE handles the case where the truth changes while the client is watching.
+
+SSE streams themselves explicitly disable caching (`Cache-Control: no-cache`) because the entire point of an event stream is that it's live. Caching an event stream is caching a contradiction.
+
 ## Locality of Behavior
 
 The behaviour of a unit of code should be as obvious as possible by looking only at that unit of code. This is the [Locality of Behaviour](https://htmx.org/essays/locality-of-behaviour/) (LoB) principle, and it is the gravitational center of how this application handles interactivity.
@@ -298,6 +384,8 @@ Separation of Concerns told us to put HTML in one file, CSS in another, and Java
 ### The reach-up model
 
 Every tool in this stack exists because HTML alone couldn't express something. You start at HTML and only **reach up** when the current layer can't do what you need. Each step trades simplicity for capability.
+
+This is [Gall's Law](https://en.wikipedia.org/wiki/John_Gall_(author)#Gall's_law) in practice: *a complex system that works is invariably found to have evolved from a simple system that worked. A complex system designed from scratch never works and cannot be patched up to make it work.* You didn't design a five-layer interactivity stack from scratch — you discovered it by writing HTML, hitting its limits, reaching for HTMX, hitting its limits, reaching for \_hyperscript, and so on. Each layer earned its place by solving a problem the layer below couldn't. The same applies to Controls: raw `hx-*` attributes came first. Factory functions came later, only when the repetition made them worth encoding.
 
 Two tracks rise from their foundations — Behavior (how things interact) and Presentation (how things look):
 
