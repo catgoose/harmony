@@ -11,9 +11,9 @@ import (
 
 	"catgoose/dothog/internal/logger"
 	"catgoose/dothog/internal/routes/hypermedia"
-	"catgoose/dothog/internal/routes/middleware"
 
 	"github.com/a-h/templ"
+	"github.com/catgoose/promolog"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -45,7 +45,7 @@ func newEchoContext(method, path string, headers map[string]string) (echo.Contex
 func TestRenderComponent_Success(t *testing.T) {
 	c, rec := newEchoContext(http.MethodGet, "/", nil)
 	e := echo.New()
-	e.Use(middleware.RequestIDMiddleware())
+	e.Use(echo.WrapMiddleware(promolog.CorrelationMiddleware))
 	c = e.NewContext(c.Request(), rec)
 
 	cmp := templ.Raw("<div>ok</div>")
@@ -58,7 +58,7 @@ func TestRenderComponent_Success(t *testing.T) {
 func TestRenderComponent_RenderError(t *testing.T) {
 	c, rec := newEchoContext(http.MethodGet, "/", nil)
 	e := echo.New()
-	e.Use(middleware.RequestIDMiddleware())
+	e.Use(echo.WrapMiddleware(promolog.CorrelationMiddleware))
 	c = e.NewContext(c.Request(), rec)
 
 	cmp := badComponent{}
@@ -71,7 +71,7 @@ func TestRenderComponent_RenderError(t *testing.T) {
 func TestHandleError_StatusCode(t *testing.T) {
 	c, rec := newEchoContext(http.MethodGet, "/", nil)
 	e := echo.New()
-	e.Use(middleware.RequestIDMiddleware())
+	e.Use(echo.WrapMiddleware(promolog.CorrelationMiddleware))
 	c = e.NewContext(c.Request(), rec)
 
 	err := HandleError(c, http.StatusBadRequest, "bad request", errors.New("test err"))
@@ -126,7 +126,7 @@ func TestDefaultControls_ServerError(t *testing.T) {
 func TestDefaultControls_ExplicitControlsOverride(t *testing.T) {
 	c, _ := newEchoContext(http.MethodGet, "/test", nil)
 	e := echo.New()
-	e.Use(middleware.RequestIDMiddleware())
+	e.Use(echo.WrapMiddleware(promolog.CorrelationMiddleware))
 	c = e.NewContext(c.Request(), c.Response().Writer.(*httptest.ResponseRecorder))
 
 	custom := hypermedia.RetryButton("Try Again", hypermedia.HxMethodGet, "/retry", "#target")
@@ -142,7 +142,7 @@ func TestDefaultControls_ExplicitControlsOverride(t *testing.T) {
 func TestHandleComponent(t *testing.T) {
 	c, rec := newEchoContext(http.MethodGet, "/", nil)
 	e := echo.New()
-	e.Use(middleware.RequestIDMiddleware())
+	e.Use(echo.WrapMiddleware(promolog.CorrelationMiddleware))
 	c = e.NewContext(c.Request(), rec)
 
 	cmp := templ.Raw("<span>content</span>")

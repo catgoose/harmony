@@ -228,9 +228,11 @@ func InitEcho(ctx context.Context, staticFS fs.FS, cfg *config.AppConfig,
 ) (*echo.Echo, error) {
 	e := echo.New()
 
-	e.Use(middleware.RequestIDMiddleware())
+	e.Use(echo.WrapMiddleware(promolog.CorrelationMiddleware))
 	e.Use(echoMiddleware.RequestLogger())
 	e.Use(echoMiddleware.Recover())
+	e.Use(echoMiddleware.Secure())
+	e.Use(echoMiddleware.Gzip())
 
 	// setup:feature:auth:start
 	if cfg != nil && !cfg.CroonerDisabled && cfg.CroonerConfig != nil {
@@ -259,7 +261,7 @@ func InitEcho(ctx context.Context, staticFS fs.FS, cfg *config.AppConfig,
 	}
 	// setup:feature:auth:end
 
-	e.Use(middleware.ErrorHandlerMiddleware(reqLogStore))
+	e.HTTPErrorHandler = middleware.NewHTTPErrorHandler(reqLogStore)
 
 	// setup:feature:session_settings:start
 	if settingsRepo != nil {

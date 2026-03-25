@@ -99,81 +99,86 @@ func handleErrorWithContext(c echo.Context, ec hypermedia.ErrorContext) error {
 		Send()
 }
 
-// ErrorHandlerMiddleware automatically wraps errors returned by handlers in HandleError.
-// When a reqLogStore is provided, the per-request log buffer is promoted to
-// the shared store on error so it can be retrieved for issue reports.
-func ErrorHandlerMiddleware(reqLogStore *promolog.Store) echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			err := next(c)
-			if err == nil {
-				return nil
-			}
+// NewHTTPErrorHandler returns an echo.HTTPErrorHandler that renders errors as
+// hypermedia responses. Assign it to e.HTTPErrorHandler in place of the default.
+// When reqLogStore is non-nil, the per-request log buffer is promoted to the
+// shared store on error so it can be retrieved for issue reports.
+func NewHTTPErrorHandler(reqLogStore *promolog.Store) func(err error, c echo.Context) {
+	return func(err error, c echo.Context) {
+		// Determine status code from error type before promoting.
+		statusCode := http.StatusInternalServerError
+		var hhe *hypermedia.HTTPError
+		var he *echo.HTTPError
+		if errors.As(err, &hhe) {
+			statusCode = hhe.EC.StatusCode
+		} else if errors.As(err, &he) {
+			statusCode = he.Code
+		}
 
-			// Determine status code from error type before promoting.
-			statusCode := http.StatusInternalServerError
-			var hhe *hypermedia.HTTPError
-			var he *echo.HTTPError
-			if errors.As(err, &hhe) {
-				statusCode = hhe.EC.StatusCode
-			} else if errors.As(err, &he) {
-				statusCode = he.Code
-			}
-
-			// Promote per-request log buffer to the shared store on error.
-			if reqLogStore != nil {
-				requestID := GetRequestID(c)
-				if requestID != "" {
-					var entries []promolog.Entry
-					if buf := promolog.GetBuffer(c.Request().Context()); buf != nil {
-						entries = buf.Entries
-					}
-					var userID string
+		// Promote per-request log buffer to the shared store on error.
+		if reqLogStore != nil {
+			requestID := GetRequestID(c)
+			if requestID != "" {
+				var entries []promolog.Entry
+				if buf := promolog.GetBuffer(c.Request().Context()); buf != nil {
+					entries = buf.Entries
+				}
+				var userID string
 				// setup:feature:auth:start
 				userID, _ = c.Get("azureId").(string)
 				if userID == "" {
 					logger.WithContext(c.Request().Context()).Warn("Error trace missing UserID: azureId not set on echo context")
 				}
 				// setup:feature:auth:end
-					reqLogStore.Promote(c.Request().Context(), promolog.ErrorTrace{
-						RequestID:  requestID,
-						ErrorChain: err.Error(),
-						StatusCode: statusCode,
-						Route:      c.Request().URL.Path,
-						Method:     c.Request().Method,
-						UserAgent:  c.Request().UserAgent(),
-						RemoteIP:   c.RealIP(),
-						UserID:     userID,
-						Entries:    entries,
-					})
+				if promoteErr := reqLogStore.Promote(c.Request().Context(), promolog.ErrorTrace{
+					RequestID:  requestID,
+					ErrorChain: err.Error(),
+					StatusCode: statusCode,
+					Route:      c.Request().URL.Path,
+					Method:     c.Request().Method,
+					UserAgent:  c.Request().UserAgent(),
+					RemoteIP:   c.RealIP(),
+					UserID:     userID,
+					Entries:    entries,
+				}); promoteErr != nil {
+					logger.WithContext(c.Request().Context()).Error("Failed to promote error trace",
+						"error", promoteErr)
 				}
 			}
+		}
 
-			// If the response is already committed, don't modify it
-			if c.Response().Committed {
-				return nil
+		// If the response is already committed, don't modify it
+		if c.Response().Committed {
+			return
+		}
+
+		// 1. HTTPError — rich error with hypermedia controls
+		if hhe != nil {
+			if renderErr := handleErrorWithContext(c, hhe.EC); renderErr != nil {
+				logger.WithContext(c.Request().Context()).Error("Failed to render error", "error", renderErr)
 			}
+			return
+		}
 
-			// 1. HTTPError — rich error with hypermedia controls
-			if hhe != nil {
-				return handleErrorWithContext(c, hhe.EC)
-			}
-
-			// 2. echo.HTTPError — convert to HTML for HTMX requests
-			if he != nil {
-				message := ""
-				if he.Message != nil {
-					if msg, ok := he.Message.(string); ok {
-						message = msg
-					} else {
-						message = "Unknown error"
-					}
+		// 2. echo.HTTPError — convert to HTML for HTMX requests
+		if he != nil {
+			message := ""
+			if he.Message != nil {
+				if msg, ok := he.Message.(string); ok {
+					message = msg
+				} else {
+					message = "Unknown error"
 				}
-				return handleError(c, he.Code, message, err)
 			}
+			if renderErr := handleError(c, he.Code, message, err); renderErr != nil {
+				logger.WithContext(c.Request().Context()).Error("Failed to render error", "error", renderErr)
+			}
+			return
+		}
 
-			// 3. Fallback — generic 500
-			return handleError(c, http.StatusInternalServerError, "operation failed", err)
+		// 3. Fallback — generic 500
+		if renderErr := handleError(c, http.StatusInternalServerError, "operation failed", err); renderErr != nil {
+			logger.WithContext(c.Request().Context()).Error("Failed to render error", "error", renderErr)
 		}
 	}
 }

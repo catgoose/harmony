@@ -13,6 +13,7 @@ import (
 	"catgoose/dothog/internal/logger"
 	"catgoose/dothog/internal/routes/hypermedia"
 
+	"github.com/catgoose/promolog"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/require"
 )
@@ -22,24 +23,28 @@ func init() {
 	logger.Init()
 }
 
-// ---------------------------------------------------------------------------
-// 1. No error from handler — middleware returns nil, response unchanged
-// ---------------------------------------------------------------------------
-
-func TestErrorHandlerMiddleware_NoError(t *testing.T) {
+// setupEcho creates an Echo instance with promolog correlation and the HTTPErrorHandler.
+func setupEcho(reqLogStore *promolog.Store) *echo.Echo {
 	e := echo.New()
-	req := httptest.NewRequest(http.MethodGet, "/ok", nil)
-	rec := httptest.NewRecorder()
-	c := e.NewContext(req, rec)
+	e.Use(echo.WrapMiddleware(promolog.CorrelationMiddleware))
+	e.HTTPErrorHandler = NewHTTPErrorHandler(reqLogStore)
+	return e
+}
 
-	mw := ErrorHandlerMiddleware(nil)
-	handler := mw(func(c echo.Context) error {
+// ---------------------------------------------------------------------------
+// 1. No error from handler — response unchanged
+// ---------------------------------------------------------------------------
+
+func TestHTTPErrorHandler_NoError(t *testing.T) {
+	e := setupEcho(nil)
+	e.GET("/ok", func(c echo.Context) error {
 		return c.String(http.StatusOK, "all good")
 	})
 
-	err := handler(c)
+	req := httptest.NewRequest(http.MethodGet, "/ok", http.NoBody)
+	rec := httptest.NewRecorder()
+	e.ServeHTTP(rec, req)
 
-	require.NoError(t, err)
 	require.Equal(t, http.StatusOK, rec.Code)
 	require.Equal(t, "all good", rec.Body.String())
 }
@@ -48,21 +53,18 @@ func TestErrorHandlerMiddleware_NoError(t *testing.T) {
 // 2. echo.HTTPError with HTMX request — returns HTML error component
 // ---------------------------------------------------------------------------
 
-func TestErrorHandlerMiddleware_EchoHTTPError_HTMX(t *testing.T) {
-	e := echo.New()
-	e.Use(RequestIDMiddleware())
-	e.Use(ErrorHandlerMiddleware(nil))
+func TestHTTPErrorHandler_EchoHTTPError_HTMX(t *testing.T) {
+	e := setupEcho(nil)
 	e.GET("/test", func(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, "not found")
 	})
 
-	req := httptest.NewRequest(http.MethodGet, "/test", nil)
+	req := httptest.NewRequest(http.MethodGet, "/test", http.NoBody)
 	req.Header.Set("HX-Request", "true")
 	rec := httptest.NewRecorder()
 	e.ServeHTTP(rec, req)
 
 	require.Equal(t, http.StatusNotFound, rec.Code)
-	// The response body should contain HTML from the error component
 	body := rec.Body.String()
 	require.True(t,
 		strings.Contains(body, "not found") || strings.Contains(body, "error"),
@@ -74,21 +76,18 @@ func TestErrorHandlerMiddleware_EchoHTTPError_HTMX(t *testing.T) {
 // 3. echo.HTTPError without HTMX request — returns HATEOAS HTML error page
 // ---------------------------------------------------------------------------
 
-func TestErrorHandlerMiddleware_EchoHTTPError_NonHTMX(t *testing.T) {
-	e := echo.New()
-	e.Use(RequestIDMiddleware())
-	e.Use(ErrorHandlerMiddleware(nil))
+func TestHTTPErrorHandler_EchoHTTPError_NonHTMX(t *testing.T) {
+	e := setupEcho(nil)
 	e.GET("/test", func(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "bad request")
 	})
 
-	req := httptest.NewRequest(http.MethodGet, "/test", nil)
+	req := httptest.NewRequest(http.MethodGet, "/test", http.NoBody)
 	rec := httptest.NewRecorder()
 	e.ServeHTTP(rec, req)
 
 	require.Equal(t, http.StatusBadRequest, rec.Code)
 	body := rec.Body.String()
-	// Should render an HTML error page with HATEOAS controls, not JSON
 	require.Contains(t, body, "bad request", "expected error message in HTML body")
 	require.Contains(t, body, "<!doctype html>", "expected full HTML page for non-HTMX")
 	require.Contains(t, body, "Go Back", "expected Back control in error page")
@@ -99,10 +98,8 @@ func TestErrorHandlerMiddleware_EchoHTTPError_NonHTMX(t *testing.T) {
 // 4. hypermedia.HTTPError with HTMX — returns HTML with controls rendered
 // ---------------------------------------------------------------------------
 
-func TestErrorHandlerMiddleware_HypermediaHTTPError(t *testing.T) {
-	e := echo.New()
-	e.Use(RequestIDMiddleware())
-	e.Use(ErrorHandlerMiddleware(nil))
+func TestHTTPErrorHandler_HypermediaHTTPError(t *testing.T) {
+	e := setupEcho(nil)
 	e.GET("/test", func(c echo.Context) error {
 		he := hypermedia.NewHTTPError(hypermedia.ErrorContext{
 			StatusCode: 404,
@@ -117,7 +114,7 @@ func TestErrorHandlerMiddleware_HypermediaHTTPError(t *testing.T) {
 		return he
 	})
 
-	req := httptest.NewRequest(http.MethodGet, "/test", nil)
+	req := httptest.NewRequest(http.MethodGet, "/test", http.NoBody)
 	req.Header.Set("HX-Request", "true")
 	rec := httptest.NewRecorder()
 	e.ServeHTTP(rec, req)
@@ -134,10 +131,8 @@ func TestErrorHandlerMiddleware_HypermediaHTTPError(t *testing.T) {
 // 5. hypermedia.HTTPError without HTMX — returns full HTML error page
 // ---------------------------------------------------------------------------
 
-func TestErrorHandlerMiddleware_HypermediaHTTPError_NonHTMX(t *testing.T) {
-	e := echo.New()
-	e.Use(RequestIDMiddleware())
-	e.Use(ErrorHandlerMiddleware(nil))
+func TestHTTPErrorHandler_HypermediaHTTPError_NonHTMX(t *testing.T) {
+	e := setupEcho(nil)
 	e.GET("/test", func(c echo.Context) error {
 		he := hypermedia.NewHTTPError(hypermedia.ErrorContext{
 			StatusCode: 403,
@@ -151,7 +146,7 @@ func TestErrorHandlerMiddleware_HypermediaHTTPError_NonHTMX(t *testing.T) {
 		return he
 	})
 
-	req := httptest.NewRequest(http.MethodGet, "/test", nil)
+	req := httptest.NewRequest(http.MethodGet, "/test", http.NoBody)
 	rec := httptest.NewRecorder()
 	e.ServeHTTP(rec, req)
 
@@ -160,7 +155,6 @@ func TestErrorHandlerMiddleware_HypermediaHTTPError_NonHTMX(t *testing.T) {
 	require.Contains(t, body, "<!doctype html>", "expected full HTML page for non-HTMX")
 	require.Contains(t, body, "forbidden", "expected error message in HTML body")
 	require.Contains(t, body, "Go back", "expected handler-provided control")
-	// Closable should be forced to false for full page — no close button rendered
 	require.NotContains(t, body, "on click tell", "full page error should not have close button")
 }
 
@@ -168,15 +162,13 @@ func TestErrorHandlerMiddleware_HypermediaHTTPError_NonHTMX(t *testing.T) {
 // 6. Generic error (non-HTTPError) — falls back to 500 with HTMX request
 // ---------------------------------------------------------------------------
 
-func TestErrorHandlerMiddleware_GenericError_HTMX(t *testing.T) {
-	e := echo.New()
-	e.Use(RequestIDMiddleware())
-	e.Use(ErrorHandlerMiddleware(nil))
+func TestHTTPErrorHandler_GenericError_HTMX(t *testing.T) {
+	e := setupEcho(nil)
 	e.GET("/test", func(c echo.Context) error {
 		return errors.New("internal failure")
 	})
 
-	req := httptest.NewRequest(http.MethodGet, "/test", nil)
+	req := httptest.NewRequest(http.MethodGet, "/test", http.NoBody)
 	req.Header.Set("HX-Request", "true")
 	rec := httptest.NewRecorder()
 	e.ServeHTTP(rec, req)
@@ -189,15 +181,13 @@ func TestErrorHandlerMiddleware_GenericError_HTMX(t *testing.T) {
 // 7. Generic error without HTMX — returns full HTML error page
 // ---------------------------------------------------------------------------
 
-func TestErrorHandlerMiddleware_GenericError_NonHTMX(t *testing.T) {
-	e := echo.New()
-	e.Use(RequestIDMiddleware())
-	e.Use(ErrorHandlerMiddleware(nil))
+func TestHTTPErrorHandler_GenericError_NonHTMX(t *testing.T) {
+	e := setupEcho(nil)
 	e.GET("/test", func(c echo.Context) error {
 		return errors.New("internal failure")
 	})
 
-	req := httptest.NewRequest(http.MethodGet, "/test", nil)
+	req := httptest.NewRequest(http.MethodGet, "/test", http.NoBody)
 	rec := httptest.NewRecorder()
 	e.ServeHTTP(rec, req)
 
@@ -208,20 +198,18 @@ func TestErrorHandlerMiddleware_GenericError_NonHTMX(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// 8. Response already committed — returns nil without modifying response
+// 8. Response already committed — returns without modifying response
 // ---------------------------------------------------------------------------
 
-func TestErrorHandlerMiddleware_ResponseCommitted(t *testing.T) {
-	e := echo.New()
-	e.Use(ErrorHandlerMiddleware(nil))
+func TestHTTPErrorHandler_ResponseCommitted(t *testing.T) {
+	e := setupEcho(nil)
 	e.GET("/test", func(c echo.Context) error {
-		// Write something to commit the response
 		c.Response().WriteHeader(http.StatusOK)
 		_, _ = c.Response().Write([]byte("already sent"))
 		return echo.NewHTTPError(http.StatusInternalServerError, "ignored")
 	})
 
-	req := httptest.NewRequest(http.MethodGet, "/test", nil)
+	req := httptest.NewRequest(http.MethodGet, "/test", http.NoBody)
 	rec := httptest.NewRecorder()
 	e.ServeHTTP(rec, req)
 
@@ -229,15 +217,16 @@ func TestErrorHandlerMiddleware_ResponseCommitted(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// 9. Context canceled — returns nil without rendering
+// 9. Context canceled — returns without rendering
 // ---------------------------------------------------------------------------
 
-func TestErrorHandlerMiddleware_ContextCanceled(t *testing.T) {
+func TestHTTPErrorHandler_ContextCanceled(t *testing.T) {
 	e := echo.New()
-	req := httptest.NewRequest(http.MethodGet, "/test", nil)
+	e.HTTPErrorHandler = NewHTTPErrorHandler(nil)
+
+	req := httptest.NewRequest(http.MethodGet, "/test", http.NoBody)
 	req.Header.Set("HX-Request", "true")
 
-	// Create a cancelable context and cancel it before the handler runs
 	ctx, cancel := context.WithCancel(req.Context())
 	cancel()
 	req = req.WithContext(ctx)
@@ -245,16 +234,9 @@ func TestErrorHandlerMiddleware_ContextCanceled(t *testing.T) {
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 
-	mw := ErrorHandlerMiddleware(nil)
-	handler := mw(func(c echo.Context) error {
-		return echo.NewHTTPError(http.StatusNotFound, "not found")
-	})
+	// Call the error handler directly
+	e.HTTPErrorHandler(echo.NewHTTPError(http.StatusNotFound, "not found"), c)
 
-	err := handler(c)
-
-	// handleError detects context.Canceled and returns nil
-	require.NoError(t, err)
-	// Body should be empty since nothing was rendered
 	require.Empty(t, rec.Body.String(),
 		fmt.Sprintf("expected empty body when context canceled, got: %s", rec.Body.String()),
 	)
