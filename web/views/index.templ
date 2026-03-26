@@ -43,6 +43,9 @@ templ Index(layoutContent templ.Component, menuContent templ.Component, csrfToke
 			</footer>
 			<div id="report-modal-container"></div>
 			<div id="report-email-container"></div>
+			// setup:feature:offline:start
+			@components.OfflineIndicator()
+			// setup:feature:offline:end
 		</body>
 	</html>
 }
@@ -50,22 +53,7 @@ templ Index(layoutContent templ.Component, menuContent templ.Component, csrfToke
 // Header is the header of the HTML document
 templ header(csrfToken string, devMode bool, appName string, extraCSS []string) {
 	<head>
-		if csrfToken != "" {
-			<meta name="csrf-token" content={ csrfToken }/>
-			<script>
-				/**
-				 * Attach the CSRF token to every outgoing HTMX request.
-				 * Reads the token from the <meta name="csrf-token"> tag injected
-				 * by the server and sets the X-CSRF-Token header.
-				 * @listens htmx:configRequest
-				 */
-				document.addEventListener("htmx:configRequest", function(evt) {
-					/** @type {HTMLMetaElement|null} */
-					var t = document.querySelector("meta[name=\"csrf-token\"]");
-					if (t) evt.detail.headers["X-CSRF-Token"] = t.getAttribute("content");
-				});
-			</script>
-		}
+		@components.CsrfMeta(csrfToken)
 		<meta name="htmx-config" content='{"globalViewTransitions":true,"refreshOnHistoryMiss":true,"responseHandling":[{"code":".*","swap":true}]}'/>
 		<meta charset="UTF-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -81,6 +69,9 @@ templ header(csrfToken string, devMode bool, appName string, extraCSS []string) 
 		// setup:feature:sse:start
 		<script defer src="/public/js/htmx.ext.sse.js"></script>
 		// setup:feature:sse:end
+		// setup:feature:offline:start
+		<script defer src="/public/js/offline-indicator.js"></script>
+		// setup:feature:offline:end
 		<link rel="stylesheet" href="/public/css/tailwind.css" type="text/css"/>
 		<link rel="stylesheet" href="/public/css/daisyui.css" type="text/css"/>
 		for _, href := range extraCSS {
@@ -146,6 +137,15 @@ templ header(csrfToken string, devMode bool, appName string, extraCSS []string) 
 		</script>
 		// setup:feature:session_settings:end
 		// setup:feature:sse:end
+		// setup:feature:offline:start
+		<script>
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.register('/sw.js').catch(function(err) {
+					console.warn('ServiceWorker registration failed:', err);
+				});
+			}
+		</script>
+		// setup:feature:offline:end
 	</head>
 }
 

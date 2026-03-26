@@ -65,6 +65,9 @@ type appRoutes struct {
 	// setup:feature:session_settings:start
 	settingsRepo SessionSettingsStore
 	// setup:feature:session_settings:end
+	// setup:feature:sync:start
+	versionChecker VersionChecker
+	// setup:feature:sync:end
 }
 
 // NewAppRoutes initializes routes.
@@ -156,6 +159,10 @@ func (ar *appRoutes) InitRoutes() error {
 		return handler.RenderComponent(c, corecomponents.ReportIssueModal(cfg))
 	})
 
+	// setup:feature:sync:start
+	ar.initSyncRoutes()
+	// setup:feature:sync:end
+
 	ar.initAdminCoreRoutes()
 	ar.initErrorTracesRoutes()
 
@@ -186,6 +193,9 @@ func (ar *appRoutes) InitRoutes() error {
 		logger.WithContext(ar.ctx).Warn("Demo DB unavailable; /demo/* routes disabled", "error", err)
 		return nil
 	}
+	// setup:feature:sync:start
+	ar.versionChecker = NewSQLVersionChecker(db.RawDB())
+	// setup:feature:sync:end
 	ar.initInventoryRoutes(db)
 	ar.initCatalogRoutes(db)
 	ar.initBulkRoutes(db)
@@ -280,6 +290,20 @@ func InitEcho(ctx context.Context, staticFS fs.FS, cfg *config.AppConfig,
 		}
 	})
 	static.StaticFS("/", staticFS)
+
+	// setup:feature:offline:start
+	// Serve the service worker from the root so it can control all pages.
+	e.GET("/sw.js", func(c echo.Context) error {
+		f, err := staticFS.Open("sw.js")
+		if err != nil {
+			return echo.NewHTTPError(http.StatusNotFound)
+		}
+		defer f.Close()
+		c.Response().Header().Set("Content-Type", "application/javascript")
+		c.Response().Header().Set("Service-Worker-Allowed", "/")
+		return c.Stream(http.StatusOK, "application/javascript", f)
+	})
+	// setup:feature:offline:end
 
 	return e, nil
 }
