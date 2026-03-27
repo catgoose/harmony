@@ -24,11 +24,7 @@ templ AppNavLayout(content templ.Component, cfg hypermedia.NavConfig, csrfToken 
 				<!-- Nav bar (CSS positions: bottom on mobile, top on desktop) -->
 				@appNav(cfg)
 				if len(crumbs) > 0 {
-					<div class="mx-4 mt-3">
-						<div class="bg-base-100 shadow-sm border border-base-300 rounded-lg px-4 py-2 inline-block">
-							@components.Breadcrumbs(crumbs)
-						</div>
-					</div>
+					@components.ContextStrip(crumbs)
 				}
 				<!-- Main Content -->
 				<main class="app-main flex-1 p-4 md:p-6">
