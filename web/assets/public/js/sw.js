@@ -39,6 +39,14 @@ const PRECACHE_URLS = [
   '/public/js/alpine.min.js',
   '/public/js/alpine.morph.min.js',
   '/public/js/htmx.alpine-morph.js',
+  '/public/js/context-bar.js',
+  '/public/js/history-breadcrumbs.js',
+  '/public/js/beacon.js',
+  '/public/js/broadcast.js',
+  '/pwa',
+  '/pwa/inspection',
+  '/pwa/report',
+  '/pwa/notes',
 ];
 
 self.addEventListener('install', (event) => {
@@ -129,10 +137,10 @@ async function networkFirst(request) {
       return cached;
     }
 
-    // Nothing in cache — return offline fallback
-    const fallbackCached = await caches.match('/offline');
-    if (fallbackCached) {
-      return fallbackCached;
+    // Nothing in cache — try the PWA landing page as offline fallback
+    const pwaFallback = await caches.match('/pwa');
+    if (pwaFallback) {
+      return pwaFallback;
     }
 
     // Last resort: synthetic offline response

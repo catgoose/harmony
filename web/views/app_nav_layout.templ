@@ -1,12 +1,14 @@
 package views
 
-import "catgoose/dothog/internal/routes/hypermedia"
-import components "catgoose/dothog/web/components/core"
+import (
+	"catgoose/dothog/internal/routes/hypermedia"
+	components "catgoose/dothog/web/components/core"
+)
 
 // AppNavLayout is a responsive page layout with CSS-driven auto-positioning:
 // bottom nav bar on mobile, sticky top bar on desktop. Derived apps opt in
 // via handler.SetLayout(handler.AppNavLayoutFunc(...)).
-templ AppNavLayout(content templ.Component, cfg hypermedia.NavConfig, csrfToken string, devMode bool, theme string, crumbs []hypermedia.Breadcrumb, version string) {
+templ AppNavLayout(content templ.Component, cfg hypermedia.NavConfig, csrfToken string, devMode bool, theme string, crumbs []hypermedia.Breadcrumb, links []hypermedia.LinkRelation, currentPath string, version string, hubs []hypermedia.HubEntry) {
 	<!DOCTYPE html>
 	<html lang="en" data-theme={ theme }>
 		@header(csrfToken, devMode, cfg.AppName, []string{"/public/css/app-layout.css"})
@@ -23,6 +25,11 @@ templ AppNavLayout(content templ.Component, cfg hypermedia.NavConfig, csrfToken 
 				</div>
 				<!-- Nav bar (CSS positions: bottom on mobile, top on desktop) -->
 				@appNav(cfg)
+				// setup:feature:demo:start
+			@components.ContextBar(links, currentPath)
+			@components.LocalContextBar(links, currentPath)
+			@components.HistoryBreadcrumbs()
+			// setup:feature:demo:end
 				if len(crumbs) > 0 {
 					@components.ContextStrip(crumbs)
 				}
@@ -30,6 +37,9 @@ templ AppNavLayout(content templ.Component, cfg hypermedia.NavConfig, csrfToken 
 				<main class="app-main flex-1 p-4 md:p-6">
 					@Layout(content)
 				</main>
+				// setup:feature:demo:start
+				@components.SiteMap(hubs)
+				// setup:feature:demo:end
 				<footer class="text-center text-xs text-base-content/60 py-2">
 					{ version }
 				</footer>

@@ -8,6 +8,7 @@ import (
 
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
+	hx "catgoose/harmony/internal/routes/htmx"
 	"catgoose/harmony/internal/routes/hypermedia"
 	"catgoose/harmony/internal/routes/params"
 	"catgoose/harmony/web/views"
@@ -43,9 +44,12 @@ func (d *inventoryRoutes) handleInventoryPage(c echo.Context) error {
 }
 
 func (d *inventoryRoutes) handleInventoryItems(c echo.Context) error {
-	_, container, err := d.buildInventoryContent(c)
+	bar, container, err := d.buildInventoryContent(c)
 	if err != nil {
 		return handler.HandleHypermediaError(c, 500, "Failed to load items", err)
+	}
+	if hx.IsBoosted(c) {
+		return handler.RenderBaseLayout(c, views.InventoryPage(bar, container))
 	}
 	setTableReplaceURL(c, inventoryBase)
 	return handler.RenderComponent(c, container)
@@ -98,7 +102,7 @@ func (d *inventoryRoutes) handleItemRow(c echo.Context) error {
 	if err != nil {
 		return handler.HandleHypermediaError(c, 404, "Item not found", err)
 	}
-	if c.Request().Header.Get("HX-Request") == "" {
+	if !hx.IsHTMX(c) || hx.IsBoosted(c) {
 		handler.SetPageLabel(c, item.Name)
 		return handler.RenderBaseLayout(c, views.InventoryDetailPage(item))
 	}

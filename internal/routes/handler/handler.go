@@ -2,6 +2,9 @@
 package handler
 
 import (
+	// setup:feature:session_settings:start
+	"catgoose/harmony/internal/domain"
+	// setup:feature:session_settings:end
 	"catgoose/harmony/internal/logger"
 	"catgoose/harmony/internal/routes/hypermedia"
 	"catgoose/harmony/internal/routes/middleware"
@@ -72,7 +75,10 @@ func RenderBaseLayout(c echo.Context, cmp templ.Component) error {
 type layoutCtx struct {
 	csrfToken string
 	theme     string
+	path      string
 	crumbs    []hypermedia.Breadcrumb
+	links     []hypermedia.LinkRelation
+	hubs      []hypermedia.HubEntry
 }
 
 // getLayoutCtx extracts CSRF token, theme, and breadcrumbs from the request.
@@ -92,27 +98,84 @@ func getLayoutCtx(c echo.Context) layoutCtx {
 	// setup:feature:session_settings:end
 
 	var crumbs []hypermedia.Breadcrumb
+	path := c.Request().URL.Path
 	from := c.QueryParam("from")
-	pathCrumbs := buildPathCrumbs(c.Request().URL.Path, from, getRoutes)
 
+	// Priority 1: explicit navigation context via ?from= bitmask
 	if mask := hypermedia.ParseFromParam(from); mask != 0 {
+		pathCrumbs := buildPathCrumbs(path, from, getRoutes)
 		crumbs = append(hypermedia.ResolveFromMask(mask), pathCrumbs...)
-	} else if len(pathCrumbs) > 1 {
-		crumbs = append([]hypermedia.Breadcrumb{{Label: hypermedia.BreadcrumbLabelHome, Href: "/"}}, pathCrumbs...)
+	}
+
+	// Priority 2: declared document hierarchy via rel="up" chain
+	// setup:feature:demo:start
+	if len(crumbs) == 0 {
+		crumbs = hypermedia.BreadcrumbsFromLinks(path)
+	}
+	// setup:feature:demo:end
+
+	// Priority 3: derive from URL path segments (last resort)
+	if len(crumbs) == 0 {
+		pathCrumbs := buildPathCrumbs(path, from, getRoutes)
+		if len(pathCrumbs) > 1 {
+			crumbs = append([]hypermedia.Breadcrumb{{Label: hypermedia.BreadcrumbLabelHome, Href: "/"}}, pathCrumbs...)
+		}
 	}
 
 	if label, ok := c.Get(pageLabel).(string); ok && label != "" && len(crumbs) > 0 {
 		crumbs[len(crumbs)-1].Label = label
 	}
 
-	return layoutCtx{csrfToken: csrfToken, theme: theme, crumbs: crumbs}
+	// setup:feature:demo:start
+	links := middleware.GetLinkRelations(c)
+	hubs := hypermedia.Hubs()
+	// setup:feature:demo:end
+
+	return layoutCtx{
+		csrfToken: csrfToken,
+		theme:     theme,
+		path:      c.Request().URL.Path,
+		crumbs:    crumbs,
+		// setup:feature:demo:start
+		links: links,
+		hubs:  hubs,
+		// setup:feature:demo:end
+	}
+}
+
+// appNavNavConfig returns a NavConfig with icons for use with the AppNavLayout.
+func appNavNavConfig() hypermedia.NavConfig {
+	return hypermedia.NavConfig{
+		AppName: appName,
+		Items: []hypermedia.NavItem{
+			{Label: "Home", Href: "/", Icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"},
+			{Label: "Dashboard", Href: "/dashboard", Icon: "M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"},
+			{Label: "Hypermedia", Href: "/hypermedia", Icon: "M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"},
+			{Label: "Demo", Href: "/demo", Icon: "M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"},
+			{Label: "Settings", Href: "/settings", Icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"},
+			{Label: "Admin", Href: "/admin", Icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"},
+		},
+		MaxVisible: 6,
+	}
 }
 
 // renderDefaultLayout is the standard dothog layout with nav, breadcrumbs, and theme.
 func renderDefaultLayout(c echo.Context, cmp templ.Component) error {
-	nav := appNavComponent(c.Request().URL.Path)
 	lc := getLayoutCtx(c)
-	return RenderComponent(c, views.Index(cmp, nav, lc.csrfToken, dio.Dev(), lc.theme, lc.crumbs, version.Display(), appName))
+	// setup:feature:session_settings:start
+	settings := middleware.GetSessionSettings(c)
+	if settings.Layout == domain.LayoutApp {
+		cfg := appNavNavConfig()
+		cfg.Items = hypermedia.SetActiveNavItemPrefix(cfg.Items, lc.path)
+		return RenderComponent(c, views.AppNavLayout(
+			cmp, cfg,
+			lc.csrfToken, dio.Dev(), lc.theme,
+			lc.crumbs, lc.links, lc.path, version.Display(), lc.hubs,
+		))
+	}
+	// setup:feature:session_settings:end
+	nav := appNavComponent(c.Request().URL.Path)
+	return RenderComponent(c, views.Index(cmp, nav, lc.csrfToken, dio.Dev(), lc.theme, lc.crumbs, lc.links, lc.path, version.Display(), appName, lc.hubs))
 }
 
 // AppNavLayoutFunc returns a LayoutFunc that uses the responsive app-nav layout.
@@ -132,7 +195,7 @@ func AppNavLayoutFunc(cfg hypermedia.NavConfig) LayoutFunc {
 		return RenderComponent(c, views.AppNavLayout(
 			cmp, navCfg,
 			lc.csrfToken, dio.Dev(), lc.theme,
-			lc.crumbs, version.Display(),
+			lc.crumbs, lc.links, lc.path, version.Display(), lc.hubs,
 		))
 	}
 }
@@ -213,7 +276,7 @@ func HandleError(c echo.Context, statusCode int, message string, err error) erro
 	requestID := middleware.GetRequestID(c)
 	logger.WithContext(c.Request().Context()).Error("Request error", "error", err, "status_code", statusCode, "message", message)
 	c.Response().Status = statusCode
-	renderErr := RenderComponent(c, corecomponents.ErrorStatus(statusCode, message, err, c.Request().URL.Path, requestID, true))
+	renderErr := corecomponents.ErrorStatus(statusCode, message, err, c.Request().URL.Path, requestID, true).Render(c.Request().Context(), c.Response())
 	if renderErr != nil {
 		return c.HTML(http.StatusInternalServerError, fmt.Sprintf(
 			`<div class="bg-error text-error-content p-3 shadow-lg text-sm">
@@ -231,39 +294,15 @@ func HandleError(c echo.Context, statusCode int, message string, err error) erro
 // status code so that every error response is a navigable hypermedia state.
 func HandleHypermediaError(c echo.Context, statusCode int, message string, err error, controls ...hypermedia.Control) error {
 	if len(controls) == 0 {
-		requestID := middleware.GetRequestID(c)
-		controls = defaultControls(statusCode, requestID)
+		opts := hypermedia.ErrorControlOpts{HomeURL: "/", LoginURL: "/login"}
+		controls = hypermedia.ErrorControlsForStatus(statusCode, opts)
+		if statusCode >= 500 {
+			requestID := middleware.GetRequestID(c)
+			controls = append(controls, hypermedia.ReportIssueButton(hypermedia.LabelReportIssue, requestID))
+		}
 	}
 	ec := middleware.HypermediaError(c, statusCode, message, err, controls...)
 	return hypermedia.NewHTTPError(ec)
-}
-
-// defaultControls returns recovery controls appropriate for the given HTTP status code.
-// Every error path includes a Report Issue button so users can easily report problems.
-func defaultControls(statusCode int, requestID string) []hypermedia.Control {
-	back := hypermedia.BackButton(hypermedia.LabelGoBack)
-	home := hypermedia.GoHomeButton(hypermedia.LabelGoHome, "/", hypermedia.TargetBody)
-	dismiss := hypermedia.DismissButton(hypermedia.LabelDismiss)
-	report := hypermedia.ReportIssueButton(hypermedia.LabelReportIssue, requestID)
-
-	switch {
-	case statusCode == http.StatusBadRequest || statusCode == http.StatusUnprocessableEntity:
-		return []hypermedia.Control{dismiss, report}
-	case statusCode == http.StatusNotFound:
-		return []hypermedia.Control{back, home, report}
-	case statusCode == http.StatusUnauthorized:
-		return []hypermedia.Control{
-			hypermedia.RedirectLink(hypermedia.LabelLogIn, "/login"),
-			home,
-			report,
-		}
-	case statusCode == http.StatusForbidden:
-		return []hypermedia.Control{back, home, report}
-	case statusCode >= 500:
-		return []hypermedia.Control{dismiss, home, report}
-	default:
-		return []hypermedia.Control{dismiss, report}
-	}
 }
 
 // HandleNotFound renders a full-page 404 within the base layout for direct

@@ -10,11 +10,7 @@ package views
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import (
-	"fmt"
-
-	components "catgoose/harmony/web/components/core"
-)
+import "fmt"
 
 // Components3PageData holds initial data for the components3 page.
 type Components3PageData struct {
@@ -47,58 +43,20 @@ func Components3Page(data Components3PageData) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Var2 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
-			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
-			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
-			if !templ_7745c5c3_IsBuffer {
-				defer func() {
-					templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
-					if templ_7745c5c3_Err == nil {
-						templ_7745c5c3_Err = templ_7745c5c3_BufErr
-					}
-				}()
-			}
-			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = components.ContextLink("/hypermedia/components", "Components", "").Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " ")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = components.ContextLink("/hypermedia/components2", "Components 2", "").Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " ")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = components.ContextLink("/hypermedia/controls", "Controls", "").Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			return nil
-		})
-		templ_7745c5c3_Err = components.ContextBar().Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"p-4 space-y-6 max-w-4xl mx-auto\"><div class=\"flex items-center justify-between mb-4\"><h1 class=\"text-2xl font-bold\">Component Patterns 3</h1><a href=\"/hypermedia/components2\" class=\"btn btn-sm btn-ghost\">← Components 2</a></div><div role=\"alert\" class=\"alert alert-info text-sm\"><span>Demonstrates: <strong>infinite scroll</strong>, <strong>optimistic UI</strong>, <strong>undo / soft delete</strong>, <strong>native HTML elements</strong>, <strong>locale formatting</strong>.</span></div><!-- 1. Infinite Scroll --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Infinite Scroll — Revealed Trigger</h2><p class=\"text-sm text-base-content/70 mb-3\">A sentinel element at the end of the list uses <code class=\"text-xs bg-base-200 px-1 rounded\">hx-trigger=\"revealed\"</code> to automatically load the next page when scrolled into view. ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"p-4 space-y-6 max-w-4xl mx-auto\"><div class=\"flex items-center justify-between mb-4\"><h1 class=\"text-2xl font-bold\">Component Patterns 3</h1><a href=\"/hypermedia/components2\" class=\"btn btn-sm btn-ghost\">← Components 2</a></div><div role=\"alert\" class=\"alert alert-info text-sm\"><span>Demonstrates: <strong>infinite scroll</strong>, <strong>optimistic UI</strong>, <strong>undo / soft delete</strong>.</span></div><!-- 1. Infinite Scroll --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Infinite Scroll — Revealed Trigger</h2><p class=\"text-sm text-base-content/70 mb-3\">A sentinel element at the end of the list uses <code class=\"text-xs bg-base-200 px-1 rounded\">hx-trigger=\"revealed\"</code> to automatically load the next page when scrolled into view. ")
+		var templ_7745c5c3_Var2 string
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d items total, %d per page.", data.TotalFeed, data.PageSize))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components3.templ`, Line: 33, Col: 81}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var3 string
-		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d items total, %d per page.", data.TotalFeed, data.PageSize))
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components3.templ`, Line: 42, Col: 81}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</p><div id=\"feed-container\" class=\"space-y-3 max-h-96 overflow-y-auto\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</p><div id=\"feed-container\" class=\"space-y-3 max-h-96 overflow-y-auto\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -114,7 +72,7 @@ func Components3Page(data Components3PageData) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div></div></div><!-- 2. Optimistic UI --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Optimistic UI — Immediate Feedback</h2><p class=\"text-sm text-base-content/70 mb-3\">Clicking the heart immediately toggles the visual state using <code class=\"text-xs bg-base-200 px-1 rounded\">HyperScript</code> before the server responds. The server has an 800ms delay to make the pattern visible. If the server disagrees, the response reconciles the DOM.</p><div class=\"space-y-2\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div></div></div><!-- 2. Optimistic UI --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Optimistic UI — Immediate Feedback</h2><p class=\"text-sm text-base-content/70 mb-3\">Clicking the heart immediately toggles the visual state using <code class=\"text-xs bg-base-200 px-1 rounded\">HyperScript</code> before the server responds. The server has an 800ms delay to make the pattern visible. If the server disagrees, the response reconciles the DOM.</p><div class=\"space-y-2\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -124,7 +82,7 @@ func Components3Page(data Components3PageData) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div></div></div><!-- 3. Undo / Soft Delete --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Undo — Soft Delete with Toast</h2><p class=\"text-sm text-base-content/70 mb-3\">Deleting an item soft-deletes it and shows an undo toast. The <code class=\"text-xs bg-base-200 px-1 rounded\">Undo</code> button POSTs to restore the item. The toast auto-dismisses after 5 seconds using <code class=\"text-xs bg-base-200 px-1 rounded\">HyperScript</code>.</p><div id=\"undo-list\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div></div></div><!-- 3. Undo / Soft Delete --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Undo — Soft Delete with Toast</h2><p class=\"text-sm text-base-content/70 mb-3\">Deleting an item soft-deletes it and shows an undo toast. The <code class=\"text-xs bg-base-200 px-1 rounded\">Undo</code> button POSTs to restore the item. The toast auto-dismisses after 5 seconds using <code class=\"text-xs bg-base-200 px-1 rounded\">HyperScript</code>.</p><div id=\"undo-list\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -132,7 +90,7 @@ func Components3Page(data Components3PageData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div><div id=\"undo-toast-area\" class=\"toast toast-end toast-bottom z-50\"></div></div></div><!-- Pattern summary cards --><div class=\"grid grid-cols-1 md:grid-cols-3 gap-4\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div><div id=\"undo-toast-area\" class=\"toast toast-end toast-bottom z-50\"></div></div></div><!-- 4. Native HTML Elements --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Native HTML Elements Showcase</h2><p class=\"text-sm text-base-content/70 mb-3\">Modern HTML includes semantic elements that handle complex UI patterns without JavaScript. These elements are accessible by default and styled by the browser.</p><!-- details/summary exclusive accordion --><h3 class=\"font-semibold text-sm mt-2 mb-1\">Exclusive Accordion — <code class=\"text-xs bg-base-200 px-1 rounded\">&lt;details name=\"...\"&gt;</code></h3><p class=\"text-xs text-base-content/60 mb-2\">The shared <code class=\"text-xs bg-base-200 px-1 rounded\">name</code> attribute makes these mutually exclusive — opening one closes the others. No JavaScript needed.</p><div class=\"space-y-1\"><details name=\"faq\" open class=\"bg-base-200 rounded p-3\"><summary class=\"font-medium text-sm cursor-pointer\">What is HATEOAS?</summary><p class=\"text-sm text-base-content/70 mt-2\">Hypermedia As The Engine Of Application State. The server drives all transitions by including links and forms in responses. The client never constructs URLs — it follows the hypermedia controls the server provides.</p></details> <details name=\"faq\" class=\"bg-base-200 rounded p-3\"><summary class=\"font-medium text-sm cursor-pointer\">Why not an SPA?</summary><p class=\"text-sm text-base-content/70 mt-2\">SPAs duplicate the server on the client — routing, state management, data fetching, caching. Hypermedia keeps that logic on the server where it belongs, and the client renders what it receives.</p></details> <details name=\"faq\" class=\"bg-base-200 rounded p-3\"><summary class=\"font-medium text-sm cursor-pointer\">What about offline?</summary><p class=\"text-sm text-base-content/70 mt-2\">Service workers and IndexedDB handle offline scenarios. Cache hypermedia responses for offline reads, queue mutations for replay when connectivity returns.</p></details></div><!-- datalist autocomplete --><h3 class=\"font-semibold text-sm mt-4 mb-1\">Autocomplete — <code class=\"text-xs bg-base-200 px-1 rounded\">&lt;datalist&gt;</code></h3><p class=\"text-xs text-base-content/60 mb-2\">Browser-native autocomplete suggestions. The user can type freely or pick from the list. No dropdown library needed.</p><div class=\"max-w-xs\"><input list=\"demo-categories\" placeholder=\"Search categories...\" class=\"input input-sm w-full\"> <datalist id=\"demo-categories\"><option value=\"Electronics\"></option> <option value=\"Furniture\"></option> <option value=\"Software\"></option> <option value=\"Hardware\"></option> <option value=\"Services\"></option> <option value=\"Consulting\"></option> <option value=\"Training\"></option></datalist></div><!-- meter gauges --><h3 class=\"font-semibold text-sm mt-4 mb-1\">Gauges — <code class=\"text-xs bg-base-200 px-1 rounded\">&lt;meter&gt;</code></h3><p class=\"text-xs text-base-content/60 mb-2\">Semantic gauges with low/high/optimum thresholds. The browser colors the bar based on where the value falls relative to the thresholds.</p><div class=\"space-y-2\"><div class=\"flex items-center gap-3\"><span class=\"text-sm w-20\">CPU</span> <meter value=\"0.65\" min=\"0\" max=\"1\" low=\"0.3\" high=\"0.7\" optimum=\"0.3\" class=\"w-full\">65%</meter> <span class=\"text-xs font-mono w-10 text-right\">65%</span></div><div class=\"flex items-center gap-3\"><span class=\"text-sm w-20\">Memory</span> <meter value=\"0.45\" min=\"0\" max=\"1\" low=\"0.5\" high=\"0.85\" optimum=\"0.3\" class=\"w-full\">45%</meter> <span class=\"text-xs font-mono w-10 text-right\">45%</span></div><div class=\"flex items-center gap-3\"><span class=\"text-sm w-20\">Disk</span> <meter value=\"0.88\" min=\"0\" max=\"1\" low=\"0.6\" high=\"0.85\" optimum=\"0.3\" class=\"w-full\">88%</meter> <span class=\"text-xs font-mono w-10 text-right\">88%</span></div></div><!-- progress bars --><h3 class=\"font-semibold text-sm mt-4 mb-1\">Progress — <code class=\"text-xs bg-base-200 px-1 rounded\">&lt;progress&gt;</code></h3><p class=\"text-xs text-base-content/60 mb-2\">Determinate and indeterminate progress bars. Omitting the <code class=\"text-xs bg-base-200 px-1 rounded\">value</code> attribute creates an indeterminate (animated) bar.</p><div class=\"space-y-2\"><div class=\"flex items-center gap-3\"><span class=\"text-sm w-20\">Upload</span> <progress value=\"75\" max=\"100\" class=\"progress progress-primary w-full\">75%</progress> <span class=\"text-xs font-mono w-10 text-right\">75%</span></div><div class=\"flex items-center gap-3\"><span class=\"text-sm w-20\">Build</span> <progress value=\"30\" max=\"100\" class=\"progress progress-secondary w-full\">30%</progress> <span class=\"text-xs font-mono w-10 text-right\">30%</span></div><div class=\"flex items-center gap-3\"><span class=\"text-sm w-20\">Syncing</span> <progress class=\"progress w-full\"></progress> <span class=\"text-xs font-mono w-10 text-right italic\">...</span></div></div><!-- mark highlight --><h3 class=\"font-semibold text-sm mt-4 mb-1\">Highlight — <code class=\"text-xs bg-base-200 px-1 rounded\">&lt;mark&gt;</code></h3><p class=\"text-xs text-base-content/60 mb-2\">Semantic text highlighting for search results or emphasis. Browser default is yellow background.</p><p class=\"text-sm bg-base-200 rounded p-3\">The <mark>hypermedia</mark> approach uses <mark>server-driven</mark> UI instead of client-side routing. Each response contains the full <mark>HTML</mark> needed to render the next state.</p><!-- output element --><h3 class=\"font-semibold text-sm mt-4 mb-1\">Accessible Results — <code class=\"text-xs bg-base-200 px-1 rounded\">&lt;output&gt;</code></h3><p class=\"text-xs text-base-content/60 mb-2\">Implicit aria-live region. Screen readers announce changes automatically.</p><div class=\"flex items-center gap-3\"><button class=\"btn btn-sm btn-primary\" hx-get=\"/hypermedia/components3/calculate\" hx-target=\"#calc-result\" hx-swap=\"innerHTML\">Calculate</button> <output id=\"calc-result\" class=\"font-mono text-sm\">—</output></div></div></div><!-- 5. Locale Formatting --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Locale Formatting — Intl APIs</h2><p class=\"text-sm text-base-content/70 mb-3\">Browser-native formatting using <code class=\"text-xs bg-base-200 px-1 rounded\">Intl</code> APIs. Server renders raw data, Alpine formats for your locale.</p><div class=\"space-y-2 mt-2\"><div x-data class=\"flex justify-between\"><span class=\"text-sm text-base-content/60\">Relative time:</span> <span class=\"text-sm font-mono\" x-text=\"new Intl.RelativeTimeFormat(navigator.language, {numeric:'auto'}).format(-2, 'hour')\">2 hours ago</span></div><div x-data class=\"flex justify-between\"><span class=\"text-sm text-base-content/60\">Currency:</span> <span class=\"text-sm font-mono\" x-text=\"new Intl.NumberFormat(navigator.language, {style:'currency', currency:'USD'}).format(1234.56)\">$1,234.56</span></div><div x-data class=\"flex justify-between\"><span class=\"text-sm text-base-content/60\">List:</span> <span class=\"text-sm font-mono\" x-text=\"new Intl.ListFormat(navigator.language, {style:'long', type:'conjunction'}).format(['Alice','Bob','Charlie'])\">Alice, Bob, and Charlie</span></div><div x-data class=\"flex justify-between\"><span class=\"text-sm text-base-content/60\">Date:</span> <span class=\"text-sm font-mono\" x-text=\"new Intl.DateTimeFormat(navigator.language, {dateStyle:'full'}).format(new Date())\">Friday, March 28, 2026</span></div></div></div></div><!-- Pattern summary cards --><div class=\"grid grid-cols-1 md:grid-cols-3 gap-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -148,7 +106,15 @@ func Components3Page(data Components3PageData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</div></div>")
+		templ_7745c5c3_Err = componentPatternCard3("Native Elements", "(no JS)", "details, datalist, meter, progress, mark — semantic HTML elements that work without JavaScript.").Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = componentPatternCard3("Locale Formatting", "(client only)", "Intl.RelativeTimeFormat, NumberFormat, ListFormat, DateTimeFormat — browser-native locale-aware formatting via Alpine.").Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -172,51 +138,51 @@ func feedItemCard(item FeedItemData) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var4 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var4 == nil {
-			templ_7745c5c3_Var4 = templ.NopComponent
+		templ_7745c5c3_Var3 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var3 == nil {
+			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<div class=\"card card-compact bg-base-200 border border-base-300\"><div class=\"card-body p-3\"><div class=\"flex items-center justify-between\"><h3 class=\"font-semibold text-sm\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div class=\"card card-compact bg-base-200 border border-base-300\"><div class=\"card-body p-3\"><div class=\"flex items-center justify-between\"><h3 class=\"font-semibold text-sm\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var4 string
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(item.Title)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components3.templ`, Line: 217, Col: 50}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</h3><span class=\"badge badge-sm badge-outline\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var5 string
-		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(item.Title)
+		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(item.Tag)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components3.templ`, Line: 100, Col: 50}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components3.templ`, Line: 218, Col: 57}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</h3><span class=\"badge badge-sm badge-outline\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</span></div><p class=\"text-xs text-base-content/70\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var6 string
-		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(item.Tag)
+		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(item.Body)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components3.templ`, Line: 101, Col: 57}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components3.templ`, Line: 220, Col: 54}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</span></div><p class=\"text-xs text-base-content/70\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var7 string
-		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(item.Body)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components3.templ`, Line: 103, Col: 54}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "</p></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</p></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -240,25 +206,25 @@ func feedSentinel(nextPage int) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var8 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var8 == nil {
-			templ_7745c5c3_Var8 = templ.NopComponent
+		templ_7745c5c3_Var7 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var7 == nil {
+			templ_7745c5c3_Var7 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<div hx-get=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<div hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var9 string
-		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/hypermedia/components3/feed?page=%d", nextPage))
+		var templ_7745c5c3_Var8 string
+		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/hypermedia/components3/feed?page=%d", nextPage))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components3.templ`, Line: 110, Col: 72}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components3.templ`, Line: 227, Col: 72}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "\" hx-trigger=\"revealed\" hx-swap=\"outerHTML\" class=\"flex justify-center p-4\"><span class=\"loading loading-spinner loading-sm\"></span></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "\" hx-trigger=\"revealed\" hx-swap=\"outerHTML\" class=\"flex justify-center p-4\"><span class=\"loading loading-spinner loading-sm\"></span></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -282,51 +248,51 @@ func componentPatternCard3(title, method, desc string) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var10 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var10 == nil {
-			templ_7745c5c3_Var10 = templ.NopComponent
+		templ_7745c5c3_Var9 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var9 == nil {
+			templ_7745c5c3_Var9 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h3 class=\"font-semibold text-sm\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h3 class=\"font-semibold text-sm\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var10 string
+		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(title)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components3.templ`, Line: 239, Col: 44}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "</h3><code class=\"text-xs text-primary bg-base-200 px-2 py-1 rounded\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var11 string
-		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(title)
+		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(method)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components3.templ`, Line: 122, Col: 44}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components3.templ`, Line: 240, Col: 76}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "</h3><code class=\"text-xs text-primary bg-base-200 px-2 py-1 rounded\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "</code><p class=\"text-sm text-base-content/70\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var12 string
-		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(method)
+		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(desc)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components3.templ`, Line: 123, Col: 76}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components3.templ`, Line: 241, Col: 49}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "</code><p class=\"text-sm text-base-content/70\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var13 string
-		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(desc)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components3.templ`, Line: 124, Col: 49}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "</p></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "</p></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

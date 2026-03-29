@@ -13,12 +13,6 @@ import (
 // InventoryPage is the full page content for /demo/inventory.
 // The FilterBar lives outside the table container so it is never replaced by HTMX swaps.
 templ InventoryPage(bar hypermedia.FilterBar, tableContainer templ.Component) {
-	@components.ContextBar() {
-		@components.ContextLink("/demo/catalog", "Catalog", "")
-		@components.ContextLink("/demo/bulk", "Bulk Ops", "")
-		@components.ContextLink("/demo/people", "People", "")
-		@components.ContextLink("/demo/vendors", "Vendors", "")
-	}
 	<div class="p-4 space-y-4">
 		<div class="flex items-center justify-between">
 			<h1 class="text-2xl font-bold">📦 Items Inventory</h1>
@@ -174,10 +168,10 @@ templ InventoryEditRow(item demo.Item, isNew bool, saveURL, cancelURL string) {
 			</select>
 		</td>
 		<td>
-			<input type="number" name="price" step="0.01" class="input input-sm w-24" value={ fmt.Sprintf("%.2f", item.Price) }/>
+			<input type="number" name="price" step="0.01" class="input input-sm w-24" value={ fmt.Sprintf("%.2f", item.Price) } inputmode="decimal"/>
 		</td>
 		<td>
-			<input type="number" name="stock" class="input input-sm w-20" value={ strconv.Itoa(item.Stock) }/>
+			<input type="number" name="stock" class="input input-sm w-20" value={ strconv.Itoa(item.Stock) } inputmode="numeric"/>
 		</td>
 		<td>
 			<input type="checkbox" name="active" value="true" class="toggle toggle-sm" checked?={ item.Active }/>

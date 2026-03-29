@@ -42,6 +42,13 @@ func IsHTMX(c echo.Context) bool {
 	return c.Request().Header.Get("HX-Request") == "true"
 }
 
+// IsBoosted reports whether the request was made via hx-boost.
+// Boosted requests carry both HX-Request and HX-Boosted headers and expect a
+// full-page response (HTMX extracts the <body> content for the swap).
+func IsBoosted(c echo.Context) bool {
+	return c.Request().Header.Get("HX-Boosted") == "true"
+}
+
 // Trigger sets the HX-Trigger response header to the given raw JSON string.
 func Trigger(c echo.Context, jsonStr string) {
 	c.Response().Header().Set(HeaderTrigger, jsonStr)

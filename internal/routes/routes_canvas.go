@@ -3,6 +3,7 @@
 package routes
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
@@ -26,10 +27,11 @@ const canvasClientCookie = "canvas_client"
 type canvasRoutes struct {
 	canvas *demo.PixelCanvas
 	broker *ssebroker.SSEBroker
+	ctx    context.Context
 }
 
 func (ar *appRoutes) initCanvasRoutes(canvas *demo.PixelCanvas, broker *ssebroker.SSEBroker) {
-	cr := &canvasRoutes{canvas: canvas, broker: broker}
+	cr := &canvasRoutes{canvas: canvas, broker: broker, ctx: ar.ctx}
 	ar.e.GET("/demo/canvas", cr.handleCanvasPage)
 	ar.e.GET("/demo/canvas/state", cr.handleCanvasState)
 	ar.e.POST("/demo/canvas/place", cr.handlePlace)
@@ -132,9 +134,14 @@ func (cr *canvasRoutes) handleCanvasSSE(c echo.Context) error {
 func (cr *canvasRoutes) runTicker() {
 	ticker := time.NewTicker(2 * time.Second)
 	defer ticker.Stop()
-	for range ticker.C {
-		cr.canvas.PruneStale()
-		cr.broadcastClients()
+	for {
+		select {
+		case <-cr.ctx.Done():
+			return
+		case <-ticker.C:
+			cr.canvas.PruneStale()
+			cr.broadcastClients()
+		}
 	}
 }
 

@@ -13,8 +13,9 @@ import (
 
 // TestServer represents a test server instance
 type TestServer struct {
-	Echo *echo.Echo
-	URL  string
+	Echo   *echo.Echo
+	Server *httptest.Server
+	URL    string
 }
 
 // SetupTestServer creates a test server for integration tests
@@ -28,15 +29,24 @@ func SetupTestServer(t *testing.T) *TestServer {
 	// Create a test server
 	server := httptest.NewServer(e)
 
-	return &TestServer{
-		Echo: e,
-		URL:  server.URL,
+	ts := &TestServer{
+		Echo:   e,
+		Server: server,
+		URL:    server.URL,
 	}
+	t.Cleanup(func() { ts.Server.Close() })
+	return ts
 }
 
 // CleanupTestServer cleans up test server resources
 func CleanupTestServer(ts *TestServer) {
-	if ts != nil && ts.Echo != nil {
+	if ts == nil {
+		return
+	}
+	if ts.Server != nil {
+		ts.Server.Close()
+	}
+	if ts.Echo != nil {
 		ts.Echo.Close()
 	}
 }

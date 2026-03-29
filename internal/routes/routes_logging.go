@@ -23,6 +23,28 @@ import (
 const loggingBase = "/demo/logging"
 
 func (ar *appRoutes) initLoggingRoutes() {
+	// Client beacon endpoint — fire-and-forget analytics via navigator.sendBeacon.
+	ar.e.POST("/log/beacon", func(c echo.Context) error {
+		var entry struct {
+			Event     string         `json:"event"`
+			Path      string         `json:"path"`
+			Referrer  string         `json:"referrer"`
+			Timestamp string         `json:"timestamp"`
+			Data      map[string]any `json:"data"`
+		}
+		if err := c.Bind(&entry); err != nil {
+			return c.NoContent(http.StatusBadRequest)
+		}
+		logger.WithContext(c.Request().Context()).Info("Client beacon",
+			"event", entry.Event,
+			"path", entry.Path,
+			"referrer", entry.Referrer,
+			"client_timestamp", entry.Timestamp,
+			"data", entry.Data,
+		)
+		return c.NoContent(http.StatusNoContent)
+	})
+
 	// setup:feature:sse:start
 	broker := ssebroker.NewSSEBroker()
 

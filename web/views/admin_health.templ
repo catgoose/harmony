@@ -1,17 +1,9 @@
 package views
 
-import (
-	"catgoose/dothog/internal/health"
-	components "catgoose/dothog/web/components/core"
-)
+import "catgoose/dothog/internal/health"
 
 // AdminHealthPage renders the /admin/health page with live health status.
 templ AdminHealthPage(h health.Response) {
-	@components.ContextBar() {
-		@components.ContextLink("/admin/error-traces", "Error Traces", "")
-		@components.ContextLink("/admin/sessions", "Sessions", "")
-		@components.ContextLink("/admin/settings", "Control Panel", "")
-	}
 	<div class="p-4 space-y-6 max-w-4xl mx-auto">
 		<div class="flex items-center justify-between">
 			<div class="space-y-1">
@@ -75,6 +67,34 @@ templ healthContent(h health.Response) {
 					}
 				</tbody>
 			</table>
+		</div>
+	</div>
+	<div class="card bg-base-100 shadow border border-base-300">
+		<div class="card-body p-4 space-y-3">
+			<h2 class="card-title text-base">System Gauges</h2>
+			<p class="text-sm text-base-content/70">Native <code class="text-xs bg-base-200 px-1 rounded">&lt;meter&gt;</code> elements visualize system metrics. Browsers render color-coded bars based on low/high/optimum thresholds.</p>
+			<div class="space-y-2">
+				<div class="flex items-center gap-3">
+					<span class="text-xs uppercase tracking-wider text-base-content/40 w-28">CPU</span>
+					<meter value="0.35" min="0" max="1" low="0.3" high="0.7" optimum="0.2" class="w-full">35%</meter>
+					<span class="text-xs font-mono w-10 text-right">35%</span>
+				</div>
+				<div class="flex items-center gap-3">
+					<span class="text-xs uppercase tracking-wider text-base-content/40 w-28">Memory</span>
+					<meter value="0.62" min="0" max="1" low="0.5" high="0.85" optimum="0.3" class="w-full">62%</meter>
+					<span class="text-xs font-mono w-10 text-right">62%</span>
+				</div>
+				<div class="flex items-center gap-3">
+					<span class="text-xs uppercase tracking-wider text-base-content/40 w-28">Disk</span>
+					<meter value="0.48" min="0" max="1" low="0.6" high="0.9" optimum="0.3" class="w-full">48%</meter>
+					<span class="text-xs font-mono w-10 text-right">48%</span>
+				</div>
+				<div class="flex items-center gap-3">
+					<span class="text-xs uppercase tracking-wider text-base-content/40 w-28">Goroutines</span>
+					<meter value="42" min="0" max="200" low="50" high="150" optimum="30" class="w-full">42</meter>
+					<span class="text-xs font-mono w-10 text-right">42</span>
+				</div>
+			</div>
 		</div>
 	</div>
 }

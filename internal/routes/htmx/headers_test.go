@@ -45,6 +45,34 @@ func TestIsHTMX_OtherValue(t *testing.T) {
 	require.False(t, IsHTMX(c))
 }
 
+// ---------- IsBoosted ----------
+
+func TestIsBoosted_True(t *testing.T) {
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	req.Header.Set("HX-Request", "true")
+	req.Header.Set("HX-Boosted", "true")
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+
+	require.True(t, IsBoosted(c))
+}
+
+func TestIsBoosted_Missing(t *testing.T) {
+	c, _ := newContext()
+	require.False(t, IsBoosted(c))
+}
+
+func TestIsBoosted_OtherValue(t *testing.T) {
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	req.Header.Set("HX-Boosted", "yes")
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+
+	require.False(t, IsBoosted(c))
+}
+
 // ---------- Trigger ----------
 
 func TestTrigger(t *testing.T) {

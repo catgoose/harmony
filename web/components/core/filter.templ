@@ -48,22 +48,24 @@ func filterBarHasSearch(bar hypermedia.FilterBar) bool {
 // into two rows: search full-width on top, other fields in a flex row below.
 templ FilterBar(bar hypermedia.FilterBar) {
 	if filterBarHasSearch(bar) {
-		<form id={ bar.ID } class="space-y-3 mb-4">
-			for _, field := range bar.Fields {
-				if field.Kind == hypermedia.FilterKindSearch {
-					<div>
-						@FilterField(field, bar)
-					</div>
-				}
-			}
-			<div class="flex flex-wrap gap-3 items-end">
+		<search>
+			<form id={ bar.ID } class="space-y-3 mb-4">
 				for _, field := range bar.Fields {
-					if field.Kind != hypermedia.FilterKindSearch {
-						@FilterField(field, bar)
+					if field.Kind == hypermedia.FilterKindSearch {
+						<div>
+							@FilterField(field, bar)
+						</div>
 					}
 				}
-			</div>
-		</form>
+				<div class="flex flex-wrap gap-3 items-end">
+					for _, field := range bar.Fields {
+						if field.Kind != hypermedia.FilterKindSearch {
+							@FilterField(field, bar)
+						}
+					}
+				</div>
+			</form>
+		</search>
 	} else {
 		<form id={ bar.ID } class="flex flex-wrap gap-4 items-end mb-4">
 			for _, field := range bar.Fields {
@@ -99,6 +101,8 @@ templ searchFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) 
 		<input
 			type="search"
 			autocomplete="off"
+			spellcheck="false"
+			enterkeyhint="search"
 			name={ field.Name }
 			value={ field.Value }
 			placeholder={ field.Placeholder }

@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
+	"os"
 	"time"
 	// setup:feature:auth:start
 	"github.com/catgoose/crooner"
@@ -67,6 +68,9 @@ type appRoutes struct {
 	// setup:feature:sync:start
 	versionChecker VersionChecker
 	// setup:feature:sync:end
+	// setup:feature:demo:start
+	demoDB *demo.DB
+	// setup:feature:demo:end
 }
 
 // NewAppRoutes initializes routes.
@@ -108,11 +112,12 @@ func (ar *appRoutes) InitRoutes() error {
 	// setup:feature:session_settings:start
 	ar.initUserSettingsRoutes()
 	ar.e.GET("/settings", func(c echo.Context) error {
-		theme := middleware.GetSessionSettings(c).Theme
-		return handler.RenderBaseLayout(c, views.AppSettingsPage(theme))
+		s := middleware.GetSessionSettings(c)
+		return handler.RenderBaseLayout(c, views.AppSettingsPage(s.Theme, s.Layout))
 	})
 	// setup:feature:session_settings:end
 	// setup:feature:demo:start
+	ar.initLinkRelations()
 	ar.e.GET("/welcome", handler.HandleComponent(views.WelcomePage()))
 	ar.e.GET("/hypermedia", handler.HandleComponent(views.PatternsIndexPage()))
 	ar.e.GET("/demo", handler.HandleComponent(views.DemoIndexPage()))
@@ -133,6 +138,7 @@ func (ar *appRoutes) InitRoutes() error {
 	ar.initErrorTracesRoutes()
 
 	// setup:feature:demo:start
+	ar.initPwaRoutes()
 	ar.initReportDemoRoutes()
 	ar.initLoggingRoutes()
 	ar.initControlsGalleryRoutes()
@@ -146,6 +152,7 @@ func (ar *appRoutes) InitRoutes() error {
 	broker := ssebroker.NewSSEBroker()
 	// setup:feature:sse:end
 	ar.initHypermediaRoutes()
+	ar.initHALRoutes()
 	ar.initErrorsRoutes()
 	// setup:feature:sse:start
 	ar.initRealtimeRoutes(broker)
@@ -162,6 +169,17 @@ func (ar *appRoutes) InitRoutes() error {
 	// setup:feature:sync:start
 	ar.versionChecker = NewSQLVersionChecker(db.RawDB())
 	// setup:feature:sync:end
+	ar.demoDB = db
+	if stored, err := db.ListStoredLinks(); err == nil {
+		for _, s := range stored {
+			hypermedia.LoadStoredLink(s.Source, hypermedia.LinkRelation{
+				Rel:   s.Rel,
+				Href:  s.Target,
+				Title: s.Title,
+				Group: s.GroupName,
+			})
+		}
+	}
 	ar.initInventoryRoutes(db)
 	ar.initCatalogRoutes(db)
 	ar.initBulkRoutes(db)
@@ -180,6 +198,8 @@ func (ar *appRoutes) InitRoutes() error {
 	ar.initSettingsRoutes(demo.NewSettingsStore())
 	ar.initVendorContactRoutes(db, actLog, broker)
 	ar.initDashboardRoutes(db, board, queue, actLog)
+	ar.initAdminErrorReportsRoutes(db)
+
 	// setup:feature:demo:end
 	ar.e.RouteNotFound("/*", handler.HandleNotFound)
 	cfg, err := config.GetConfig()
@@ -208,11 +228,47 @@ func InitEcho(ctx context.Context, staticFS fs.FS, cfg *config.AppConfig,
 ) (*echo.Echo, error) {
 	e := echo.New()
 
+	// 103 Early Hints: preload critical assets before the handler runs.
+	// Uses the raw http.ResponseWriter to send an informational response
+	// before the final 200. Requires HTTP/2+ and a flusher-capable writer.
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			// Only send 103 Early Hints on HTTP/2+ connections.
+			// httptest.ResponseRecorder mishandles 1xx status codes.
+			if c.Request().ProtoMajor >= 2 {
+				w := c.Response().Writer
+				if flusher, ok := w.(http.Flusher); ok {
+					h := w.Header()
+					h.Add("Link", "</public/css/tailwind.css>; rel=preload; as=style")
+					h.Add("Link", "</public/css/daisyui.css>; rel=preload; as=style")
+					h.Add("Link", "</public/js/htmx.min.js>; rel=preload; as=script")
+					w.WriteHeader(http.StatusEarlyHints) // 103
+					flusher.Flush()
+				}
+			}
+			return next(c)
+		}
+	})
+
+	e.Use(middleware.ServerTimingMiddleware())
 	e.Use(echo.WrapMiddleware(promolog.CorrelationMiddleware))
 	e.Use(echoMiddleware.RequestLogger())
 	e.Use(echoMiddleware.Recover())
 	e.Use(echoMiddleware.Secure())
-	e.Use(echoMiddleware.Gzip())
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			c.Response().Header().Set("Permissions-Policy",
+				"camera=(), microphone=(), geolocation=(), payment=(), usb=()")
+			c.Response().Header().Set("Cross-Origin-Opener-Policy", "same-origin")
+			return next(c)
+		}
+	})
+	// Skip gzip when running behind the templ proxy (mage watch).
+	// Echo's chunked gzip responses cause h2 framing errors through
+	// the templ-proxy → Caddy chain. Caddy handles compression instead.
+	if os.Getenv("TEMPL_PROXY") == "" {
+		e.Use(echoMiddleware.Gzip())
+	}
 
 	// setup:feature:auth:start
 	if cfg != nil && !cfg.CroonerDisabled && cfg.CroonerConfig != nil {
@@ -249,6 +305,17 @@ func InitEcho(ctx context.Context, staticFS fs.FS, cfg *config.AppConfig,
 	}
 	// setup:feature:session_settings:end
 
+	// setup:feature:demo:start
+	e.Use(middleware.LinkRelationsMiddleware())
+	// setup:feature:demo:end
+
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			c.Response().Header().Set("Vary", "HX-Request")
+			return next(c)
+		}
+	})
+
 	static := e.Group("/public", func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			c.Response().Header().Set("Cache-Control", "public, max-age=31536000, immutable")
@@ -260,7 +327,7 @@ func InitEcho(ctx context.Context, staticFS fs.FS, cfg *config.AppConfig,
 	// setup:feature:offline:start
 	// Serve the service worker from the root so it can control all pages.
 	e.GET("/sw.js", func(c echo.Context) error {
-		f, err := staticFS.Open("sw.js")
+		f, err := staticFS.Open("js/sw.js")
 		if err != nil {
 			return echo.NewHTTPError(http.StatusNotFound)
 		}

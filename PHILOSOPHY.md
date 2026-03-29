@@ -8,9 +8,11 @@
   - [Uniform Interface](#uniform-interface)
   - [Self-Descriptive Methods](#self-descriptive-methods)
   - [Resource Identification](#resource-identification)
+  - [Parent Routes Are Documents](#parent-routes-are-documents)
   - [Chesterton's Fence](#chestertons-fence)
   - [Server-Side State, Client-Side Rendering](#server-side-state-client-side-rendering)
   - [Content Negotiation](#content-negotiation)
+    - [HAL: Content Negotiation for APIs](#hal-content-negotiation-for-apis)
   - [Mutations Redirect](#mutations-redirect)
   - [Postel's Law](#postels-law-be-conservative-in-what-you-send-liberal-in-what-you-accept)
   - [The Stack](#the-stack)
@@ -30,6 +32,14 @@
   - [Structured Observability](#structured-observability)
     - [Promote-on-error](#promote-on-error)
     - [Request and background context](#request-and-background-context)
+  - [Web Standards Over Libraries](#web-standards-over-libraries)
+    - [Link Relations as the Navigation Model](#link-relations-as-the-navigation-model)
+    - [HTTP Headers as the API Surface](#http-headers-as-the-api-surface)
+    - [Native HTML Over JavaScript](#native-html-over-javascript)
+    - [CSS Over JavaScript](#css-over-javascript)
+    - [Browser APIs Over Libraries](#browser-apis-over-libraries)
+    - [Speculative Loading](#speculative-loading)
+    - [The Principle](#the-principle)
   <!--toc:end-->
 
 ## Go
@@ -127,6 +137,35 @@ When sub-resources have fixed, known identities — use semantic slugs, not opaq
 
 URLs should be bookmarkable, shareable, and stable. A user should be able to copy the address bar, send it to a colleague, and that colleague should see the same resource. This is a consequence of stateless requests and resource identification working together — the URL contains enough information to reconstruct the view.
 
+## Parent Routes Are Documents
+
+**If a route exists, it must serve a representation.** A parent route that redirects to a child isn't a resource — it's a broken link wearing a URL as a disguise. `/dashboard` should render a document, not bounce you to `/dashboard/overview`.
+
+Redirecting parent routes breaks the hypermedia model in three ways. Breadcrumbs walk the `rel="up"` chain — if clicking "Dashboard" in the breadcrumb trail redirects you somewhere else, the chain points to a moving target instead of a stable document. Hub centers in the link registry declare `rel="related"` links to their children — a Hub that redirects isn't a resource, it's a hole in the navigation graph. And the URL lies — `/dashboard` appears in the address bar during the redirect but has no representation of its own.
+
+A parent route should be one of three things:
+
+- **An aggregate page** — a dashboard showing key metrics pulled from each child section. The parent earns its URL by summarizing what lives beneath it.
+- **A discovery page** — lists and links to child sections, like `/demo` does. The parent is a table of contents for its sub-resources.
+- **An informational page** — context about the section before the user navigates deeper. Useful for workflows with prerequisites or explanatory content.
+
+The link relations system makes this natural. A Hub center with `rel="related"` links to all its children is a discovery page by definition — you declared the relationships, now render them. The breadcrumb system walks `rel="up"` from child to parent. If the parent redirects, `up` points to a redirect, not a document, and the breadcrumb chain breaks.
+
+```go
+// Wrong: the parent route is a redirect, not a document
+r.GET("/dashboard", func(c echo.Context) error {
+	return c.Redirect(http.StatusFound, "/dashboard/overview")
+})
+
+// Right: the parent route renders its own representation
+r.GET("/dashboard", func(c echo.Context) error {
+	// Aggregate data from child sections, render a real page
+	return response.Builder.Component(c, dashboard.Index(metrics))
+})
+```
+
+Parent routes are the backbone of the navigation graph. They must be stable, addressable documents — not trampolines.
+
 ## Chesterton's Fence
 
 [Chesterton's Fence](https://en.wikipedia.org/wiki/G._K._Chesterton#Chesterton's_fence) is a principle of reform: *don't remove something until you understand why it was put there.* In the original formulation, if you encounter a fence across a road and can't see the reason for it, that's not an argument for removing it — it's an argument for finding out why it exists before you touch it.
@@ -153,6 +192,12 @@ This is also how error responses work. An HTMX request that fails gets an out-of
 
 The key constraint: every resource must be reachable without JavaScript. Links are `<a>` tags. Forms are `<form>` tags. HTMX enhances them with `hx-get`, `hx-post`, and targeted swaps, but if HTMX fails to load, the page still works — links navigate, forms submit, the server returns full pages. Progressive enhancement isn't a bonus feature. It's the baseline.
 
+### HAL: Content Negotiation for APIs
+
+Content negotiation extends beyond the HTML/fragment split. The same resource graph can serve `application/hal+json` — [HAL](https://datatracker.ietf.org/doc/html/draft-kelly-json-hal) adds `_links` and `_embedded` to JSON, giving API clients navigable relationships without out-of-band URL construction. A browser sees HTML with HTMX controls. A `curl` user sees HAL+JSON with link relations. Same resource, same relationships, different media type.
+
+HAL gives JSON what `<a>` tags give HTML. It does not give JSON what `<form>` tags give HTML — and that gap is where the interesting architectural questions live. The `/hypermedia/hal` demo renders both representations side by side so the gap is visible. See [docs/HAL.md](docs/HAL.md) for the full Socratic inquiry into what HAL provides, what it doesn't, and what Fielding would say about both.
+
 ## Mutations Redirect
 
 After a mutation — a POST, PUT, or DELETE that changes server state — the response should redirect the client to the new representation, not return it directly. This is the [POST/Redirect/GET](https://en.wikipedia.org/wiki/Post/Redirect/Get) pattern, and in HTMX it's implemented via the `HX-Redirect` response header with a `303 See Other` status.
@@ -160,6 +205,10 @@ After a mutation — a POST, PUT, or DELETE that changes server state — the re
 The redirect does three things. First, it prevents double-submission: if the user refreshes the page, the browser re-sends a GET to the redirect target, not the original POST. Second, it keeps the URL bar honest — after creating a task, the browser shows `/tasks/42`, not `/tasks/create`. Third, it respects the browser's history stack — the back button takes you to a resource, not to a mutation endpoint.
 
 This matters more in HTMX than it does in traditional forms because returning a partial from a POST *feels* natural — the swap just works. But the swap doesn't fix the URL, doesn't fix the history stack, and doesn't prevent double-submit. The redirect does. Reach for `response.Builder.Redirect()` after mutations, not `response.Builder.Component()`.
+
+**Exception: inline partial swaps.** PRG applies to *navigation mutations* — creating a new resource that has its own URL, or submitting a form that should land the user on a new page. Inline partial swaps are a different, equally valid hypermedia interaction pattern. The server still controls the next state: it receives the request, decides what changed, and returns the updated representation directly to the target element. The client follows the server's lead — that IS hypermedia.
+
+This is not a loophole. An inline HTMX edit response and an SSE fragment update are fundamentally the same thing: the server renders a representation and pushes it into the document. The only difference is who initiated it — a user action (PATCH a table row, move a kanban card) or a server event (new activity in the feed, a price change). In both cases, the server decides what the client sees. The document may be updated in any way the server chooses — a full page transition, an inline swap of a single row, an OOB update to a counter in the navbar — and it is all hypermedia because the server controls the state and the representation. The key constraint is using correct HTTP verbs: PUT for full replacement, PATCH for partial modification, DELETE for removal. The response returns the updated fragment; no redirect is needed because the user never left the page and no new URL was created.
 
 ## Postel's Law: Be Conservative in What You Send, Liberal in What You Accept
 
@@ -717,3 +766,76 @@ Dothog builds on top of promolog's trace storage to provide:
 - **Admin UI** at `/admin/error-traces` — sortable, filterable, paginated browser for all persisted error traces
 - **Real-time monitoring** — SSE broadcasts new traces as they're promoted, so the admin dashboard updates live
 - **Cross-layer correlation** — the same context flows from middleware through handlers into repository calls, so a single ID traces the full operation
+
+## Web Standards Over Libraries
+
+**Prefer web standards over JavaScript libraries.** The browser already has the capability. Every library you don't import is a dependency you don't maintain, a bundle you don't ship, and a behavior that works even when JavaScript fails.
+
+### Link Relations as the Navigation Model
+
+The app declares resource relationships using [IANA link relations](https://www.iana.org/assignments/link-relations/link-relations.xhtml) — the same standard that powers `<link rel="stylesheet">` and HTTP `Link` headers. Three composable primitives:
+
+- **Ring** — peers that link to each other (admin pages, data pages)
+- **Hub** — parent with children (discovery pages like `/demo`, `/admin`)
+- **Link** — explicit pairwise relationship
+
+The server registers these at startup. The middleware emits [RFC 8288](https://www.rfc-editor.org/rfc/rfc8288) `Link` HTTP headers on every response. The same registry drives the context bars, breadcrumbs, site map footer, and the live registry inspector — one data source, many views.
+
+Breadcrumbs walk the `rel="up"` chain. Priority: `?from=` (user's journey) → `rel="up"` (declared hierarchy) → URL path segments (fallback). The document structure drives navigation, not URL parsing.
+
+### HTTP Headers as the API Surface
+
+Standard HTTP headers carry meaning that no application-level protocol needs to reinvent:
+
+- `Link` headers (RFC 8288) — machine-readable relationships on every response
+- `Vary: HX-Request` — cache correctness for HTMX partials vs full pages
+- `Server-Timing` — server metrics visible in browser DevTools with zero client code
+- Semantic status codes: `303 See Other` (POST-redirect-GET), `409 Conflict`, `422 Unprocessable Content`
+
+These aren't implementation details. They're contracts that CDNs, crawlers, caches, and `curl` already understand. A `Link` header is useful to any HTTP client, not just your frontend.
+
+### Native HTML Over JavaScript
+
+HTML has interactive elements that most developers reach for libraries to implement:
+
+- `<dialog>` for modals — focus trapping, Escape to close, backdrop styling
+- `popover` for dismissable UI — click-outside dismiss, top-layer rendering
+- `<details name="...">` for exclusive accordions — zero JS
+- `<datalist>` for autocomplete — native, keyboard-friendly
+- `<search>` for semantic search wrappers
+- `<meter>` for gauges, `<progress>` for loading states
+- `formaction`/`formmethod` for multi-action forms
+- `inputmode`/`enterkeyhint` for mobile keyboard control
+- `autocomplete` proper values for auto-fill
+
+Each replaces a JavaScript pattern or adds semantics that screen readers and browsers already understand.
+
+### CSS Over JavaScript
+
+CSS can do what used to require runtime code:
+
+- `content-visibility: auto` — skip rendering off-screen content (performance)
+- `text-wrap: balance` on headings, `text-wrap: pretty` on paragraphs (typography)
+- `accent-color` — brand native form controls in one line
+- View Transitions — animated page navigation via CSS, zero JS
+- `[x-cloak] { display: none }` — hide Alpine elements until initialized
+
+### Browser APIs Over Libraries
+
+The platform ships APIs that replace entire categories of npm packages:
+
+- `navigator.sendBeacon()` — fire-and-forget logging without blocking navigation. Replaces analytics libraries.
+- `BroadcastChannel` — cross-tab sync (theme changes propagate to all tabs). No polling, no extra SSE connections.
+- `sessionStorage` — history breadcrumb trail. Per-tab, ephemeral, no server round-trip.
+- `localStorage` — dismiss state for context bars. Persists across sessions.
+- Service Worker — offline caching for PWA, gated behind production mode.
+
+### Speculative Loading
+
+Prefetch on hover, not on page load. The browser's [Speculation Rules API](https://developer.mozilla.org/en-US/docs/Web/API/Speculation_Rules_API) prefetches navigation targets when the user signals intent by hovering a link — spending bandwidth only on pages the user is likely to visit, not every link on the page. This fits hypermedia naturally: the server declares which pages exist, the browser speculatively loads them based on observed user behavior. Progressive enhancement keeps it safe — Chrome gets near-instant navigation, other browsers get normal speed with zero degradation. HTMX-enhanced elements are excluded from speculation because they perform partial swaps within the current document, not full-page navigations. This composes with the service worker precache: the SW handles offline essentials (static assets, critical routes), while Speculation Rules prefetches navigation targets on demand. Two layers, no overlap, no coordination needed.
+
+### The Principle
+
+The web platform is not a thin wrapper around JavaScript. It's a rich runtime with decades of standardized behavior. `<dialog>` handles focus management better than any modal library because the browser team spent years on edge cases. `content-visibility` is faster than any virtual scroll library because it operates at the rendering engine level. `Link` headers are understood by crawlers, CDNs, and `curl` — no client-side code needed.
+
+When you reach for a library, you're saying "the platform can't do this." Usually it can. Check first.

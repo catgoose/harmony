@@ -5,6 +5,7 @@ package routes
 import (
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
+	hx "catgoose/harmony/internal/routes/htmx"
 	"catgoose/harmony/internal/routes/hypermedia"
 	"catgoose/harmony/internal/routes/params"
 	"catgoose/harmony/web/views"
@@ -34,9 +35,12 @@ func (cat *catalogRoutes) handleCatalogPage(c echo.Context) error {
 }
 
 func (cat *catalogRoutes) handleCatalogItems(c echo.Context) error {
-	_, container, err := cat.buildCatalogContent(c)
+	bar, container, err := cat.buildCatalogContent(c)
 	if err != nil {
 		return handler.HandleHypermediaError(c, 500, "Failed to load items", err)
+	}
+	if hx.IsBoosted(c) {
+		return handler.RenderBaseLayout(c, views.CatalogPage(bar, container))
 	}
 	setTableReplaceURL(c, catalogBase)
 	return handler.RenderComponent(c, container)

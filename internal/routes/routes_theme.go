@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"catgoose/harmony/internal/domain"
 	"catgoose/harmony/internal/logger"
 	// setup:feature:session_settings:start
 	"catgoose/harmony/internal/routes/handler"
@@ -21,6 +22,7 @@ import (
 
 func (ar *appRoutes) initThemeRoutes(broker *ssebroker.SSEBroker) {
 	ar.e.POST("/settings/theme", ar.handleTheme(broker))
+	ar.e.POST("/settings/layout", ar.handleLayout())
 	ar.e.GET("/sse/theme", handleSSETheme(broker))
 }
 
@@ -53,6 +55,29 @@ func (ar *appRoutes) handleTheme(broker *ssebroker.SSEBroker) echo.HandlerFunc {
 		}
 
 		return handler.RenderComponent(c, views.ThemeChanged(theme))
+	}
+}
+
+// handleLayout updates the shared layout setting and refreshes the page.
+// Uses HX-Refresh instead of HX-Redirect so the browser reloads the current
+// page with the new layout regardless of which page the toggle lives on.
+// Returns 200 (not 204) because HTMX 2.0 responseHandling sets swap:false for
+// 204, which can prevent response headers from being processed reliably.
+func (ar *appRoutes) handleLayout() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		layout := c.FormValue("layout")
+		if layout != domain.LayoutApp {
+			layout = domain.DefaultLayout
+		}
+		settings := middleware.GetSessionSettings(c)
+		settings.Layout = layout
+		if ar.settingsRepo != nil {
+			if err := ar.settingsRepo.Upsert(c.Request().Context(), settings); err != nil {
+				logger.WithContext(c.Request().Context()).Error("Failed to save layout setting", "error", err)
+			}
+		}
+		c.Response().Header().Set("HX-Refresh", "true")
+		return c.String(http.StatusOK, "")
 	}
 }
 
