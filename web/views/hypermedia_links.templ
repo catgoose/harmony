@@ -3,12 +3,12 @@ package views
 
 import (
 	"catgoose/dothog/internal/demo"
-	"catgoose/dothog/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 )
 
 // LinksPageData holds all data needed to render the links page.
 type LinksPageData struct {
-	Links       map[string][]hypermedia.LinkRelation
+	Links       map[string][]linkwell.LinkRelation
 	StoredLinks []demo.StoredLinkRelation
 	Routes      []string
 }
@@ -77,7 +77,7 @@ templ HypermediaLinksPage(data LinksPageData) {
 		@linksSection("7. Live Registry") {
 			<p class="text-sm text-base-content/70 mb-3">
 				All link relations currently registered in this running application, via
-				<code class="text-xs bg-base-200 px-1 rounded">hypermedia.AllLinks()</code>.
+				<code class="text-xs bg-base-200 px-1 rounded">linkwell.AllLinks()</code>.
 			</p>
 			@LinksRegistryTable(data)
 		}
@@ -138,7 +138,7 @@ templ LinksRegistryTable(data LinksPageData) {
 					</tr>
 				</thead>
 				<tbody>
-					for _, src := range hypermedia.SortedPaths(data.Links) {
+					for _, src := range linkwell.SortedPaths(data.Links) {
 						for i, link := range data.Links[src] {
 							<tr class={ templ.KV("border-t border-base-300", i == 0) }>
 								if i == 0 {

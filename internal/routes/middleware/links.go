@@ -2,7 +2,7 @@
 package middleware
 
 import (
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 
 	"github.com/labstack/echo/v4"
 )
@@ -14,9 +14,9 @@ func LinkRelationsMiddleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			path := c.Request().URL.Path
-			links := hypermedia.LinksFor(path)
+			links := linkwell.LinksFor(path)
 			if len(links) > 0 {
-				c.Response().Header().Set("Link", hypermedia.LinkHeader(links))
+				c.Response().Header().Set("Link", linkwell.LinkHeader(links))
 				c.Set("link_relations", links)
 			}
 			return next(c)
@@ -25,9 +25,9 @@ func LinkRelationsMiddleware() echo.MiddlewareFunc {
 }
 
 // GetLinkRelations retrieves link relations from the echo context.
-func GetLinkRelations(c echo.Context) []hypermedia.LinkRelation {
+func GetLinkRelations(c echo.Context) []linkwell.LinkRelation {
 	if v := c.Get("link_relations"); v != nil {
-		if links, ok := v.([]hypermedia.LinkRelation); ok {
+		if links, ok := v.([]linkwell.LinkRelation); ok {
 			return links
 		}
 	}

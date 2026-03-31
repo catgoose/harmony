@@ -1,14 +1,14 @@
 package views
 
 import (
-	"catgoose/dothog/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/dothog/web/components/core"
 )
 
 // AppNavLayout is a responsive page layout with CSS-driven auto-positioning:
 // bottom nav bar on mobile, sticky top bar on desktop. Derived apps opt in
 // via handler.SetLayout(handler.AppNavLayoutFunc(...)).
-templ AppNavLayout(content templ.Component, cfg hypermedia.NavConfig, csrfToken string, devMode bool, theme string, crumbs []hypermedia.Breadcrumb, links []hypermedia.LinkRelation, currentPath string, version string, hubs []hypermedia.HubEntry) {
+templ AppNavLayout(content templ.Component, cfg linkwell.NavConfig, csrfToken string, devMode bool, theme string, crumbs []linkwell.Breadcrumb, links []linkwell.LinkRelation, currentPath string, version string, hubs []linkwell.HubEntry) {
 	<!DOCTYPE html>
 	<html lang="en" data-theme={ theme }>
 		@header(csrfToken, devMode, cfg.AppName, []string{"/public/css/app-layout.css"})
@@ -54,7 +54,7 @@ templ AppNavLayout(content templ.Component, cfg hypermedia.NavConfig, csrfToken 
 }
 
 // appNav renders a single nav element that CSS repositions based on screen size.
-templ appNav(cfg hypermedia.NavConfig) {
+templ appNav(cfg linkwell.NavConfig) {
 	<nav class="app-nav" x-data>
 		<div class="nav-tabs flex items-stretch">
 			<!-- Brand (desktop only, hidden on mobile via CSS) -->
@@ -80,7 +80,7 @@ templ appNav(cfg hypermedia.NavConfig) {
 }
 
 // appNavLink renders a single nav link with an inline SVG icon.
-templ appNavLink(item hypermedia.NavItem, promoted bool) {
+templ appNavLink(item linkwell.NavItem, promoted bool) {
 	<a
 		href={ templ.URL(item.Href) }
 		class={ "nav-link", appNavActiveClass(item.Active), templ.KV("promoted", promoted) }
@@ -115,7 +115,7 @@ func appNavActiveClass(active bool) string {
 
 // navMaxVisible returns the effective max-visible count, defaulting to
 // the total number of items when MaxVisible is zero.
-func navMaxVisible(cfg hypermedia.NavConfig) int {
+func navMaxVisible(cfg linkwell.NavConfig) int {
 	if cfg.MaxVisible <= 0 {
 		return len(cfg.Items)
 	}
@@ -124,7 +124,7 @@ func navMaxVisible(cfg hypermedia.NavConfig) int {
 
 // promotedAfterIndex returns the index after which the promoted item should
 // be inserted so it appears centered in the nav bar.
-func promotedAfterIndex(cfg hypermedia.NavConfig) int {
+func promotedAfterIndex(cfg linkwell.NavConfig) int {
 	vis := navMaxVisible(cfg)
 	if vis <= 1 {
 		return 0

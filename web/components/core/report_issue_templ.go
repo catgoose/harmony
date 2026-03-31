@@ -8,12 +8,12 @@ package components
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "catgoose/harmony/internal/routes/hypermedia"
+import "github.com/catgoose/linkwell"
 
 // ReportIssueModal renders the Report Issue modal with a textarea for user context.
 // Log data is retrieved from the ring buffer server-side when the report is submitted.
 // When fetched dynamically via HTMX the dialog auto-opens on load.
-func ReportIssueModal(cfg hypermedia.ModalConfig) templ.Component {
+func ReportIssueModal(cfg linkwell.ModalConfig) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

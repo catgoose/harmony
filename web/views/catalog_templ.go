@@ -15,13 +15,13 @@ import (
 	"strconv"
 
 	"catgoose/harmony/internal/demo"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/harmony/web/components/core"
 )
 
 // CatalogPage is the full page content for /demo/catalog.
 // The FilterBar lives outside the table container so it is never replaced by HTMX swaps.
-func CatalogPage(bar hypermedia.FilterBar, tableContainer templ.Component) templ.Component {
+func CatalogPage(bar linkwell.FilterBar, tableContainer templ.Component) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -63,7 +63,7 @@ func CatalogPage(bar hypermedia.FilterBar, tableContainer templ.Component) templ
 }
 
 // CatalogTableContainer is the replaceable fragment targeted by filter/sort/page HTMX requests.
-func CatalogTableContainer(cols []hypermedia.TableCol, body templ.Component, info hypermedia.PageInfo) templ.Component {
+func CatalogTableContainer(cols []linkwell.TableCol, body templ.Component, info linkwell.PageInfo) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -280,8 +280,8 @@ func CatalogItemRow(item demo.Item) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.Controls([]hypermedia.Control{
-			hypermedia.CatalogRowAction(detailURL, detailRowTarget),
+		templ_7745c5c3_Err = components.Controls([]linkwell.Control{
+			linkwell.CatalogRowAction(detailURL, detailRowTarget),
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

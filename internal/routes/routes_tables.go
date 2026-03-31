@@ -6,9 +6,9 @@ import (
 	"strconv"
 
 	"catgoose/harmony/internal/demo"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 
-	hx "catgoose/harmony/internal/routes/htmx"
+	"github.com/catgoose/cheddar"
 
 	"github.com/labstack/echo/v4"
 )
@@ -45,32 +45,32 @@ func parseTableParams(c echo.Context, perPage int) tableParams {
 type tableContent struct {
 	Items []demo.Item
 	Total int
-	Bar   hypermedia.FilterBar
-	Cols  []hypermedia.TableCol
-	Info  hypermedia.PageInfo
+	Bar   linkwell.FilterBar
+	Cols  []linkwell.TableCol
+	Info  linkwell.PageInfo
 }
 
 // buildTableContent queries the DB and builds the filter bar, sortable columns, and pagination info.
 // extraCols are appended after the standard sortable columns.
-func buildTableContent(c echo.Context, db *demo.DB, p tableParams, itemsURL, target string, extraCols ...hypermedia.TableCol) (tableContent, error) {
+func buildTableContent(c echo.Context, db *demo.DB, p tableParams, itemsURL, target string, extraCols ...linkwell.TableCol) (tableContent, error) {
 	items, total, err := db.ListItems(c.Request().Context(), p.Q, p.Category, p.Active, p.Sort, p.Dir, p.Page, p.PerPage)
 	if err != nil {
 		return tableContent{}, err
 	}
 
-	bar := hypermedia.NewFilterBar(itemsURL, target,
-		hypermedia.SearchField("q", "Search items\u2026", p.Q),
-		hypermedia.SelectField("category", "Category", p.Category,
-			hypermedia.SelectOptions(p.Category, itemCategoryPairs()...)),
-		hypermedia.CheckboxField("active", "Active only", p.Active),
+	bar := linkwell.NewFilterBar(itemsURL, target,
+		linkwell.SearchField("q", "Search items\u2026", p.Q),
+		linkwell.SelectField("category", "Category", p.Category,
+			linkwell.SelectOptions(p.Category, itemCategoryPairs()...)),
+		linkwell.CheckboxField("active", "Active only", p.Active),
 	)
 
 	sortBase := buildSortBase(c)
-	cols := []hypermedia.TableCol{
-		hypermedia.SortableCol("name", "Name", p.Sort, p.Dir, sortBase, target, "#filter-form"),
-		hypermedia.SortableCol("category", "Category", p.Sort, p.Dir, sortBase, target, "#filter-form"),
-		hypermedia.SortableCol("price", "Price", p.Sort, p.Dir, sortBase, target, "#filter-form"),
-		hypermedia.SortableCol("stock", "Stock", p.Sort, p.Dir, sortBase, target, "#filter-form"),
+	cols := []linkwell.TableCol{
+		linkwell.SortableCol("name", "Name", p.Sort, p.Dir, sortBase, target, "#filter-form"),
+		linkwell.SortableCol("category", "Category", p.Sort, p.Dir, sortBase, target, "#filter-form"),
+		linkwell.SortableCol("price", "Price", p.Sort, p.Dir, sortBase, target, "#filter-form"),
+		linkwell.SortableCol("stock", "Stock", p.Sort, p.Dir, sortBase, target, "#filter-form"),
 		{Label: "Status"},
 	}
 	cols = append(cols, extraCols...)
@@ -97,14 +97,14 @@ func filterQueryFromHXCurrentURL(c echo.Context) string {
 // setTableReplaceURL sets HX-Replace-Url to basePath?{currentQueryString} so the browser
 // URL stays in sync with the active filters after any table-replacing response.
 func setTableReplaceURL(c echo.Context, basePath string) {
-	if !hx.IsHTMX(c) {
+	if !cheddar.IsHTMX(c) {
 		return
 	}
 	pushURL := basePath
 	if q := c.Request().URL.RawQuery; q != "" {
 		pushURL += "?" + q
 	}
-	hx.ReplaceURL(c, pushURL)
+	cheddar.ReplaceURL(c, pushURL)
 }
 
 // applyFilterFromCurrentURL reads HX-Current-URL and sets the request URL's query string
@@ -117,13 +117,13 @@ func applyFilterFromCurrentURL(c echo.Context) {
 }
 
 // buildPageInfo constructs a PageInfo from common pagination parameters.
-func buildPageInfo(c echo.Context, page, perPage, total int, target string) hypermedia.PageInfo {
+func buildPageInfo(c echo.Context, page, perPage, total int, target string) linkwell.PageInfo {
 	pageBase := stripParams(c.Request().URL, "page")
-	return hypermedia.PageInfo{
+	return linkwell.PageInfo{
 		Page:       page,
 		PerPage:    perPage,
 		TotalItems: total,
-		TotalPages: hypermedia.ComputeTotalPages(total, perPage),
+		TotalPages: linkwell.ComputeTotalPages(total, perPage),
 		BaseURL:    pageBase,
 		Target:     target,
 		Include:    "#filter-form",

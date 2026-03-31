@@ -1,10 +1,10 @@
 // setup:feature:demo
 package components
 
-import "catgoose/dothog/internal/routes/hypermedia"
+import "github.com/catgoose/linkwell"
 
 // SiteMap renders a footer site map grid from the hub/spoke topology.
-templ SiteMap(hubs []hypermedia.HubEntry) {
+templ SiteMap(hubs []linkwell.HubEntry) {
 	if len(hubs) > 1 {
 		<div class="border-t border-base-300 bg-base-200/30 px-4 py-6">
 			<div class="max-w-6xl mx-auto">

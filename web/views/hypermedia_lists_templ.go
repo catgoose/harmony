@@ -13,7 +13,7 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"strconv"
 
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/harmony/web/components/core"
 )
 
@@ -25,7 +25,7 @@ type ListsDemoItem struct {
 }
 
 // ListsPage is a static showcase of list/pagination/filter/sort patterns.
-func ListsPage(items []ListsDemoItem, info hypermedia.PageInfo) templ.Component {
+func ListsPage(items []ListsDemoItem, info linkwell.PageInfo) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -79,8 +79,8 @@ func ListsPage(items []ListsDemoItem, info hypermedia.PageInfo) templ.Component 
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.FilterBar(hypermedia.NewFilterBar("/demo/inventory/items", "#inventory-table-container",
-				hypermedia.SearchField("q", "Search items…", ""),
+			templ_7745c5c3_Err = components.FilterBar(linkwell.NewFilterBar("/demo/inventory/items", "#inventory-table-container",
+				linkwell.SearchField("q", "Search items…", ""),
 			)).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -107,16 +107,16 @@ func ListsPage(items []ListsDemoItem, info hypermedia.PageInfo) templ.Component 
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.FilterBar(hypermedia.NewFilterBar("/demo/inventory/items", "#inventory-table-container",
-				hypermedia.SelectField("category", "Category", "",
-					hypermedia.SelectOptions("",
+			templ_7745c5c3_Err = components.FilterBar(linkwell.NewFilterBar("/demo/inventory/items", "#inventory-table-container",
+				linkwell.SelectField("category", "Category", "",
+					linkwell.SelectOptions("",
 						"", "All",
 						"Electronics", "Electronics",
 						"Clothing", "Clothing",
 						"Food", "Food",
 					)),
-				hypermedia.CheckboxField("active", "Active only", ""),
-				hypermedia.RangeField("price", "Max Price", "500", "0", "1000", "10"),
+				linkwell.CheckboxField("active", "Active only", ""),
+				linkwell.RangeField("price", "Max Price", "500", "0", "1000", "10"),
 			)).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -143,10 +143,10 @@ func ListsPage(items []ListsDemoItem, info hypermedia.PageInfo) templ.Component 
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.TableHeader([]hypermedia.TableCol{
-				hypermedia.SortableCol("name", "Name", "name", "asc", "/demo/inventory/items", "#inventory-table-container", "#filter-form"),
-				hypermedia.SortableCol("category", "Category", "name", "asc", "/demo/inventory/items", "#inventory-table-container", "#filter-form"),
-				hypermedia.SortableCol("price", "Price", "", "", "/demo/inventory/items", "#inventory-table-container", "#filter-form"),
+			templ_7745c5c3_Err = components.TableHeader([]linkwell.TableCol{
+				linkwell.SortableCol("name", "Name", "name", "asc", "/demo/inventory/items", "#inventory-table-container", "#filter-form"),
+				linkwell.SortableCol("category", "Category", "name", "asc", "/demo/inventory/items", "#inventory-table-container", "#filter-form"),
+				linkwell.SortableCol("price", "Price", "", "", "/demo/inventory/items", "#inventory-table-container", "#filter-form"),
 				{Label: "Actions"},
 			}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
@@ -268,7 +268,7 @@ func listsSection(title string) templ.Component {
 
 // ListsDemoTable renders the pagination demo table body + pagination bar.
 // Returned as a fragment for HTMX partial replacement.
-func ListsDemoTable(items []ListsDemoItem, info hypermedia.PageInfo) templ.Component {
+func ListsDemoTable(items []ListsDemoItem, info linkwell.PageInfo) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

@@ -11,7 +11,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/harmony/web/components/core"
 )
 
@@ -58,17 +58,17 @@ func HypermediaControlsPage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.Controls([]hypermedia.Control{
-				{Kind: hypermedia.ControlKindHTMX, Label: "Primary", Variant: hypermedia.VariantPrimary,
-					HxRequest: hypermedia.HxPost("/hypermedia/controls/echo?v=primary", "#variant-result"), Swap: hypermedia.SwapInnerHTML},
-				{Kind: hypermedia.ControlKindHTMX, Label: "Secondary", Variant: hypermedia.VariantSecondary,
-					HxRequest: hypermedia.HxPost("/hypermedia/controls/echo?v=secondary", "#variant-result"), Swap: hypermedia.SwapInnerHTML},
-				{Kind: hypermedia.ControlKindHTMX, Label: "Danger", Variant: hypermedia.VariantDanger,
-					HxRequest: hypermedia.HxPost("/hypermedia/controls/echo?v=danger", "#variant-result"), Swap: hypermedia.SwapInnerHTML},
-				{Kind: hypermedia.ControlKindHTMX, Label: "Ghost", Variant: hypermedia.VariantGhost,
-					HxRequest: hypermedia.HxPost("/hypermedia/controls/echo?v=ghost", "#variant-result"), Swap: hypermedia.SwapInnerHTML},
-				{Kind: hypermedia.ControlKindHTMX, Label: "Link", Variant: hypermedia.VariantLink,
-					HxRequest: hypermedia.HxPost("/hypermedia/controls/echo?v=link", "#variant-result"), Swap: hypermedia.SwapInnerHTML},
+			templ_7745c5c3_Err = components.Controls([]linkwell.Control{
+				{Kind: linkwell.ControlKindHTMX, Label: "Primary", Variant: linkwell.VariantPrimary,
+					HxRequest: linkwell.HxPost("/hypermedia/controls/echo?v=primary", "#variant-result"), Swap: linkwell.SwapInnerHTML},
+				{Kind: linkwell.ControlKindHTMX, Label: "Secondary", Variant: linkwell.VariantSecondary,
+					HxRequest: linkwell.HxPost("/hypermedia/controls/echo?v=secondary", "#variant-result"), Swap: linkwell.SwapInnerHTML},
+				{Kind: linkwell.ControlKindHTMX, Label: "Danger", Variant: linkwell.VariantDanger,
+					HxRequest: linkwell.HxPost("/hypermedia/controls/echo?v=danger", "#variant-result"), Swap: linkwell.SwapInnerHTML},
+				{Kind: linkwell.ControlKindHTMX, Label: "Ghost", Variant: linkwell.VariantGhost,
+					HxRequest: linkwell.HxPost("/hypermedia/controls/echo?v=ghost", "#variant-result"), Swap: linkwell.SwapInnerHTML},
+				{Kind: linkwell.ControlKindHTMX, Label: "Link", Variant: linkwell.VariantLink,
+					HxRequest: linkwell.HxPost("/hypermedia/controls/echo?v=link", "#variant-result"), Swap: linkwell.SwapInnerHTML},
 			}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -99,11 +99,11 @@ func HypermediaControlsPage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.Controls([]hypermedia.Control{
-				hypermedia.RetryButton("Retry", hypermedia.HxMethodGet, "/hypermedia/controls/retry", "#kind-result"),
-				hypermedia.HTMXAction("HTMX Action", hypermedia.HxPost("/hypermedia/controls/action", "#kind-result")),
-				hypermedia.BackButton("Go Back"),
-				hypermedia.RedirectLink("Link", "/"),
+			templ_7745c5c3_Err = components.Controls([]linkwell.Control{
+				linkwell.RetryButton("Retry", linkwell.HxMethodGet, "/hypermedia/controls/retry", "#kind-result"),
+				linkwell.HTMXAction("HTMX Action", linkwell.HxPost("/hypermedia/controls/action", "#kind-result")),
+				linkwell.BackButton("Go Back"),
+				linkwell.RedirectLink("Link", "/"),
 			}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -232,15 +232,15 @@ func HypermediaControlsPage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.ErrorStatusFromContext(hypermedia.ErrorContext{
+			templ_7745c5c3_Err = components.ErrorStatusFromContext(linkwell.ErrorContext{
 				StatusCode: 404,
 				Message:    "Page not found",
 				Route:      "/example/missing",
 				RequestID:  "req-abc-123",
 				Closable:   true,
 				Controls: append(
-					hypermedia.NotFoundControls("/"),
-					hypermedia.ReportIssueButton(hypermedia.LabelReportIssue, "req-abc-123"),
+					linkwell.NotFoundControls("/"),
+					linkwell.ReportIssueButton(linkwell.LabelReportIssue, "req-abc-123"),
 				),
 			}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
@@ -250,15 +250,15 @@ func HypermediaControlsPage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.ErrorStatusFromContext(hypermedia.ErrorContext{
+			templ_7745c5c3_Err = components.ErrorStatusFromContext(linkwell.ErrorContext{
 				StatusCode: 500,
 				Message:    "Internal server error",
 				Route:      "/api/data",
 				RequestID:  "req-def-456",
 				Closable:   true,
 				Controls: append(
-					hypermedia.InternalErrorControls(hypermedia.ErrorControlOpts{}),
-					hypermedia.ReportIssueButton(hypermedia.LabelReportIssue, "req-def-456"),
+					linkwell.InternalErrorControls(linkwell.ErrorControlOpts{}),
+					linkwell.ReportIssueButton(linkwell.LabelReportIssue, "req-def-456"),
 				),
 			}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
@@ -290,7 +290,7 @@ func HypermediaControlsPage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.ErrorControls(hypermedia.NotFoundControls("/")).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = components.ErrorControls(linkwell.NotFoundControls("/")).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -298,7 +298,7 @@ func HypermediaControlsPage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.ErrorControls(hypermedia.InternalErrorControls(hypermedia.ErrorControlOpts{
+			templ_7745c5c3_Err = components.ErrorControls(linkwell.InternalErrorControls(linkwell.ErrorControlOpts{
 				RetryURL:    "/hypermedia/controls/retry",
 				RetryTarget: "#error-retry-demo",
 			})).Render(ctx, templ_7745c5c3_Buffer)
@@ -331,10 +331,10 @@ func HypermediaControlsPage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.NavBar(hypermedia.SetActiveNavItem([]hypermedia.NavItem{
+			templ_7745c5c3_Err = components.NavBar(linkwell.SetActiveNavItem([]linkwell.NavItem{
 				{
 					Label: "Tables",
-					Children: []hypermedia.NavItem{
+					Children: []linkwell.NavItem{
 						{Label: "Inventory", Href: "/demo/inventory"},
 						{Label: "Catalog", Href: "/demo/catalog"},
 						{Label: "Bulk", Href: "/demo/bulk"},
@@ -342,7 +342,7 @@ func HypermediaControlsPage() templ.Component {
 				},
 				{
 					Label: "Hypermedia Controls",
-					Children: []hypermedia.NavItem{
+					Children: []linkwell.NavItem{
 						{Label: "Controls", Href: "/hypermedia/controls"},
 					},
 				},
@@ -350,7 +350,7 @@ func HypermediaControlsPage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.Breadcrumbs(hypermedia.BreadcrumbsFromPath("/demo/inventory", map[int]string{0: "Tables", 1: "Inventory"})).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = components.Breadcrumbs(linkwell.BreadcrumbsFromPath("/demo/inventory", map[int]string{0: "Tables", 1: "Inventory"})).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -380,18 +380,18 @@ func HypermediaControlsPage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.FilterBar(hypermedia.NewFilterBar("/hypermedia/controls/filter", "#filter-results",
-				hypermedia.SearchField("q", "Search\u2026", ""),
-				hypermedia.SelectField("cat", "Category", "",
-					hypermedia.SelectOptions("",
+			templ_7745c5c3_Err = components.FilterBar(linkwell.NewFilterBar("/hypermedia/controls/filter", "#filter-results",
+				linkwell.SearchField("q", "Search\u2026", ""),
+				linkwell.SelectField("cat", "Category", "",
+					linkwell.SelectOptions("",
 						"", "All",
 						"Electronics", "Electronics",
 						"Sports", "Sports",
 						"Books", "Books",
 						"Clothing", "Clothing",
 					)),
-				hypermedia.RangeField("price", "Max Price", "500", "0", "500", "10"),
-				hypermedia.CheckboxField("active", "Active only", ""),
+				linkwell.RangeField("price", "Max Price", "500", "0", "500", "10"),
+				linkwell.CheckboxField("active", "Active only", ""),
 			)).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

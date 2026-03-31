@@ -6,28 +6,29 @@ import (
 	"fmt"
 	"net/http"
 
-	"catgoose/harmony/internal/domain"
 	"catgoose/harmony/internal/logger"
 	// setup:feature:session_settings:start
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/routes/middleware"
 	"catgoose/harmony/web/views"
 	// setup:feature:session_settings:end
-	"catgoose/harmony/internal/ssebroker"
+	"github.com/catgoose/tavern"
 
+	// setup:feature:session_settings:start
+	"github.com/catgoose/porter"
+	// setup:feature:session_settings:end
 	"github.com/labstack/echo/v4"
 )
 
 // setup:feature:session_settings:start
 
-func (ar *appRoutes) initThemeRoutes(broker *ssebroker.SSEBroker) {
+func (ar *appRoutes) initThemeRoutes(broker *tavern.SSEBroker) {
 	ar.e.POST("/settings/theme", ar.handleTheme(broker))
 	ar.e.POST("/settings/layout", ar.handleLayout())
 	ar.e.GET("/sse/theme", handleSSETheme(broker))
 }
 
 // handleTheme updates the shared theme setting and broadcasts to all browsers.
-func (ar *appRoutes) handleTheme(broker *ssebroker.SSEBroker) echo.HandlerFunc {
+func (ar *appRoutes) handleTheme(broker *tavern.SSEBroker) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		theme := c.FormValue("theme")
 		valid := false
@@ -40,7 +41,7 @@ func (ar *appRoutes) handleTheme(broker *ssebroker.SSEBroker) echo.HandlerFunc {
 		if !valid {
 			theme = "light"
 		}
-		settings := middleware.GetSessionSettings(c)
+		settings := porter.GetSessionSettings(c)
 		settings.Theme = theme
 		if ar.settingsRepo != nil {
 			if err := ar.settingsRepo.Upsert(c.Request().Context(), settings); err != nil {
@@ -49,9 +50,9 @@ func (ar *appRoutes) handleTheme(broker *ssebroker.SSEBroker) echo.HandlerFunc {
 		}
 
 		// Broadcast theme change to all connected browsers.
-		if broker.HasSubscribers(ssebroker.TopicThemeChange) {
-			msg := ssebroker.NewSSEMessage("theme-change", theme).String()
-			broker.Publish(ssebroker.TopicThemeChange, msg)
+		if broker.HasSubscribers(tavern.TopicThemeChange) {
+			msg := tavern.NewSSEMessage("theme-change", theme).String()
+			broker.Publish(tavern.TopicThemeChange, msg)
 		}
 
 		return handler.RenderComponent(c, views.ThemeChanged(theme))
@@ -66,10 +67,10 @@ func (ar *appRoutes) handleTheme(broker *ssebroker.SSEBroker) echo.HandlerFunc {
 func (ar *appRoutes) handleLayout() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		layout := c.FormValue("layout")
-		if layout != domain.LayoutApp {
-			layout = domain.DefaultLayout
+		if layout != porter.LayoutApp {
+			layout = porter.DefaultLayout
 		}
-		settings := middleware.GetSessionSettings(c)
+		settings := porter.GetSessionSettings(c)
 		settings.Layout = layout
 		if ar.settingsRepo != nil {
 			if err := ar.settingsRepo.Upsert(c.Request().Context(), settings); err != nil {
@@ -84,7 +85,7 @@ func (ar *appRoutes) handleLayout() echo.HandlerFunc {
 // setup:feature:session_settings:end
 
 // handleSSETheme streams theme-change events to all connected browsers.
-func handleSSETheme(broker *ssebroker.SSEBroker) echo.HandlerFunc {
+func handleSSETheme(broker *tavern.SSEBroker) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		c.Response().Header().Set("Content-Type", "text/event-stream")
 		c.Response().Header().Set("Cache-Control", "no-cache")
@@ -96,7 +97,7 @@ func handleSSETheme(broker *ssebroker.SSEBroker) echo.HandlerFunc {
 			return fmt.Errorf("streaming unsupported")
 		}
 
-		ch, unsub := broker.Subscribe(ssebroker.TopicThemeChange)
+		ch, unsub := broker.Subscribe(tavern.TopicThemeChange)
 		defer unsub()
 
 		ctx := c.Request().Context()

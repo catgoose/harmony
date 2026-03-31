@@ -11,7 +11,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	"sort"
 )
 
@@ -32,7 +32,7 @@ type contextBarGroup struct {
 // It finds the hub this page belongs to (either as center or spoke) and
 // resolves all spokes into their ring groups. Both hub centers and spoke
 // pages see the same grouped view.
-func contextBarGroups(links []hypermedia.LinkRelation, currentPath string) []contextBarGroup {
+func contextBarGroups(links []linkwell.LinkRelation, currentPath string) []contextBarGroup {
 	// Determine the hub path: either we ARE the hub (have outgoing related links
 	// with a hub group) or we have a rel="up" pointing to our hub.
 	var hubPath string
@@ -73,7 +73,7 @@ func contextBarGroups(links []hypermedia.LinkRelation, currentPath string) []con
 			}
 		}
 	} else {
-		hubLinks := hypermedia.LinksFor(hubPath, "related")
+		hubLinks := linkwell.LinksFor(hubPath, "related")
 		for _, l := range hubLinks {
 			if l.Href != currentPath {
 				spokes = append(spokes, contextBarItem{Href: l.Href, Title: l.Title})
@@ -97,7 +97,7 @@ func contextBarGroups(links []hypermedia.LinkRelation, currentPath string) []con
 }
 
 // simpleGroups is the fallback grouping when no hub relationship exists.
-func simpleGroups(links []hypermedia.LinkRelation, currentPath string) []contextBarGroup {
+func simpleGroups(links []linkwell.LinkRelation, currentPath string) []contextBarGroup {
 	seen := map[string]int{}
 	var groups []contextBarGroup
 	for _, l := range links {
@@ -129,7 +129,7 @@ func resolveIntoRings(spokes []contextBarItem, hubName string, currentPath strin
 	placed := map[string]bool{}
 
 	for _, item := range spokes {
-		spokeLinks := hypermedia.LinksFor(item.Href, "related")
+		spokeLinks := linkwell.LinksFor(item.Href, "related")
 		for _, sl := range spokeLinks {
 			if sl.Group != "" && sl.Group != hubName && !placed[item.Href+"|"+sl.Group] {
 				idx, ok := seen[sl.Group]
@@ -188,7 +188,7 @@ func hasItem(items []contextBarItem, href string) bool {
 
 // ContextBar renders a horizontal strip of related page links grouped by ring name.
 // Server-rendered with a stable ID so it can be updated via hx-swap-oob on navigation.
-func ContextBar(links []hypermedia.LinkRelation, currentPath string) templ.Component {
+func ContextBar(links []linkwell.LinkRelation, currentPath string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -249,7 +249,7 @@ func ContextBar(links []hypermedia.LinkRelation, currentPath string) templ.Compo
 
 // LocalContextBar renders a compact strip of the current page's immediate
 // ring siblings — the pages in the same ring group(s) as the current page.
-func LocalContextBar(links []hypermedia.LinkRelation, currentPath string) templ.Component {
+func LocalContextBar(links []linkwell.LinkRelation, currentPath string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -390,7 +390,7 @@ func LocalContextBar(links []hypermedia.LinkRelation, currentPath string) templ.
 
 // localGroups returns only the rings the current page directly belongs to,
 // prepended with the hub parent link (rel="up") when present.
-func localGroups(links []hypermedia.LinkRelation, currentPath string) []contextBarGroup {
+func localGroups(links []linkwell.LinkRelation, currentPath string) []contextBarGroup {
 	var groups []contextBarGroup
 
 	// Prepend hub parent link if present, matching ContextBar behaviour.

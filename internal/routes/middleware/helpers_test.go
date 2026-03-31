@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
@@ -35,7 +35,7 @@ func TestBadRequest(t *testing.T) {
 
 	err := BadRequest(c, "invalid input")
 
-	var he *hypermedia.HTTPError
+	var he *linkwell.HTTPError
 	require.ErrorAs(t, err, &he)
 	require.Equal(t, http.StatusBadRequest, he.EC.StatusCode)
 	require.Equal(t, "invalid input", he.EC.Message)
@@ -46,7 +46,7 @@ func TestUnauthorized(t *testing.T) {
 
 	err := Unauthorized(c, "login required")
 
-	var he *hypermedia.HTTPError
+	var he *linkwell.HTTPError
 	require.ErrorAs(t, err, &he)
 	require.Equal(t, http.StatusUnauthorized, he.EC.StatusCode)
 	require.Equal(t, "login required", he.EC.Message)
@@ -57,7 +57,7 @@ func TestForbidden(t *testing.T) {
 
 	err := Forbidden(c, "access denied")
 
-	var he *hypermedia.HTTPError
+	var he *linkwell.HTTPError
 	require.ErrorAs(t, err, &he)
 	require.Equal(t, http.StatusForbidden, he.EC.StatusCode)
 	require.Equal(t, "access denied", he.EC.Message)
@@ -68,7 +68,7 @@ func TestNotFound(t *testing.T) {
 
 	err := NotFound(c, "resource missing")
 
-	var he *hypermedia.HTTPError
+	var he *linkwell.HTTPError
 	require.ErrorAs(t, err, &he)
 	require.Equal(t, http.StatusNotFound, he.EC.StatusCode)
 	require.Equal(t, "resource missing", he.EC.Message)
@@ -79,7 +79,7 @@ func TestInternalServerError(t *testing.T) {
 
 	err := InternalServerError(c, "something broke")
 
-	var he *hypermedia.HTTPError
+	var he *linkwell.HTTPError
 	require.ErrorAs(t, err, &he)
 	require.Equal(t, http.StatusInternalServerError, he.EC.StatusCode)
 	require.Equal(t, "something broke", he.EC.Message)
@@ -90,7 +90,7 @@ func TestServiceUnavailable(t *testing.T) {
 
 	err := ServiceUnavailable(c, "try again later")
 
-	var he *hypermedia.HTTPError
+	var he *linkwell.HTTPError
 	require.ErrorAs(t, err, &he)
 	require.Equal(t, http.StatusServiceUnavailable, he.EC.StatusCode)
 	require.Equal(t, "try again later", he.EC.Message)
@@ -99,7 +99,7 @@ func TestServiceUnavailable(t *testing.T) {
 func TestHypermediaError(t *testing.T) {
 	c, _ := newTestContext(http.MethodGet, "/items/42")
 
-	ctrl := hypermedia.BackButton("Go back")
+	ctrl := linkwell.BackButton("Go back")
 	ec := HypermediaError(c, http.StatusNotFound, "item not found", nil, ctrl)
 
 	require.Equal(t, http.StatusNotFound, ec.StatusCode)
@@ -107,7 +107,7 @@ func TestHypermediaError(t *testing.T) {
 	require.Equal(t, "/items/42", ec.Route)
 	require.True(t, ec.Closable)
 	require.Len(t, ec.Controls, 1)
-	require.Equal(t, hypermedia.ControlKindBack, ec.Controls[0].Kind)
+	require.Equal(t, linkwell.ControlKindBack, ec.Controls[0].Kind)
 	require.Equal(t, "Go back", ec.Controls[0].Label)
 	require.Nil(t, ec.Err)
 	// RequestID is empty because RequestIDMiddleware was not applied
@@ -131,15 +131,15 @@ func TestHypermediaError_WithWrappedError(t *testing.T) {
 func TestHypermediaError_MultipleControls(t *testing.T) {
 	c, _ := newTestContext(http.MethodGet, "/admin")
 
-	ctrls := []hypermedia.Control{
-		hypermedia.BackButton("Back"),
-		hypermedia.GoHomeButton("Home", "/", "#main"),
+	ctrls := []linkwell.Control{
+		linkwell.BackButton("Back"),
+		linkwell.GoHomeButton("Home", "/", "#main"),
 	}
 	ec := HypermediaError(c, http.StatusForbidden, "denied", nil, ctrls...)
 
 	require.Len(t, ec.Controls, 2)
-	require.Equal(t, hypermedia.ControlKindBack, ec.Controls[0].Kind)
-	require.Equal(t, hypermedia.ControlKindHome, ec.Controls[1].Kind)
+	require.Equal(t, linkwell.ControlKindBack, ec.Controls[0].Kind)
+	require.Equal(t, linkwell.ControlKindHome, ec.Controls[1].Kind)
 }
 
 // ---------------------------------------------------------------------------

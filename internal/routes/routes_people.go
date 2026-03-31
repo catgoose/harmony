@@ -11,10 +11,10 @@ import (
 
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	"catgoose/harmony/internal/routes/params"
 	"catgoose/harmony/internal/shared"
-	"catgoose/harmony/internal/ssebroker"
+	"github.com/catgoose/tavern"
 	"catgoose/harmony/web/views"
 
 	"github.com/labstack/echo/v4"
@@ -24,11 +24,11 @@ const peopleBase = "/demo/people"
 
 type peopleRoutes struct {
 	db     *demo.DB
-	broker *ssebroker.SSEBroker
+	broker *tavern.SSEBroker
 	actLog *demo.ActivityLog
 }
 
-func (ar *appRoutes) initPeopleRoutes(db *demo.DB, broker *ssebroker.SSEBroker, actLog *demo.ActivityLog) {
+func (ar *appRoutes) initPeopleRoutes(db *demo.DB, broker *tavern.SSEBroker, actLog *demo.ActivityLog) {
 	p := &peopleRoutes{db: db, broker: broker, actLog: actLog}
 	ar.e.GET(peopleBase, p.handlePeoplePage)
 	ar.e.GET(peopleBase+"/list", p.handlePeopleList)
@@ -132,7 +132,7 @@ func (p *peopleRoutes) handlePersonUpdate(c echo.Context) error {
 }
 
 func (p *peopleRoutes) broadcastPersonUpdate(person demo.Person) {
-	topic := fmt.Sprintf("%s-%d", ssebroker.TopicPeopleUpdate, person.ID)
+	topic := fmt.Sprintf("%s-%d", tavern.TopicPeopleUpdate, person.ID)
 	if !p.broker.HasSubscribers(topic) {
 		return
 	}
@@ -142,7 +142,7 @@ func (p *peopleRoutes) broadcastPersonUpdate(person demo.Person) {
 		statsBufPool.Put(buf)
 		return
 	}
-	msg := ssebroker.NewSSEMessage("person-update", buf.String()).String()
+	msg := tavern.NewSSEMessage("person-update", buf.String()).String()
 	statsBufPool.Put(buf)
 	p.broker.Publish(topic, msg)
 }
@@ -152,7 +152,7 @@ func (p *peopleRoutes) handlePersonSSE(c echo.Context) error {
 	if err != nil {
 		return handler.HandleHypermediaError(c, 400, "Invalid person ID", err)
 	}
-	topic := fmt.Sprintf("%s-%d", ssebroker.TopicPeopleUpdate, id)
+	topic := fmt.Sprintf("%s-%d", tavern.TopicPeopleUpdate, id)
 
 	c.Response().Header().Set("Content-Type", "text/event-stream")
 	c.Response().Header().Set("Cache-Control", "no-cache")
@@ -182,7 +182,7 @@ func (p *peopleRoutes) handlePersonSSE(c echo.Context) error {
 	}
 }
 
-func (p *peopleRoutes) buildPeopleContent(c echo.Context) ([]demo.Person, int, hypermedia.FilterBar, []hypermedia.TableCol, hypermedia.PageInfo, error) {
+func (p *peopleRoutes) buildPeopleContent(c echo.Context) ([]demo.Person, int, linkwell.FilterBar, []linkwell.TableCol, linkwell.PageInfo, error) {
 	const perPage = 20
 	page, _ := strconv.Atoi(c.QueryParam("page"))
 	if page < 1 {
@@ -195,21 +195,21 @@ func (p *peopleRoutes) buildPeopleContent(c echo.Context) ([]demo.Person, int, h
 
 	people, total, err := p.db.ListPeople(c.Request().Context(), search, department, sort, dir, page, perPage)
 	if err != nil {
-		return nil, 0, hypermedia.FilterBar{}, nil, hypermedia.PageInfo{}, err
+		return nil, 0, linkwell.FilterBar{}, nil, linkwell.PageInfo{}, err
 	}
 
-	bar := hypermedia.NewFilterBar(peopleBase+"/list", "#people-table-container",
-		hypermedia.SearchField("q", "Search people\u2026", search),
-		hypermedia.SelectField("department", "Department", department,
+	bar := linkwell.NewFilterBar(peopleBase+"/list", "#people-table-container",
+		linkwell.SearchField("q", "Search people\u2026", search),
+		linkwell.SelectField("department", "Department", department,
 			deptOptions(department)),
 	)
 
 	sortBase := buildSortBase(c)
-	cols := []hypermedia.TableCol{
-		hypermedia.SortableCol("name", "Name", sort, dir, sortBase, "#people-table-container", "#filter-form"),
-		hypermedia.SortableCol("department", "Department", sort, dir, sortBase, "#people-table-container", "#filter-form"),
+	cols := []linkwell.TableCol{
+		linkwell.SortableCol("name", "Name", sort, dir, sortBase, "#people-table-container", "#filter-form"),
+		linkwell.SortableCol("department", "Department", sort, dir, sortBase, "#people-table-container", "#filter-form"),
 		{Label: "Title"},
-		hypermedia.SortableCol("city", "Location", sort, dir, sortBase, "#people-table-container", "#filter-form"),
+		linkwell.SortableCol("city", "Location", sort, dir, sortBase, "#people-table-container", "#filter-form"),
 		{Label: "Email"},
 	}
 
@@ -218,12 +218,12 @@ func (p *peopleRoutes) buildPeopleContent(c echo.Context) ([]demo.Person, int, h
 	return people, total, bar, cols, info, nil
 }
 
-func deptOptions(current string) []hypermedia.FilterOption {
-	opts := []hypermedia.FilterOption{
+func deptOptions(current string) []linkwell.FilterOption {
+	opts := []linkwell.FilterOption{
 		{Value: "", Label: "All Departments", Selected: current == ""},
 	}
 	for _, d := range demo.Departments {
-		opts = append(opts, hypermedia.FilterOption{Value: d, Label: d, Selected: current == d})
+		opts = append(opts, linkwell.FilterOption{Value: d, Label: d, Selected: current == d})
 	}
 	return opts
 }

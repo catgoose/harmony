@@ -1,11 +1,11 @@
 package components
 
-import "catgoose/dothog/internal/routes/hypermedia"
+import "github.com/catgoose/linkwell"
 
 // ErrorPage renders a self-contained HTML error page for non-HTMX requests.
 // It includes its own HTML shell with Tailwind, DaisyUI, HTMX, and HyperScript
 // so it works outside the normal SPA layout.
-templ ErrorPage(ec hypermedia.ErrorContext) {
+templ ErrorPage(ec linkwell.ErrorContext) {
 	<!DOCTYPE html>
 	<html lang="en" data-theme={ errorPageTheme(ec) }>
 		<head>

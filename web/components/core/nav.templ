@@ -1,9 +1,9 @@
 package components
 
-import "catgoose/dothog/internal/routes/hypermedia"
+import "github.com/catgoose/linkwell"
 
 // navHxAttrs converts a NavItem's HTMXAttrs map to templ.Attributes with "hx-" prefix.
-func navHxAttrs(item hypermedia.NavItem) templ.Attributes {
+func navHxAttrs(item linkwell.NavItem) templ.Attributes {
 	attrs := make(templ.Attributes, len(item.HTMXAttrs))
 	for k, v := range item.HTMXAttrs {
 		attrs["hx-"+k] = v
@@ -21,7 +21,7 @@ func navActiveClass(active bool) string {
 
 // NavBar renders a DaisyUI horizontal navbar with optional HTMX enhancement.
 // Active state should be set server-side via SetActiveNavItem or SetActiveNavItemPrefix.
-templ NavBar(items []hypermedia.NavItem) {
+templ NavBar(items []linkwell.NavItem) {
 	<nav
 		class="navbar bg-base-200 shadow-sm"
 		x-data
@@ -37,7 +37,7 @@ templ NavBar(items []hypermedia.NavItem) {
 	</nav>
 }
 
-templ navMenuItem(item hypermedia.NavItem) {
+templ navMenuItem(item linkwell.NavItem) {
 	if len(item.Children) > 0 {
 		<li>
 			<details
@@ -70,7 +70,7 @@ templ navMenuItem(item hypermedia.NavItem) {
 
 // Breadcrumbs renders a DaisyUI breadcrumb trail.
 // Non-terminal crumbs render as anchors; the terminal crumb renders as plain text.
-templ Breadcrumbs(crumbs []hypermedia.Breadcrumb) {
+templ Breadcrumbs(crumbs []linkwell.Breadcrumb) {
 	<div class="breadcrumbs text-sm">
 		<ul>
 			for _, crumb := range crumbs {

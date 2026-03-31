@@ -12,12 +12,12 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"catgoose/harmony/internal/demo"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 )
 
 // LinksPageData holds all data needed to render the links page.
 type LinksPageData struct {
-	Links       map[string][]hypermedia.LinkRelation
+	Links       map[string][]linkwell.LinkRelation
 	StoredLinks []demo.StoredLinkRelation
 	Routes      []string
 }
@@ -260,7 +260,7 @@ func HypermediaLinksPage(data LinksPageData) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<p class=\"text-sm text-base-content/70 mb-3\">All link relations currently registered in this running application, via <code class=\"text-xs bg-base-200 px-1 rounded\">hypermedia.AllLinks()</code>.</p>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<p class=\"text-sm text-base-content/70 mb-3\">All link relations currently registered in this running application, via <code class=\"text-xs bg-base-200 px-1 rounded\">linkwell.AllLinks()</code>.</p>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -359,7 +359,7 @@ func LinksRegistryTable(data LinksPageData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		for _, src := range hypermedia.SortedPaths(data.Links) {
+		for _, src := range linkwell.SortedPaths(data.Links) {
 			for i, link := range data.Links[src] {
 				var templ_7745c5c3_Var17 = []any{templ.KV("border-t border-base-300", i == 0)}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var17...)

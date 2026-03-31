@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/catgoose/promolog"
-	"catgoose/dothog/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/dothog/web/components/core"
 )
 
@@ -25,7 +25,7 @@ func parseAttrs(attrs string) [][]string {
 }
 
 // ErrorTracesPage is the full page for /admin/error-traces.
-templ ErrorTracesPage(bar hypermedia.FilterBar, tableContainer templ.Component) {
+templ ErrorTracesPage(bar linkwell.FilterBar, tableContainer templ.Component) {
 	<div class="p-4 space-y-4">
 		<div class="flex items-center justify-between">
 			<h1 class="text-2xl font-bold">Error Traces</h1>
@@ -39,7 +39,7 @@ templ ErrorTracesPage(bar hypermedia.FilterBar, tableContainer templ.Component) 
 }
 
 // ErrorTracesTableContainer is the HTMX-replaceable fragment.
-templ ErrorTracesTableContainer(cols []hypermedia.TableCol, body templ.Component, info hypermedia.PageInfo) {
+templ ErrorTracesTableContainer(cols []linkwell.TableCol, body templ.Component, info linkwell.PageInfo) {
 	<div id="error-traces-table-container">
 		@components.Table(cols, body, info)
 	</div>

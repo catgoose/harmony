@@ -5,12 +5,12 @@ import (
 	"fmt"
 
 	"catgoose/dothog/internal/demo"
-	"catgoose/dothog/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/dothog/web/components/core"
 )
 
 // AdminErrorReportsPage is the full page for /admin/error-reports.
-templ AdminErrorReportsPage(bar hypermedia.FilterBar, tableContainer templ.Component) {
+templ AdminErrorReportsPage(bar linkwell.FilterBar, tableContainer templ.Component) {
 	<div class="p-4 space-y-4">
 		<div class="flex items-center justify-between">
 			<h1 class="text-2xl font-bold">Error Reports</h1>
@@ -24,7 +24,7 @@ templ AdminErrorReportsPage(bar hypermedia.FilterBar, tableContainer templ.Compo
 }
 
 // AdminErrorReportsTableContainer is the replaceable HTMX fragment.
-templ AdminErrorReportsTableContainer(cols []hypermedia.TableCol, body templ.Component, info hypermedia.PageInfo) {
+templ AdminErrorReportsTableContainer(cols []linkwell.TableCol, body templ.Component, info linkwell.PageInfo) {
 	<div id="error-reports-table-container">
 		@components.Table(cols, body, info)
 	</div>

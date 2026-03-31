@@ -8,10 +8,10 @@ package components
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "catgoose/harmony/internal/routes/hypermedia"
+import "github.com/catgoose/linkwell"
 
 // ErrorControls renders a row of hypermedia action controls for an error response.
-func ErrorControls(controls []hypermedia.Control) templ.Component {
+func ErrorControls(controls []linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -39,37 +39,37 @@ func ErrorControls(controls []hypermedia.Control) templ.Component {
 			}
 			for _, ctrl := range controls {
 				switch ctrl.Kind {
-				case hypermedia.ControlKindRetry:
+				case linkwell.ControlKindRetry:
 					templ_7745c5c3_Err = retryButton(ctrl).Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-				case hypermedia.ControlKindLink:
+				case linkwell.ControlKindLink:
 					templ_7745c5c3_Err = linkControl(ctrl).Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-				case hypermedia.ControlKindHTMX:
+				case linkwell.ControlKindHTMX:
 					templ_7745c5c3_Err = htmxButton(ctrl).Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-				case hypermedia.ControlKindDismiss:
+				case linkwell.ControlKindDismiss:
 					templ_7745c5c3_Err = dismissButton(ctrl).Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-				case hypermedia.ControlKindBack:
+				case linkwell.ControlKindBack:
 					templ_7745c5c3_Err = errorBackButton(ctrl).Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-				case hypermedia.ControlKindHome:
+				case linkwell.ControlKindHome:
 					templ_7745c5c3_Err = errorHomeButton(ctrl).Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-				case hypermedia.ControlKindReport:
+				case linkwell.ControlKindReport:
 					templ_7745c5c3_Err = reportButton(ctrl).Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -85,7 +85,7 @@ func ErrorControls(controls []hypermedia.Control) templ.Component {
 	})
 }
 
-func retryButton(ctrl hypermedia.Control) templ.Component {
+func retryButton(ctrl linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -106,7 +106,7 @@ func retryButton(ctrl hypermedia.Control) templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		if ctrl.Variant == hypermedia.VariantPrimary {
+		if ctrl.Variant == linkwell.VariantPrimary {
 			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<button")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -183,7 +183,7 @@ func retryButton(ctrl hypermedia.Control) templ.Component {
 	})
 }
 
-func linkControl(ctrl hypermedia.Control) templ.Component {
+func linkControl(ctrl linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -238,7 +238,7 @@ func linkControl(ctrl hypermedia.Control) templ.Component {
 	})
 }
 
-func htmxButton(ctrl hypermedia.Control) templ.Component {
+func htmxButton(ctrl linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -298,7 +298,7 @@ func htmxButton(ctrl hypermedia.Control) templ.Component {
 	})
 }
 
-func dismissButton(ctrl hypermedia.Control) templ.Component {
+func dismissButton(ctrl linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -340,7 +340,7 @@ func dismissButton(ctrl hypermedia.Control) templ.Component {
 	})
 }
 
-func errorBackButton(ctrl hypermedia.Control) templ.Component {
+func errorBackButton(ctrl linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -382,7 +382,7 @@ func errorBackButton(ctrl hypermedia.Control) templ.Component {
 	})
 }
 
-func errorHomeButton(ctrl hypermedia.Control) templ.Component {
+func errorHomeButton(ctrl linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -432,7 +432,7 @@ func errorHomeButton(ctrl hypermedia.Control) templ.Component {
 	})
 }
 
-func reportButton(ctrl hypermedia.Control) templ.Component {
+func reportButton(ctrl linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

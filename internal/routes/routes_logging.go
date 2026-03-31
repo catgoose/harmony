@@ -14,7 +14,7 @@ import (
 	"github.com/catgoose/promolog"
 	"catgoose/harmony/internal/routes/handler"
 	"catgoose/harmony/internal/shared"
-	"catgoose/harmony/internal/ssebroker"
+	"github.com/catgoose/tavern"
 	"catgoose/harmony/web/views"
 
 	"github.com/labstack/echo/v4"
@@ -46,7 +46,7 @@ func (ar *appRoutes) initLoggingRoutes() {
 	})
 
 	// setup:feature:sse:start
-	broker := ssebroker.NewSSEBroker()
+	broker := tavern.NewSSEBroker()
 
 	// Wire up SSE broadcasting on error trace promotion.
 	if ar.reqLogStore != nil {
@@ -158,7 +158,7 @@ func (ar *appRoutes) initLoggingRoutes() {
 
 // setup:feature:sse:start
 
-func handleErrorTracesSSE(broker *ssebroker.SSEBroker) echo.HandlerFunc {
+func handleErrorTracesSSE(broker *tavern.SSEBroker) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		c.Response().Header().Set("Content-Type", "text/event-stream")
 		c.Response().Header().Set("Cache-Control", "no-cache")
@@ -166,7 +166,7 @@ func handleErrorTracesSSE(broker *ssebroker.SSEBroker) echo.HandlerFunc {
 		c.Response().WriteHeader(http.StatusOK)
 
 		flusher := c.Response().Writer.(http.Flusher)
-		ch, unsub := broker.Subscribe(ssebroker.TopicErrorTraces)
+		ch, unsub := broker.Subscribe(tavern.TopicErrorTraces)
 		defer unsub()
 
 		ctx := c.Request().Context()
@@ -185,8 +185,8 @@ func handleErrorTracesSSE(broker *ssebroker.SSEBroker) echo.HandlerFunc {
 	}
 }
 
-func broadcastErrorTrace(broker *ssebroker.SSEBroker, summary promolog.TraceSummary) {
-	if !broker.HasSubscribers(ssebroker.TopicErrorTraces) {
+func broadcastErrorTrace(broker *tavern.SSEBroker, summary promolog.TraceSummary) {
+	if !broker.HasSubscribers(tavern.TopicErrorTraces) {
 		return
 	}
 	buf := new(bytes.Buffer)
@@ -194,8 +194,8 @@ func broadcastErrorTrace(broker *ssebroker.SSEBroker, summary promolog.TraceSumm
 	if err := views.LoggingTraceRowOOB(summary).Render(ctx, buf); err != nil {
 		return
 	}
-	msg := ssebroker.NewSSEMessage("error-trace", buf.String()).String()
-	broker.Publish(ssebroker.TopicErrorTraces, msg)
+	msg := tavern.NewSSEMessage("error-trace", buf.String()).String()
+	broker.Publish(tavern.TopicErrorTraces, msg)
 }
 
 // setup:feature:sse:end

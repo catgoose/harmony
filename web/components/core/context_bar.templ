@@ -3,7 +3,7 @@
 package components
 
 import (
-	"catgoose/dothog/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	"sort"
 )
 
@@ -24,7 +24,7 @@ type contextBarGroup struct {
 // It finds the hub this page belongs to (either as center or spoke) and
 // resolves all spokes into their ring groups. Both hub centers and spoke
 // pages see the same grouped view.
-func contextBarGroups(links []hypermedia.LinkRelation, currentPath string) []contextBarGroup {
+func contextBarGroups(links []linkwell.LinkRelation, currentPath string) []contextBarGroup {
 	// Determine the hub path: either we ARE the hub (have outgoing related links
 	// with a hub group) or we have a rel="up" pointing to our hub.
 	var hubPath string
@@ -65,7 +65,7 @@ func contextBarGroups(links []hypermedia.LinkRelation, currentPath string) []con
 			}
 		}
 	} else {
-		hubLinks := hypermedia.LinksFor(hubPath, "related")
+		hubLinks := linkwell.LinksFor(hubPath, "related")
 		for _, l := range hubLinks {
 			if l.Href != currentPath {
 				spokes = append(spokes, contextBarItem{Href: l.Href, Title: l.Title})
@@ -89,7 +89,7 @@ func contextBarGroups(links []hypermedia.LinkRelation, currentPath string) []con
 }
 
 // simpleGroups is the fallback grouping when no hub relationship exists.
-func simpleGroups(links []hypermedia.LinkRelation, currentPath string) []contextBarGroup {
+func simpleGroups(links []linkwell.LinkRelation, currentPath string) []contextBarGroup {
 	seen := map[string]int{}
 	var groups []contextBarGroup
 	for _, l := range links {
@@ -121,7 +121,7 @@ func resolveIntoRings(spokes []contextBarItem, hubName string, currentPath strin
 	placed := map[string]bool{}
 
 	for _, item := range spokes {
-		spokeLinks := hypermedia.LinksFor(item.Href, "related")
+		spokeLinks := linkwell.LinksFor(item.Href, "related")
 		for _, sl := range spokeLinks {
 			if sl.Group != "" && sl.Group != hubName && !placed[item.Href+"|"+sl.Group] {
 				idx, ok := seen[sl.Group]
@@ -180,7 +180,7 @@ func hasItem(items []contextBarItem, href string) bool {
 
 // ContextBar renders a horizontal strip of related page links grouped by ring name.
 // Server-rendered with a stable ID so it can be updated via hx-swap-oob on navigation.
-templ ContextBar(links []hypermedia.LinkRelation, currentPath string) {
+templ ContextBar(links []linkwell.LinkRelation, currentPath string) {
 	<div id="context-bar"
 		_="init if localStorage.getItem('dothog_show_context_bar') !== 'true' then hide me"
 	>
@@ -201,7 +201,7 @@ templ ContextBar(links []hypermedia.LinkRelation, currentPath string) {
 
 // LocalContextBar renders a compact strip of the current page's immediate
 // ring siblings — the pages in the same ring group(s) as the current page.
-templ LocalContextBar(links []hypermedia.LinkRelation, currentPath string) {
+templ LocalContextBar(links []linkwell.LinkRelation, currentPath string) {
 	<div id="local-context-bar"
 		_="init if localStorage.getItem('dothog_hide_local_context_bar') === 'true' then hide me"
 	>
@@ -231,7 +231,7 @@ templ LocalContextBar(links []hypermedia.LinkRelation, currentPath string) {
 
 // localGroups returns only the rings the current page directly belongs to,
 // prepended with the hub parent link (rel="up") when present.
-func localGroups(links []hypermedia.LinkRelation, currentPath string) []contextBarGroup {
+func localGroups(links []linkwell.LinkRelation, currentPath string) []contextBarGroup {
 	var groups []contextBarGroup
 
 	// Prepend hub parent link if present, matching ContextBar behaviour.

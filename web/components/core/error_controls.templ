@@ -1,26 +1,26 @@
 package components
 
-import "catgoose/dothog/internal/routes/hypermedia"
+import "github.com/catgoose/linkwell"
 
 // ErrorControls renders a row of hypermedia action controls for an error response.
-templ ErrorControls(controls []hypermedia.Control) {
+templ ErrorControls(controls []linkwell.Control) {
 	if len(controls) > 0 {
 		<div class="mt-2 flex flex-wrap gap-2">
 			for _, ctrl := range controls {
 				switch ctrl.Kind {
-					case hypermedia.ControlKindRetry:
+					case linkwell.ControlKindRetry:
 						@retryButton(ctrl)
-					case hypermedia.ControlKindLink:
+					case linkwell.ControlKindLink:
 						@linkControl(ctrl)
-					case hypermedia.ControlKindHTMX:
+					case linkwell.ControlKindHTMX:
 						@htmxButton(ctrl)
-					case hypermedia.ControlKindDismiss:
+					case linkwell.ControlKindDismiss:
 						@dismissButton(ctrl)
-					case hypermedia.ControlKindBack:
+					case linkwell.ControlKindBack:
 						@errorBackButton(ctrl)
-					case hypermedia.ControlKindHome:
+					case linkwell.ControlKindHome:
 						@errorHomeButton(ctrl)
-				case hypermedia.ControlKindReport:
+				case linkwell.ControlKindReport:
 					@reportButton(ctrl)
 				}
 			}
@@ -28,8 +28,8 @@ templ ErrorControls(controls []hypermedia.Control) {
 	}
 }
 
-templ retryButton(ctrl hypermedia.Control) {
-	if ctrl.Variant == hypermedia.VariantPrimary {
+templ retryButton(ctrl linkwell.Control) {
+	if ctrl.Variant == linkwell.VariantPrimary {
 		<button
 			{ hxAttrsFromControl(ctrl)... }
 			class="inline-flex items-center px-3 py-1 text-xs font-medium rounded bg-error text-error-content hover:bg-error/80 focus:outline-none disabled:opacity-50"
@@ -48,7 +48,7 @@ templ retryButton(ctrl hypermedia.Control) {
 	}
 }
 
-templ linkControl(ctrl hypermedia.Control) {
+templ linkControl(ctrl linkwell.Control) {
 	<a
 		href={ templ.URL(ctrl.Href) }
 		class="inline-flex items-center px-3 py-1 text-xs font-medium rounded border border-base-content/20 bg-base-100 text-base-content hover:bg-base-200 focus:outline-none"
@@ -57,7 +57,7 @@ templ linkControl(ctrl hypermedia.Control) {
 	</a>
 }
 
-templ htmxButton(ctrl hypermedia.Control) {
+templ htmxButton(ctrl linkwell.Control) {
 	<button
 		{ hxAttrsFromControl(ctrl)... }
 		class="inline-flex items-center px-3 py-1 text-xs font-medium rounded border border-base-content/20 bg-base-100 text-base-content hover:bg-base-200 focus:outline-none disabled:opacity-50"
@@ -67,7 +67,7 @@ templ htmxButton(ctrl hypermedia.Control) {
 	</button>
 }
 
-templ dismissButton(ctrl hypermedia.Control) {
+templ dismissButton(ctrl linkwell.Control) {
 	<button
 		class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded text-error-content/70 hover:text-error-content hover:underline focus:outline-none"
 		_="on click set #error-status.innerHTML to ''"
@@ -76,7 +76,7 @@ templ dismissButton(ctrl hypermedia.Control) {
 	</button>
 }
 
-templ errorBackButton(ctrl hypermedia.Control) {
+templ errorBackButton(ctrl linkwell.Control) {
 	<button
 		class="inline-flex items-center px-3 py-1 text-xs font-medium rounded border border-base-content/20 bg-base-100 text-base-content hover:bg-base-200 focus:outline-none"
 		_="on click send show-alert(detail:'Go Back intercepted — this is where navigation would happen') to window"
@@ -85,7 +85,7 @@ templ errorBackButton(ctrl hypermedia.Control) {
 	</button>
 }
 
-templ errorHomeButton(ctrl hypermedia.Control) {
+templ errorHomeButton(ctrl linkwell.Control) {
 	<button
 		{ hxAttrsFromControl(ctrl)... }
 		class="inline-flex items-center px-3 py-1 text-xs font-medium rounded border border-base-content/20 bg-base-100 text-base-content hover:bg-base-200 focus:outline-none"
@@ -94,7 +94,7 @@ templ errorHomeButton(ctrl hypermedia.Control) {
 	</button>
 }
 
-templ reportButton(ctrl hypermedia.Control) {
+templ reportButton(ctrl linkwell.Control) {
 	<button
 		{ hxAttrsFromControl(ctrl)... }
 		class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded border border-error-content/30 bg-error-content/10 text-error-content hover:bg-error-content/20 focus:outline-none"

@@ -1,13 +1,13 @@
 package components
 
-import "catgoose/dothog/internal/routes/hypermedia"
+import "github.com/catgoose/linkwell"
 
 // filterTrigger returns the default hx-trigger string for each FilterKind.
-func filterTrigger(kind hypermedia.FilterKind) string {
+func filterTrigger(kind linkwell.FilterKind) string {
 	switch kind {
-	case hypermedia.FilterKindSearch:
+	case linkwell.FilterKindSearch:
 		return "keyup changed delay:400ms, search"
-	case hypermedia.FilterKindRange:
+	case linkwell.FilterKindRange:
 		return "change delay:300ms"
 	default:
 		// select, checkbox, date
@@ -21,7 +21,7 @@ func filterTrigger(kind hypermedia.FilterKind) string {
 //	hx-trigger=filterTrigger(field.Kind)
 //
 // Merges field.HTMXAttrs overrides (with "hx-" prefix) last so they win.
-func filterHxAttrs(field hypermedia.FilterField, bar hypermedia.FilterBar) templ.Attributes {
+func filterHxAttrs(field linkwell.FilterField, bar linkwell.FilterBar) templ.Attributes {
 	attrs := templ.Attributes{
 		"hx-get":     bar.Action,
 		"hx-target":  bar.Target,
@@ -35,9 +35,9 @@ func filterHxAttrs(field hypermedia.FilterField, bar hypermedia.FilterBar) templ
 }
 
 // filterBarHasSearch returns true if any field in the bar is a search field.
-func filterBarHasSearch(bar hypermedia.FilterBar) bool {
+func filterBarHasSearch(bar linkwell.FilterBar) bool {
 	for _, f := range bar.Fields {
-		if f.Kind == hypermedia.FilterKindSearch {
+		if f.Kind == linkwell.FilterKindSearch {
 			return true
 		}
 	}
@@ -46,12 +46,12 @@ func filterBarHasSearch(bar hypermedia.FilterBar) bool {
 
 // FilterBar renders the filter form. When a search field is present, it splits
 // into two rows: search full-width on top, other fields in a flex row below.
-templ FilterBar(bar hypermedia.FilterBar) {
+templ FilterBar(bar linkwell.FilterBar) {
 	if filterBarHasSearch(bar) {
 		<search>
 			<form id={ bar.ID } class="space-y-3 mb-4">
 				for _, field := range bar.Fields {
-					if field.Kind == hypermedia.FilterKindSearch {
+					if field.Kind == linkwell.FilterKindSearch {
 						<div>
 							@FilterField(field, bar)
 						</div>
@@ -59,7 +59,7 @@ templ FilterBar(bar hypermedia.FilterBar) {
 				}
 				<div class="flex flex-wrap gap-3 items-end">
 					for _, field := range bar.Fields {
-						if field.Kind != hypermedia.FilterKindSearch {
+						if field.Kind != linkwell.FilterKindSearch {
 							@FilterField(field, bar)
 						}
 					}
@@ -77,23 +77,23 @@ templ FilterBar(bar hypermedia.FilterBar) {
 
 // FilterField dispatches to the correct field renderer by Kind.
 // Exported so apps can build custom filter layouts using the standard field renderers.
-templ FilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) {
+templ FilterField(field linkwell.FilterField, bar linkwell.FilterBar) {
 	switch field.Kind {
-		case hypermedia.FilterKindSearch:
+		case linkwell.FilterKindSearch:
 			@searchFilterField(field, bar)
-		case hypermedia.FilterKindSelect:
+		case linkwell.FilterKindSelect:
 			@selectFilterField(field, bar)
-		case hypermedia.FilterKindRange:
+		case linkwell.FilterKindRange:
 			@rangeFilterField(field, bar)
-		case hypermedia.FilterKindCheckbox:
+		case linkwell.FilterKindCheckbox:
 			@checkboxFilterField(field, bar)
-		case hypermedia.FilterKindDate:
+		case linkwell.FilterKindDate:
 			@dateFilterField(field, bar)
 	}
 }
 
 // searchFilterField renders a DaisyUI text search input with label.
-templ searchFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) {
+templ searchFilterField(field linkwell.FilterField, bar linkwell.FilterBar) {
 	<label class="fieldset w-full max-w-xs">
 		if field.Label != "" {
 			<label class="label">{ field.Label }</label>
@@ -115,7 +115,7 @@ templ searchFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) 
 
 // selectFilterField renders a DaisyUI <select> dropdown with label.
 // The wrapping label carries data-filter={name} for OOB targeting by FilterGroup.
-templ selectFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) {
+templ selectFilterField(field linkwell.FilterField, bar linkwell.FilterBar) {
 	<label class="fieldset w-full max-w-xs" data-filter={ field.Name }>
 		if field.Label != "" {
 			<label class="label">{ field.Label }</label>
@@ -125,7 +125,7 @@ templ selectFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) 
 }
 
 // selectFilterOptions renders just the <select> element, reusable for OOB swaps.
-templ selectFilterOptions(field hypermedia.FilterField, bar hypermedia.FilterBar) {
+templ selectFilterOptions(field linkwell.FilterField, bar linkwell.FilterBar) {
 	<select
 		name={ field.Name }
 		class="select select-sm"
@@ -140,7 +140,7 @@ templ selectFilterOptions(field hypermedia.FilterField, bar hypermedia.FilterBar
 
 // FilterGroupOOB renders OOB swap fragments for all select fields in a FilterGroup.
 // Each fragment targets [data-filter='{name}'] and replaces the <select> element.
-templ FilterGroupOOB(group hypermedia.FilterGroup) {
+templ FilterGroupOOB(group linkwell.FilterGroup) {
 	for _, field := range group.SelectFields() {
 		<div hx-swap-oob={ "innerHTML:[data-filter='" + field.Name + "']" }>
 			if field.Label != "" {
@@ -152,7 +152,7 @@ templ FilterGroupOOB(group hypermedia.FilterGroup) {
 }
 
 // rangeFilterField renders a DaisyUI range slider with live value display via HyperScript.
-templ rangeFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) {
+templ rangeFilterField(field linkwell.FilterField, bar linkwell.FilterBar) {
 	<label class="fieldset w-full max-w-xs">
 		if field.Label != "" {
 			<label class="label">{ field.Label }</label>
@@ -174,7 +174,7 @@ templ rangeFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) {
 }
 
 // checkboxFilterField renders a DaisyUI toggle checkbox.
-templ checkboxFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) {
+templ checkboxFilterField(field linkwell.FilterField, bar linkwell.FilterBar) {
 	<label class="label cursor-pointer gap-2">
 		if field.Label != "" {
 			<span class="label-text">{ field.Label }</span>
@@ -192,7 +192,7 @@ templ checkboxFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar
 }
 
 // dateFilterField renders a DaisyUI date input with label.
-templ dateFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) {
+templ dateFilterField(field linkwell.FilterField, bar linkwell.FilterBar) {
 	<label class="fieldset w-full max-w-xs">
 		if field.Label != "" {
 			<label class="label">{ field.Label }</label>

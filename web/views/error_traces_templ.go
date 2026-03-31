@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/harmony/web/components/core"
 	"github.com/catgoose/promolog"
 )
@@ -33,7 +33,7 @@ func parseAttrs(attrs string) [][]string {
 }
 
 // ErrorTracesPage is the full page for /admin/error-traces.
-func ErrorTracesPage(bar hypermedia.FilterBar, tableContainer templ.Component) templ.Component {
+func ErrorTracesPage(bar linkwell.FilterBar, tableContainer templ.Component) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -75,7 +75,7 @@ func ErrorTracesPage(bar hypermedia.FilterBar, tableContainer templ.Component) t
 }
 
 // ErrorTracesTableContainer is the HTMX-replaceable fragment.
-func ErrorTracesTableContainer(cols []hypermedia.TableCol, body templ.Component, info hypermedia.PageInfo) templ.Component {
+func ErrorTracesTableContainer(cols []linkwell.TableCol, body templ.Component, info linkwell.PageInfo) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

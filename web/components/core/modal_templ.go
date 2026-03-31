@@ -8,18 +8,18 @@ package components
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "catgoose/harmony/internal/routes/hypermedia"
+import "github.com/catgoose/linkwell"
 
 // modalButtonClass returns the CSS class for a modal button based on its variant.
-func modalButtonClass(variant hypermedia.ControlVariant) string {
+func modalButtonClass(variant linkwell.ControlVariant) string {
 	switch variant {
-	case hypermedia.VariantPrimary:
+	case linkwell.VariantPrimary:
 		return "btn btn-primary btn-sm"
-	case hypermedia.VariantDanger:
+	case linkwell.VariantDanger:
 		return "btn btn-error btn-sm"
-	case hypermedia.VariantSecondary:
+	case linkwell.VariantSecondary:
 		return "btn btn-secondary btn-sm"
-	case hypermedia.VariantGhost:
+	case linkwell.VariantGhost:
 		return "btn btn-ghost btn-sm"
 	default:
 		return "btn btn-ghost btn-sm"
@@ -30,7 +30,7 @@ func modalButtonClass(variant hypermedia.ControlVariant) string {
 // Opened via Alpine: `x-on:click="$refs.modal.showModal()"` or getElementById.
 // Closed via `<form method="dialog">` buttons or ESC key.
 // Child content is rendered inside the modal body between the title and action buttons.
-func Modal(cfg hypermedia.ModalConfig) templ.Component {
+func Modal(cfg linkwell.ModalConfig) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -90,7 +90,7 @@ func Modal(cfg hypermedia.ModalConfig) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		for _, btn := range cfg.Buttons {
-			if btn.Role == hypermedia.ModalRoleCancel {
+			if btn.Role == linkwell.ModalRoleCancel {
 				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<form method=\"dialog\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -130,7 +130,7 @@ func Modal(cfg hypermedia.ModalConfig) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-			} else if btn.Role == hypermedia.ModalRolePrimary && cfg.HxPost != "" {
+			} else if btn.Role == linkwell.ModalRolePrimary && cfg.HxPost != "" {
 				var templ_7745c5c3_Var7 = []any{modalButtonClass(btn.Variant)}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var7...)
 				if templ_7745c5c3_Err != nil {
@@ -234,7 +234,7 @@ func Modal(cfg hypermedia.ModalConfig) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-			} else if btn.Role == hypermedia.ModalRoleSecondary {
+			} else if btn.Role == linkwell.ModalRoleSecondary {
 				var templ_7745c5c3_Var14 = []any{modalButtonClass(btn.Variant)}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var14...)
 				if templ_7745c5c3_Err != nil {

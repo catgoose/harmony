@@ -1,9 +1,11 @@
 package views
 
+// setup:feature:demo:start
 import "catgoose/dothog/internal/version"
+// setup:feature:demo:end
 
 // AppSettingsPage renders the /settings page organized into collapsible sections.
-templ AppSettingsPage(currentTheme string, currentLayout string) {
+templ AppSettingsPage(currentTheme string) {
 	<div class="max-w-2xl mx-auto space-y-6">
 		<h1 class="text-2xl font-bold">Settings</h1>
 		<div class="card bg-base-100 shadow-sm border border-base-300">
@@ -18,25 +20,11 @@ templ AppSettingsPage(currentTheme string, currentLayout string) {
 								@themeDropdown(currentTheme)
 							</div>
 						</div>
-						<div>
-							<h3 class="text-sm font-medium">Layout</h3>
-							<p class="text-sm text-base-content/70">Switch between the classic top nav and a mobile-first bottom nav.</p>
-							<div class="mt-2 max-w-xs">
-								<select
-									class="select select-bordered select-sm w-full"
-									name="layout"
-									hx-post="/settings/layout"
-									hx-swap="none"
-								>
-									<option value="classic" selected?={ currentLayout == "classic" }>Classic (top nav)</option>
-									<option value="app" selected?={ currentLayout == "app" }>App Nav (mobile-first)</option>
-								</select>
-							</div>
-						</div>
 					</div>
 				</details>
 			</div>
 		</div>
+		// setup:feature:demo:start
 		<div class="card bg-base-100 shadow-sm border border-base-300">
 			<div class="card-body">
 				<details>
@@ -98,6 +86,8 @@ templ AppSettingsPage(currentTheme string, currentLayout string) {
 				</details>
 			</div>
 		</div>
+		// setup:feature:demo:end
+		// setup:feature:demo:start
 		<div class="card bg-base-100 shadow-sm border border-base-300">
 			<div class="card-body">
 				<details>
@@ -114,6 +104,7 @@ templ AppSettingsPage(currentTheme string, currentLayout string) {
 				</details>
 			</div>
 		</div>
+		// setup:feature:demo:end
 	</div>
 }
 
@@ -130,7 +121,7 @@ templ themeDropdown(currentTheme string) {
 			<select
 				class="select select-bordered select-sm w-full max-w-xs capitalize"
 				x-model="current"
-				x-on:change={ "document.documentElement.dataset.theme = current; var t = document.querySelector('meta[name=\"csrf-token\"]'); fetch('/settings/theme', { method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRF-Token': t ? t.content : ''}, body: 'theme=' + current }); if (window.dothogChannel) window.dothogChannel.postMessage({type:'theme-change',theme:current})" }
+				x-on:change={ "document.documentElement.dataset.theme = current; var t = document.querySelector('meta[name=\"csrf-token\"]'); fetch('/settings/theme', { method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRF-Token': t ? t.content : ''}, body: 'theme=' + current }); if (window.appChannel) window.appChannel.postMessage({type:'theme-change',theme:current})" }
 			>
 				for _, cat := range ThemeCategories {
 					<optgroup label={ cat.Label }>
@@ -152,7 +143,7 @@ templ themeDropdown(currentTheme string) {
 								type="button"
 								:class={ "current === '" + theme + "' ? 'ring-2 ring-primary ring-offset-1' : ''" }
 								class="rounded-md overflow-hidden cursor-pointer"
-								x-on:click={ "current = '" + theme + "'; document.documentElement.dataset.theme = current; var t = document.querySelector('meta[name=\"csrf-token\"]'); fetch('/settings/theme', { method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRF-Token': t ? t.content : ''}, body: 'theme=' + current }); if (window.dothogChannel) window.dothogChannel.postMessage({type:'theme-change',theme:current})" }
+								x-on:click={ "current = '" + theme + "'; document.documentElement.dataset.theme = current; var t = document.querySelector('meta[name=\"csrf-token\"]'); fetch('/settings/theme', { method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRF-Token': t ? t.content : ''}, body: 'theme=' + current }); if (window.appChannel) window.appChannel.postMessage({type:'theme-change',theme:current})" }
 								title={ theme }
 							>
 								<div data-theme={ theme } class="flex gap-0.5 p-1 bg-base-100">

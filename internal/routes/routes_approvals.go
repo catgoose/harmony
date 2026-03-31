@@ -8,7 +8,7 @@ import (
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
 	"catgoose/harmony/internal/routes/params"
-	"catgoose/harmony/internal/ssebroker"
+	"github.com/catgoose/tavern"
 	"catgoose/harmony/web/views"
 
 	"github.com/labstack/echo/v4"
@@ -17,10 +17,10 @@ import (
 type approvalRoutes struct {
 	queue  *demo.ApprovalQueue
 	actLog *demo.ActivityLog
-	broker *ssebroker.SSEBroker
+	broker *tavern.SSEBroker
 }
 
-func (ar *appRoutes) initApprovalRoutes(queue *demo.ApprovalQueue, actLog *demo.ActivityLog, broker *ssebroker.SSEBroker) {
+func (ar *appRoutes) initApprovalRoutes(queue *demo.ApprovalQueue, actLog *demo.ActivityLog, broker *tavern.SSEBroker) {
 	a := &approvalRoutes{queue: queue, actLog: actLog, broker: broker}
 	ar.e.GET("/demo/approvals", a.handleApprovalsPage)
 	ar.e.PATCH("/demo/approvals/:id", a.handleApprovalAction)

@@ -10,7 +10,7 @@ import (
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/logger"
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	"catgoose/harmony/web/views"
 
 	"github.com/a-h/templ"
@@ -120,13 +120,13 @@ func (b *bulkRoutes) doBulkAction(c echo.Context, actionFn func(ctx context.Cont
 	return failedIDs
 }
 
-func (b *bulkRoutes) buildBulkContent(c echo.Context) (hypermedia.FilterBar, templ.Component, error) {
+func (b *bulkRoutes) buildBulkContent(c echo.Context) (linkwell.FilterBar, templ.Component, error) {
 	const perPage = 20
 	tc, err := buildTableContent(c, b.db, parseTableParams(c, perPage),
 		bulkBase+"/items", "#bulk-table-container",
 	)
 	if err != nil {
-		return hypermedia.FilterBar{}, nil, err
+		return linkwell.FilterBar{}, nil, err
 	}
 	body := views.BulkItemsBody(tc.Items)
 	container := views.BulkTableContainer(tc.Cols, body, tc.Info)

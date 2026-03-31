@@ -11,11 +11,12 @@ import (
 
 	"catgoose/harmony/internal/logger"
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	"catgoose/harmony/internal/routes/middleware"
-	"catgoose/harmony/internal/routes/response"
+	corecomponents "catgoose/harmony/web/components/core"
 	"catgoose/harmony/web/views"
 
+	"github.com/catgoose/flighty"
 	"github.com/labstack/echo/v4"
 )
 
@@ -95,23 +96,23 @@ func (ar *appRoutes) initErrorsRoutes() {
 	// OOB warning — returns success content plus an OOB error banner.
 	ar.e.GET(base+"/oob-warning", func(c echo.Context) error {
 		requestID := middleware.GetRequestID(c)
-		ec := hypermedia.ErrorContext{
+		ec := linkwell.ErrorContext{
 			StatusCode: http.StatusOK,
 			Message:    "Data loaded with warnings — some fields may be stale",
 			Err:        errors.New("upstream cache returned partial data"),
 			Route:      c.Request().URL.Path,
 			RequestID:  requestID,
 			Closable:   true,
-			OOBTarget:  hypermedia.DefaultErrorStatusTarget,
+			OOBTarget:  linkwell.DefaultErrorStatusTarget,
 			OOBSwap:    "innerHTML",
-			Controls: []hypermedia.Control{
-				hypermedia.DismissButton(hypermedia.LabelDismiss),
-				hypermedia.ReportIssueButton(hypermedia.LabelReportIssue, requestID),
+			Controls: []linkwell.Control{
+				linkwell.DismissButton(linkwell.LabelDismiss),
+				linkwell.ReportIssueButton(linkwell.LabelReportIssue, requestID),
 			},
 		}
-		return response.New(c).
+		return flighty.New(c).
 			Component(views.ErrorsOOBSuccess()).
-			OOBErrorStatus(ec).
+			OOB(corecomponents.ErrorStatusFromContext(ec)).
 			Send()
 	})
 
@@ -121,18 +122,18 @@ func (ar *appRoutes) initErrorsRoutes() {
 		if n%2 == 1 {
 			requestID := middleware.GetRequestID(c)
 			c.Response().Status = http.StatusInternalServerError
-			ec := hypermedia.ErrorContext{
+			ec := linkwell.ErrorContext{
 				StatusCode: http.StatusInternalServerError,
 				Message:    "Service temporarily unavailable",
 				Err:        errors.New("connection to upstream timed out"),
 				Route:      c.Request().URL.Path,
 				RequestID:  requestID,
 				Closable:   true,
-				Controls: []hypermedia.Control{
-					hypermedia.RetryButton("Retry", hypermedia.HxMethodGet,
+				Controls: []linkwell.Control{
+					linkwell.RetryButton("Retry", linkwell.HxMethodGet,
 						base+"/flaky", "#errors-retry-result").
 						WithErrorTarget("#errors-retry-result"),
-					hypermedia.ReportIssueButton(hypermedia.LabelReportIssue, requestID),
+					linkwell.ReportIssueButton(linkwell.LabelReportIssue, requestID),
 				},
 			}
 			return handler.RenderComponent(c, views.GalleryErrorPanel("flaky-error", ec))

@@ -7,7 +7,7 @@ import (
 	"math"
 	"time"
 
-	"catgoose/harmony/internal/ssebroker"
+	"github.com/catgoose/tavern"
 )
 
 // --- Dashboard data types ---
@@ -233,7 +233,7 @@ type statsEntry struct {
 	Section string
 }
 
-func statsEntries(s ssebroker.SystemStats) []statsEntry {
+func statsEntries(s tavern.SystemStats) []statsEntry {
 	return []statsEntry{
 		// Runtime
 		{"stat-uptime", "Uptime", s.Uptime, "Runtime"},

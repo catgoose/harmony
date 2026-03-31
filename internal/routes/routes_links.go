@@ -2,7 +2,7 @@
 
 package routes
 
-import "catgoose/harmony/internal/routes/hypermedia"
+import "github.com/catgoose/linkwell"
 
 // initLinkRelations registers all link relation declarations for the app.
 // Hubs define parent→child discovery pages. Rings define peer groups.
@@ -10,141 +10,141 @@ import "catgoose/harmony/internal/routes/hypermedia"
 func (ar *appRoutes) initLinkRelations() {
 	// ── Hubs (discovery / index pages) ──────────────────────────────
 
-	hypermedia.Hub("/demo", "Demo",
-		hypermedia.Rel("/demo/inventory", "Inventory"),
-		hypermedia.Rel("/demo/catalog", "Catalog"),
-		hypermedia.Rel("/demo/people", "People"),
-		hypermedia.Rel("/demo/kanban", "Kanban"),
-		hypermedia.Rel("/demo/approvals", "Approvals"),
-		hypermedia.Rel("/demo/vendors", "Vendors"),
-		hypermedia.Rel("/demo/feed", "Feed"),
-		hypermedia.Rel("/demo/canvas", "Canvas"),
-		hypermedia.Rel("/demo/settings", "Settings"),
-		hypermedia.Rel("/demo/bulk", "Bulk"),
-		hypermedia.Rel("/demo/logging", "Logging"),
-		hypermedia.Rel("/demo/repository", "Repository"),
-		hypermedia.Rel("/dashboard", "Dashboard"),
-		hypermedia.Rel("/pwa", "PWA Offline"),
+	linkwell.Hub("/demo", "Demo",
+		linkwell.Rel("/demo/inventory", "Inventory"),
+		linkwell.Rel("/demo/catalog", "Catalog"),
+		linkwell.Rel("/demo/people", "People"),
+		linkwell.Rel("/demo/kanban", "Kanban"),
+		linkwell.Rel("/demo/approvals", "Approvals"),
+		linkwell.Rel("/demo/vendors", "Vendors"),
+		linkwell.Rel("/demo/feed", "Feed"),
+		linkwell.Rel("/demo/canvas", "Canvas"),
+		linkwell.Rel("/demo/settings", "Settings"),
+		linkwell.Rel("/demo/bulk", "Bulk"),
+		linkwell.Rel("/demo/logging", "Logging"),
+		linkwell.Rel("/demo/repository", "Repository"),
+		linkwell.Rel("/dashboard", "Dashboard"),
+		linkwell.Rel("/pwa", "PWA Offline"),
 	)
 
-	hypermedia.Hub("/hypermedia", "Hypermedia",
-		hypermedia.Rel("/hypermedia/controls", "Controls"),
-		hypermedia.Rel("/hypermedia/crud", "CRUD"),
-		hypermedia.Rel("/hypermedia/lists", "Lists"),
-		hypermedia.Rel("/hypermedia/interactions", "Interactions"),
-		hypermedia.Rel("/hypermedia/state", "State"),
-		hypermedia.Rel("/hypermedia/errors", "Errors"),
-		hypermedia.Rel("/hypermedia/components", "Components"),
-		hypermedia.Rel("/hypermedia/components2", "Components 2"),
-		hypermedia.Rel("/hypermedia/components3", "Components 3"),
-		hypermedia.Rel("/hypermedia/realtime", "Realtime"),
-		hypermedia.Rel("/hypermedia/links", "Links"),
-		hypermedia.Rel("/hypermedia/hal", "HAL"),
-		hypermedia.Rel("/hypermedia/standards", "Standards"),
+	linkwell.Hub("/hypermedia", "Hypermedia",
+		linkwell.Rel("/hypermedia/controls", "Controls"),
+		linkwell.Rel("/hypermedia/crud", "CRUD"),
+		linkwell.Rel("/hypermedia/lists", "Lists"),
+		linkwell.Rel("/hypermedia/interactions", "Interactions"),
+		linkwell.Rel("/hypermedia/state", "State"),
+		linkwell.Rel("/hypermedia/errors", "Errors"),
+		linkwell.Rel("/hypermedia/components", "Components"),
+		linkwell.Rel("/hypermedia/components2", "Components 2"),
+		linkwell.Rel("/hypermedia/components3", "Components 3"),
+		linkwell.Rel("/hypermedia/realtime", "Realtime"),
+		linkwell.Rel("/hypermedia/links", "Links"),
+		linkwell.Rel("/hypermedia/hal", "HAL"),
+		linkwell.Rel("/hypermedia/standards", "Standards"),
 	)
 
-	hypermedia.Hub("/admin", "Admin",
-		hypermedia.Rel("/admin/health", "Health"),
-		hypermedia.Rel("/admin/sessions", "Sessions"),
-		hypermedia.Rel("/admin/settings", "Control Panel"),
-		hypermedia.Rel("/admin/error-traces", "Error Traces"),
-		hypermedia.Rel("/admin/error-reports", "Error Reports"),
-		hypermedia.Rel("/admin/system", "System"),
-		hypermedia.Rel("/admin/config", "Config"),
+	linkwell.Hub("/admin", "Admin",
+		linkwell.Rel("/admin/health", "Health"),
+		linkwell.Rel("/admin/sessions", "Sessions"),
+		linkwell.Rel("/admin/settings", "Control Panel"),
+		linkwell.Rel("/admin/error-traces", "Error Traces"),
+		linkwell.Rel("/admin/error-reports", "Error Reports"),
+		linkwell.Rel("/admin/system", "System"),
+		linkwell.Rel("/admin/config", "Config"),
 	)
 
-	hypermedia.Hub("/dashboard", "Dashboard",
-		hypermedia.Rel("/demo/inventory", "Inventory"),
-		hypermedia.Rel("/demo/people", "People"),
-		hypermedia.Rel("/demo/kanban", "Kanban"),
-		hypermedia.Rel("/demo/approvals", "Approvals"),
-		hypermedia.Rel("/demo/vendors", "Vendors"),
-		hypermedia.Rel("/demo/feed", "Feed"),
+	linkwell.Hub("/dashboard", "Dashboard",
+		linkwell.Rel("/demo/inventory", "Inventory"),
+		linkwell.Rel("/demo/people", "People"),
+		linkwell.Rel("/demo/kanban", "Kanban"),
+		linkwell.Rel("/demo/approvals", "Approvals"),
+		linkwell.Rel("/demo/vendors", "Vendors"),
+		linkwell.Rel("/demo/feed", "Feed"),
 	)
 
 	// ── Rings (peer groups) ─────────────────────────────────────────
 
 	// Demo: data management pages
-	hypermedia.Ring("Data",
-		hypermedia.Rel("/demo/inventory", "Inventory"),
-		hypermedia.Rel("/demo/catalog", "Catalog"),
-		hypermedia.Rel("/demo/bulk", "Bulk Ops"),
-		hypermedia.Rel("/demo/people", "People"),
-		hypermedia.Rel("/demo/vendors", "Vendors"),
+	linkwell.Ring("Data",
+		linkwell.Rel("/demo/inventory", "Inventory"),
+		linkwell.Rel("/demo/catalog", "Catalog"),
+		linkwell.Rel("/demo/bulk", "Bulk Ops"),
+		linkwell.Rel("/demo/people", "People"),
+		linkwell.Rel("/demo/vendors", "Vendors"),
 	)
 
 	// Demo: workflow and process pages
-	hypermedia.Ring("Workflow",
-		hypermedia.Rel("/demo/kanban", "Kanban"),
-		hypermedia.Rel("/demo/approvals", "Approvals"),
-		hypermedia.Rel("/demo/feed", "Feed"),
+	linkwell.Ring("Workflow",
+		linkwell.Rel("/demo/kanban", "Kanban"),
+		linkwell.Rel("/demo/approvals", "Approvals"),
+		linkwell.Rel("/demo/feed", "Feed"),
 	)
 
 	// Demo: tools and utilities
-	hypermedia.Ring("Utility",
-		hypermedia.Rel("/demo/logging", "Logging"),
-		hypermedia.Rel("/demo/canvas", "Canvas"),
-		hypermedia.Rel("/demo/settings", "Settings"),
-		hypermedia.Rel("/demo/repository", "Repository"),
+	linkwell.Ring("Utility",
+		linkwell.Rel("/demo/logging", "Logging"),
+		linkwell.Rel("/demo/canvas", "Canvas"),
+		linkwell.Rel("/demo/settings", "Settings"),
+		linkwell.Rel("/demo/repository", "Repository"),
 	)
 
 	// Demo: dashboard children are also peers
-	hypermedia.Ring("Dashboard",
-		hypermedia.Rel("/demo/inventory", "Inventory"),
-		hypermedia.Rel("/demo/people", "People"),
-		hypermedia.Rel("/demo/kanban", "Kanban"),
-		hypermedia.Rel("/demo/approvals", "Approvals"),
-		hypermedia.Rel("/demo/vendors", "Vendors"),
-		hypermedia.Rel("/demo/feed", "Feed"),
+	linkwell.Ring("Dashboard",
+		linkwell.Rel("/demo/inventory", "Inventory"),
+		linkwell.Rel("/demo/people", "People"),
+		linkwell.Rel("/demo/kanban", "Kanban"),
+		linkwell.Rel("/demo/approvals", "Approvals"),
+		linkwell.Rel("/demo/vendors", "Vendors"),
+		linkwell.Rel("/demo/feed", "Feed"),
 	)
 
 	// Hypermedia: pattern pages
-	hypermedia.Ring("Patterns",
-		hypermedia.Rel("/hypermedia/controls", "Controls"),
-		hypermedia.Rel("/hypermedia/crud", "CRUD"),
-		hypermedia.Rel("/hypermedia/lists", "Lists"),
-		hypermedia.Rel("/hypermedia/interactions", "Interactions"),
-		hypermedia.Rel("/hypermedia/state", "State"),
-		hypermedia.Rel("/hypermedia/errors", "Errors"),
-		hypermedia.Rel("/hypermedia/realtime", "Realtime"),
-		hypermedia.Rel("/hypermedia/links", "Links"),
-		hypermedia.Rel("/hypermedia/hal", "HAL"),
-		hypermedia.Rel("/hypermedia/standards", "Standards"),
+	linkwell.Ring("Patterns",
+		linkwell.Rel("/hypermedia/controls", "Controls"),
+		linkwell.Rel("/hypermedia/crud", "CRUD"),
+		linkwell.Rel("/hypermedia/lists", "Lists"),
+		linkwell.Rel("/hypermedia/interactions", "Interactions"),
+		linkwell.Rel("/hypermedia/state", "State"),
+		linkwell.Rel("/hypermedia/errors", "Errors"),
+		linkwell.Rel("/hypermedia/realtime", "Realtime"),
+		linkwell.Rel("/hypermedia/links", "Links"),
+		linkwell.Rel("/hypermedia/hal", "HAL"),
+		linkwell.Rel("/hypermedia/standards", "Standards"),
 	)
 
 	// Hypermedia: component gallery pages
-	hypermedia.Ring("Components",
-		hypermedia.Rel("/hypermedia/components", "Components"),
-		hypermedia.Rel("/hypermedia/components2", "Components 2"),
-		hypermedia.Rel("/hypermedia/components3", "Components 3"),
+	linkwell.Ring("Components",
+		linkwell.Rel("/hypermedia/components", "Components"),
+		linkwell.Rel("/hypermedia/components2", "Components 2"),
+		linkwell.Rel("/hypermedia/components3", "Components 3"),
 	)
 
 	// Admin: operational pages
-	hypermedia.Ring("Admin Ops",
-		hypermedia.Rel("/admin/health", "Health"),
-		hypermedia.Rel("/admin/error-traces", "Error Traces"),
-		hypermedia.Rel("/admin/error-reports", "Error Reports"),
-		hypermedia.Rel("/admin/sessions", "Sessions"),
-		hypermedia.Rel("/admin/settings", "Control Panel"),
+	linkwell.Ring("Admin Ops",
+		linkwell.Rel("/admin/health", "Health"),
+		linkwell.Rel("/admin/error-traces", "Error Traces"),
+		linkwell.Rel("/admin/error-reports", "Error Reports"),
+		linkwell.Rel("/admin/sessions", "Sessions"),
+		linkwell.Rel("/admin/settings", "Control Panel"),
 	)
 
 	// Admin: system introspection
-	hypermedia.Ring("System",
-		hypermedia.Rel("/admin/system", "System"),
-		hypermedia.Rel("/admin/config", "Config"),
-		hypermedia.Rel("/admin/health", "Health"),
-		hypermedia.Rel("/admin/error-traces", "Error Traces"),
+	linkwell.Ring("System",
+		linkwell.Rel("/admin/system", "System"),
+		linkwell.Rel("/admin/config", "Config"),
+		linkwell.Rel("/admin/health", "Health"),
+		linkwell.Rel("/admin/error-traces", "Error Traces"),
 	)
 
 	// ── Settings ────────────────────────────────────────────────────
 
-	hypermedia.Link("/settings", "related", "/user/settings", "Preferences")
-	hypermedia.Link("/settings", "related", "/admin/config", "Admin Config")
-	hypermedia.Link("/settings", "related", "/admin/settings", "Control Panel")
+	linkwell.Link("/settings", "related", "/user/settings", "Preferences")
+	linkwell.Link("/settings", "related", "/admin/config", "Admin Config")
+	linkwell.Link("/settings", "related", "/admin/settings", "Control Panel")
 
 	// ── Action relations ────────────────────────────────────────────
 
 	// List pages with create forms
-	hypermedia.Link("/demo/inventory", "create-form", "/demo/inventory/items/new", "New Item")
-	hypermedia.Link("/demo/repository", "create-form", "/demo/repository/tasks", "New Task")
+	linkwell.Link("/demo/inventory", "create-form", "/demo/inventory/items/new", "New Item")
+	linkwell.Link("/demo/repository", "create-form", "/demo/repository/tasks", "New Task")
 }

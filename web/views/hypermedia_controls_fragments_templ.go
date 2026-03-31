@@ -14,7 +14,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/harmony/web/components/core"
 )
 
@@ -301,7 +301,7 @@ func ResourceViewFragment(name, desc string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.Controls(hypermedia.ResourceActions(hypermedia.ResourceActionCfg{
+		templ_7745c5c3_Err = components.Controls(linkwell.ResourceActions(linkwell.ResourceActionCfg{
 			EditURL:    "/hypermedia/controls/resource/edit",
 			DeleteURL:  "/hypermedia/controls/resource",
 			ConfirmMsg: "Delete this resource?",
@@ -428,7 +428,7 @@ func FormDemoFragment() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.Controls(hypermedia.FormActions("/hypermedia/controls")).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.Controls(linkwell.FormActions("/hypermedia/controls")).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -521,13 +521,13 @@ func EmptyStateFragment() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.Controls([]hypermedia.Control{
+		templ_7745c5c3_Err = components.Controls([]linkwell.Control{
 			{
-				Kind:      hypermedia.ControlKindHTMX,
+				Kind:      linkwell.ControlKindHTMX,
 				Label:     "Create Item",
-				Variant:   hypermedia.VariantPrimary,
-				HxRequest: hypermedia.HxPost("/hypermedia/controls/items", "#items-demo"),
-				Swap:      hypermedia.SwapInnerHTML,
+				Variant:   linkwell.VariantPrimary,
+				HxRequest: linkwell.HxPost("/hypermedia/controls/items", "#items-demo"),
+				Swap:      linkwell.SwapInnerHTML,
 			},
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
@@ -830,7 +830,7 @@ func RowViewFragment(item GalleryRowItem) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.Controls(hypermedia.RowActions(hypermedia.RowActionCfg{
+		templ_7745c5c3_Err = components.Controls(linkwell.RowActions(linkwell.RowActionCfg{
 			EditURL:    fmt.Sprintf("/hypermedia/controls/rows/%d/edit", item.ID),
 			DeleteURL:  fmt.Sprintf("/hypermedia/controls/rows/%d", item.ID),
 			RowTarget:  fmt.Sprintf("#cg-row-%d", item.ID),
@@ -971,7 +971,7 @@ func RowEditFragment(item GalleryRowItem) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.Controls(hypermedia.RowFormActions(hypermedia.RowFormActionCfg{
+		templ_7745c5c3_Err = components.Controls(linkwell.RowFormActions(linkwell.RowFormActionCfg{
 			SaveURL:      fmt.Sprintf("/hypermedia/controls/rows/%d", item.ID),
 			CancelURL:    fmt.Sprintf("/hypermedia/controls/rows/%d", item.ID),
 			SaveTarget:   fmt.Sprintf("#cg-row-%d", item.ID),
@@ -993,7 +993,7 @@ func RowEditFragment(item GalleryRowItem) templ.Component {
 // GalleryErrorPanel renders an inline error with a stacked layout and a unified
 // Dismiss + Report joined button group. Each panel has its own ID so multiple
 // can coexist.
-func GalleryErrorPanel(panelID string, ec hypermedia.ErrorContext) templ.Component {
+func GalleryErrorPanel(panelID string, ec linkwell.ErrorContext) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

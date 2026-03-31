@@ -8,18 +8,18 @@ package components
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "catgoose/harmony/internal/routes/hypermedia"
+import "github.com/catgoose/linkwell"
 
 // variantClass maps a ControlVariant to the corresponding DaisyUI btn modifier class.
-func variantClass(v hypermedia.ControlVariant) string {
+func variantClass(v linkwell.ControlVariant) string {
 	switch v {
-	case hypermedia.VariantPrimary:
+	case linkwell.VariantPrimary:
 		return "btn-primary"
-	case hypermedia.VariantDanger:
+	case linkwell.VariantDanger:
 		return "btn-error"
-	case hypermedia.VariantGhost:
+	case linkwell.VariantGhost:
 		return "btn-ghost"
-	case hypermedia.VariantLink:
+	case linkwell.VariantLink:
 		return "btn-link"
 	default:
 		return "btn-secondary"
@@ -28,7 +28,7 @@ func variantClass(v hypermedia.ControlVariant) string {
 
 // InlineAlertControls renders controls styled for use inside DaisyUI alerts.
 // Buttons use btn-outline to inherit the alert's color context.
-func InlineAlertControls(controls []hypermedia.Control) templ.Component {
+func InlineAlertControls(controls []linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -69,7 +69,7 @@ func InlineAlertControls(controls []hypermedia.Control) templ.Component {
 	})
 }
 
-func inlineAlertControl(ctrl hypermedia.Control) templ.Component {
+func inlineAlertControl(ctrl linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -91,7 +91,7 @@ func inlineAlertControl(ctrl hypermedia.Control) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		switch ctrl.Kind {
-		case hypermedia.ControlKindReport:
+		case linkwell.ControlKindReport:
 			templ_7745c5c3_Err = genericReportButton(ctrl).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -106,7 +106,7 @@ func inlineAlertControl(ctrl hypermedia.Control) templ.Component {
 	})
 }
 
-func inlineAlertButton(ctrl hypermedia.Control) templ.Component {
+func inlineAlertButton(ctrl linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -172,7 +172,7 @@ func inlineAlertButton(ctrl hypermedia.Control) templ.Component {
 
 // Controls renders a flex row of generic DaisyUI-styled controls.
 // Use outside error contexts (CRUD action bars, form footers, empty states).
-func Controls(controls []hypermedia.Control) templ.Component {
+func Controls(controls []linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -213,7 +213,7 @@ func Controls(controls []hypermedia.Control) templ.Component {
 	})
 }
 
-func control(ctrl hypermedia.Control) templ.Component {
+func control(ctrl linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -235,37 +235,37 @@ func control(ctrl hypermedia.Control) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		switch ctrl.Kind {
-		case hypermedia.ControlKindRetry:
+		case linkwell.ControlKindRetry:
 			templ_7745c5c3_Err = genericButton(ctrl).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-		case hypermedia.ControlKindHTMX:
+		case linkwell.ControlKindHTMX:
 			templ_7745c5c3_Err = genericButton(ctrl).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-		case hypermedia.ControlKindBack:
+		case linkwell.ControlKindBack:
 			templ_7745c5c3_Err = backButton(ctrl).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-		case hypermedia.ControlKindHome:
+		case linkwell.ControlKindHome:
 			templ_7745c5c3_Err = homeButton(ctrl).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-		case hypermedia.ControlKindLink:
+		case linkwell.ControlKindLink:
 			templ_7745c5c3_Err = genericLink(ctrl).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-		case hypermedia.ControlKindDismiss:
+		case linkwell.ControlKindDismiss:
 			templ_7745c5c3_Err = genericDismiss(ctrl).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-		case hypermedia.ControlKindReport:
+		case linkwell.ControlKindReport:
 			templ_7745c5c3_Err = genericReportButton(ctrl).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -275,7 +275,7 @@ func control(ctrl hypermedia.Control) templ.Component {
 	})
 }
 
-func genericButton(ctrl hypermedia.Control) templ.Component {
+func genericButton(ctrl linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -357,7 +357,7 @@ func genericButton(ctrl hypermedia.Control) templ.Component {
 	})
 }
 
-func backButton(ctrl hypermedia.Control) templ.Component {
+func backButton(ctrl linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -431,7 +431,7 @@ func backButton(ctrl hypermedia.Control) templ.Component {
 	})
 }
 
-func homeButton(ctrl hypermedia.Control) templ.Component {
+func homeButton(ctrl linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -518,7 +518,7 @@ func homeButton(ctrl hypermedia.Control) templ.Component {
 	})
 }
 
-func genericLink(ctrl hypermedia.Control) templ.Component {
+func genericLink(ctrl linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -595,7 +595,7 @@ func genericLink(ctrl hypermedia.Control) templ.Component {
 	})
 }
 
-func genericDismiss(ctrl hypermedia.Control) templ.Component {
+func genericDismiss(ctrl linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -659,7 +659,7 @@ func genericDismiss(ctrl hypermedia.Control) templ.Component {
 	})
 }
 
-func genericReportButton(ctrl hypermedia.Control) templ.Component {
+func genericReportButton(ctrl linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

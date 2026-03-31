@@ -6,24 +6,24 @@ import (
 	"strconv"
 
 	"catgoose/dothog/internal/demo"
-	"catgoose/dothog/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/dothog/web/components/core"
 )
 
 // InventoryPage is the full page content for /demo/inventory.
 // The FilterBar lives outside the table container so it is never replaced by HTMX swaps.
-templ InventoryPage(bar hypermedia.FilterBar, tableContainer templ.Component) {
+templ InventoryPage(bar linkwell.FilterBar, tableContainer templ.Component) {
 	<div class="p-4 space-y-4">
 		<div class="flex items-center justify-between">
 			<h1 class="text-2xl font-bold">📦 Items Inventory</h1>
 			<div class="flex items-center gap-2">
-				@components.Controls([]hypermedia.Control{
+				@components.Controls([]linkwell.Control{
 					{
-						Kind:    hypermedia.ControlKindHTMX,
+						Kind:    linkwell.ControlKindHTMX,
 						Label:   "+ Add Item",
-						Variant: hypermedia.VariantPrimary,
-						Swap:    hypermedia.SwapOuterHTML,
-						HxRequest: hypermedia.HxGet("/demo/inventory/items/new", "#new-item-row"),
+						Variant: linkwell.VariantPrimary,
+						Swap:    linkwell.SwapOuterHTML,
+						HxRequest: linkwell.HxGet("/demo/inventory/items/new", "#new-item-row"),
 					},
 				})
 				<a href="/hypermedia/controls" class="btn btn-sm btn-ghost">Hypermedia Controls →</a>
@@ -35,7 +35,7 @@ templ InventoryPage(bar hypermedia.FilterBar, tableContainer templ.Component) {
 }
 
 // InventoryTableContainer is the replaceable fragment targeted by filter/sort/page HTMX requests.
-templ InventoryTableContainer(cols []hypermedia.TableCol, body templ.Component, info hypermedia.PageInfo) {
+templ InventoryTableContainer(cols []linkwell.TableCol, body templ.Component, info linkwell.PageInfo) {
 	<div id="inventory-table-container">
 		@components.Table(cols, body, info)
 	</div>
@@ -70,7 +70,7 @@ templ InventoryItemRow(item demo.Item) {
 			}
 		</td>
 		<td>
-			@components.Controls(hypermedia.TableRowActions(hypermedia.TableRowActionCfg{
+			@components.Controls(linkwell.TableRowActions(linkwell.TableRowActionCfg{
 				EditURL:     editURL,
 				DeleteURL:   deleteURL,
 				RowTarget:   rowTarget,
@@ -95,7 +95,7 @@ templ InventoryDetailPage(item demo.Item) {
 			<div class="card-body">
 				<div class="flex items-center justify-between">
 					<h2 class="card-title text-2xl">{ item.Name }</h2>
-					@components.Controls(hypermedia.ResourceActions(hypermedia.ResourceActionCfg{
+					@components.Controls(linkwell.ResourceActions(linkwell.ResourceActionCfg{
 						EditURL:    editURL,
 						DeleteURL:  deleteURL,
 						ConfirmMsg: "Delete this item?",
@@ -138,10 +138,10 @@ templ InventoryDetailPage(item demo.Item) {
 // saveURL and cancelURL are fully-built by the handler (may include filter query params).
 templ InventoryEditRow(item demo.Item, isNew bool, saveURL, cancelURL string) {
 	{{ var rowID string }}
-	{{ var controls []hypermedia.Control }}
+	{{ var controls []linkwell.Control }}
 	if isNew {
 		{{ rowID = "new-item-row" }}
-		{{ controls = hypermedia.NewRowFormActions(hypermedia.RowFormActionCfg{
+		{{ controls = linkwell.NewRowFormActions(linkwell.RowFormActionCfg{
 			SaveURL:      saveURL,
 			CancelURL:    cancelURL,
 			SaveTarget:   "#inventory-table-container",
@@ -149,7 +149,7 @@ templ InventoryEditRow(item demo.Item, isNew bool, saveURL, cancelURL string) {
 		}) }}
 	} else {
 		{{ rowID = fmt.Sprintf("item-row-%d", item.ID) }}
-		{{ controls = hypermedia.RowFormActions(hypermedia.RowFormActionCfg{
+		{{ controls = linkwell.RowFormActions(linkwell.RowFormActionCfg{
 			SaveURL:      saveURL,
 			CancelURL:    cancelURL,
 			SaveTarget:   "#inventory-table-container",

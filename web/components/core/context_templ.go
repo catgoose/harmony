@@ -8,13 +8,13 @@ package components
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "catgoose/harmony/internal/routes/hypermedia"
+import "github.com/catgoose/linkwell"
 
 // ContextStrip renders a unified bar with breadcrumbs on the left and
 // app-provided context links (children) on the right. On mobile, breadcrumbs
 // are hidden and only context links show. If no breadcrumbs or children are
 // provided, the strip is not rendered.
-func ContextStrip(crumbs []hypermedia.Breadcrumb) templ.Component {
+func ContextStrip(crumbs []linkwell.Breadcrumb) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -97,7 +97,7 @@ func ContextLink(href, label, from string) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var3 templ.SafeURL
-		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL(hypermedia.FromNav(href, from)))
+		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL(linkwell.FromNav(href, from)))
 		if templ_7745c5c3_Err != nil {
 			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/context.templ`, Line: 28, Col: 50}
 		}

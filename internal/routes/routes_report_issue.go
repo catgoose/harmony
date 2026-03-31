@@ -8,7 +8,7 @@ import (
 	// setup:feature:demo:end
 	"catgoose/harmony/internal/logger"
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	"net/http"
 
 	corecomponents "catgoose/harmony/web/components/core"
@@ -78,7 +78,7 @@ func (ar *appRoutes) initReportIssueRoutes() {
 	// The modal auto-opens via HyperScript on load.
 	ar.e.GET("/report-issue/:requestID", func(c echo.Context) error {
 		requestID := c.Param("requestID")
-		cfg := hypermedia.ReportIssueModal(requestID)
+		cfg := linkwell.ReportIssueModal(requestID)
 		return handler.RenderComponent(c, corecomponents.ReportIssueModal(cfg))
 	})
 }

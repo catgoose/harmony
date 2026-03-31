@@ -1,12 +1,12 @@
 package components
 
-import "catgoose/dothog/internal/routes/hypermedia"
+import "github.com/catgoose/linkwell"
 
 // ContextStrip renders a unified bar with breadcrumbs on the left and
 // app-provided context links (children) on the right. On mobile, breadcrumbs
 // are hidden and only context links show. If no breadcrumbs or children are
 // provided, the strip is not rendered.
-templ ContextStrip(crumbs []hypermedia.Breadcrumb) {
+templ ContextStrip(crumbs []linkwell.Breadcrumb) {
 	<div class="px-4 py-1.5 bg-base-100 border-b border-base-300 text-sm">
 		<div class="flex items-center justify-between gap-4">
 			if len(crumbs) > 0 {
@@ -25,7 +25,7 @@ templ ContextStrip(crumbs []hypermedia.Breadcrumb) {
 // The from parameter is forwarded as ?from= for breadcrumb context.
 templ ContextLink(href, label, from string) {
 	<a
-		href={ templ.URL(hypermedia.FromNav(href, from)) }
+		href={ templ.URL(linkwell.FromNav(href, from)) }
 		class="link link-hover text-base-content/60 hover:text-base-content whitespace-nowrap"
 	>
 		{ label }

@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	"catgoose/harmony/internal/logger"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 
 	"github.com/a-h/templ"
 	"github.com/catgoose/promolog"
@@ -98,11 +98,11 @@ func TestDefaultControls_ExplicitControlsOverride(t *testing.T) {
 	e.Use(echo.WrapMiddleware(promolog.CorrelationMiddleware))
 	c = e.NewContext(c.Request(), c.Response().Writer.(*httptest.ResponseRecorder))
 
-	custom := hypermedia.RetryButton("Try Again", hypermedia.HxMethodGet, "/retry", "#target")
+	custom := linkwell.RetryButton("Try Again", linkwell.HxMethodGet, "/retry", "#target")
 	err := HandleHypermediaError(c, 500, "fail", errors.New("test"), custom)
 	require.Error(t, err)
 
-	var hhe *hypermedia.HTTPError
+	var hhe *linkwell.HTTPError
 	require.True(t, errors.As(err, &hhe))
 	require.Len(t, hhe.EC.Controls, 1)
 	assert.Equal(t, "Try Again", hhe.EC.Controls[0].Label)

@@ -15,12 +15,12 @@ import (
 	"strconv"
 
 	"catgoose/harmony/internal/demo"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/harmony/web/components/core"
 )
 
 // RepositoryPage is the full page for /demo/repository.
-func RepositoryPage(bar hypermedia.FilterBar, tableContainer templ.Component) templ.Component {
+func RepositoryPage(bar linkwell.FilterBar, tableContainer templ.Component) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -45,13 +45,13 @@ func RepositoryPage(bar hypermedia.FilterBar, tableContainer templ.Component) te
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.Controls([]hypermedia.Control{
+		templ_7745c5c3_Err = components.Controls([]linkwell.Control{
 			{
-				Kind:      hypermedia.ControlKindHTMX,
+				Kind:      linkwell.ControlKindHTMX,
 				Label:     "+ New Task",
-				Variant:   hypermedia.VariantPrimary,
-				Swap:      hypermedia.SwapOuterHTML,
-				HxRequest: hypermedia.HxGet("/demo/repository/tasks/new", "#new-task-row"),
+				Variant:   linkwell.VariantPrimary,
+				Swap:      linkwell.SwapOuterHTML,
+				HxRequest: linkwell.HxGet("/demo/repository/tasks/new", "#new-task-row"),
 			},
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
@@ -78,7 +78,7 @@ func RepositoryPage(bar hypermedia.FilterBar, tableContainer templ.Component) te
 }
 
 // RepositoryTableContainer is the replaceable fragment targeted by HTMX.
-func RepositoryTableContainer(cols []hypermedia.TableCol, body templ.Component, info hypermedia.PageInfo) templ.Component {
+func RepositoryTableContainer(cols []linkwell.TableCol, body templ.Component, info linkwell.PageInfo) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -327,12 +327,12 @@ func RepositoryTaskRow(task demo.Task) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if task.DeletedAt.Valid {
-			templ_7745c5c3_Err = components.Controls([]hypermedia.Control{
+			templ_7745c5c3_Err = components.Controls([]linkwell.Control{
 				{
-					Kind: hypermedia.ControlKindHTMX, Label: "Restore", Variant: hypermedia.VariantPrimary,
-					Swap: hypermedia.SwapOuterHTML,
-					HxRequest: hypermedia.HxRequestConfig{
-						Method: hypermedia.HxMethodPatch, URL: patchURL, Target: "#repo-table-container",
+					Kind: linkwell.ControlKindHTMX, Label: "Restore", Variant: linkwell.VariantPrimary,
+					Swap: linkwell.SwapOuterHTML,
+					HxRequest: linkwell.HxRequestConfig{
+						Method: linkwell.HxMethodPatch, URL: patchURL, Target: "#repo-table-container",
 						Vals: `{"action":"restore"}`,
 					},
 				},
@@ -341,12 +341,12 @@ func RepositoryTaskRow(task demo.Task) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else if task.ArchivedAt.Valid {
-			templ_7745c5c3_Err = components.Controls([]hypermedia.Control{
+			templ_7745c5c3_Err = components.Controls([]linkwell.Control{
 				{
-					Kind: hypermedia.ControlKindHTMX, Label: "Unarchive", Variant: hypermedia.VariantSecondary,
-					Swap: hypermedia.SwapOuterHTML,
-					HxRequest: hypermedia.HxRequestConfig{
-						Method: hypermedia.HxMethodPatch, URL: patchURL, Target: "#repo-table-container",
+					Kind: linkwell.ControlKindHTMX, Label: "Unarchive", Variant: linkwell.VariantSecondary,
+					Swap: linkwell.SwapOuterHTML,
+					HxRequest: linkwell.HxRequestConfig{
+						Method: linkwell.HxMethodPatch, URL: patchURL, Target: "#repo-table-container",
 						Vals: `{"action":"unarchive"}`,
 					},
 				},
@@ -355,24 +355,24 @@ func RepositoryTaskRow(task demo.Task) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = components.Controls([]hypermedia.Control{
+			templ_7745c5c3_Err = components.Controls([]linkwell.Control{
 				{
-					Kind: hypermedia.ControlKindHTMX, Label: "Edit", Variant: hypermedia.VariantGhost,
-					Swap:      hypermedia.SwapOuterHTML,
-					HxRequest: hypermedia.HxGet(editURL, rowTarget),
+					Kind: linkwell.ControlKindHTMX, Label: "Edit", Variant: linkwell.VariantGhost,
+					Swap:      linkwell.SwapOuterHTML,
+					HxRequest: linkwell.HxGet(editURL, rowTarget),
 				},
 				{
-					Kind: hypermedia.ControlKindHTMX, Label: "Archive", Variant: hypermedia.VariantSecondary,
-					Swap: hypermedia.SwapOuterHTML,
-					HxRequest: hypermedia.HxRequestConfig{
-						Method: hypermedia.HxMethodPatch, URL: patchURL, Target: "#repo-table-container",
+					Kind: linkwell.ControlKindHTMX, Label: "Archive", Variant: linkwell.VariantSecondary,
+					Swap: linkwell.SwapOuterHTML,
+					HxRequest: linkwell.HxRequestConfig{
+						Method: linkwell.HxMethodPatch, URL: patchURL, Target: "#repo-table-container",
 						Vals: `{"action":"archive"}`,
 					},
 				},
 				{
-					Kind: hypermedia.ControlKindHTMX, Label: "Delete", Variant: hypermedia.VariantDanger,
-					Swap: hypermedia.SwapOuterHTML, Confirm: "Soft-delete this task?",
-					HxRequest: hypermedia.HxDelete(deleteURL, "#repo-table-container"),
+					Kind: linkwell.ControlKindHTMX, Label: "Delete", Variant: linkwell.VariantDanger,
+					Swap: linkwell.SwapOuterHTML, Confirm: "Soft-delete this task?",
+					HxRequest: linkwell.HxDelete(deleteURL, "#repo-table-container"),
 				},
 			}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
@@ -440,10 +440,10 @@ func RepositoryEditRow(task demo.Task, isNew bool, saveURL, cancelURL string) te
 		}
 		ctx = templ.ClearChildren(ctx)
 		var rowID string
-		var controls []hypermedia.Control
+		var controls []linkwell.Control
 		if isNew {
 			rowID = "new-task-row"
-			controls = hypermedia.NewRowFormActions(hypermedia.RowFormActionCfg{
+			controls = linkwell.NewRowFormActions(linkwell.RowFormActionCfg{
 				SaveURL:      saveURL,
 				CancelURL:    cancelURL,
 				SaveTarget:   "#repo-table-container",
@@ -451,7 +451,7 @@ func RepositoryEditRow(task demo.Task, isNew bool, saveURL, cancelURL string) te
 			})
 		} else {
 			rowID = fmt.Sprintf("task-row-%d", task.ID)
-			controls = hypermedia.RowFormActions(hypermedia.RowFormActionCfg{
+			controls = linkwell.RowFormActions(linkwell.RowFormActionCfg{
 				SaveURL:      saveURL,
 				CancelURL:    cancelURL,
 				SaveTarget:   "#repo-table-container",

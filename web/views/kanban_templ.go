@@ -14,7 +14,7 @@ import (
 	"fmt"
 
 	"catgoose/harmony/internal/demo"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/harmony/web/components/core"
 )
 
@@ -334,14 +334,14 @@ func kanbanMoveButtons(t demo.KanbanTask) templ.Component {
 		taskURL := fmt.Sprintf("/demo/kanban/tasks/%d", t.ID)
 		if statusIdx > 0 {
 			prevStatus := demo.KanbanStatuses[statusIdx-1]
-			templ_7745c5c3_Err = components.Controls([]hypermedia.Control{
+			templ_7745c5c3_Err = components.Controls([]linkwell.Control{
 				{
-					Kind:    hypermedia.ControlKindHTMX,
+					Kind:    linkwell.ControlKindHTMX,
 					Label:   "\u2190 " + kanbanStatusLabels[prevStatus],
-					Variant: hypermedia.VariantGhost,
-					Swap:    hypermedia.SwapOuterHTML,
-					HxRequest: hypermedia.HxRequestConfig{
-						Method: hypermedia.HxMethodPatch,
+					Variant: linkwell.VariantGhost,
+					Swap:    linkwell.SwapOuterHTML,
+					HxRequest: linkwell.HxRequestConfig{
+						Method: linkwell.HxMethodPatch,
 						URL:    taskURL,
 						Target: "#kanban-board",
 						Vals:   `{"status":"` + prevStatus + `"}`,
@@ -354,14 +354,14 @@ func kanbanMoveButtons(t demo.KanbanTask) templ.Component {
 		}
 		if statusIdx < len(demo.KanbanStatuses)-1 {
 			nextStatus := demo.KanbanStatuses[statusIdx+1]
-			templ_7745c5c3_Err = components.Controls([]hypermedia.Control{
+			templ_7745c5c3_Err = components.Controls([]linkwell.Control{
 				{
-					Kind:    hypermedia.ControlKindHTMX,
+					Kind:    linkwell.ControlKindHTMX,
 					Label:   kanbanStatusLabels[nextStatus] + " \u2192",
-					Variant: hypermedia.VariantGhost,
-					Swap:    hypermedia.SwapOuterHTML,
-					HxRequest: hypermedia.HxRequestConfig{
-						Method: hypermedia.HxMethodPatch,
+					Variant: linkwell.VariantGhost,
+					Swap:    linkwell.SwapOuterHTML,
+					HxRequest: linkwell.HxRequestConfig{
+						Method: linkwell.HxMethodPatch,
 						URL:    taskURL,
 						Target: "#kanban-board",
 						Vals:   `{"status":"` + nextStatus + `"}`,

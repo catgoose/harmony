@@ -2,7 +2,7 @@
 package views
 
 import (
-	"catgoose/dothog/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/dothog/web/components/core"
 )
 
@@ -17,17 +17,17 @@ templ HypermediaControlsPage() {
 		// ─── 1. Button Variants ──────────────────────────────────────────────
 		@controlsSection("1. Button Variants") {
 			<p class="text-sm text-base-content/70 mb-3">Click any button — each <code class="text-xs bg-base-200 px-1 rounded">POST</code>s to the server and the response shows which variant was clicked.</p>
-			@components.Controls([]hypermedia.Control{
-				{Kind: hypermedia.ControlKindHTMX, Label: "Primary", Variant: hypermedia.VariantPrimary,
-					HxRequest: hypermedia.HxPost("/hypermedia/controls/echo?v=primary", "#variant-result"), Swap: hypermedia.SwapInnerHTML},
-				{Kind: hypermedia.ControlKindHTMX, Label: "Secondary", Variant: hypermedia.VariantSecondary,
-					HxRequest: hypermedia.HxPost("/hypermedia/controls/echo?v=secondary", "#variant-result"), Swap: hypermedia.SwapInnerHTML},
-				{Kind: hypermedia.ControlKindHTMX, Label: "Danger", Variant: hypermedia.VariantDanger,
-					HxRequest: hypermedia.HxPost("/hypermedia/controls/echo?v=danger", "#variant-result"), Swap: hypermedia.SwapInnerHTML},
-				{Kind: hypermedia.ControlKindHTMX, Label: "Ghost", Variant: hypermedia.VariantGhost,
-					HxRequest: hypermedia.HxPost("/hypermedia/controls/echo?v=ghost", "#variant-result"), Swap: hypermedia.SwapInnerHTML},
-				{Kind: hypermedia.ControlKindHTMX, Label: "Link", Variant: hypermedia.VariantLink,
-					HxRequest: hypermedia.HxPost("/hypermedia/controls/echo?v=link", "#variant-result"), Swap: hypermedia.SwapInnerHTML},
+			@components.Controls([]linkwell.Control{
+				{Kind: linkwell.ControlKindHTMX, Label: "Primary", Variant: linkwell.VariantPrimary,
+					HxRequest: linkwell.HxPost("/hypermedia/controls/echo?v=primary", "#variant-result"), Swap: linkwell.SwapInnerHTML},
+				{Kind: linkwell.ControlKindHTMX, Label: "Secondary", Variant: linkwell.VariantSecondary,
+					HxRequest: linkwell.HxPost("/hypermedia/controls/echo?v=secondary", "#variant-result"), Swap: linkwell.SwapInnerHTML},
+				{Kind: linkwell.ControlKindHTMX, Label: "Danger", Variant: linkwell.VariantDanger,
+					HxRequest: linkwell.HxPost("/hypermedia/controls/echo?v=danger", "#variant-result"), Swap: linkwell.SwapInnerHTML},
+				{Kind: linkwell.ControlKindHTMX, Label: "Ghost", Variant: linkwell.VariantGhost,
+					HxRequest: linkwell.HxPost("/hypermedia/controls/echo?v=ghost", "#variant-result"), Swap: linkwell.SwapInnerHTML},
+				{Kind: linkwell.ControlKindHTMX, Label: "Link", Variant: linkwell.VariantLink,
+					HxRequest: linkwell.HxPost("/hypermedia/controls/echo?v=link", "#variant-result"), Swap: linkwell.SwapInnerHTML},
 			})
 			<div id="variant-result" class="mt-3 text-sm text-base-content/50 italic">Click a button above…</div>
 		}
@@ -35,11 +35,11 @@ templ HypermediaControlsPage() {
 		@controlsSection("2. Control Kinds") {
 			<p class="text-sm text-base-content/70 mb-3">Each kind uses a different mechanism: HTMX request, HyperScript, or plain navigation.</p>
 			<div class="space-y-3">
-				@components.Controls([]hypermedia.Control{
-					hypermedia.RetryButton("Retry", hypermedia.HxMethodGet, "/hypermedia/controls/retry", "#kind-result"),
-					hypermedia.HTMXAction("HTMX Action", hypermedia.HxPost("/hypermedia/controls/action", "#kind-result")),
-					hypermedia.BackButton("Go Back"),
-					hypermedia.RedirectLink("Link", "/"),
+				@components.Controls([]linkwell.Control{
+					linkwell.RetryButton("Retry", linkwell.HxMethodGet, "/hypermedia/controls/retry", "#kind-result"),
+					linkwell.HTMXAction("HTMX Action", linkwell.HxPost("/hypermedia/controls/action", "#kind-result")),
+					linkwell.BackButton("Go Back"),
+					linkwell.RedirectLink("Link", "/"),
 				})
 				<div id="kind-result" class="text-sm text-base-content/50 italic">Click Retry or HTMX Action…</div>
 				<p class="text-xs font-medium text-base-content/60 mt-1">Dismiss demo:</p>
@@ -86,27 +86,27 @@ templ HypermediaControlsPage() {
 		@controlsSection("6. Error Status") {
 			<div class="space-y-4">
 				<p class="text-sm font-medium text-base-content/60">404 Not Found (closable):</p>
-				@components.ErrorStatusFromContext(hypermedia.ErrorContext{
+				@components.ErrorStatusFromContext(linkwell.ErrorContext{
 					StatusCode: 404,
 					Message:    "Page not found",
 					Route:      "/example/missing",
 					RequestID:  "req-abc-123",
 					Closable:   true,
 					Controls: append(
-						hypermedia.NotFoundControls("/"),
-						hypermedia.ReportIssueButton(hypermedia.LabelReportIssue, "req-abc-123"),
+						linkwell.NotFoundControls("/"),
+						linkwell.ReportIssueButton(linkwell.LabelReportIssue, "req-abc-123"),
 					),
 				})
 				<p class="text-sm font-medium text-base-content/60 mt-4">500 Internal Error:</p>
-				@components.ErrorStatusFromContext(hypermedia.ErrorContext{
+				@components.ErrorStatusFromContext(linkwell.ErrorContext{
 					StatusCode: 500,
 					Message:    "Internal server error",
 					Route:      "/api/data",
 					RequestID:  "req-def-456",
 					Closable:   true,
 					Controls: append(
-						hypermedia.InternalErrorControls(hypermedia.ErrorControlOpts{}),
-						hypermedia.ReportIssueButton(hypermedia.LabelReportIssue, "req-def-456"),
+						linkwell.InternalErrorControls(linkwell.ErrorControlOpts{}),
+						linkwell.ReportIssueButton(linkwell.LabelReportIssue, "req-def-456"),
 					),
 				})
 			</div>
@@ -115,10 +115,10 @@ templ HypermediaControlsPage() {
 		@controlsSection("7. Error Controls") {
 			<div class="space-y-4">
 				<p class="text-sm font-medium text-base-content/60">404 Not Found controls (Back + Go Home):</p>
-				@components.ErrorControls(hypermedia.NotFoundControls("/"))
+				@components.ErrorControls(linkwell.NotFoundControls("/"))
 				<p class="text-sm font-medium text-base-content/60 mt-2">500 Internal Error controls (Retry + Dismiss):</p>
 				<div id="error-retry-demo">
-					@components.ErrorControls(hypermedia.InternalErrorControls(hypermedia.ErrorControlOpts{
+					@components.ErrorControls(linkwell.InternalErrorControls(linkwell.ErrorControlOpts{
 						RetryURL:    "/hypermedia/controls/retry",
 						RetryTarget: "#error-retry-demo",
 					}))
@@ -128,10 +128,10 @@ templ HypermediaControlsPage() {
 		// ─── 8. Navigation ───────────────────────────────────────────────────
 		@controlsSection("8. Navigation") {
 			<div class="space-y-4">
-				@components.NavBar(hypermedia.SetActiveNavItem([]hypermedia.NavItem{
+				@components.NavBar(linkwell.SetActiveNavItem([]linkwell.NavItem{
 					{
 						Label: "Tables",
-						Children: []hypermedia.NavItem{
+						Children: []linkwell.NavItem{
 							{Label: "Inventory", Href: "/demo/inventory"},
 							{Label: "Catalog", Href: "/demo/catalog"},
 							{Label: "Bulk", Href: "/demo/bulk"},
@@ -139,29 +139,29 @@ templ HypermediaControlsPage() {
 					},
 					{
 						Label: "Hypermedia Controls",
-						Children: []hypermedia.NavItem{
+						Children: []linkwell.NavItem{
 							{Label: "Controls", Href: "/hypermedia/controls"},
 						},
 					},
 				}, "/hypermedia/controls"))
-				@components.Breadcrumbs(hypermedia.BreadcrumbsFromPath("/demo/inventory", map[int]string{0: "Tables", 1: "Inventory"}))
+				@components.Breadcrumbs(linkwell.BreadcrumbsFromPath("/demo/inventory", map[int]string{0: "Tables", 1: "Inventory"}))
 			</div>
 		}
 		// ─── 9. Filter Fields ────────────────────────────────────────────────
 		@controlsSection("9. Filter Fields") {
 			<p class="text-sm text-base-content/70 mb-3">Adjust any filter to see results update live. Each field fires <code class="text-xs bg-base-200 px-1 rounded">hx-get</code> with <code class="text-xs bg-base-200 px-1 rounded">hx-include</code> to send all field values.</p>
-			@components.FilterBar(hypermedia.NewFilterBar("/hypermedia/controls/filter", "#filter-results",
-				hypermedia.SearchField("q", "Search\u2026", ""),
-				hypermedia.SelectField("cat", "Category", "",
-					hypermedia.SelectOptions("",
+			@components.FilterBar(linkwell.NewFilterBar("/hypermedia/controls/filter", "#filter-results",
+				linkwell.SearchField("q", "Search\u2026", ""),
+				linkwell.SelectField("cat", "Category", "",
+					linkwell.SelectOptions("",
 						"", "All",
 						"Electronics", "Electronics",
 						"Sports", "Sports",
 						"Books", "Books",
 						"Clothing", "Clothing",
 					)),
-				hypermedia.RangeField("price", "Max Price", "500", "0", "500", "10"),
-				hypermedia.CheckboxField("active", "Active only", ""),
+				linkwell.RangeField("price", "Max Price", "500", "0", "500", "10"),
+				linkwell.CheckboxField("active", "Active only", ""),
 			))
 			<div
 				id="filter-results"

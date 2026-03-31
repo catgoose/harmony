@@ -14,12 +14,12 @@ import (
 	"fmt"
 
 	"catgoose/harmony/internal/demo"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/harmony/web/components/core"
 )
 
 // AdminErrorReportsPage is the full page for /admin/error-reports.
-func AdminErrorReportsPage(bar hypermedia.FilterBar, tableContainer templ.Component) templ.Component {
+func AdminErrorReportsPage(bar linkwell.FilterBar, tableContainer templ.Component) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -61,7 +61,7 @@ func AdminErrorReportsPage(bar hypermedia.FilterBar, tableContainer templ.Compon
 }
 
 // AdminErrorReportsTableContainer is the replaceable HTMX fragment.
-func AdminErrorReportsTableContainer(cols []hypermedia.TableCol, body templ.Component, info hypermedia.PageInfo) templ.Component {
+func AdminErrorReportsTableContainer(cols []linkwell.TableCol, body templ.Component, info linkwell.PageInfo) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

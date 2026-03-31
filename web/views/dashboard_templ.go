@@ -14,12 +14,12 @@ import (
 	"fmt"
 
 	"catgoose/harmony/internal/demo"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 )
 
 // dashFromMask is the breadcrumb bitmask for links originating from the dashboard.
 // Home (bit 0) + Dashboard (bit 1) = 3. Used as ?from=3 in dashboard link hrefs.
-const dashFromMask = hypermedia.FromHome | hypermedia.FromDashboard // = 3
+const dashFromMask = linkwell.FromHome | linkwell.FromDashboard // = 3
 
 // DashboardStats holds aggregate data for the dashboard.
 type DashboardStats struct {

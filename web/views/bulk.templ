@@ -6,12 +6,12 @@ import (
 	"strconv"
 
 	"catgoose/dothog/internal/demo"
-	"catgoose/dothog/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/dothog/web/components/core"
 )
 
 // bulkColAttrs builds templ.Attributes for a sortable column header link in the bulk table.
-func bulkColAttrs(col hypermedia.TableCol) templ.Attributes {
+func bulkColAttrs(col linkwell.TableCol) templ.Attributes {
 	attrs := templ.Attributes{
 		"hx-get":    col.SortURL,
 		"hx-target": col.Target,
@@ -23,14 +23,14 @@ func bulkColAttrs(col hypermedia.TableCol) templ.Attributes {
 }
 
 // bulkSortIndicator returns the sort direction indicator for a column.
-func bulkSortIndicator(col hypermedia.TableCol) string {
+func bulkSortIndicator(col linkwell.TableCol) string {
 	if !col.Sortable {
 		return ""
 	}
 	switch col.SortDir {
-	case hypermedia.SortAsc:
+	case linkwell.SortAsc:
 		return " ↑"
-	case hypermedia.SortDesc:
+	case linkwell.SortDesc:
 		return " ↓"
 	default:
 		return " ⇅"
@@ -39,11 +39,11 @@ func bulkSortIndicator(col hypermedia.TableCol) string {
 
 // BulkPage is the full page for /demo/bulk.
 // The toolbar and FilterBar live outside the table container so they survive swaps.
-templ BulkPage(bar hypermedia.FilterBar, tableContainer templ.Component) {
+templ BulkPage(bar linkwell.FilterBar, tableContainer templ.Component) {
 	<div class="p-4 space-y-4">
 		<div class="flex items-center justify-between">
 			<h1 class="text-2xl font-bold">☑ Bulk Operations</h1>
-			@components.Controls(hypermedia.BulkActions(hypermedia.BulkActionCfg{
+			@components.Controls(linkwell.BulkActions(linkwell.BulkActionCfg{
 				DeleteURL:        "/demo/bulk/items",
 				ActivateURL:      "/demo/bulk/items/activate",
 				DeactivateURL:    "/demo/bulk/items/deactivate",
@@ -58,7 +58,7 @@ templ BulkPage(bar hypermedia.FilterBar, tableContainer templ.Component) {
 
 // BulkTableContainer is the replaceable fragment. It renders a custom table with a
 // leading checkbox column that cannot reuse components.Table (sortLinkAttrs is unexported).
-templ BulkTableContainer(cols []hypermedia.TableCol, body templ.Component, info hypermedia.PageInfo) {
+templ BulkTableContainer(cols []linkwell.TableCol, body templ.Component, info linkwell.PageInfo) {
 	<div id="bulk-table-container">
 		<div class="overflow-x-auto">
 			<table class="table table-sm w-full">

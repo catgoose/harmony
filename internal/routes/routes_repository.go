@@ -10,7 +10,7 @@ import (
 
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	"catgoose/harmony/web/views"
 
 	"github.com/a-h/templ"
@@ -229,7 +229,7 @@ func parseRepoTableParams(c echo.Context, perPage int) repoTableParams {
 	}
 }
 
-func (r *repositoryRoutes) buildContent(c echo.Context) (hypermedia.FilterBar, templ.Component, error) {
+func (r *repositoryRoutes) buildContent(c echo.Context) (linkwell.FilterBar, templ.Component, error) {
 	const perPage = 10
 	p := parseRepoTableParams(c, perPage)
 
@@ -239,43 +239,43 @@ func (r *repositoryRoutes) buildContent(c echo.Context) (hypermedia.FilterBar, t
 		p.Sort, p.Dir, p.Page, p.PerPage,
 	)
 	if err != nil {
-		return hypermedia.FilterBar{}, nil, err
+		return linkwell.FilterBar{}, nil, err
 	}
 
 	itemsURL := repoBase + "/tasks"
 	target := "#repo-table-container"
 
-	bar := hypermedia.NewFilterBar(itemsURL, target,
-		hypermedia.SearchField("q", "Search tasks...", p.Q),
-		hypermedia.SelectField("status", "Status", p.Status,
-			hypermedia.SelectOptions(p.Status,
+	bar := linkwell.NewFilterBar(itemsURL, target,
+		linkwell.SearchField("q", "Search tasks...", p.Q),
+		linkwell.SelectField("status", "Status", p.Status,
+			linkwell.SelectOptions(p.Status,
 				"", "All",
 				"draft", "Draft",
 				"active", "Active",
 				"done", "Done",
 			)),
-		hypermedia.CheckboxField("archived", "Show archived", p.ShowArchived),
-		hypermedia.CheckboxField("deleted", "Show deleted", p.ShowDeleted),
+		linkwell.CheckboxField("archived", "Show archived", p.ShowArchived),
+		linkwell.CheckboxField("deleted", "Show deleted", p.ShowDeleted),
 	)
 
 	sortBase := repoStripParams(c.Request().URL, "sort", "dir")
-	cols := []hypermedia.TableCol{
-		hypermedia.SortableCol("title", "Title", p.Sort, p.Dir, sortBase, target, "#filter-form"),
+	cols := []linkwell.TableCol{
+		linkwell.SortableCol("title", "Title", p.Sort, p.Dir, sortBase, target, "#filter-form"),
 		{Label: "Description"},
-		hypermedia.SortableCol("status", "Status", p.Sort, p.Dir, sortBase, target, "#filter-form"),
-		hypermedia.SortableCol("sortorder", "Order", p.Sort, p.Dir, sortBase, target, "#filter-form"),
-		hypermedia.SortableCol("version", "Ver", p.Sort, p.Dir, sortBase, target, "#filter-form"),
+		linkwell.SortableCol("status", "Status", p.Sort, p.Dir, sortBase, target, "#filter-form"),
+		linkwell.SortableCol("sortorder", "Order", p.Sort, p.Dir, sortBase, target, "#filter-form"),
+		linkwell.SortableCol("version", "Ver", p.Sort, p.Dir, sortBase, target, "#filter-form"),
 		{Label: "State"},
-		hypermedia.SortableCol("updated", "Updated", p.Sort, p.Dir, sortBase, target, "#filter-form"),
+		linkwell.SortableCol("updated", "Updated", p.Sort, p.Dir, sortBase, target, "#filter-form"),
 		{Label: "Actions"},
 	}
 
 	pageBase := repoStripParams(c.Request().URL, "page")
-	info := hypermedia.PageInfo{
+	info := linkwell.PageInfo{
 		Page:       p.Page,
 		PerPage:    p.PerPage,
 		TotalItems: total,
-		TotalPages: hypermedia.ComputeTotalPages(total, p.PerPage),
+		TotalPages: linkwell.ComputeTotalPages(total, p.PerPage),
 		BaseURL:    pageBase,
 		Target:     target,
 		Include:    "#filter-form",

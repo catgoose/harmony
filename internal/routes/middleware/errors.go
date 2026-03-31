@@ -3,7 +3,7 @@ package middleware
 import (
 	"net/http"
 
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 
 	"github.com/labstack/echo/v4"
 )
@@ -12,19 +12,19 @@ import (
 // from echo contexts
 
 // errorOpts returns the default ErrorControlOpts for convenience error helpers.
-func errorOpts() hypermedia.ErrorControlOpts {
-	return hypermedia.ErrorControlOpts{HomeURL: "/", LoginURL: "/login"}
+func errorOpts() linkwell.ErrorControlOpts {
+	return linkwell.ErrorControlOpts{HomeURL: "/", LoginURL: "/login"}
 }
 
-// newError builds a hypermedia.HTTPError with controls dispatched from ErrorControlsForStatus.
+// newError builds a linkwell.HTTPError with controls dispatched from ErrorControlsForStatus.
 // For 500+ errors, a ReportIssueButton is appended.
 func newError(c echo.Context, statusCode int, message string) error {
 	requestID := GetRequestID(c)
-	controls := hypermedia.ErrorControlsForStatus(statusCode, errorOpts())
+	controls := linkwell.ErrorControlsForStatus(statusCode, errorOpts())
 	if statusCode >= 500 {
-		controls = append(controls, hypermedia.ReportIssueButton(hypermedia.LabelReportIssue, requestID))
+		controls = append(controls, linkwell.ReportIssueButton(linkwell.LabelReportIssue, requestID))
 	}
-	ec := hypermedia.ErrorContext{
+	ec := linkwell.ErrorContext{
 		StatusCode: statusCode,
 		Message:    message,
 		Route:      c.Request().URL.Path,
@@ -32,7 +32,7 @@ func newError(c echo.Context, statusCode int, message string) error {
 		Closable:   true,
 		Controls:   controls,
 	}
-	return hypermedia.NewHTTPError(ec)
+	return linkwell.NewHTTPError(ec)
 }
 
 // BadRequest returns a 400 Bad Request error
@@ -71,12 +71,12 @@ func ServiceUnavailable(c echo.Context, message string) error {
 	return newError(c, http.StatusServiceUnavailable, message)
 }
 
-// HypermediaError builds a hypermedia.ErrorContext populated with request metadata
-// (route, requestID) from the echo context. Pass the result to hypermedia.NewHTTPError
-// to return it from a handler, or to response.Builder.OOBErrorStatus to compose it
+// HypermediaError builds a linkwell.ErrorContext populated with request metadata
+// (route, requestID) from the echo context. Pass the result to linkwell.NewHTTPError
+// to return it from a handler, or to flighty.Builder.OOBErrorStatus to compose it
 // alongside a primary component.
-func HypermediaError(c echo.Context, statusCode int, message string, err error, controls ...hypermedia.Control) hypermedia.ErrorContext {
-	return hypermedia.ErrorContext{
+func HypermediaError(c echo.Context, statusCode int, message string, err error, controls ...linkwell.Control) linkwell.ErrorContext {
+	return linkwell.ErrorContext{
 		StatusCode: statusCode,
 		Message:    message,
 		Err:        err,

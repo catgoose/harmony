@@ -14,11 +14,11 @@ import (
 	"fmt"
 
 	"catgoose/harmony/internal/demo"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/harmony/web/components/core"
 )
 
-func PeoplePage(people []demo.Person, total int, bar hypermedia.FilterBar, cols []hypermedia.TableCol, info hypermedia.PageInfo, from string) templ.Component {
+func PeoplePage(people []demo.Person, total int, bar linkwell.FilterBar, cols []linkwell.TableCol, info linkwell.PageInfo, from string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -63,7 +63,7 @@ func PeoplePage(people []demo.Person, total int, bar hypermedia.FilterBar, cols 
 	})
 }
 
-func PeopleTableContainer(cols []hypermedia.TableCol, people []demo.Person, info hypermedia.PageInfo, from string) templ.Component {
+func PeopleTableContainer(cols []linkwell.TableCol, people []demo.Person, info linkwell.PageInfo, from string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -160,7 +160,7 @@ func PersonRow(p demo.Person, from string) templ.Component {
 			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		profileURL := hypermedia.FromNav(fmt.Sprintf("/demo/people/%d", p.ID), from)
+		profileURL := linkwell.FromNav(fmt.Sprintf("/demo/people/%d", p.ID), from)
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<tr class=\"hover:bg-base-200/50 cursor-pointer\" hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -349,14 +349,14 @@ func PersonProfileCard(p demo.Person) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.Controls([]hypermedia.Control{
+		templ_7745c5c3_Err = components.Controls([]linkwell.Control{
 			{
-				Kind:      hypermedia.ControlKindHTMX,
+				Kind:      linkwell.ControlKindHTMX,
 				Label:     "Edit",
-				Variant:   hypermedia.VariantSecondary,
-				Icon:      hypermedia.IconPencilSquare,
-				Swap:      hypermedia.SwapOuterHTML,
-				HxRequest: hypermedia.HxGet(editURL, "#person-profile-card"),
+				Variant:   linkwell.VariantSecondary,
+				Icon:      linkwell.IconPencilSquare,
+				Swap:      linkwell.SwapOuterHTML,
+				HxRequest: linkwell.HxGet(editURL, "#person-profile-card"),
 			},
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
@@ -661,27 +661,27 @@ func PersonEditForm(p demo.Person) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.Controls([]hypermedia.Control{
+		templ_7745c5c3_Err = components.Controls([]linkwell.Control{
 			{
-				Kind:    hypermedia.ControlKindHTMX,
+				Kind:    linkwell.ControlKindHTMX,
 				Label:   "Save",
-				Variant: hypermedia.VariantPrimary,
-				Icon:    hypermedia.IconCheck,
-				Swap:    hypermedia.SwapOuterHTML,
-				HxRequest: hypermedia.HxRequestConfig{
-					Method:  hypermedia.HxMethodPut,
+				Variant: linkwell.VariantPrimary,
+				Icon:    linkwell.IconCheck,
+				Swap:    linkwell.SwapOuterHTML,
+				HxRequest: linkwell.HxRequestConfig{
+					Method:  linkwell.HxMethodPut,
 					URL:     saveURL,
 					Target:  "#person-profile-card",
 					Include: "#person-profile-card",
 				},
 			},
 			{
-				Kind:      hypermedia.ControlKindHTMX,
+				Kind:      linkwell.ControlKindHTMX,
 				Label:     "Cancel",
-				Variant:   hypermedia.VariantGhost,
-				Icon:      hypermedia.IconXMark,
-				Swap:      hypermedia.SwapOuterHTML,
-				HxRequest: hypermedia.HxGet(cancelURL, "#person-profile-card"),
+				Variant:   linkwell.VariantGhost,
+				Icon:      linkwell.IconXMark,
+				Swap:      linkwell.SwapOuterHTML,
+				HxRequest: linkwell.HxGet(cancelURL, "#person-profile-card"),
 			},
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {

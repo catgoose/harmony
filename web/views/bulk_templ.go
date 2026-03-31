@@ -15,12 +15,12 @@ import (
 	"strconv"
 
 	"catgoose/harmony/internal/demo"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/harmony/web/components/core"
 )
 
 // bulkColAttrs builds templ.Attributes for a sortable column header link in the bulk table.
-func bulkColAttrs(col hypermedia.TableCol) templ.Attributes {
+func bulkColAttrs(col linkwell.TableCol) templ.Attributes {
 	attrs := templ.Attributes{
 		"hx-get":    col.SortURL,
 		"hx-target": col.Target,
@@ -32,14 +32,14 @@ func bulkColAttrs(col hypermedia.TableCol) templ.Attributes {
 }
 
 // bulkSortIndicator returns the sort direction indicator for a column.
-func bulkSortIndicator(col hypermedia.TableCol) string {
+func bulkSortIndicator(col linkwell.TableCol) string {
 	if !col.Sortable {
 		return ""
 	}
 	switch col.SortDir {
-	case hypermedia.SortAsc:
+	case linkwell.SortAsc:
 		return " ↑"
-	case hypermedia.SortDesc:
+	case linkwell.SortDesc:
 		return " ↓"
 	default:
 		return " ⇅"
@@ -48,7 +48,7 @@ func bulkSortIndicator(col hypermedia.TableCol) string {
 
 // BulkPage is the full page for /demo/bulk.
 // The toolbar and FilterBar live outside the table container so they survive swaps.
-func BulkPage(bar hypermedia.FilterBar, tableContainer templ.Component) templ.Component {
+func BulkPage(bar linkwell.FilterBar, tableContainer templ.Component) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -73,7 +73,7 @@ func BulkPage(bar hypermedia.FilterBar, tableContainer templ.Component) templ.Co
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.Controls(hypermedia.BulkActions(hypermedia.BulkActionCfg{
+		templ_7745c5c3_Err = components.Controls(linkwell.BulkActions(linkwell.BulkActionCfg{
 			DeleteURL:        "/demo/bulk/items",
 			ActivateURL:      "/demo/bulk/items/activate",
 			DeactivateURL:    "/demo/bulk/items/deactivate",
@@ -105,7 +105,7 @@ func BulkPage(bar hypermedia.FilterBar, tableContainer templ.Component) templ.Co
 
 // BulkTableContainer is the replaceable fragment. It renders a custom table with a
 // leading checkbox column that cannot reuse components.Table (sortLinkAttrs is unexported).
-func BulkTableContainer(cols []hypermedia.TableCol, body templ.Component, info hypermedia.PageInfo) templ.Component {
+func BulkTableContainer(cols []linkwell.TableCol, body templ.Component, info linkwell.PageInfo) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

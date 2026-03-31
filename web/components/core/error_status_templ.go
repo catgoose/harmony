@@ -12,10 +12,10 @@ import (
 	"encoding/json"
 	"strconv"
 
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 )
 
-func errorJSON(ec hypermedia.ErrorContext) string {
+func errorJSON(ec linkwell.ErrorContext) string {
 	m := map[string]string{
 		"status": strconv.Itoa(ec.StatusCode) + " " + ec.Message,
 		"route":  ec.Route,
@@ -31,7 +31,7 @@ func errorJSON(ec hypermedia.ErrorContext) string {
 }
 
 // oobSwapValue builds the hx-swap-oob attribute value for OOB error placement.
-func oobSwapValue(ec hypermedia.ErrorContext) string {
+func oobSwapValue(ec linkwell.ErrorContext) string {
 	swap := ec.OOBSwap
 	if swap == "" {
 		swap = "innerHTML"
@@ -46,7 +46,7 @@ func oobSwapValue(ec hypermedia.ErrorContext) string {
 // It renders the full error panel from an ErrorContext, including action controls.
 // When ec.OOBTarget is set the div includes hx-swap-oob so HTMX routes it
 // out-of-band to the specified target.
-func ErrorStatusFromContext(ec hypermedia.ErrorContext) templ.Component {
+func ErrorStatusFromContext(ec linkwell.ErrorContext) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -111,7 +111,7 @@ func ErrorStatusFromContext(ec hypermedia.ErrorContext) templ.Component {
 	})
 }
 
-func errorStatusBody(ec hypermedia.ErrorContext) templ.Component {
+func errorStatusBody(ec linkwell.ErrorContext) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -259,26 +259,26 @@ func errorStatusBody(ec hypermedia.ErrorContext) templ.Component {
 
 // bannerControls returns only Dismiss and Report controls for the global error banner.
 // A Dismiss button is prepended when Closable is true and none already exists.
-func bannerControls(ec hypermedia.ErrorContext) []hypermedia.Control {
-	var out []hypermedia.Control
+func bannerControls(ec linkwell.ErrorContext) []linkwell.Control {
+	var out []linkwell.Control
 	hasDismiss := false
 	for _, ctrl := range ec.Controls {
-		if ctrl.Kind == hypermedia.ControlKindDismiss || ctrl.Kind == hypermedia.ControlKindReport {
+		if ctrl.Kind == linkwell.ControlKindDismiss || ctrl.Kind == linkwell.ControlKindReport {
 			out = append(out, ctrl)
-			if ctrl.Kind == hypermedia.ControlKindDismiss {
+			if ctrl.Kind == linkwell.ControlKindDismiss {
 				hasDismiss = true
 			}
 		}
 	}
 	if ec.Closable && !hasDismiss {
-		close := hypermedia.DismissButton(hypermedia.LabelDismiss)
-		out = append([]hypermedia.Control{close}, out...)
+		close := linkwell.DismissButton(linkwell.LabelDismiss)
+		out = append([]linkwell.Control{close}, out...)
 	}
 	return out
 }
 
 // bannerControlButtonsLeft renders non-dismiss buttons (Report Issue) on the left.
-func bannerControlButtonsLeft(controls []hypermedia.Control) templ.Component {
+func bannerControlButtonsLeft(controls []linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -304,7 +304,7 @@ func bannerControlButtonsLeft(controls []hypermedia.Control) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		for _, ctrl := range controls {
-			if ctrl.Kind == hypermedia.ControlKindReport {
+			if ctrl.Kind == linkwell.ControlKindReport {
 				templ_7745c5c3_Err = reportButton(ctrl).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -320,7 +320,7 @@ func bannerControlButtonsLeft(controls []hypermedia.Control) templ.Component {
 }
 
 // bannerControlButtonsRight renders dismiss buttons on the right.
-func bannerControlButtonsRight(controls []hypermedia.Control) templ.Component {
+func bannerControlButtonsRight(controls []linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -346,7 +346,7 @@ func bannerControlButtonsRight(controls []hypermedia.Control) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		for _, ctrl := range controls {
-			if ctrl.Kind == hypermedia.ControlKindDismiss {
+			if ctrl.Kind == linkwell.ControlKindDismiss {
 				templ_7745c5c3_Err = dismissButton(ctrl).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -363,10 +363,10 @@ func bannerControlButtonsRight(controls []hypermedia.Control) templ.Component {
 
 // inlineActionControls returns controls that are NOT dismiss or report.
 // These are rendered as standalone buttons above the unified bar (e.g. Retry).
-func inlineActionControls(controls []hypermedia.Control) []hypermedia.Control {
-	var out []hypermedia.Control
+func inlineActionControls(controls []linkwell.Control) []linkwell.Control {
+	var out []linkwell.Control
 	for _, c := range controls {
-		if c.Kind != hypermedia.ControlKindDismiss && c.Kind != hypermedia.ControlKindReport {
+		if c.Kind != linkwell.ControlKindDismiss && c.Kind != linkwell.ControlKindReport {
 			out = append(out, c)
 		}
 	}
@@ -374,30 +374,30 @@ func inlineActionControls(controls []hypermedia.Control) []hypermedia.Control {
 }
 
 // inlineDismissControl returns the first Dismiss control.
-func inlineDismissControl(controls []hypermedia.Control) (hypermedia.Control, bool) {
+func inlineDismissControl(controls []linkwell.Control) (linkwell.Control, bool) {
 	for _, c := range controls {
-		if c.Kind == hypermedia.ControlKindDismiss {
+		if c.Kind == linkwell.ControlKindDismiss {
 			return c, true
 		}
 	}
-	return hypermedia.Control{}, false
+	return linkwell.Control{}, false
 }
 
 // inlineReportControl returns the first Report control.
-func inlineReportControl(controls []hypermedia.Control) (hypermedia.Control, bool) {
+func inlineReportControl(controls []linkwell.Control) (linkwell.Control, bool) {
 	for _, c := range controls {
-		if c.Kind == hypermedia.ControlKindReport {
+		if c.Kind == linkwell.ControlKindReport {
 			return c, true
 		}
 	}
-	return hypermedia.Control{}, false
+	return linkwell.Control{}, false
 }
 
 // InlineErrorPanel renders an inline error with a stacked layout.
 // Dismiss and Report are rendered as a unified joined button group on the last row.
 // Use this instead of ErrorStatusFromContext when the error replaces content
 // in-place (not the global banner).
-func InlineErrorPanel(ec hypermedia.ErrorContext) templ.Component {
+func InlineErrorPanel(ec linkwell.ErrorContext) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -504,7 +504,7 @@ func InlineErrorPanel(ec hypermedia.ErrorContext) templ.Component {
 
 // inlineErrorActions renders action controls (Retry, etc.) followed by a
 // unified Dismiss | Report joined button group on the last row.
-func inlineErrorActions(controls []hypermedia.Control) templ.Component {
+func inlineErrorActions(controls []linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -646,7 +646,7 @@ func ErrorStatus(statusCode int, message string, err error, route string, reques
 			templ_7745c5c3_Var21 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = ErrorStatusFromContext(hypermedia.ErrorContext{
+		templ_7745c5c3_Err = ErrorStatusFromContext(linkwell.ErrorContext{
 			StatusCode: statusCode,
 			Message:    message,
 			Err:        err,

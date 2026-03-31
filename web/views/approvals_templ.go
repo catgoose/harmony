@@ -14,7 +14,7 @@ import (
 	"fmt"
 
 	"catgoose/harmony/internal/demo"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/harmony/web/components/core"
 )
 
@@ -283,29 +283,29 @@ func ApprovalCard(r demo.ApprovalRequest) templ.Component {
 	})
 }
 
-func approvalControls(id int, actions []string) []hypermedia.Control {
-	var controls []hypermedia.Control
+func approvalControls(id int, actions []string) []linkwell.Control {
+	var controls []linkwell.Control
 	url := fmt.Sprintf("/demo/approvals/%d", id)
 	target := fmt.Sprintf("#approval-%d", id)
 	for _, action := range actions {
-		variant := hypermedia.VariantSecondary
+		variant := linkwell.VariantSecondary
 		switch action {
 		case "approve":
-			variant = hypermedia.VariantPrimary
+			variant = linkwell.VariantPrimary
 		case "reject":
-			variant = hypermedia.VariantDanger
+			variant = linkwell.VariantDanger
 		case "escalate":
-			variant = hypermedia.VariantSecondary
+			variant = linkwell.VariantSecondary
 		case "resubmit":
-			variant = hypermedia.VariantPrimary
+			variant = linkwell.VariantPrimary
 		}
-		controls = append(controls, hypermedia.Control{
-			Kind:    hypermedia.ControlKindHTMX,
+		controls = append(controls, linkwell.Control{
+			Kind:    linkwell.ControlKindHTMX,
 			Label:   capitalizeAction(action),
 			Variant: variant,
-			Swap:    hypermedia.SwapOuterHTML,
-			HxRequest: hypermedia.HxRequestConfig{
-				Method: hypermedia.HxMethodPatch,
+			Swap:    linkwell.SwapOuterHTML,
+			HxRequest: linkwell.HxRequestConfig{
+				Method: linkwell.HxMethodPatch,
 				URL:    url,
 				Target: target,
 				Vals:   `{"action":"` + action + `"}`,

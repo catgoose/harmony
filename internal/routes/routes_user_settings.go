@@ -1,4 +1,4 @@
-// setup:feature:session_settings
+// setup:feature:demo
 
 package routes
 
@@ -8,9 +8,9 @@ import (
 
 	"catgoose/harmony/internal/admininfo"
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/routes/middleware"
 	"catgoose/harmony/web/views"
 
+	"github.com/catgoose/porter"
 	"github.com/labstack/echo/v4"
 )
 
@@ -50,7 +50,7 @@ func (ar *appRoutes) handleUserSettingsSave(c echo.Context) error {
 		prefs.DateFormat = "relative"
 	}
 
-	sessionID := middleware.GetSessionSettings(c).SessionUUID
+	sessionID := porter.GetSessionSettings(c).SessionUUID
 	prefsStore.Lock()
 	prefsStore.m[sessionID] = prefs
 	prefsStore.Unlock()
@@ -59,7 +59,7 @@ func (ar *appRoutes) handleUserSettingsSave(c echo.Context) error {
 }
 
 func getUserPrefs(c echo.Context) admininfo.UserPreferences {
-	sessionID := middleware.GetSessionSettings(c).SessionUUID
+	sessionID := porter.GetSessionSettings(c).SessionUUID
 	prefsStore.RLock()
 	prefs, ok := prefsStore.m[sessionID]
 	prefsStore.RUnlock()

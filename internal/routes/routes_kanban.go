@@ -6,7 +6,7 @@ import (
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
 	"catgoose/harmony/internal/routes/params"
-	"catgoose/harmony/internal/ssebroker"
+	"github.com/catgoose/tavern"
 	"catgoose/harmony/web/views"
 
 	"github.com/labstack/echo/v4"
@@ -15,10 +15,10 @@ import (
 type kanbanRoutes struct {
 	board  *demo.KanbanBoard
 	actLog *demo.ActivityLog
-	broker *ssebroker.SSEBroker
+	broker *tavern.SSEBroker
 }
 
-func (ar *appRoutes) initKanbanRoutes(board *demo.KanbanBoard, actLog *demo.ActivityLog, broker *ssebroker.SSEBroker) {
+func (ar *appRoutes) initKanbanRoutes(board *demo.KanbanBoard, actLog *demo.ActivityLog, broker *tavern.SSEBroker) {
 	k := &kanbanRoutes{board: board, actLog: actLog, broker: broker}
 	ar.e.GET("/demo/kanban", k.handleKanbanPage)
 	ar.e.PATCH("/demo/kanban/tasks/:id", k.handleMoveTask)

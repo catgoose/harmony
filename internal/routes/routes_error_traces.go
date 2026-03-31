@@ -11,11 +11,11 @@ import (
 	"catgoose/harmony/internal/logger"
 	"github.com/catgoose/promolog"
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/routes/hypermedia"
-	"catgoose/harmony/internal/routes/response"
+	"github.com/catgoose/linkwell"
+	"github.com/catgoose/flighty"
 	"catgoose/harmony/web/views"
 
-	hx "catgoose/harmony/internal/routes/htmx"
+	"github.com/catgoose/cheddar"
 	corecomponents "catgoose/harmony/web/components/core"
 
 	"github.com/a-h/templ"
@@ -47,15 +47,15 @@ func (ar *appRoutes) handleErrorTracesList(c echo.Context) error {
 	if err != nil {
 		return handler.HandleHypermediaError(c, 500, "Failed to load error traces", err)
 	}
-	b := response.New(c).
+	b := flighty.New(c).
 		Component(container).
 		OOB(corecomponents.FilterGroupOOB(group))
-	if hx.IsHTMX(c) {
+	if cheddar.IsHTMX(c) {
 		pushURL := errorTracesBase
 		if q := c.Request().URL.RawQuery; q != "" {
 			pushURL += "?" + q
 		}
-		hx.ReplaceURL(c, pushURL)
+		cheddar.ReplaceURL(c, pushURL)
 	}
 	return b.Send()
 }
@@ -88,13 +88,13 @@ func (ar *appRoutes) handleErrorTraceDelete(c echo.Context) error {
 	if err != nil {
 		return handler.HandleHypermediaError(c, 500, "Failed to reload traces", err)
 	}
-	return response.New(c).
+	return flighty.New(c).
 		Component(container).
 		OOB(corecomponents.FilterGroupOOB(group)).
 		Send()
 }
 
-func (ar *appRoutes) buildErrorTracesContent(c echo.Context) (hypermedia.FilterGroup, templ.Component, error) {
+func (ar *appRoutes) buildErrorTracesContent(c echo.Context) (linkwell.FilterGroup, templ.Component, error) {
 	const perPage = 20
 	page, _ := strconv.Atoi(c.QueryParam("page"))
 	if page < 1 {
@@ -112,12 +112,12 @@ func (ar *appRoutes) buildErrorTracesContent(c echo.Context) (hypermedia.FilterG
 
 	traces, total, err := ar.reqLogStore.ListTraces(c.Request().Context(), f)
 	if err != nil {
-		return hypermedia.FilterGroup{}, nil, err
+		return linkwell.FilterGroup{}, nil, err
 	}
 
 	avail, err := ar.reqLogStore.AvailableFilters(c.Request().Context(), f)
 	if err != nil {
-		return hypermedia.FilterGroup{}, nil, err
+		return linkwell.FilterGroup{}, nil, err
 	}
 
 	target := "#error-traces-table-container"
@@ -151,31 +151,31 @@ func (ar *appRoutes) buildErrorTracesContent(c echo.Context) (hypermedia.FilterG
 		methodPairs = append(methodPairs, m, m)
 	}
 
-	group := hypermedia.NewFilterGroup(listURL, target,
-		hypermedia.SearchField("q", "Search routes, errors, IDs, users, IPs\u2026", f.Q),
-		hypermedia.SelectField("status", "Status", f.Status,
-			hypermedia.SelectOptions(f.Status, statusPairs...)),
-		hypermedia.SelectField("method", "Method", f.Method,
-			hypermedia.SelectOptions(f.Method, methodPairs...)),
+	group := linkwell.NewFilterGroup(listURL, target,
+		linkwell.SearchField("q", "Search routes, errors, IDs, users, IPs\u2026", f.Q),
+		linkwell.SelectField("status", "Status", f.Status,
+			linkwell.SelectOptions(f.Status, statusPairs...)),
+		linkwell.SelectField("method", "Method", f.Method,
+			linkwell.SelectOptions(f.Method, methodPairs...)),
 	)
 
 	sortBase := traceStripParams(c.Request().URL, "sort", "dir")
-	cols := []hypermedia.TableCol{
+	cols := []linkwell.TableCol{
 		{Label: "", Width: "2rem"},
-		hypermedia.SortableCol("CreatedAt", "Time", f.Sort, f.Dir, sortBase, target, "#filter-form"),
-		hypermedia.SortableCol("StatusCode", "Status", f.Sort, f.Dir, sortBase, target, "#filter-form"),
-		hypermedia.SortableCol("Method", "Method", f.Sort, f.Dir, sortBase, target, "#filter-form"),
-		hypermedia.SortableCol("Route", "Route", f.Sort, f.Dir, sortBase, target, "#filter-form"),
+		linkwell.SortableCol("CreatedAt", "Time", f.Sort, f.Dir, sortBase, target, "#filter-form"),
+		linkwell.SortableCol("StatusCode", "Status", f.Sort, f.Dir, sortBase, target, "#filter-form"),
+		linkwell.SortableCol("Method", "Method", f.Sort, f.Dir, sortBase, target, "#filter-form"),
+		linkwell.SortableCol("Route", "Route", f.Sort, f.Dir, sortBase, target, "#filter-form"),
 		{Label: "Error"},
 		{Label: "IP"},
 	}
 
 	pageBase := traceStripParams(c.Request().URL, "page")
-	info := hypermedia.PageInfo{
+	info := linkwell.PageInfo{
 		Page:       page,
 		PerPage:    perPage,
 		TotalItems: total,
-		TotalPages: hypermedia.ComputeTotalPages(total, perPage),
+		TotalPages: linkwell.ComputeTotalPages(total, perPage),
 		BaseURL:    pageBase,
 		Target:     target,
 		Include:    "#filter-form",
@@ -196,6 +196,8 @@ func traceStripParams(u *url.URL, params ...string) string {
 	cp.RawQuery = q.Encode()
 	return cp.String()
 }
+
+// setup:feature:demo:start
 
 // SeedErrorTraces inserts 1000 demo error traces spread over the past 90 days.
 func SeedErrorTraces(store *promolog.Store) {
@@ -397,3 +399,5 @@ func SeedErrorTraces(store *promolog.Store) {
 		}, createdAt)
 	}
 }
+
+// setup:feature:demo:end

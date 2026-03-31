@@ -1,16 +1,16 @@
 package components
 
-import "catgoose/dothog/internal/routes/hypermedia"
+import "github.com/catgoose/linkwell"
 
 // sortIndicator returns the sort direction indicator character for a column.
-func sortIndicator(col hypermedia.TableCol) string {
+func sortIndicator(col linkwell.TableCol) string {
 	if !col.Sortable {
 		return ""
 	}
 	switch col.SortDir {
-	case hypermedia.SortAsc:
+	case linkwell.SortAsc:
 		return " ↑"
-	case hypermedia.SortDesc:
+	case linkwell.SortDesc:
 		return " ↓"
 	default:
 		return " ⇅"
@@ -18,7 +18,7 @@ func sortIndicator(col hypermedia.TableCol) string {
 }
 
 // sortLinkAttrs builds templ.Attributes for a sortable column header link.
-func sortLinkAttrs(col hypermedia.TableCol) templ.Attributes {
+func sortLinkAttrs(col linkwell.TableCol) templ.Attributes {
 	attrs := templ.Attributes{
 		"hx-get":    col.SortURL,
 		"hx-target": col.Target,
@@ -31,7 +31,7 @@ func sortLinkAttrs(col hypermedia.TableCol) templ.Attributes {
 
 // Table renders an overflow-x-auto wrapper containing a table with header,
 // body slot, and optional pagination bar.
-templ Table(cols []hypermedia.TableCol, body templ.Component, info hypermedia.PageInfo) {
+templ Table(cols []linkwell.TableCol, body templ.Component, info linkwell.PageInfo) {
 	<div class="overflow-x-auto">
 		<table class="table table-zebra w-full">
 			@TableHeader(cols)
@@ -46,7 +46,7 @@ templ Table(cols []hypermedia.TableCol, body templ.Component, info hypermedia.Pa
 // TableHeader renders <thead> with optional sort links.
 // Sortable columns wrap the label in an <a> with HTMX sort attributes.
 // Sort indicator: "↑" SortAsc, "↓" SortDesc, "⇅" SortNone on sortable cols.
-templ TableHeader(cols []hypermedia.TableCol) {
+templ TableHeader(cols []linkwell.TableCol) {
 	<thead>
 		<tr>
 			for _, col := range cols {
@@ -72,11 +72,11 @@ templ TableHeader(cols []hypermedia.TableCol) {
 }
 
 // PaginationBar renders a DaisyUI join-based pagination control.
-// Calls hypermedia.PaginationControls(info) internally.
-templ PaginationBar(info hypermedia.PageInfo) {
+// Calls linkwell.PaginationControls(info) internally.
+templ PaginationBar(info linkwell.PageInfo) {
 	<div class="flex justify-center mt-4">
 		<div class="join">
-			for _, ctrl := range hypermedia.PaginationControls(info) {
+			for _, ctrl := range linkwell.PaginationControls(info) {
 				@paginationButton(ctrl)
 			}
 		</div>
@@ -87,8 +87,8 @@ templ PaginationBar(info hypermedia.PageInfo) {
 // Disabled+VariantPrimary → active (current page, no click)
 // Disabled only           → disabled
 // Normal                  → clickable with HTMX attrs
-templ paginationButton(ctrl hypermedia.Control) {
-	if ctrl.Disabled && ctrl.Variant == hypermedia.VariantPrimary {
+templ paginationButton(ctrl linkwell.Control) {
+	if ctrl.Disabled && ctrl.Variant == linkwell.VariantPrimary {
 		<button class="join-item btn btn-sm btn-active" aria-current="page">
 			{ ctrl.Label }
 		</button>

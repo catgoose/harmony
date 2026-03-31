@@ -1,17 +1,17 @@
 package components
 
-import "catgoose/dothog/internal/routes/hypermedia"
+import "github.com/catgoose/linkwell"
 
 // modalButtonClass returns the CSS class for a modal button based on its variant.
-func modalButtonClass(variant hypermedia.ControlVariant) string {
+func modalButtonClass(variant linkwell.ControlVariant) string {
 	switch variant {
-	case hypermedia.VariantPrimary:
+	case linkwell.VariantPrimary:
 		return "btn btn-primary btn-sm"
-	case hypermedia.VariantDanger:
+	case linkwell.VariantDanger:
 		return "btn btn-error btn-sm"
-	case hypermedia.VariantSecondary:
+	case linkwell.VariantSecondary:
 		return "btn btn-secondary btn-sm"
-	case hypermedia.VariantGhost:
+	case linkwell.VariantGhost:
 		return "btn btn-ghost btn-sm"
 	default:
 		return "btn btn-ghost btn-sm"
@@ -22,7 +22,7 @@ func modalButtonClass(variant hypermedia.ControlVariant) string {
 // Opened via Alpine: `x-on:click="$refs.modal.showModal()"` or getElementById.
 // Closed via `<form method="dialog">` buttons or ESC key.
 // Child content is rendered inside the modal body between the title and action buttons.
-templ Modal(cfg hypermedia.ModalConfig) {
+templ Modal(cfg linkwell.ModalConfig) {
 	<dialog id={ cfg.ID } class="modal">
 		<div class="modal-box bg-base-100 text-base-content">
 			<form method="dialog">
@@ -34,13 +34,13 @@ templ Modal(cfg hypermedia.ModalConfig) {
 			</div>
 			<div class="modal-action">
 				for _, btn := range cfg.Buttons {
-					if btn.Role == hypermedia.ModalRoleCancel {
+					if btn.Role == linkwell.ModalRoleCancel {
 						<form method="dialog">
 							<button class={ modalButtonClass(btn.Variant) }>
 								{ btn.Label }
 							</button>
 						</form>
-					} else if btn.Role == hypermedia.ModalRolePrimary && cfg.HxPost != "" {
+					} else if btn.Role == linkwell.ModalRolePrimary && cfg.HxPost != "" {
 						<button
 							class={ modalButtonClass(btn.Variant) }
 							hx-post={ cfg.HxPost }
@@ -55,7 +55,7 @@ templ Modal(cfg hypermedia.ModalConfig) {
 						>
 							{ btn.Label }
 						</button>
-					} else if btn.Role == hypermedia.ModalRoleSecondary {
+					} else if btn.Role == linkwell.ModalRoleSecondary {
 						<button
 							type="reset"
 							class={ modalButtonClass(btn.Variant) }

@@ -9,14 +9,14 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/harmony/web/components/core"
 )
 
 // AppNavLayout is a responsive page layout with CSS-driven auto-positioning:
 // bottom nav bar on mobile, sticky top bar on desktop. Derived apps opt in
 // via handler.SetLayout(handler.AppNavLayoutFunc(...)).
-func AppNavLayout(content templ.Component, cfg hypermedia.NavConfig, csrfToken string, devMode bool, theme string, crumbs []hypermedia.Breadcrumb, links []hypermedia.LinkRelation, currentPath string, version string, hubs []hypermedia.HubEntry) templ.Component {
+func AppNavLayout(content templ.Component, cfg linkwell.NavConfig, csrfToken string, devMode bool, theme string, crumbs []linkwell.Breadcrumb, links []linkwell.LinkRelation, currentPath string, version string, hubs []linkwell.HubEntry) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -158,7 +158,7 @@ func AppNavLayout(content templ.Component, cfg hypermedia.NavConfig, csrfToken s
 }
 
 // appNav renders a single nav element that CSS repositions based on screen size.
-func appNav(cfg hypermedia.NavConfig) templ.Component {
+func appNav(cfg linkwell.NavConfig) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -247,7 +247,7 @@ func appNav(cfg hypermedia.NavConfig) templ.Component {
 }
 
 // appNavLink renders a single nav link with an inline SVG icon.
-func appNavLink(item hypermedia.NavItem, promoted bool) templ.Component {
+func appNavLink(item linkwell.NavItem, promoted bool) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -398,7 +398,7 @@ func appNavActiveClass(active bool) string {
 
 // navMaxVisible returns the effective max-visible count, defaulting to
 // the total number of items when MaxVisible is zero.
-func navMaxVisible(cfg hypermedia.NavConfig) int {
+func navMaxVisible(cfg linkwell.NavConfig) int {
 	if cfg.MaxVisible <= 0 {
 		return len(cfg.Items)
 	}
@@ -407,7 +407,7 @@ func navMaxVisible(cfg hypermedia.NavConfig) int {
 
 // promotedAfterIndex returns the index after which the promoted item should
 // be inserted so it appears centered in the nav bar.
-func promotedAfterIndex(cfg hypermedia.NavConfig) int {
+func promotedAfterIndex(cfg linkwell.NavConfig) int {
 	vis := navMaxVisible(cfg)
 	if vis <= 1 {
 		return 0

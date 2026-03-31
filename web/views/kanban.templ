@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"catgoose/dothog/internal/demo"
-	"catgoose/dothog/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/dothog/web/components/core"
 )
 
@@ -96,14 +96,14 @@ templ kanbanMoveButtons(t demo.KanbanTask) {
 	{{ taskURL := fmt.Sprintf("/demo/kanban/tasks/%d", t.ID) }}
 	if statusIdx > 0 {
 		{{ prevStatus := demo.KanbanStatuses[statusIdx-1] }}
-		@components.Controls([]hypermedia.Control{
+		@components.Controls([]linkwell.Control{
 			{
-				Kind:    hypermedia.ControlKindHTMX,
+				Kind:    linkwell.ControlKindHTMX,
 				Label:   "\u2190 " + kanbanStatusLabels[prevStatus],
-				Variant: hypermedia.VariantGhost,
-				Swap:    hypermedia.SwapOuterHTML,
-				HxRequest: hypermedia.HxRequestConfig{
-					Method: hypermedia.HxMethodPatch,
+				Variant: linkwell.VariantGhost,
+				Swap:    linkwell.SwapOuterHTML,
+				HxRequest: linkwell.HxRequestConfig{
+					Method: linkwell.HxMethodPatch,
 					URL:    taskURL,
 					Target: "#kanban-board",
 					Vals:   `{"status":"` + prevStatus + `"}`,
@@ -113,14 +113,14 @@ templ kanbanMoveButtons(t demo.KanbanTask) {
 	}
 	if statusIdx < len(demo.KanbanStatuses)-1 {
 		{{ nextStatus := demo.KanbanStatuses[statusIdx+1] }}
-		@components.Controls([]hypermedia.Control{
+		@components.Controls([]linkwell.Control{
 			{
-				Kind:    hypermedia.ControlKindHTMX,
+				Kind:    linkwell.ControlKindHTMX,
 				Label:   kanbanStatusLabels[nextStatus] + " \u2192",
-				Variant: hypermedia.VariantGhost,
-				Swap:    hypermedia.SwapOuterHTML,
-				HxRequest: hypermedia.HxRequestConfig{
-					Method: hypermedia.HxMethodPatch,
+				Variant: linkwell.VariantGhost,
+				Swap:    linkwell.SwapOuterHTML,
+				HxRequest: linkwell.HxRequestConfig{
+					Method: linkwell.HxMethodPatch,
 					URL:    taskURL,
 					Target: "#kanban-board",
 					Vals:   `{"status":"` + nextStatus + `"}`,

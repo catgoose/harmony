@@ -8,14 +8,14 @@ package components
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "catgoose/harmony/internal/routes/hypermedia"
+import "github.com/catgoose/linkwell"
 
 // filterTrigger returns the default hx-trigger string for each FilterKind.
-func filterTrigger(kind hypermedia.FilterKind) string {
+func filterTrigger(kind linkwell.FilterKind) string {
 	switch kind {
-	case hypermedia.FilterKindSearch:
+	case linkwell.FilterKindSearch:
 		return "keyup changed delay:400ms, search"
-	case hypermedia.FilterKindRange:
+	case linkwell.FilterKindRange:
 		return "change delay:300ms"
 	default:
 		// select, checkbox, date
@@ -29,7 +29,7 @@ func filterTrigger(kind hypermedia.FilterKind) string {
 //	hx-trigger=filterTrigger(field.Kind)
 //
 // Merges field.HTMXAttrs overrides (with "hx-" prefix) last so they win.
-func filterHxAttrs(field hypermedia.FilterField, bar hypermedia.FilterBar) templ.Attributes {
+func filterHxAttrs(field linkwell.FilterField, bar linkwell.FilterBar) templ.Attributes {
 	attrs := templ.Attributes{
 		"hx-get":     bar.Action,
 		"hx-target":  bar.Target,
@@ -43,9 +43,9 @@ func filterHxAttrs(field hypermedia.FilterField, bar hypermedia.FilterBar) templ
 }
 
 // filterBarHasSearch returns true if any field in the bar is a search field.
-func filterBarHasSearch(bar hypermedia.FilterBar) bool {
+func filterBarHasSearch(bar linkwell.FilterBar) bool {
 	for _, f := range bar.Fields {
-		if f.Kind == hypermedia.FilterKindSearch {
+		if f.Kind == linkwell.FilterKindSearch {
 			return true
 		}
 	}
@@ -54,7 +54,7 @@ func filterBarHasSearch(bar hypermedia.FilterBar) bool {
 
 // FilterBar renders the filter form. When a search field is present, it splits
 // into two rows: search full-width on top, other fields in a flex row below.
-func FilterBar(bar hypermedia.FilterBar) templ.Component {
+func FilterBar(bar linkwell.FilterBar) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -94,7 +94,7 @@ func FilterBar(bar hypermedia.FilterBar) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			for _, field := range bar.Fields {
-				if field.Kind == hypermedia.FilterKindSearch {
+				if field.Kind == linkwell.FilterKindSearch {
 					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -114,7 +114,7 @@ func FilterBar(bar hypermedia.FilterBar) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			for _, field := range bar.Fields {
-				if field.Kind != hypermedia.FilterKindSearch {
+				if field.Kind != linkwell.FilterKindSearch {
 					templ_7745c5c3_Err = FilterField(field, bar).Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -160,7 +160,7 @@ func FilterBar(bar hypermedia.FilterBar) templ.Component {
 
 // FilterField dispatches to the correct field renderer by Kind.
 // Exported so apps can build custom filter layouts using the standard field renderers.
-func FilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) templ.Component {
+func FilterField(field linkwell.FilterField, bar linkwell.FilterBar) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -182,27 +182,27 @@ func FilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) templ.C
 		}
 		ctx = templ.ClearChildren(ctx)
 		switch field.Kind {
-		case hypermedia.FilterKindSearch:
+		case linkwell.FilterKindSearch:
 			templ_7745c5c3_Err = searchFilterField(field, bar).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-		case hypermedia.FilterKindSelect:
+		case linkwell.FilterKindSelect:
 			templ_7745c5c3_Err = selectFilterField(field, bar).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-		case hypermedia.FilterKindRange:
+		case linkwell.FilterKindRange:
 			templ_7745c5c3_Err = rangeFilterField(field, bar).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-		case hypermedia.FilterKindCheckbox:
+		case linkwell.FilterKindCheckbox:
 			templ_7745c5c3_Err = checkboxFilterField(field, bar).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-		case hypermedia.FilterKindDate:
+		case linkwell.FilterKindDate:
 			templ_7745c5c3_Err = dateFilterField(field, bar).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -213,7 +213,7 @@ func FilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) templ.C
 }
 
 // searchFilterField renders a DaisyUI text search input with label.
-func searchFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) templ.Component {
+func searchFilterField(field linkwell.FilterField, bar linkwell.FilterBar) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -320,7 +320,7 @@ func searchFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) t
 
 // selectFilterField renders a DaisyUI <select> dropdown with label.
 // The wrapping label carries data-filter={name} for OOB targeting by FilterGroup.
-func selectFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) templ.Component {
+func selectFilterField(field linkwell.FilterField, bar linkwell.FilterBar) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -390,7 +390,7 @@ func selectFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) t
 }
 
 // selectFilterOptions renders just the <select> element, reusable for OOB swaps.
-func selectFilterOptions(field hypermedia.FilterField, bar hypermedia.FilterBar) templ.Component {
+func selectFilterOptions(field linkwell.FilterField, bar linkwell.FilterBar) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -494,7 +494,7 @@ func selectFilterOptions(field hypermedia.FilterField, bar hypermedia.FilterBar)
 
 // FilterGroupOOB renders OOB swap fragments for all select fields in a FilterGroup.
 // Each fragment targets [data-filter='{name}'] and replaces the <select> element.
-func FilterGroupOOB(group hypermedia.FilterGroup) templ.Component {
+func FilterGroupOOB(group linkwell.FilterGroup) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -566,7 +566,7 @@ func FilterGroupOOB(group hypermedia.FilterGroup) templ.Component {
 }
 
 // rangeFilterField renders a DaisyUI range slider with live value display via HyperScript.
-func rangeFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) templ.Component {
+func rangeFilterField(field linkwell.FilterField, bar linkwell.FilterBar) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -711,7 +711,7 @@ func rangeFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) te
 }
 
 // checkboxFilterField renders a DaisyUI toggle checkbox.
-func checkboxFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) templ.Component {
+func checkboxFilterField(field linkwell.FilterField, bar linkwell.FilterBar) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -797,7 +797,7 @@ func checkboxFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar)
 }
 
 // dateFilterField renders a DaisyUI date input with label.
-func dateFilterField(field hypermedia.FilterField, bar hypermedia.FilterBar) templ.Component {
+func dateFilterField(field linkwell.FilterField, bar linkwell.FilterBar) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

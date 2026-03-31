@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"catgoose/dothog/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/dothog/web/components/core"
 )
 
@@ -89,7 +89,7 @@ templ ResourceViewFragment(name, desc string) {
 			<p class="font-semibold">{ name }</p>
 			<p class="text-sm text-base-content/70">{ desc }</p>
 		</div>
-		@components.Controls(hypermedia.ResourceActions(hypermedia.ResourceActionCfg{
+		@components.Controls(linkwell.ResourceActions(linkwell.ResourceActionCfg{
 			EditURL:    "/hypermedia/controls/resource/edit",
 			DeleteURL:  "/hypermedia/controls/resource",
 			ConfirmMsg: "Delete this resource?",
@@ -156,7 +156,7 @@ templ FormDemoFragment() {
 				<input name="value" class="input input-sm" value="42"/>
 			</div>
 		</div>
-		@components.Controls(hypermedia.FormActions("/hypermedia/controls"))
+		@components.Controls(linkwell.FormActions("/hypermedia/controls"))
 	</form>
 }
 
@@ -180,13 +180,13 @@ templ FormSubmitResultFragment(label, value string) {
 templ EmptyStateFragment() {
 	<div class="text-center py-6 text-base-content/50">
 		<p class="mb-3">No items yet.</p>
-		@components.Controls([]hypermedia.Control{
+		@components.Controls([]linkwell.Control{
 			{
-				Kind:      hypermedia.ControlKindHTMX,
+				Kind:      linkwell.ControlKindHTMX,
 				Label:     "Create Item",
-				Variant:   hypermedia.VariantPrimary,
-				HxRequest: hypermedia.HxPost("/hypermedia/controls/items", "#items-demo"),
-				Swap:      hypermedia.SwapInnerHTML,
+				Variant:   linkwell.VariantPrimary,
+				HxRequest: linkwell.HxPost("/hypermedia/controls/items", "#items-demo"),
+				Swap:      linkwell.SwapInnerHTML,
 			},
 		})
 	</div>
@@ -274,7 +274,7 @@ templ RowViewFragment(item GalleryRowItem) {
 			}
 		</td>
 		<td>
-			@components.Controls(hypermedia.RowActions(hypermedia.RowActionCfg{
+			@components.Controls(linkwell.RowActions(linkwell.RowActionCfg{
 				EditURL:    fmt.Sprintf("/hypermedia/controls/rows/%d/edit", item.ID),
 				DeleteURL:  fmt.Sprintf("/hypermedia/controls/rows/%d", item.ID),
 				RowTarget:  fmt.Sprintf("#cg-row-%d", item.ID),
@@ -299,7 +299,7 @@ templ RowEditFragment(item GalleryRowItem) {
 		<td><input type="number" name="price" step="0.01" class="input input-sm w-24" value={ item.Price }/></td>
 		<td><input type="checkbox" name="active" value="true" class="toggle toggle-sm" checked?={ item.Active }/></td>
 		<td>
-			@components.Controls(hypermedia.RowFormActions(hypermedia.RowFormActionCfg{
+			@components.Controls(linkwell.RowFormActions(linkwell.RowFormActionCfg{
 				SaveURL:      fmt.Sprintf("/hypermedia/controls/rows/%d", item.ID),
 				CancelURL:    fmt.Sprintf("/hypermedia/controls/rows/%d", item.ID),
 				SaveTarget:   fmt.Sprintf("#cg-row-%d", item.ID),
@@ -314,7 +314,7 @@ templ RowEditFragment(item GalleryRowItem) {
 // GalleryErrorPanel renders an inline error with a stacked layout and a unified
 // Dismiss + Report joined button group. Each panel has its own ID so multiple
 // can coexist.
-templ GalleryErrorPanel(panelID string, ec hypermedia.ErrorContext) {
+templ GalleryErrorPanel(panelID string, ec linkwell.ErrorContext) {
 	<div id={ panelID }>
 		@components.InlineErrorPanel(ec)
 	</div>

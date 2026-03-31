@@ -3,15 +3,15 @@ package components
 import (
 	"testing"
 
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 
 	"github.com/stretchr/testify/require"
 )
 
 func TestHxAttrsFromControl_BasicAttrs(t *testing.T) {
-	ctrl := hypermedia.Control{
-		HxRequest: hypermedia.HxGet("/items", "#list"),
-		Swap:      hypermedia.SwapInnerHTML,
+	ctrl := linkwell.Control{
+		HxRequest: linkwell.HxGet("/items", "#list"),
+		Swap:      linkwell.SwapInnerHTML,
 	}
 	attrs := hxAttrsFromControl(ctrl)
 	require.Equal(t, "/items", attrs["hx-get"])
@@ -20,9 +20,9 @@ func TestHxAttrsFromControl_BasicAttrs(t *testing.T) {
 }
 
 func TestHxAttrsFromControl_Confirm(t *testing.T) {
-	ctrl := hypermedia.Control{
+	ctrl := linkwell.Control{
 		Confirm:   "Are you sure?",
-		HxRequest: hypermedia.HxDelete("/item/1", ""),
+		HxRequest: linkwell.HxDelete("/item/1", ""),
 	}
 	attrs := hxAttrsFromControl(ctrl)
 	require.Equal(t, "Are you sure?", attrs["hx-confirm"])
@@ -30,9 +30,9 @@ func TestHxAttrsFromControl_Confirm(t *testing.T) {
 }
 
 func TestHxAttrsFromControl_PushURL(t *testing.T) {
-	ctrl := hypermedia.Control{
+	ctrl := linkwell.Control{
 		PushURL:   "/dashboard",
-		HxRequest: hypermedia.HxGet("/dashboard", ""),
+		HxRequest: linkwell.HxGet("/dashboard", ""),
 	}
 	attrs := hxAttrsFromControl(ctrl)
 	require.Equal(t, "/dashboard", attrs["hx-push-url"])
@@ -40,9 +40,9 @@ func TestHxAttrsFromControl_PushURL(t *testing.T) {
 }
 
 func TestHxAttrsFromControl_SwapField(t *testing.T) {
-	ctrl := hypermedia.Control{
-		Swap:      hypermedia.SwapOuterHTML,
-		HxRequest: hypermedia.HxPost("/submit", ""),
+	ctrl := linkwell.Control{
+		Swap:      linkwell.SwapOuterHTML,
+		HxRequest: linkwell.HxPost("/submit", ""),
 	}
 	attrs := hxAttrsFromControl(ctrl)
 	require.Equal(t, "outerHTML", attrs["hx-swap"])
@@ -50,11 +50,11 @@ func TestHxAttrsFromControl_SwapField(t *testing.T) {
 }
 
 func TestHxAttrsFromControl_AllFieldsSet(t *testing.T) {
-	ctrl := hypermedia.Control{
-		HxRequest: hypermedia.HxPut("/update", ""),
+	ctrl := linkwell.Control{
+		HxRequest: linkwell.HxPut("/update", ""),
 		Confirm:   "Confirm?",
 		PushURL:   "/updated",
-		Swap:      hypermedia.SwapNone,
+		Swap:      linkwell.SwapNone,
 	}
 	attrs := hxAttrsFromControl(ctrl)
 	require.Equal(t, "/update", attrs["hx-put"])
@@ -64,7 +64,7 @@ func TestHxAttrsFromControl_AllFieldsSet(t *testing.T) {
 }
 
 func TestHxAttrsFromControl_EmptyControl(t *testing.T) {
-	ctrl := hypermedia.Control{}
+	ctrl := linkwell.Control{}
 	attrs := hxAttrsFromControl(ctrl)
 	require.NotNil(t, attrs)
 	_, hasConfirm := attrs["hx-confirm"]
@@ -76,9 +76,9 @@ func TestHxAttrsFromControl_EmptyControl(t *testing.T) {
 }
 
 func TestHxAttrsFromControl_IncludeField(t *testing.T) {
-	ctrl := hypermedia.Control{
-		HxRequest: hypermedia.HxRequestConfig{
-			Method:  hypermedia.HxMethodPut,
+	ctrl := linkwell.Control{
+		HxRequest: linkwell.HxRequestConfig{
+			Method:  linkwell.HxMethodPut,
 			URL:     "/save",
 			Target:  "#tc",
 			Include: "closest tr",
@@ -91,7 +91,7 @@ func TestHxAttrsFromControl_IncludeField(t *testing.T) {
 }
 
 func TestHxAttrsFromControl_ZeroHxRequest(t *testing.T) {
-	ctrl := hypermedia.Control{
+	ctrl := linkwell.Control{
 		Confirm: "Sure?",
 	}
 	attrs := hxAttrsFromControl(ctrl)

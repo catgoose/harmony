@@ -5,14 +5,14 @@ import (
 	"fmt"
 
 	"catgoose/harmony/internal/demo"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 )
 
-func linksRowspan(links []hypermedia.LinkRelation) string {
+func linksRowspan(links []linkwell.LinkRelation) string {
 	return fmt.Sprintf("%d", len(links))
 }
 
-func linksCount(links map[string][]hypermedia.LinkRelation) string {
+func linksCount(links map[string][]linkwell.LinkRelation) string {
 	n := 0
 	for _, v := range links {
 		n += len(v)
@@ -20,7 +20,7 @@ func linksCount(links map[string][]hypermedia.LinkRelation) string {
 	return fmt.Sprintf("%d", n)
 }
 
-func pathsCount(links map[string][]hypermedia.LinkRelation) string {
+func pathsCount(links map[string][]linkwell.LinkRelation) string {
 	return fmt.Sprintf("%d", len(links))
 }
 
@@ -41,25 +41,25 @@ func linkDeleteURL(id int) string {
 }
 
 func codeLinkExample() string {
-	return `hypermedia.Link("/demo/inventory", "related", "/demo/people", "People")
+	return `linkwell.Link("/demo/inventory", "related", "/demo/people", "People")
 // Result: inventory <-> people (bidirectional)`
 }
 
 func codeRingExample() string {
-	return `hypermedia.Ring(
-    hypermedia.Rel("/admin/health", "Health"),
-    hypermedia.Rel("/admin/error-traces", "Error Traces"),
-    hypermedia.Rel("/admin/sessions", "Sessions"),
-    hypermedia.Rel("/admin/settings", "Control Panel"),
+	return `linkwell.Ring(
+    linkwell.Rel("/admin/health", "Health"),
+    linkwell.Rel("/admin/error-traces", "Error Traces"),
+    linkwell.Rel("/admin/sessions", "Sessions"),
+    linkwell.Rel("/admin/settings", "Control Panel"),
 )
 // Result: 4 pages, each links to the other 3 = 12 directed links`
 }
 
 func codeHubExample() string {
-	return `hypermedia.Hub("/dashboard", "Dashboard",
-    hypermedia.Rel("/demo/inventory", "Inventory"),
-    hypermedia.Rel("/demo/people", "People"),
-    hypermedia.Rel("/demo/kanban", "Kanban"),
+	return `linkwell.Hub("/dashboard", "Dashboard",
+    linkwell.Rel("/demo/inventory", "Inventory"),
+    linkwell.Rel("/demo/people", "People"),
+    linkwell.Rel("/demo/kanban", "Kanban"),
 )
 // Result: dashboard -> inventory, people, kanban
 //         inventory -> dashboard (only)
@@ -81,14 +81,14 @@ func Rel(path, title string) RelEntry {
 func codeDedupExample() string {
 	return `// These two calls share /admin/health and /admin/error-traces.
 // hasLink prevents duplicate links on the shared pages.
-hypermedia.Ring(
-    hypermedia.Rel("/admin/health", "Health"),
-    hypermedia.Rel("/admin/error-traces", "Error Traces"),
-    hypermedia.Rel("/admin/sessions", "Sessions"),
+linkwell.Ring(
+    linkwell.Rel("/admin/health", "Health"),
+    linkwell.Rel("/admin/error-traces", "Error Traces"),
+    linkwell.Rel("/admin/sessions", "Sessions"),
 )
-hypermedia.Ring(
-    hypermedia.Rel("/admin/system", "System"),
-    hypermedia.Rel("/admin/health", "Health"),
-    hypermedia.Rel("/admin/error-traces", "Error Traces"),
+linkwell.Ring(
+    linkwell.Rel("/admin/system", "System"),
+    linkwell.Rel("/admin/health", "Health"),
+    linkwell.Rel("/admin/error-traces", "Error Traces"),
 )`
 }

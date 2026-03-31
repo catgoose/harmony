@@ -2,6 +2,7 @@ package tests
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -22,7 +23,7 @@ func TestSetupReplacesAppNameAndModule(t *testing.T) {
 	require.NoError(t, err)
 
 	dest := setupTempDir(t)
-	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
+	err = copyDirExcluding(repoRoot, dest, ".git", ".claude", "bin", "build", "log", "tmp", "node_modules")
 	require.NoError(t, err)
 
 	err = setup.Run(context.Background(), dest, setup.Options{
@@ -121,7 +122,7 @@ func TestSetupUsesRandomPortWhenPOmitted(t *testing.T) {
 	require.NoError(t, err)
 
 	dest := setupTempDir(t)
-	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
+	err = copyDirExcluding(repoRoot, dest, ".git", ".claude", "bin", "build", "log", "tmp", "node_modules")
 	require.NoError(t, err)
 
 	err = setup.Run(context.Background(), dest, setup.Options{
@@ -315,7 +316,7 @@ func TestSetup_NoBareBinaryInGitignore(t *testing.T) {
 	require.NoError(t, err)
 
 	dest := setupTempDir(t)
-	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
+	err = copyDirExcluding(repoRoot, dest, ".git", ".claude", "bin", "build", "log", "tmp", "node_modules")
 	require.NoError(t, err)
 
 	err = setup.Run(context.Background(), dest, setup.Options{
@@ -354,7 +355,7 @@ func TestSetup_MageSetupAndInternalSetupRemovable(t *testing.T) {
 	require.NoError(t, err)
 
 	dest := setupTempDir(t)
-	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
+	err = copyDirExcluding(repoRoot, dest, ".git", ".claude", "bin", "build", "log", "tmp", "node_modules")
 	require.NoError(t, err)
 
 	// Remove setup-only files before running setup (mimics the copy flow in mage_setup.go)
@@ -389,7 +390,7 @@ func TestSetup_FeaturesAll(t *testing.T) {
 	require.NoError(t, err)
 
 	dest := setupTempDir(t)
-	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
+	err = copyDirExcluding(repoRoot, dest, ".git", ".claude", "bin", "build", "log", "tmp", "node_modules")
 	require.NoError(t, err)
 
 	features := make([]string, len(setup.AllFeatures))
@@ -407,7 +408,6 @@ func TestSetup_FeaturesAll(t *testing.T) {
 
 	assertNoSetupMarkers(t, dest)
 	assertBuildSucceeds(t, dest)
-	assertDirExists(t, filepath.Join(dest, "internal", "ssebroker"))
 	assertDirExists(t, filepath.Join(dest, "internal", "database"))
 	assertDirExists(t, filepath.Join(dest, "internal", "service", "graph"))
 	assertDirExists(t, filepath.Join(dest, "internal", "demo"))
@@ -419,7 +419,7 @@ func TestSetup_FeaturesNone(t *testing.T) {
 	require.NoError(t, err)
 
 	dest := setupTempDir(t)
-	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
+	err = copyDirExcluding(repoRoot, dest, ".git", ".claude", "bin", "build", "log", "tmp", "node_modules")
 	require.NoError(t, err)
 
 	err = setup.Run(context.Background(), dest, setup.Options{
@@ -434,7 +434,6 @@ func TestSetup_FeaturesNone(t *testing.T) {
 
 	assertNoSetupMarkers(t, dest)
 	assertBuildSucceeds(t, dest)
-	assertDirRemoved(t, filepath.Join(dest, "internal", "ssebroker"))
 	assertDirRemoved(t, filepath.Join(dest, "internal", "service", "graph"))
 	assertDirExists(t, filepath.Join(dest, "internal", "database"))          // database is implicit (always kept)
 	assertDirRemoved(t, filepath.Join(dest, "internal", "repository"))
@@ -455,7 +454,7 @@ func TestSetup_FeaturesAuthOnly(t *testing.T) {
 	require.NoError(t, err)
 
 	dest := setupTempDir(t)
-	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
+	err = copyDirExcluding(repoRoot, dest, ".git", ".claude", "bin", "build", "log", "tmp", "node_modules")
 	require.NoError(t, err)
 
 	err = setup.Run(context.Background(), dest, setup.Options{
@@ -472,7 +471,6 @@ func TestSetup_FeaturesAuthOnly(t *testing.T) {
 	assertBuildSucceeds(t, dest)
 	assertDirExists(t, filepath.Join(dest, "internal", "database")) // database is implicit
 	assertDirRemoved(t, filepath.Join(dest, "internal", "service", "graph"))
-	assertDirRemoved(t, filepath.Join(dest, "internal", "ssebroker"))
 
 	_, err = os.Stat(filepath.Join(dest, "config", "Caddyfile"))
 	require.True(t, os.IsNotExist(err), "Caddyfile should be removed when caddy not selected")
@@ -493,7 +491,7 @@ func TestSetup_FeaturesDatabaseOnly(t *testing.T) {
 	require.NoError(t, err)
 
 	dest := setupTempDir(t)
-	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
+	err = copyDirExcluding(repoRoot, dest, ".git", ".claude", "bin", "build", "log", "tmp", "node_modules")
 	require.NoError(t, err)
 
 	// database is implicit — no need to pass it explicitly; MSSQL not selected
@@ -509,7 +507,6 @@ func TestSetup_FeaturesDatabaseOnly(t *testing.T) {
 
 	assertNoSetupMarkers(t, dest)
 	assertBuildSucceeds(t, dest)
-	assertDirRemoved(t, filepath.Join(dest, "internal", "ssebroker"))
 	assertDirRemoved(t, filepath.Join(dest, "internal", "service", "graph"))
 	assertDirExists(t, filepath.Join(dest, "internal", "database"))
 
@@ -523,7 +520,7 @@ func TestSetup_FeaturesMSSQL(t *testing.T) {
 	require.NoError(t, err)
 
 	dest := setupTempDir(t)
-	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
+	err = copyDirExcluding(repoRoot, dest, ".git", ".claude", "bin", "build", "log", "tmp", "node_modules")
 	require.NoError(t, err)
 
 	// database is implicit; explicitly selecting mssql adds MSSQL support
@@ -549,7 +546,7 @@ func TestSetup_FeaturesSSECaddy(t *testing.T) {
 	require.NoError(t, err)
 
 	dest := setupTempDir(t)
-	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
+	err = copyDirExcluding(repoRoot, dest, ".git", ".claude", "bin", "build", "log", "tmp", "node_modules")
 	require.NoError(t, err)
 
 	err = setup.Run(context.Background(), dest, setup.Options{
@@ -564,7 +561,6 @@ func TestSetup_FeaturesSSECaddy(t *testing.T) {
 
 	assertNoSetupMarkers(t, dest)
 	assertBuildSucceeds(t, dest)
-	assertDirExists(t, filepath.Join(dest, "internal", "ssebroker"))
 
 	_, err = os.Stat(filepath.Join(dest, "config", "Caddyfile"))
 	require.NoError(t, err, "Caddyfile should exist when caddy is selected")
@@ -579,7 +575,7 @@ func TestSetup_FeaturesDemo(t *testing.T) {
 	require.NoError(t, err)
 
 	dest := setupTempDir(t)
-	err = copyDirExcluding(repoRoot, dest, ".git", "bin", "build", "tmp", "node_modules")
+	err = copyDirExcluding(repoRoot, dest, ".git", ".claude", "bin", "build", "log", "tmp", "node_modules")
 	require.NoError(t, err)
 
 	err = setup.Run(context.Background(), dest, setup.Options{
@@ -595,4 +591,112 @@ func TestSetup_FeaturesDemo(t *testing.T) {
 	assertNoSetupMarkers(t, dest)
 	assertBuildSucceeds(t, dest)
 	assertDirExists(t, filepath.Join(dest, "internal", "demo"))
+}
+
+// TestSetup_NoDothogReferences runs setup with all features enabled and verifies
+// that no dothog/Dothog/DOTHOG references remain in the derived app. This catches
+// template substitution gaps where the original project name leaks through.
+func TestSetup_NoDothogReferences(t *testing.T) {
+	t.Parallel()
+	repoRoot, err := findRepoRoot()
+	require.NoError(t, err)
+
+	dest := setupTempDir(t)
+	err = copyDirExcluding(repoRoot, dest, ".git", ".claude", "bin", "build", "log", "tmp", "node_modules")
+	require.NoError(t, err)
+
+	// Remove setup-only files (mimics the copy flow in mage_setup.go).
+	_ = os.RemoveAll(filepath.Join(dest, "_template_setup"))
+	_ = os.RemoveAll(filepath.Join(dest, "internal", "setup"))
+	_ = os.Remove(filepath.Join(dest, "mage_setup.go"))
+	_ = os.RemoveAll(filepath.Join(dest, "tests"))
+
+	appName := "Test Clean App"
+	modulePath := "github.com/example/testcleanapp"
+
+	err = setup.Run(context.Background(), dest, setup.Options{
+		AppName:    appName,
+		ModulePath: modulePath,
+		BasePort:   "21000",
+		NoCaddy:    false,
+		Force:      true,
+		Features:   setup.AllFeatures,
+	})
+	require.NoError(t, err)
+
+	// --- Scan all files for residual dothog references ---
+	dothogRE := regexp.MustCompile(`(?i)dothog`)
+
+	// Directories and file extensions to skip.
+	skipDirs := map[string]bool{
+		".git":             true,
+		".claude":          true,
+		"log":              true,
+		"node_modules":     true,
+		"_template_setup":  true,
+	}
+
+	var violations []string
+	err = filepath.Walk(dest, func(path string, info os.FileInfo, errWalk error) error {
+		if errWalk != nil {
+			return errWalk
+		}
+		if info.IsDir() {
+			if skipDirs[filepath.Base(path)] {
+				return filepath.SkipDir
+			}
+			return nil
+		}
+		// In a worktree .git is a file, not a directory; skip it.
+		if filepath.Base(path) == ".git" {
+			return nil
+		}
+		// Skip binary / non-text files by extension.
+		ext := strings.ToLower(filepath.Ext(path))
+		binaryExts := map[string]bool{
+			".png": true, ".jpg": true, ".jpeg": true, ".gif": true,
+			".ico": true, ".woff": true, ".woff2": true, ".ttf": true,
+			".eot": true, ".zip": true, ".gz": true, ".tar": true,
+			".exe": true, ".dll": true, ".so": true, ".dylib": true,
+			".db": true, ".sqlite": true, ".wasm": true,
+		}
+		if binaryExts[ext] {
+			return nil
+		}
+		data, readErr := os.ReadFile(path)
+		if readErr != nil {
+			return nil
+		}
+		rel, _ := filepath.Rel(dest, path)
+		for i, line := range strings.Split(string(data), "\n") {
+			if dothogRE.MatchString(line) {
+				violations = append(violations, fmt.Sprintf("  %s:%d: %s", rel, i+1, strings.TrimSpace(line)))
+			}
+		}
+		return nil
+	})
+	require.NoError(t, err)
+
+	if len(violations) > 0 {
+		t.Errorf("found %d residual dothog reference(s) in derived app:\n%s",
+			len(violations), strings.Join(violations, "\n"))
+	}
+
+	// --- Verify the new app name appears in key files ---
+
+	// go.mod module path
+	modBytes, err := os.ReadFile(filepath.Join(dest, "go.mod"))
+	require.NoError(t, err)
+	require.True(t, strings.HasPrefix(strings.TrimSpace(string(modBytes)), "module "+modulePath),
+		"go.mod should declare module %s", modulePath)
+
+	// HTML title in the public index.html
+	indexPath := filepath.Join(dest, "web", "assets", "public", "index.html")
+	if indexBytes, readErr := os.ReadFile(indexPath); readErr == nil {
+		require.Contains(t, string(indexBytes), appName,
+			"index.html should contain the app name")
+	}
+
+	// --- Confirm the derived app compiles ---
+	assertBuildSucceeds(t, dest)
 }

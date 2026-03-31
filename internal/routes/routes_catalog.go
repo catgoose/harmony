@@ -5,8 +5,8 @@ package routes
 import (
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
-	hx "catgoose/harmony/internal/routes/htmx"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/cheddar"
+	"github.com/catgoose/linkwell"
 	"catgoose/harmony/internal/routes/params"
 	"catgoose/harmony/web/views"
 
@@ -39,7 +39,7 @@ func (cat *catalogRoutes) handleCatalogItems(c echo.Context) error {
 	if err != nil {
 		return handler.HandleHypermediaError(c, 500, "Failed to load items", err)
 	}
-	if hx.IsBoosted(c) {
+	if cheddar.IsBoosted(c) {
 		return handler.RenderBaseLayout(c, views.CatalogPage(bar, container))
 	}
 	setTableReplaceURL(c, catalogBase)
@@ -71,14 +71,14 @@ func (cat *catalogRoutes) handleCatalogItemDetails(c echo.Context) error {
 	return handler.RenderComponent(c, views.CatalogDetailContent(item))
 }
 
-func (cat *catalogRoutes) buildCatalogContent(c echo.Context) (hypermedia.FilterBar, templ.Component, error) {
+func (cat *catalogRoutes) buildCatalogContent(c echo.Context) (linkwell.FilterBar, templ.Component, error) {
 	const perPage = 20
 	tc, err := buildTableContent(c, cat.db, parseTableParams(c, perPage),
 		catalogBase+"/items", "#catalog-table-container",
-		hypermedia.TableCol{Label: "Details"},
+		linkwell.TableCol{Label: "Details"},
 	)
 	if err != nil {
-		return hypermedia.FilterBar{}, nil, err
+		return linkwell.FilterBar{}, nil, err
 	}
 	body := views.CatalogItemsBody(tc.Items)
 	container := views.CatalogTableContainer(tc.Cols, body, tc.Info)

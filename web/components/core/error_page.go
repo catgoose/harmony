@@ -1,8 +1,8 @@
 package components
 
-import "catgoose/harmony/internal/routes/hypermedia"
+import "github.com/catgoose/linkwell"
 
-func errorPageTheme(ec hypermedia.ErrorContext) string {
+func errorPageTheme(ec linkwell.ErrorContext) string {
 	if ec.Theme != "" {
 		return ec.Theme
 	}

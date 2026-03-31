@@ -8,10 +8,10 @@ package components
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "catgoose/harmony/internal/routes/hypermedia"
+import "github.com/catgoose/linkwell"
 
 // navHxAttrs converts a NavItem's HTMXAttrs map to templ.Attributes with "hx-" prefix.
-func navHxAttrs(item hypermedia.NavItem) templ.Attributes {
+func navHxAttrs(item linkwell.NavItem) templ.Attributes {
 	attrs := make(templ.Attributes, len(item.HTMXAttrs))
 	for k, v := range item.HTMXAttrs {
 		attrs["hx-"+k] = v
@@ -29,7 +29,7 @@ func navActiveClass(active bool) string {
 
 // NavBar renders a DaisyUI horizontal navbar with optional HTMX enhancement.
 // Active state should be set server-side via SetActiveNavItem or SetActiveNavItemPrefix.
-func NavBar(items []hypermedia.NavItem) templ.Component {
+func NavBar(items []linkwell.NavItem) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -68,7 +68,7 @@ func NavBar(items []hypermedia.NavItem) templ.Component {
 	})
 }
 
-func navMenuItem(item hypermedia.NavItem) templ.Component {
+func navMenuItem(item linkwell.NavItem) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -215,7 +215,7 @@ func navMenuItem(item hypermedia.NavItem) templ.Component {
 
 // Breadcrumbs renders a DaisyUI breadcrumb trail.
 // Non-terminal crumbs render as anchors; the terminal crumb renders as plain text.
-func Breadcrumbs(crumbs []hypermedia.Breadcrumb) templ.Component {
+func Breadcrumbs(crumbs []linkwell.Breadcrumb) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

@@ -1,17 +1,17 @@
 package components
 
-import "catgoose/dothog/internal/routes/hypermedia"
+import "github.com/catgoose/linkwell"
 
 // variantClass maps a ControlVariant to the corresponding DaisyUI btn modifier class.
-func variantClass(v hypermedia.ControlVariant) string {
+func variantClass(v linkwell.ControlVariant) string {
 	switch v {
-	case hypermedia.VariantPrimary:
+	case linkwell.VariantPrimary:
 		return "btn-primary"
-	case hypermedia.VariantDanger:
+	case linkwell.VariantDanger:
 		return "btn-error"
-	case hypermedia.VariantGhost:
+	case linkwell.VariantGhost:
 		return "btn-ghost"
-	case hypermedia.VariantLink:
+	case linkwell.VariantLink:
 		return "btn-link"
 	default:
 		return "btn-secondary"
@@ -20,7 +20,7 @@ func variantClass(v hypermedia.ControlVariant) string {
 
 // InlineAlertControls renders controls styled for use inside DaisyUI alerts.
 // Buttons use btn-outline to inherit the alert's color context.
-templ InlineAlertControls(controls []hypermedia.Control) {
+templ InlineAlertControls(controls []linkwell.Control) {
 	if len(controls) > 0 {
 		<div class="ml-auto flex flex-wrap gap-2">
 			for _, ctrl := range controls {
@@ -30,16 +30,16 @@ templ InlineAlertControls(controls []hypermedia.Control) {
 	}
 }
 
-templ inlineAlertControl(ctrl hypermedia.Control) {
+templ inlineAlertControl(ctrl linkwell.Control) {
 	switch ctrl.Kind {
-		case hypermedia.ControlKindReport:
+		case linkwell.ControlKindReport:
 			@genericReportButton(ctrl)
 		default:
 			@inlineAlertButton(ctrl)
 	}
 }
 
-templ inlineAlertButton(ctrl hypermedia.Control) {
+templ inlineAlertButton(ctrl linkwell.Control) {
 	<button
 		{ hxAttrsFromControl(ctrl)... }
 		class="btn btn-sm btn-outline"
@@ -52,7 +52,7 @@ templ inlineAlertButton(ctrl hypermedia.Control) {
 
 // Controls renders a flex row of generic DaisyUI-styled controls.
 // Use outside error contexts (CRUD action bars, form footers, empty states).
-templ Controls(controls []hypermedia.Control) {
+templ Controls(controls []linkwell.Control) {
 	if len(controls) > 0 {
 		<div class="flex flex-wrap gap-2">
 			for _, ctrl := range controls {
@@ -62,26 +62,26 @@ templ Controls(controls []hypermedia.Control) {
 	}
 }
 
-templ control(ctrl hypermedia.Control) {
+templ control(ctrl linkwell.Control) {
 	switch ctrl.Kind {
-		case hypermedia.ControlKindRetry:
+		case linkwell.ControlKindRetry:
 			@genericButton(ctrl)
-		case hypermedia.ControlKindHTMX:
+		case linkwell.ControlKindHTMX:
 			@genericButton(ctrl)
-		case hypermedia.ControlKindBack:
+		case linkwell.ControlKindBack:
 			@backButton(ctrl)
-		case hypermedia.ControlKindHome:
+		case linkwell.ControlKindHome:
 			@homeButton(ctrl)
-		case hypermedia.ControlKindLink:
+		case linkwell.ControlKindLink:
 			@genericLink(ctrl)
-		case hypermedia.ControlKindDismiss:
+		case linkwell.ControlKindDismiss:
 			@genericDismiss(ctrl)
-		case hypermedia.ControlKindReport:
+		case linkwell.ControlKindReport:
 			@genericReportButton(ctrl)
 	}
 }
 
-templ genericButton(ctrl hypermedia.Control) {
+templ genericButton(ctrl linkwell.Control) {
 	<button
 		{ hxAttrsFromControl(ctrl)... }
 		class={ "btn btn-sm " + variantClass(ctrl.Variant) }
@@ -92,7 +92,7 @@ templ genericButton(ctrl hypermedia.Control) {
 	</button>
 }
 
-templ backButton(ctrl hypermedia.Control) {
+templ backButton(ctrl linkwell.Control) {
 	<button
 		class={ "btn btn-sm " + variantClass(ctrl.Variant) }
 		disabled?={ ctrl.Disabled }
@@ -103,7 +103,7 @@ templ backButton(ctrl hypermedia.Control) {
 	</button>
 }
 
-templ homeButton(ctrl hypermedia.Control) {
+templ homeButton(ctrl linkwell.Control) {
 	<button
 		class={ "btn btn-sm " + variantClass(ctrl.Variant) }
 		disabled?={ ctrl.Disabled }
@@ -114,7 +114,7 @@ templ homeButton(ctrl hypermedia.Control) {
 	</button>
 }
 
-templ genericLink(ctrl hypermedia.Control) {
+templ genericLink(ctrl linkwell.Control) {
 	<a
 		href={ templ.URL(ctrl.Href) }
 		class={ "btn btn-sm " + variantClass(ctrl.Variant) }
@@ -124,7 +124,7 @@ templ genericLink(ctrl hypermedia.Control) {
 	</a>
 }
 
-templ genericDismiss(ctrl hypermedia.Control) {
+templ genericDismiss(ctrl linkwell.Control) {
 	<button
 		class={ "btn btn-sm " + variantClass(ctrl.Variant) }
 		_="on click set el to #error-message-content then set el's style.transition to 'opacity 0.3s ease' then set el's style.opacity to '0' then wait 300ms then remove el"
@@ -134,7 +134,7 @@ templ genericDismiss(ctrl hypermedia.Control) {
 	</button>
 }
 
-templ genericReportButton(ctrl hypermedia.Control) {
+templ genericReportButton(ctrl linkwell.Control) {
 	<button
 		{ hxAttrsFromControl(ctrl)... }
 		class="btn btn-sm btn-ghost"

@@ -13,7 +13,7 @@ import (
 
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	"catgoose/harmony/web/views"
 
 	"github.com/labstack/echo/v4"
@@ -231,12 +231,12 @@ func handleListsItems(c echo.Context) error {
 	return handler.RenderComponent(c, views.ListsDemoTable(items, info))
 }
 
-func listsPageInfo(page int) hypermedia.PageInfo {
-	return hypermedia.PageInfo{
+func listsPageInfo(page int) linkwell.PageInfo {
+	return linkwell.PageInfo{
 		Page:       page,
 		PerPage:    listsDemoPerPage,
 		TotalItems: listsDemoTotal,
-		TotalPages: hypermedia.ComputeTotalPages(listsDemoTotal, listsDemoPerPage),
+		TotalPages: linkwell.ComputeTotalPages(listsDemoTotal, listsDemoPerPage),
 		BaseURL:    hypermediaBase + "/lists/items",
 		Target:     "#lists-table-container",
 	}
@@ -391,7 +391,7 @@ func (ar *appRoutes) incrementPollCount() int64 {
 
 func (ar *appRoutes) buildLinksPageData(c echo.Context) views.LinksPageData {
 	data := views.LinksPageData{
-		Links:  hypermedia.AllLinks(),
+		Links:  linkwell.AllLinks(),
 		Routes: getRoutesList(c),
 	}
 	if ar.demoDB != nil {
@@ -426,7 +426,7 @@ func (ar *appRoutes) handleLinksCreate(c echo.Context) error {
 		return handler.HandleHypermediaError(c, http.StatusConflict, "Link already exists or insert failed", err)
 	}
 
-	hypermedia.LoadStoredLink(source, hypermedia.LinkRelation{
+	linkwell.LoadStoredLink(source, linkwell.LinkRelation{
 		Rel:   rel,
 		Href:  target,
 		Title: title,
@@ -463,7 +463,7 @@ func (ar *appRoutes) handleLinksDelete(c echo.Context) error {
 	}
 
 	if found != nil {
-		hypermedia.RemoveLink(found.Source, found.Target, found.Rel)
+		linkwell.RemoveLink(found.Source, found.Target, found.Rel)
 	}
 
 	return handler.RenderComponent(c, views.LinksRegistryTable(ar.buildLinksPageData(c)))

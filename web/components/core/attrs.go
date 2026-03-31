@@ -1,13 +1,13 @@
 package components
 
 import (
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	"github.com/a-h/templ"
 )
 
 // hxAttrsFromControl converts HxRequest fields to templ.Attributes with "hx-" prefix.
 // Also injects hx-confirm, hx-push-url, and hx-swap from their dedicated Control fields.
-func hxAttrsFromControl(ctrl hypermedia.Control) templ.Attributes {
+func hxAttrsFromControl(ctrl linkwell.Control) templ.Attributes {
 	req := ctrl.HxRequest
 	attrs := make(templ.Attributes, 5)
 	if req.URL != "" {

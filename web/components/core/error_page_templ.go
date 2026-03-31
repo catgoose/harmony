@@ -8,12 +8,12 @@ package components
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "catgoose/harmony/internal/routes/hypermedia"
+import "github.com/catgoose/linkwell"
 
 // ErrorPage renders a self-contained HTML error page for non-HTMX requests.
 // It includes its own HTML shell with Tailwind, DaisyUI, HTMX, and HyperScript
 // so it works outside the normal SPA layout.
-func ErrorPage(ec hypermedia.ErrorContext) templ.Component {
+func ErrorPage(ec linkwell.ErrorContext) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

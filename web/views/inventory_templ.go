@@ -15,13 +15,13 @@ import (
 	"strconv"
 
 	"catgoose/harmony/internal/demo"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/harmony/web/components/core"
 )
 
 // InventoryPage is the full page content for /demo/inventory.
 // The FilterBar lives outside the table container so it is never replaced by HTMX swaps.
-func InventoryPage(bar hypermedia.FilterBar, tableContainer templ.Component) templ.Component {
+func InventoryPage(bar linkwell.FilterBar, tableContainer templ.Component) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -46,13 +46,13 @@ func InventoryPage(bar hypermedia.FilterBar, tableContainer templ.Component) tem
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.Controls([]hypermedia.Control{
+		templ_7745c5c3_Err = components.Controls([]linkwell.Control{
 			{
-				Kind:      hypermedia.ControlKindHTMX,
+				Kind:      linkwell.ControlKindHTMX,
 				Label:     "+ Add Item",
-				Variant:   hypermedia.VariantPrimary,
-				Swap:      hypermedia.SwapOuterHTML,
-				HxRequest: hypermedia.HxGet("/demo/inventory/items/new", "#new-item-row"),
+				Variant:   linkwell.VariantPrimary,
+				Swap:      linkwell.SwapOuterHTML,
+				HxRequest: linkwell.HxGet("/demo/inventory/items/new", "#new-item-row"),
 			},
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
@@ -79,7 +79,7 @@ func InventoryPage(bar hypermedia.FilterBar, tableContainer templ.Component) tem
 }
 
 // InventoryTableContainer is the replaceable fragment targeted by filter/sort/page HTMX requests.
-func InventoryTableContainer(cols []hypermedia.TableCol, body templ.Component, info hypermedia.PageInfo) templ.Component {
+func InventoryTableContainer(cols []linkwell.TableCol, body templ.Component, info linkwell.PageInfo) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -279,7 +279,7 @@ func InventoryItemRow(item demo.Item) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.Controls(hypermedia.TableRowActions(hypermedia.TableRowActionCfg{
+		templ_7745c5c3_Err = components.Controls(linkwell.TableRowActions(linkwell.TableRowActionCfg{
 			EditURL:     editURL,
 			DeleteURL:   deleteURL,
 			RowTarget:   rowTarget,
@@ -368,7 +368,7 @@ func InventoryDetailPage(item demo.Item) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.Controls(hypermedia.ResourceActions(hypermedia.ResourceActionCfg{
+		templ_7745c5c3_Err = components.Controls(linkwell.ResourceActions(linkwell.ResourceActionCfg{
 			EditURL:    editURL,
 			DeleteURL:  deleteURL,
 			ConfirmMsg: "Delete this item?",
@@ -477,10 +477,10 @@ func InventoryEditRow(item demo.Item, isNew bool, saveURL, cancelURL string) tem
 		}
 		ctx = templ.ClearChildren(ctx)
 		var rowID string
-		var controls []hypermedia.Control
+		var controls []linkwell.Control
 		if isNew {
 			rowID = "new-item-row"
-			controls = hypermedia.NewRowFormActions(hypermedia.RowFormActionCfg{
+			controls = linkwell.NewRowFormActions(linkwell.RowFormActionCfg{
 				SaveURL:      saveURL,
 				CancelURL:    cancelURL,
 				SaveTarget:   "#inventory-table-container",
@@ -488,7 +488,7 @@ func InventoryEditRow(item demo.Item, isNew bool, saveURL, cancelURL string) tem
 			})
 		} else {
 			rowID = fmt.Sprintf("item-row-%d", item.ID)
-			controls = hypermedia.RowFormActions(hypermedia.RowFormActionCfg{
+			controls = linkwell.RowFormActions(linkwell.RowFormActionCfg{
 				SaveURL:      saveURL,
 				CancelURL:    cancelURL,
 				SaveTarget:   "#inventory-table-container",

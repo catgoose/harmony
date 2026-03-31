@@ -7,7 +7,7 @@ import (
 
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	"catgoose/harmony/internal/routes/params"
 	"catgoose/harmony/web/views"
 
@@ -78,31 +78,31 @@ func (d *errorReportRoutes) handleDismissReport(c echo.Context) error {
 	return handler.RenderComponent(c, container)
 }
 
-func (d *errorReportRoutes) buildErrorReportsContent(c echo.Context) (hypermedia.FilterBar, templ.Component, error) {
+func (d *errorReportRoutes) buildErrorReportsContent(c echo.Context) (linkwell.FilterBar, templ.Component, error) {
 	const perPage = 20
 	p := parseErrorReportParams(c, perPage)
 
 	reports, total, err := d.db.ListErrorReports(c.Request().Context(), p.Q, p.Status, p.Sort, p.Dir, p.Page, p.PerPage)
 	if err != nil {
-		return hypermedia.FilterBar{}, nil, err
+		return linkwell.FilterBar{}, nil, err
 	}
 
 	target := "#error-reports-table-container"
-	bar := hypermedia.NewFilterBar(errorReportsBase+"/table", target,
-		hypermedia.SearchField("q", "Search reports\u2026", p.Q),
-		hypermedia.SelectField("status", "Status", p.Status,
-			hypermedia.SelectOptions(p.Status, errorReportStatusPairs()...)),
+	bar := linkwell.NewFilterBar(errorReportsBase+"/table", target,
+		linkwell.SearchField("q", "Search reports\u2026", p.Q),
+		linkwell.SelectField("status", "Status", p.Status,
+			linkwell.SelectOptions(p.Status, errorReportStatusPairs()...)),
 	)
 
 	sortBase := buildSortBase(c)
-	cols := []hypermedia.TableCol{
-		hypermedia.SortableCol("created_at", "Timestamp", p.Sort, p.Dir, sortBase, target, "#filter-form"),
+	cols := []linkwell.TableCol{
+		linkwell.SortableCol("created_at", "Timestamp", p.Sort, p.Dir, sortBase, target, "#filter-form"),
 		{Label: "Request ID"},
 		{Label: "Description"},
-		hypermedia.SortableCol("route", "Route", p.Sort, p.Dir, sortBase, target, "#filter-form"),
-		hypermedia.SortableCol("status_code", "Code", p.Sort, p.Dir, sortBase, target, "#filter-form"),
+		linkwell.SortableCol("route", "Route", p.Sort, p.Dir, sortBase, target, "#filter-form"),
+		linkwell.SortableCol("status_code", "Code", p.Sort, p.Dir, sortBase, target, "#filter-form"),
 		{Label: "User Agent"},
-		hypermedia.SortableCol("status", "Status", p.Sort, p.Dir, sortBase, target, "#filter-form"),
+		linkwell.SortableCol("status", "Status", p.Sort, p.Dir, sortBase, target, "#filter-form"),
 		{Label: "Actions"},
 	}
 

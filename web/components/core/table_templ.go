@@ -8,17 +8,17 @@ package components
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "catgoose/harmony/internal/routes/hypermedia"
+import "github.com/catgoose/linkwell"
 
 // sortIndicator returns the sort direction indicator character for a column.
-func sortIndicator(col hypermedia.TableCol) string {
+func sortIndicator(col linkwell.TableCol) string {
 	if !col.Sortable {
 		return ""
 	}
 	switch col.SortDir {
-	case hypermedia.SortAsc:
+	case linkwell.SortAsc:
 		return " ↑"
-	case hypermedia.SortDesc:
+	case linkwell.SortDesc:
 		return " ↓"
 	default:
 		return " ⇅"
@@ -26,7 +26,7 @@ func sortIndicator(col hypermedia.TableCol) string {
 }
 
 // sortLinkAttrs builds templ.Attributes for a sortable column header link.
-func sortLinkAttrs(col hypermedia.TableCol) templ.Attributes {
+func sortLinkAttrs(col linkwell.TableCol) templ.Attributes {
 	attrs := templ.Attributes{
 		"hx-get":    col.SortURL,
 		"hx-target": col.Target,
@@ -39,7 +39,7 @@ func sortLinkAttrs(col hypermedia.TableCol) templ.Attributes {
 
 // Table renders an overflow-x-auto wrapper containing a table with header,
 // body slot, and optional pagination bar.
-func Table(cols []hypermedia.TableCol, body templ.Component, info hypermedia.PageInfo) templ.Component {
+func Table(cols []linkwell.TableCol, body templ.Component, info linkwell.PageInfo) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -89,7 +89,7 @@ func Table(cols []hypermedia.TableCol, body templ.Component, info hypermedia.Pag
 // TableHeader renders <thead> with optional sort links.
 // Sortable columns wrap the label in an <a> with HTMX sort attributes.
 // Sort indicator: "↑" SortAsc, "↓" SortDesc, "⇅" SortNone on sortable cols.
-func TableHeader(cols []hypermedia.TableCol) templ.Component {
+func TableHeader(cols []linkwell.TableCol) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -202,8 +202,8 @@ func TableHeader(cols []hypermedia.TableCol) templ.Component {
 }
 
 // PaginationBar renders a DaisyUI join-based pagination control.
-// Calls hypermedia.PaginationControls(info) internally.
-func PaginationBar(info hypermedia.PageInfo) templ.Component {
+// Calls linkwell.PaginationControls(info) internally.
+func PaginationBar(info linkwell.PageInfo) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -228,7 +228,7 @@ func PaginationBar(info hypermedia.PageInfo) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		for _, ctrl := range hypermedia.PaginationControls(info) {
+		for _, ctrl := range linkwell.PaginationControls(info) {
 			templ_7745c5c3_Err = paginationButton(ctrl).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -246,7 +246,7 @@ func PaginationBar(info hypermedia.PageInfo) templ.Component {
 // Disabled+VariantPrimary → active (current page, no click)
 // Disabled only           → disabled
 // Normal                  → clickable with HTMX attrs
-func paginationButton(ctrl hypermedia.Control) templ.Component {
+func paginationButton(ctrl linkwell.Control) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -267,7 +267,7 @@ func paginationButton(ctrl hypermedia.Control) templ.Component {
 			templ_7745c5c3_Var8 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		if ctrl.Disabled && ctrl.Variant == hypermedia.VariantPrimary {
+		if ctrl.Disabled && ctrl.Variant == linkwell.VariantPrimary {
 			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<button class=\"join-item btn btn-sm btn-active\" aria-current=\"page\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

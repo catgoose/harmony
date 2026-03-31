@@ -11,7 +11,7 @@ import (
 	"testing"
 
 	"catgoose/harmony/internal/logger"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 
 	"github.com/catgoose/promolog"
 	"github.com/labstack/echo/v4"
@@ -94,20 +94,20 @@ func TestHTTPErrorHandler_EchoHTTPError_NonHTMX(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// 4. hypermedia.HTTPError with HTMX — returns HTML with controls rendered
+// 4. linkwell.HTTPError with HTMX — returns HTML with controls rendered
 // ---------------------------------------------------------------------------
 
 func TestHTTPErrorHandler_HypermediaHTTPError(t *testing.T) {
 	e := setupEcho(nil)
 	e.GET("/test", func(c echo.Context) error {
-		he := hypermedia.NewHTTPError(hypermedia.ErrorContext{
+		he := linkwell.NewHTTPError(linkwell.ErrorContext{
 			StatusCode: 404,
 			Message:    "not found",
 			Route:      "/test",
 			Closable:   true,
-			Controls: []hypermedia.Control{
-				hypermedia.BackButton("Go back"),
-				hypermedia.GoHomeButton("Home", "/", "#main"),
+			Controls: []linkwell.Control{
+				linkwell.BackButton("Go back"),
+				linkwell.GoHomeButton("Home", "/", "#main"),
 			},
 		})
 		return he
@@ -127,19 +127,19 @@ func TestHTTPErrorHandler_HypermediaHTTPError(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// 5. hypermedia.HTTPError without HTMX — returns full HTML error page
+// 5. linkwell.HTTPError without HTMX — returns full HTML error page
 // ---------------------------------------------------------------------------
 
 func TestHTTPErrorHandler_HypermediaHTTPError_NonHTMX(t *testing.T) {
 	e := setupEcho(nil)
 	e.GET("/test", func(c echo.Context) error {
-		he := hypermedia.NewHTTPError(hypermedia.ErrorContext{
+		he := linkwell.NewHTTPError(linkwell.ErrorContext{
 			StatusCode: 403,
 			Message:    "forbidden",
 			Route:      "/test",
 			Closable:   true,
-			Controls: []hypermedia.Control{
-				hypermedia.BackButton("Go back"),
+			Controls: []linkwell.Control{
+				linkwell.BackButton("Go back"),
 			},
 		})
 		return he

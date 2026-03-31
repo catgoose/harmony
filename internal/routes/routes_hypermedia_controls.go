@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	"catgoose/harmony/internal/routes/middleware"
 	"catgoose/harmony/web/views"
 
@@ -393,18 +393,18 @@ func (gs *controlsGalleryState) handleErrTransient(c echo.Context) error {
 
 	if attempt%2 == 1 {
 		requestID := middleware.GetRequestID(c)
-		ec := hypermedia.ErrorContext{
+		ec := linkwell.ErrorContext{
 			StatusCode: 500,
 			Message:    fmt.Sprintf("Save failed — transient network error (attempt %d)", attempt),
 			Route:      c.Request().URL.Path,
 			RequestID:  requestID,
 			Closable:   true,
-			Controls: []hypermedia.Control{
-				hypermedia.RetryButton("Retry Save", hypermedia.HxMethodPost,
+			Controls: []linkwell.Control{
+				linkwell.RetryButton("Retry Save", linkwell.HxMethodPost,
 					"/hypermedia/controls/errors/transient", "#"+resultIDTransient).
 					WithErrorTarget("#" + resultIDTransient),
-				hypermedia.DismissButton(hypermedia.LabelDismiss),
-				hypermedia.ReportIssueButton(hypermedia.LabelReportIssue, requestID),
+				linkwell.DismissButton(linkwell.LabelDismiss),
+				linkwell.ReportIssueButton(linkwell.LabelReportIssue, requestID),
 			},
 		}
 		c.Response().WriteHeader(http.StatusInternalServerError)
@@ -431,23 +431,23 @@ func (gs *controlsGalleryState) handleErrValidate(c echo.Context) error {
 		requestID := middleware.GetRequestID(c)
 		fixURL := fmt.Sprintf("/hypermedia/controls/errors/validate/fix?name=%s&price=%s",
 			url.QueryEscape(name), url.QueryEscape(price))
-		ec := hypermedia.ErrorContext{
+		ec := linkwell.ErrorContext{
 			StatusCode: 422,
 			Message:    "Validation failed",
 			Err:        errors.New(strings.Join(errs, "; ")),
 			Route:      c.Request().URL.Path,
 			RequestID:  requestID,
 			Closable:   true,
-			Controls: []hypermedia.Control{
+			Controls: []linkwell.Control{
 				{
-					Kind:        hypermedia.ControlKindHTMX,
+					Kind:        linkwell.ControlKindHTMX,
 					Label:       "Fix & Resubmit",
-					Variant:     hypermedia.VariantPrimary,
+					Variant:     linkwell.VariantPrimary,
 					ErrorTarget: "#" + resultIDValidate,
-					HxRequest:   hypermedia.HxGet(fixURL, "#"+resultIDValidate),
+					HxRequest:   linkwell.HxGet(fixURL, "#"+resultIDValidate),
 				},
-				hypermedia.DismissButton(hypermedia.LabelDismiss),
-				hypermedia.ReportIssueButton(hypermedia.LabelReportIssue, requestID),
+				linkwell.DismissButton(linkwell.LabelDismiss),
+				linkwell.ReportIssueButton(linkwell.LabelReportIssue, requestID),
 			},
 		}
 		c.Response().WriteHeader(http.StatusUnprocessableEntity)
@@ -467,34 +467,34 @@ func (gs *controlsGalleryState) handleErrValidateFix(c echo.Context) error {
 // Scenario 3: Conflict — record already exists, offer update or copy.
 func (gs *controlsGalleryState) handleErrConflict(c echo.Context) error {
 	requestID := middleware.GetRequestID(c)
-	ec := hypermedia.ErrorContext{
+	ec := linkwell.ErrorContext{
 		StatusCode: 409,
 		Message:    "'Widget Alpha' already exists (ID: 42)",
 		Err:        errors.New("unique constraint violated on column 'name'"),
 		Route:      c.Request().URL.Path,
 		RequestID:  requestID,
 		Closable:   true,
-		Controls: []hypermedia.Control{
+		Controls: []linkwell.Control{
 			{
-				Kind:        hypermedia.ControlKindHTMX,
+				Kind:        linkwell.ControlKindHTMX,
 				Label:       "Update Existing",
-				Variant:     hypermedia.VariantPrimary,
+				Variant:     linkwell.VariantPrimary,
 				ErrorTarget: "#" + resultIDConflict,
-				HxRequest: hypermedia.HxRequestConfig{
-					Method: hypermedia.HxMethodPut,
+				HxRequest: linkwell.HxRequestConfig{
+					Method: linkwell.HxMethodPut,
 					URL:    "/hypermedia/controls/errors/conflict/update",
 					Target: "#" + resultIDConflict,
 				},
 			},
 			{
-				Kind:        hypermedia.ControlKindHTMX,
+				Kind:        linkwell.ControlKindHTMX,
 				Label:       "Create as Copy",
-				Variant:     hypermedia.VariantSecondary,
+				Variant:     linkwell.VariantSecondary,
 				ErrorTarget: "#" + resultIDConflict,
-				HxRequest:   hypermedia.HxPost("/hypermedia/controls/errors/conflict/copy", "#"+resultIDConflict),
+				HxRequest:   linkwell.HxPost("/hypermedia/controls/errors/conflict/copy", "#"+resultIDConflict),
 			},
-			hypermedia.DismissButton(hypermedia.LabelDismiss),
-			hypermedia.ReportIssueButton(hypermedia.LabelReportIssue, requestID),
+			linkwell.DismissButton(linkwell.LabelDismiss),
+			linkwell.ReportIssueButton(linkwell.LabelReportIssue, requestID),
 		},
 	}
 	c.Response().WriteHeader(http.StatusConflict)
@@ -528,35 +528,35 @@ func (gs *controlsGalleryState) handleErrStale(c echo.Context) error {
 		requestID := middleware.GetRequestID(c)
 		forceURL := fmt.Sprintf("/hypermedia/controls/errors/stale/force?name=%s",
 			url.QueryEscape(name))
-		ec := hypermedia.ErrorContext{
+		ec := linkwell.ErrorContext{
 			StatusCode: 412,
 			Message:    fmt.Sprintf("Record modified by another user (your v%d, server v%d)", sv, currentVersion),
 			Err:        errors.New("optimistic lock failed — row version mismatch"),
 			Route:      c.Request().URL.Path,
 			RequestID:  requestID,
 			Closable:   true,
-			Controls: []hypermedia.Control{
+			Controls: []linkwell.Control{
 				{
-					Kind:        hypermedia.ControlKindHTMX,
+					Kind:        linkwell.ControlKindHTMX,
 					Label:       "Load Fresh Data",
-					Variant:     hypermedia.VariantPrimary,
+					Variant:     linkwell.VariantPrimary,
 					ErrorTarget: "#" + resultIDStale,
-					HxRequest:   hypermedia.HxGet("/hypermedia/controls/errors/stale/refresh", "#"+resultIDStale),
+					HxRequest:   linkwell.HxGet("/hypermedia/controls/errors/stale/refresh", "#"+resultIDStale),
 				},
 				{
-					Kind:        hypermedia.ControlKindHTMX,
+					Kind:        linkwell.ControlKindHTMX,
 					Label:       "Force Save",
-					Variant:     hypermedia.VariantDanger,
+					Variant:     linkwell.VariantDanger,
 					Confirm:     "Override the other user's changes?",
 					ErrorTarget: "#" + resultIDStale,
-					HxRequest: hypermedia.HxRequestConfig{
-						Method: hypermedia.HxMethodPost,
+					HxRequest: linkwell.HxRequestConfig{
+						Method: linkwell.HxMethodPost,
 						URL:    forceURL,
 						Target: "#" + resultIDStale,
 					},
 				},
-				hypermedia.DismissButton(hypermedia.LabelDismiss),
-				hypermedia.ReportIssueButton(hypermedia.LabelReportIssue, requestID),
+				linkwell.DismissButton(linkwell.LabelDismiss),
+				linkwell.ReportIssueButton(linkwell.LabelReportIssue, requestID),
 			},
 		}
 		c.Response().WriteHeader(http.StatusPreconditionFailed)
@@ -608,27 +608,27 @@ func (gs *controlsGalleryState) handleErrCascade(c echo.Context) error {
 	}
 
 	requestID := middleware.GetRequestID(c)
-	ec := hypermedia.ErrorContext{
+	ec := linkwell.ErrorContext{
 		StatusCode: 409,
 		Message:    fmt.Sprintf("Cannot delete 'Electronics' — %d items depend on it", len(cascadeDependents)),
 		Err:        errors.New("foreign key constraint: items.category_id → categories.id"),
 		Route:      c.Request().URL.Path,
 		RequestID:  requestID,
 		Closable:   true,
-		Controls: []hypermedia.Control{
+		Controls: []linkwell.Control{
 			{
-				Kind:        hypermedia.ControlKindHTMX,
+				Kind:        linkwell.ControlKindHTMX,
 				Label:       "Reassign Items",
-				Variant:     hypermedia.VariantPrimary,
+				Variant:     linkwell.VariantPrimary,
 				ErrorTarget: "#" + resultIDCascade,
-				HxRequest:   hypermedia.HxGet("/hypermedia/controls/errors/cascade/reassign", "#"+resultIDCascade),
+				HxRequest:   linkwell.HxGet("/hypermedia/controls/errors/cascade/reassign", "#"+resultIDCascade),
 			},
-			hypermedia.ConfirmAction("Force Delete All", hypermedia.HxMethodDelete,
+			linkwell.ConfirmAction("Force Delete All", linkwell.HxMethodDelete,
 				"/hypermedia/controls/errors/cascade/force", "#"+resultIDCascade,
 				fmt.Sprintf("Delete 'Electronics' AND all %d items?", len(cascadeDependents))).
 				WithErrorTarget("#" + resultIDCascade),
-			hypermedia.DismissButton(hypermedia.LabelDismiss),
-			hypermedia.ReportIssueButton(hypermedia.LabelReportIssue, requestID),
+			linkwell.DismissButton(linkwell.LabelDismiss),
+			linkwell.ReportIssueButton(linkwell.LabelReportIssue, requestID),
 		},
 	}
 	c.Response().WriteHeader(http.StatusConflict)

@@ -6,20 +6,22 @@ import (
 	"catgoose/harmony/internal/logger"
 	// setup:feature:demo:start
 	"catgoose/harmony/internal/demo"
-	// setup:feature:sse:start
-	"catgoose/harmony/internal/ssebroker"
-	// setup:feature:sse:end
 	// setup:feature:demo:end
+	// setup:feature:sse:start
+	"github.com/catgoose/tavern"
+	// setup:feature:sse:end
 	"catgoose/harmony/internal/health"
 	"catgoose/harmony/internal/version"
 	"github.com/catgoose/promolog"
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/routes/hypermedia"
-	// setup:feature:session_settings:start
-	"catgoose/harmony/internal/domain"
-	// setup:feature:session_settings:end
+	// setup:feature:demo:start
+	"github.com/catgoose/linkwell"
+	// setup:feature:demo:end
 	"catgoose/harmony/web/views"
 	"catgoose/harmony/internal/routes/middleware"
+	// setup:feature:session_settings:start
+	"github.com/catgoose/porter"
+	// setup:feature:session_settings:end
 	"context"
 	"fmt"
 	"io/fs"
@@ -47,8 +49,8 @@ type AppRoutes interface {
 // SessionSettingsStore is the subset of session-settings operations that route
 // handlers need: listing all rows and upserting a single row.
 type SessionSettingsStore interface {
-	ListAll(ctx context.Context) ([]domain.SessionSettings, error)
-	Upsert(ctx context.Context, s *domain.SessionSettings) error
+	ListAll(ctx context.Context) ([]porter.SessionSettings, error)
+	Upsert(ctx context.Context, s *porter.SessionSettings) error
 }
 
 // setup:feature:session_settings:end
@@ -71,6 +73,9 @@ type appRoutes struct {
 	// setup:feature:demo:start
 	demoDB *demo.DB
 	// setup:feature:demo:end
+	// setup:feature:sse:start
+	broker *tavern.SSEBroker
+	// setup:feature:sse:end
 }
 
 // NewAppRoutes initializes routes.
@@ -105,15 +110,24 @@ func (ar *appRoutes) InitRoutes() error {
 	// Register known origins for ?from= breadcrumb resolution.
 	// Home (bit 0) is pre-registered. Additional pages register here.
 	// setup:feature:demo:start
-	hypermedia.RegisterFrom(hypermedia.FromDashboard, hypermedia.Breadcrumb{Label: "Dashboard", Href: "/dashboard"})
+	linkwell.RegisterFrom(linkwell.FromDashboard, linkwell.Breadcrumb{Label: "Dashboard", Href: "/dashboard"})
 	// setup:feature:demo:end
 
+	cfg, err := config.GetConfig()
+	if err != nil {
+		return fmt.Errorf("handler init: %w", err)
+	}
+	ar.e.GET("/", handler.HandleComponent(views.HomePage(cfg.AppName)))
+	// setup:feature:demo:start
 	ar.e.GET("/", handler.HandleComponent(views.ArchitecturePage()))
-	// setup:feature:session_settings:start
+	// setup:feature:demo:end
+	// setup:feature:demo:start
 	ar.initUserSettingsRoutes()
+	// setup:feature:demo:end
+	// setup:feature:session_settings:start
 	ar.e.GET("/settings", func(c echo.Context) error {
-		s := middleware.GetSessionSettings(c)
-		return handler.RenderBaseLayout(c, views.AppSettingsPage(s.Theme, s.Layout))
+		s := porter.GetSessionSettings(c)
+		return handler.RenderBaseLayout(c, views.AppSettingsPage(s.Theme))
 	})
 	// setup:feature:session_settings:end
 	// setup:feature:demo:start
@@ -124,9 +138,12 @@ func (ar *appRoutes) InitRoutes() error {
 	// setup:feature:demo:end
 
 	// Health check endpoint — returns structured ops metadata.
-	ar.e.GET("/health", func(c echo.Context) error {
+	// HEAD is used by the offline indicator to poll connectivity.
+	healthHandler := func(c echo.Context) error {
 		return c.JSON(http.StatusOK, health.Check(c.Request().Context(), ar.healthCfg))
-	})
+	}
+	ar.e.GET("/health", healthHandler)
+	ar.e.HEAD("/health", healthHandler)
 
 	ar.initReportIssueRoutes()
 
@@ -149,16 +166,16 @@ func (ar *appRoutes) InitRoutes() error {
 
 	// setup:feature:demo:start
 	// setup:feature:sse:start
-	broker := ssebroker.NewSSEBroker()
+	ar.broker = tavern.NewSSEBroker()
 	// setup:feature:sse:end
+	// setup:feature:session_settings:start
+	ar.initThemeRoutes(ar.broker)
+	// setup:feature:session_settings:end
 	ar.initHypermediaRoutes()
 	ar.initHALRoutes()
 	ar.initErrorsRoutes()
 	// setup:feature:sse:start
-	ar.initRealtimeRoutes(broker)
-	// setup:feature:session_settings:start
-	ar.initThemeRoutes(broker)
-	// setup:feature:session_settings:end
+	ar.initRealtimeRoutes(ar.broker)
 	// setup:feature:sse:end
 
 	db, err := demo.Open("db/demo.db")
@@ -172,7 +189,7 @@ func (ar *appRoutes) InitRoutes() error {
 	ar.demoDB = db
 	if stored, err := db.ListStoredLinks(); err == nil {
 		for _, s := range stored {
-			hypermedia.LoadStoredLink(s.Source, hypermedia.LinkRelation{
+			linkwell.LoadStoredLink(s.Source, linkwell.LinkRelation{
 				Rel:   s.Rel,
 				Href:  s.Target,
 				Title: s.Title,
@@ -188,24 +205,20 @@ func (ar *appRoutes) InitRoutes() error {
 	actLog := demo.NewActivityLog(200)
 	board := demo.NewKanbanBoard()
 	queue := demo.NewApprovalQueue()
-	ar.initAdminSettingsRoutes(broker)
-	ar.initAdminRoutes(db, actLog, broker)
-	ar.initPeopleRoutes(db, broker, actLog)
-	ar.initKanbanRoutes(board, actLog, broker)
-	ar.initApprovalRoutes(queue, actLog, broker)
-	ar.initFeedRoutes(actLog, broker)
-	ar.initCanvasRoutes(demo.NewPixelCanvas(), broker)
+	ar.initAdminSettingsRoutes(ar.broker)
+	ar.initAdminRoutes(db, actLog, ar.broker)
+	ar.initPeopleRoutes(db, ar.broker, actLog)
+	ar.initKanbanRoutes(board, actLog, ar.broker)
+	ar.initApprovalRoutes(queue, actLog, ar.broker)
+	ar.initFeedRoutes(actLog, ar.broker)
+	ar.initCanvasRoutes(demo.NewPixelCanvas(), ar.broker)
 	ar.initSettingsRoutes(demo.NewSettingsStore())
-	ar.initVendorContactRoutes(db, actLog, broker)
+	ar.initVendorContactRoutes(db, actLog, ar.broker)
 	ar.initDashboardRoutes(db, board, queue, actLog)
 	ar.initAdminErrorReportsRoutes(db)
 
 	// setup:feature:demo:end
 	ar.e.RouteNotFound("/*", handler.HandleNotFound)
-	cfg, err := config.GetConfig()
-	if err != nil {
-		return fmt.Errorf("handler init: %w", err)
-	}
 	handler.InitRouteSet(ar.e, cfg.AppName)
 	ar.healthCfg.Name = cfg.AppName
 	return nil
@@ -222,28 +235,37 @@ func (ar *appRoutes) SetHealthStats(fn health.StatsFunc) {
 // InitEcho initializes Echo with global configurations
 func InitEcho(ctx context.Context, staticFS fs.FS, cfg *config.AppConfig,
 	// setup:feature:session_settings:start
-	settingsRepo middleware.SessionSettingsProvider,
+	settingsRepo porter.SessionSettingsProvider,
 	// setup:feature:session_settings:end
 	reqLogStore *promolog.Store,
 ) (*echo.Echo, error) {
 	e := echo.New()
 
-	// 103 Early Hints: preload critical assets before the handler runs.
-	// Uses the raw http.ResponseWriter to send an informational response
-	// before the final 200. Requires HTTP/2+ and a flusher-capable writer.
+	// Preload critical assets. In production (direct H2), send 103 Early Hints
+	// so the browser fetches CSS/JS while the server generates the response.
+	// Behind the dev proxy chain (TEMPL_PROXY), 1xx responses get mangled, so
+	// fall back to Link headers on the final response — the browser still gets
+	// the preload hint, just slightly later.
+	behindProxy := os.Getenv("TEMPL_PROXY") != ""
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			// Only send 103 Early Hints on HTTP/2+ connections.
-			// httptest.ResponseRecorder mishandles 1xx status codes.
-			if c.Request().ProtoMajor >= 2 {
+			preloadLinks := []string{
+				"</public/css/tailwind.css>; rel=preload; as=style",
+				"</public/css/daisyui.css>; rel=preload; as=style",
+				"</public/js/htmx.min.js>; rel=preload; as=script",
+			}
+			if !behindProxy && c.Request().ProtoMajor >= 2 {
 				w := c.Response().Writer
 				if flusher, ok := w.(http.Flusher); ok {
-					h := w.Header()
-					h.Add("Link", "</public/css/tailwind.css>; rel=preload; as=style")
-					h.Add("Link", "</public/css/daisyui.css>; rel=preload; as=style")
-					h.Add("Link", "</public/js/htmx.min.js>; rel=preload; as=script")
+					for _, link := range preloadLinks {
+						w.Header().Add("Link", link)
+					}
 					w.WriteHeader(http.StatusEarlyHints) // 103
 					flusher.Flush()
+				}
+			} else {
+				for _, link := range preloadLinks {
+					c.Response().Header().Add("Link", link)
 				}
 			}
 			return next(c)
@@ -287,7 +309,7 @@ func InitEcho(ctx context.Context, staticFS fs.FS, cfg *config.AppConfig,
 		}
 		// setup:feature:csrf:start
 		if cfg.SessionMgr != nil {
-			e.Use(middleware.CSRF(cfg.SessionMgr, middleware.CSRFConfig{
+			e.Use(porter.CSRF(cfg.SessionMgr, porter.CSRFConfig{
 				RotatePerRequest: cfg.CSRFRotatePerRequest,
 				PerRequestPaths:  cfg.CSRFPerRequestPaths,
 				ExemptPaths:      cfg.CSRFExemptPaths,
@@ -301,7 +323,7 @@ func InitEcho(ctx context.Context, staticFS fs.FS, cfg *config.AppConfig,
 
 	// setup:feature:session_settings:start
 	if settingsRepo != nil {
-		e.Use(middleware.SessionSettingsMiddleware(settingsRepo))
+		e.Use(porter.SessionSettingsMiddleware(settingsRepo, nil))
 	}
 	// setup:feature:session_settings:end
 

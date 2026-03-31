@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"testing"
 
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
@@ -14,14 +14,14 @@ import (
 
 func resetLinks(t *testing.T) {
 	t.Helper()
-	t.Cleanup(hypermedia.ResetForTesting)
-	hypermedia.ResetForTesting()
+	t.Cleanup(linkwell.ResetForTesting)
+	linkwell.ResetForTesting()
 }
 
 func TestLinkRelationsMiddleware_LinkHeaderPresent(t *testing.T) {
 	resetLinks(t)
 
-	hypermedia.Link("/items", "related", "/items/new", "New Item")
+	linkwell.Link("/items", "related", "/items/new", "New Item")
 
 	c, rec := newTestContext(http.MethodGet, "/items")
 
@@ -40,11 +40,11 @@ func TestLinkRelationsMiddleware_LinkHeaderPresent(t *testing.T) {
 func TestLinkRelationsMiddleware_ContextHasLinks(t *testing.T) {
 	resetLinks(t)
 
-	hypermedia.Link("/items", "related", "/items/new", "New Item")
+	linkwell.Link("/items", "related", "/items/new", "New Item")
 
 	c, _ := newTestContext(http.MethodGet, "/items")
 
-	var captured []hypermedia.LinkRelation
+	var captured []linkwell.LinkRelation
 	mw := LinkRelationsMiddleware()
 	handler := mw(func(c echo.Context) error {
 		captured = GetLinkRelations(c)
@@ -63,7 +63,7 @@ func TestLinkRelationsMiddleware_NoLinksForPath(t *testing.T) {
 
 	c, rec := newTestContext(http.MethodGet, "/unknown")
 
-	var captured []hypermedia.LinkRelation
+	var captured []linkwell.LinkRelation
 	mw := LinkRelationsMiddleware()
 	handler := mw(func(c echo.Context) error {
 		captured = GetLinkRelations(c)
@@ -84,7 +84,7 @@ func TestGetLinkRelations_ReturnsNilWhenNotSet(t *testing.T) {
 
 func TestGetLinkRelations_ReturnsLinksFromContext(t *testing.T) {
 	c, _ := newTestContext(http.MethodGet, "/")
-	expected := []hypermedia.LinkRelation{
+	expected := []linkwell.LinkRelation{
 		{Rel: "related", Href: "/b", Title: "B"},
 	}
 	c.Set("link_relations", expected)

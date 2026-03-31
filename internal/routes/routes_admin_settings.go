@@ -7,20 +7,20 @@ import (
 	"time"
 
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/ssebroker"
+	"github.com/catgoose/tavern"
 	"catgoose/harmony/internal/version"
 	"catgoose/harmony/web/views"
 
 	"github.com/labstack/echo/v4"
 )
 
-func (ar *appRoutes) initAdminSettingsRoutes(broker *ssebroker.SSEBroker) {
+func (ar *appRoutes) initAdminSettingsRoutes(broker *tavern.SSEBroker) {
 	ar.e.GET("/admin/settings", ar.handleAdminSettings(broker))
 	ar.e.GET("/admin/settings/system", ar.handleAdminSettingsSystem)
 	ar.e.GET("/admin/settings/sse", ar.handleAdminSettingsSSE(broker))
 }
 
-func (ar *appRoutes) handleAdminSettings(broker *ssebroker.SSEBroker) echo.HandlerFunc {
+func (ar *appRoutes) handleAdminSettings(broker *tavern.SSEBroker) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		data := ar.buildAdminPanelData(broker, c)
 		return handler.RenderBaseLayout(c, views.AdminSettingsPage(data))
@@ -28,19 +28,19 @@ func (ar *appRoutes) handleAdminSettings(broker *ssebroker.SSEBroker) echo.Handl
 }
 
 func (ar *appRoutes) handleAdminSettingsSystem(c echo.Context) error {
-	stats := ssebroker.CollectRuntimeStats(ar.startTime)
+	stats := tavern.CollectRuntimeStats(ar.startTime)
 	return handler.RenderComponent(c, views.AdminSettingsSystemFragment(stats, formatUptime(time.Since(ar.startTime))))
 }
 
-func (ar *appRoutes) handleAdminSettingsSSE(broker *ssebroker.SSEBroker) echo.HandlerFunc {
+func (ar *appRoutes) handleAdminSettingsSSE(broker *tavern.SSEBroker) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		counts := broker.TopicCounts()
 		return handler.RenderComponent(c, views.AdminSettingsSSEFragment(counts))
 	}
 }
 
-func (ar *appRoutes) buildAdminPanelData(broker *ssebroker.SSEBroker, c echo.Context) views.AdminPanelData {
-	stats := ssebroker.CollectRuntimeStats(ar.startTime)
+func (ar *appRoutes) buildAdminPanelData(broker *tavern.SSEBroker, c echo.Context) views.AdminPanelData {
+	stats := tavern.CollectRuntimeStats(ar.startTime)
 	counts := broker.TopicCounts()
 
 	// Collect registered routes

@@ -14,7 +14,7 @@ import (
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
 	"catgoose/harmony/internal/shared"
-	"catgoose/harmony/internal/ssebroker"
+	"github.com/catgoose/tavern"
 	"catgoose/harmony/web/views"
 
 	"github.com/labstack/echo/v4"
@@ -22,10 +22,10 @@ import (
 
 type feedRoutes struct {
 	actLog *demo.ActivityLog
-	broker *ssebroker.SSEBroker
+	broker *tavern.SSEBroker
 }
 
-func (ar *appRoutes) initFeedRoutes(actLog *demo.ActivityLog, broker *ssebroker.SSEBroker) {
+func (ar *appRoutes) initFeedRoutes(actLog *demo.ActivityLog, broker *tavern.SSEBroker) {
 	f := &feedRoutes{actLog: actLog, broker: broker}
 	ar.e.GET("/demo/feed", f.handleFeedPage)
 	ar.e.GET("/demo/feed/more", f.handleFeedMore)
@@ -79,7 +79,7 @@ func (f *feedRoutes) handleActivitySSE(c echo.Context) error {
 		return fmt.Errorf("streaming unsupported")
 	}
 
-	ch, unsub := f.broker.Subscribe(ssebroker.TopicActivityFeed)
+	ch, unsub := f.broker.Subscribe(tavern.TopicActivityFeed)
 	defer unsub()
 
 	ctx := c.Request().Context()
@@ -98,8 +98,8 @@ func (f *feedRoutes) handleActivitySSE(c echo.Context) error {
 }
 
 // BroadcastActivity publishes an activity event to the SSE feed.
-func BroadcastActivity(broker *ssebroker.SSEBroker, e demo.ActivityEvent) {
-	if !broker.HasSubscribers(ssebroker.TopicActivityFeed) {
+func BroadcastActivity(broker *tavern.SSEBroker, e demo.ActivityEvent) {
+	if !broker.HasSubscribers(tavern.TopicActivityFeed) {
 		return
 	}
 	buf := statsBufPool.Get().(*bytes.Buffer)
@@ -108,9 +108,9 @@ func BroadcastActivity(broker *ssebroker.SSEBroker, e demo.ActivityEvent) {
 		statsBufPool.Put(buf)
 		return
 	}
-	msg := ssebroker.NewSSEMessage("activity-event", buf.String()).String()
+	msg := tavern.NewSSEMessage("activity-event", buf.String()).String()
 	statsBufPool.Put(buf)
-	broker.Publish(ssebroker.TopicActivityFeed, msg)
+	broker.Publish(tavern.TopicActivityFeed, msg)
 }
 
 // --- Simulated activity ---
@@ -141,14 +141,14 @@ func seedFeedEvents(actLog *demo.ActivityLog) {
 	}
 }
 
-func (ar *appRoutes) publishActivityEvents(actLog *demo.ActivityLog, broker *ssebroker.SSEBroker) {
+func (ar *appRoutes) publishActivityEvents(actLog *demo.ActivityLog, broker *tavern.SSEBroker) {
 	for {
 		delay := time.Duration(2000+rand.IntN(4000)) * time.Millisecond
 		select {
 		case <-ar.ctx.Done():
 			return
 		case <-time.After(delay):
-			if !broker.HasSubscribers(ssebroker.TopicActivityFeed) {
+			if !broker.HasSubscribers(tavern.TopicActivityFeed) {
 				continue
 			}
 			tmpl := activityTemplates[rand.IntN(len(activityTemplates))]

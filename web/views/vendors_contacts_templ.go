@@ -14,11 +14,11 @@ import (
 	"fmt"
 
 	"catgoose/harmony/internal/demo"
-	"catgoose/harmony/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/harmony/web/components/core"
 )
 
-func VendorContactsPage(vendors []demo.Vendor, bar hypermedia.FilterBar) templ.Component {
+func VendorContactsPage(vendors []demo.Vendor, bar linkwell.FilterBar) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -323,14 +323,14 @@ func ContactCard(c demo.Contact) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.Controls([]hypermedia.Control{
+		templ_7745c5c3_Err = components.Controls([]linkwell.Control{
 			{
-				Kind:      hypermedia.ControlKindHTMX,
+				Kind:      linkwell.ControlKindHTMX,
 				Label:     "Edit",
-				Variant:   hypermedia.VariantGhost,
-				Icon:      hypermedia.IconPencilSquare,
-				Swap:      hypermedia.SwapOuterHTML,
-				HxRequest: hypermedia.HxGet(editURL, "#"+cardID),
+				Variant:   linkwell.VariantGhost,
+				Icon:      linkwell.IconPencilSquare,
+				Swap:      linkwell.SwapOuterHTML,
+				HxRequest: linkwell.HxGet(editURL, "#"+cardID),
 			},
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
@@ -473,27 +473,27 @@ func ContactEditForm(c demo.Contact) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.Controls([]hypermedia.Control{
+		templ_7745c5c3_Err = components.Controls([]linkwell.Control{
 			{
-				Kind:    hypermedia.ControlKindHTMX,
+				Kind:    linkwell.ControlKindHTMX,
 				Label:   "Save",
-				Variant: hypermedia.VariantPrimary,
-				Icon:    hypermedia.IconCheck,
-				Swap:    hypermedia.SwapOuterHTML,
-				HxRequest: hypermedia.HxRequestConfig{
-					Method:  hypermedia.HxMethodPut,
+				Variant: linkwell.VariantPrimary,
+				Icon:    linkwell.IconCheck,
+				Swap:    linkwell.SwapOuterHTML,
+				HxRequest: linkwell.HxRequestConfig{
+					Method:  linkwell.HxMethodPut,
 					URL:     saveURL,
 					Target:  "#" + cardID,
 					Include: "#" + cardID,
 				},
 			},
 			{
-				Kind:      hypermedia.ControlKindHTMX,
+				Kind:      linkwell.ControlKindHTMX,
 				Label:     "Cancel",
-				Variant:   hypermedia.VariantGhost,
-				Icon:      hypermedia.IconXMark,
-				Swap:      hypermedia.SwapOuterHTML,
-				HxRequest: hypermedia.HxGet(cancelURL, "#"+cardID),
+				Variant:   linkwell.VariantGhost,
+				Icon:      linkwell.IconXMark,
+				Swap:      linkwell.SwapOuterHTML,
+				HxRequest: linkwell.HxGet(cancelURL, "#"+cardID),
 			},
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {

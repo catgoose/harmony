@@ -1,12 +1,12 @@
 package views
 
 import (
-	"catgoose/dothog/internal/routes/hypermedia"
+	"github.com/catgoose/linkwell"
 	components "catgoose/dothog/web/components/core"
 )
 
 // Root template
-templ Index(layoutContent templ.Component, menuContent templ.Component, csrfToken string, devMode bool, theme string, crumbs []hypermedia.Breadcrumb, links []hypermedia.LinkRelation, currentPath string, version string, appName string, hubs []hypermedia.HubEntry) {
+templ Index(layoutContent templ.Component, menuContent templ.Component, csrfToken string, devMode bool, theme string, crumbs []linkwell.Breadcrumb, links []linkwell.LinkRelation, currentPath string, version string, appName string, hubs []linkwell.HubEntry) {
 	<!DOCTYPE html>
 	<html lang="en" data-theme={ theme }>
 		@header(csrfToken, devMode, appName, nil)
@@ -132,16 +132,15 @@ templ header(csrfToken string, devMode bool, appName string, extraCSS []string) 
 		if devMode {
 			<script src="/public/js/dev-logging.js"></script>
 		}
-		// setup:feature:demo:start
 		<script>
 			/**
 			 * Restore persisted debug toggles from localStorage on every page load.
-			 * The admin settings page writes { "htmx-log": true, ... } to dothog_debug.
+			 * The admin debug page writes { "htmx-log": true, ... } to app_debug.
 			 * Waits for DOMContentLoaded so htmx/hyperscript are available.
 			 */
 			document.addEventListener('DOMContentLoaded', function() {
 				var state;
-				try { state = JSON.parse(localStorage.getItem('dothog_debug')) || {}; } catch(e) { return; }
+				try { state = JSON.parse(localStorage.getItem('app_debug')) || {}; } catch(e) { return; }
 				if (state['htmx-log'] && typeof htmx !== 'undefined') { htmx.logAll(); }
 				if (state['htmx-events'] && typeof htmx !== 'undefined') {
 					window._htmxDbg = function(e) {
@@ -162,7 +161,6 @@ templ header(csrfToken string, devMode bool, appName string, extraCSS []string) 
 				}
 			});
 		</script>
-		// setup:feature:demo:end
 		// setup:feature:sse:start
 		// setup:feature:session_settings:start
 		<script defer>
@@ -176,7 +174,7 @@ templ header(csrfToken string, devMode bool, appName string, extraCSS []string) 
 				var es = new EventSource("/sse/theme");
 				es.addEventListener("theme-change", function(/** @type {MessageEvent} */ e) {
 					document.documentElement.dataset.theme = e.data;
-					if (window.dothogChannel) window.dothogChannel.postMessage({type:'theme-change',theme:e.data});
+					if (window.appChannel) window.appChannel.postMessage({type:'theme-change',theme:e.data});
 				});
 			})();
 		</script>

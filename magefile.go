@@ -458,6 +458,10 @@ func EnvCheck() error {
 
 // Watch runs Tailwind, Templ, Air, and Caddy in watch mode
 func Watch() error {
+	if err := nodeModulesCheck(); err != nil {
+		return err
+	}
+
 	type task struct {
 		name string
 		fn   func() error
@@ -521,7 +525,10 @@ func openBrowserURL(url string) {
 
 func nodeModulesCheck() error {
 	if _, err := os.Stat("node_modules"); os.IsNotExist(err) {
-		return errors.New("node_modules not found. Run: npm ci")
+		fmt.Println("node_modules not found, running npm ci...")
+		if err := sh.Run("npm", "ci"); err != nil {
+			return fmt.Errorf("npm ci failed: %w", err)
+		}
 	}
 	return nil
 }

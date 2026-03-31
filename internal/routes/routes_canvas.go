@@ -16,7 +16,7 @@ import (
 
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/ssebroker"
+	"github.com/catgoose/tavern"
 	"catgoose/harmony/web/views"
 
 	"github.com/labstack/echo/v4"
@@ -26,11 +26,11 @@ const canvasClientCookie = "canvas_client"
 
 type canvasRoutes struct {
 	canvas *demo.PixelCanvas
-	broker *ssebroker.SSEBroker
+	broker *tavern.SSEBroker
 	ctx    context.Context
 }
 
-func (ar *appRoutes) initCanvasRoutes(canvas *demo.PixelCanvas, broker *ssebroker.SSEBroker) {
+func (ar *appRoutes) initCanvasRoutes(canvas *demo.PixelCanvas, broker *tavern.SSEBroker) {
 	cr := &canvasRoutes{canvas: canvas, broker: broker, ctx: ar.ctx}
 	ar.e.GET("/demo/canvas", cr.handleCanvasPage)
 	ar.e.GET("/demo/canvas/state", cr.handleCanvasState)
@@ -82,9 +82,9 @@ func (cr *canvasRoutes) handlePlace(c echo.Context) error {
 
 func (cr *canvasRoutes) handleReset(c echo.Context) error {
 	cr.canvas.Reset()
-	if cr.broker.HasSubscribers(ssebroker.TopicCanvasUpdate) {
-		msg := ssebroker.NewSSEMessage("canvas-reset", "").String()
-		cr.broker.Publish(ssebroker.TopicCanvasUpdate, msg)
+	if cr.broker.HasSubscribers(tavern.TopicCanvasUpdate) {
+		msg := tavern.NewSSEMessage("canvas-reset", "").String()
+		cr.broker.Publish(tavern.TopicCanvasUpdate, msg)
 	}
 	return c.NoContent(http.StatusOK)
 }
@@ -107,7 +107,7 @@ func (cr *canvasRoutes) handleCanvasSSE(c echo.Context) error {
 		return fmt.Errorf("streaming unsupported")
 	}
 
-	ch, unsub := cr.broker.Subscribe(ssebroker.TopicCanvasUpdate)
+	ch, unsub := cr.broker.Subscribe(tavern.TopicCanvasUpdate)
 	defer unsub()
 
 	heartbeat := time.NewTicker(10 * time.Second)
@@ -146,7 +146,7 @@ func (cr *canvasRoutes) runTicker() {
 }
 
 func (cr *canvasRoutes) broadcastPixel(x, y int, color string) {
-	if !cr.broker.HasSubscribers(ssebroker.TopicCanvasUpdate) {
+	if !cr.broker.HasSubscribers(tavern.TopicCanvasUpdate) {
 		return
 	}
 	data, err := json.Marshal(map[string]any{"x": x, "y": y, "color": color})
@@ -154,12 +154,12 @@ func (cr *canvasRoutes) broadcastPixel(x, y int, color string) {
 		slog.Error("marshal pixel update", "error", err)
 		return
 	}
-	msg := ssebroker.NewSSEMessage("pixel-update", string(data)).String()
-	cr.broker.Publish(ssebroker.TopicCanvasUpdate, msg)
+	msg := tavern.NewSSEMessage("pixel-update", string(data)).String()
+	cr.broker.Publish(tavern.TopicCanvasUpdate, msg)
 }
 
 func (cr *canvasRoutes) broadcastClients() {
-	if !cr.broker.HasSubscribers(ssebroker.TopicCanvasUpdate) {
+	if !cr.broker.HasSubscribers(tavern.TopicCanvasUpdate) {
 		return
 	}
 	clients := cr.canvas.ActiveClients()
@@ -168,8 +168,8 @@ func (cr *canvasRoutes) broadcastClients() {
 		slog.Error("marshal clients update", "error", err)
 		return
 	}
-	msg := ssebroker.NewSSEMessage("clients-update", string(data)).String()
-	cr.broker.Publish(ssebroker.TopicCanvasUpdate, msg)
+	msg := tavern.NewSSEMessage("clients-update", string(data)).String()
+	cr.broker.Publish(tavern.TopicCanvasUpdate, msg)
 }
 
 func getOrCreateClientID(c echo.Context) string {

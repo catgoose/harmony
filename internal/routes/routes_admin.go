@@ -7,7 +7,7 @@ import (
 
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/ssebroker"
+	"github.com/catgoose/tavern"
 	"catgoose/harmony/web/views"
 
 	"github.com/labstack/echo/v4"
@@ -16,10 +16,10 @@ import (
 type adminRoutes struct {
 	db     *demo.DB
 	actLog *demo.ActivityLog
-	broker *ssebroker.SSEBroker
+	broker *tavern.SSEBroker
 }
 
-func (ar *appRoutes) initAdminRoutes(db *demo.DB, actLog *demo.ActivityLog, broker *ssebroker.SSEBroker) {
+func (ar *appRoutes) initAdminRoutes(db *demo.DB, actLog *demo.ActivityLog, broker *tavern.SSEBroker) {
 	a := &adminRoutes{db: db, actLog: actLog, broker: broker}
 	ar.e.GET("/admin/sqlite", a.handleAdminPage)
 	ar.e.POST("/admin/db/reinit", a.handleReinit)
