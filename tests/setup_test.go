@@ -413,9 +413,6 @@ func TestSetup_FeaturesAll(t *testing.T) {
 	assertDirExists(t, filepath.Join(dest, "internal", "service", "graph"))
 	assertDirExists(t, filepath.Join(dest, "internal", "demo"))
 
-	// docs/screenshots/ should exist (#355)
-	assertDirExists(t, filepath.Join(dest, "docs", "screenshots"))
-
 	// e2e smoke test should exist (#356)
 	_, err = os.Stat(filepath.Join(dest, "e2e", "smoke.spec.ts"))
 	require.NoError(t, err, "smoke.spec.ts should exist after setup")
@@ -489,11 +486,6 @@ func TestSetup_FeaturesNone(t *testing.T) {
 		require.True(t, os.IsNotExist(err), "%s should be removed when capacitor not selected", f)
 	}
 	assertDirRemoved(t, filepath.Join(dest, "fastlane"))
-
-	// docs/screenshots/ should be created with .gitkeep (#355)
-	assertDirExists(t, filepath.Join(dest, "docs", "screenshots"))
-	_, err = os.Stat(filepath.Join(dest, "docs", "screenshots", ".gitkeep"))
-	require.NoError(t, err, "docs/screenshots/.gitkeep should exist")
 
 	// Dothog-specific docs should be removed (#355)
 	for _, f := range []string{"HAL.md", "COMPONENTS.md", "LINK_RELATIONS.md", "ARCHITECTURE.md", "index.md", "mkdocs.yml"} {

@@ -538,11 +538,6 @@ func removeOptionalContent(dir string, opts Options) error {
 	_ = os.Remove(filepath.Join(dir, ".github", "workflows", "pipeline.yml"))
 	_ = os.RemoveAll(filepath.Join(dir, ".github", "harmony"))
 
-	// Create docs/screenshots/ for derived app documentation assets (#355).
-	screenshotsDir := filepath.Join(dir, "docs", "screenshots")
-	_ = os.MkdirAll(screenshotsDir, 0755)
-	_ = os.WriteFile(filepath.Join(screenshotsDir, ".gitkeep"), []byte(""), 0644)
-
 	// Remove dothog-specific docs that are not relevant to derived apps (#355).
 	// Keep SETUP.md (universal); remove docs that describe dothog's demo architecture.
 	_ = os.Remove(filepath.Join(dir, "docs", "HAL.md"))
