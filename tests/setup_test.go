@@ -66,8 +66,11 @@ func TestSetupReplacesAppNameAndModule(t *testing.T) {
 	readmeContent := string(readmeBytes)
 	require.Contains(t, readmeContent, "Test App")
 	require.Contains(t, readmeContent, "12345")
+	require.Contains(t, readmeContent, "catgoose/harmony",
+		"README should reference the source template (catgoose/harmony)")
 	require.NotContains(t, readmeContent, "{{APP_NAME}}")
 	require.NotContains(t, readmeContent, "{{APP_PORT}}")
+	require.NotContains(t, readmeContent, "{{TEMPLATE_REF}}")
 
 	envPath := filepath.Join(dest, ".env.development")
 	envBytes, err := os.ReadFile(envPath)
@@ -103,6 +106,10 @@ func TestSetupReplacesAppNameAndModule(t *testing.T) {
 		}
 		rel, _ := filepath.Rel(dest, path)
 		if strings.HasPrefix(rel, "_template_setup"+string(filepath.Separator)) {
+			return nil
+		}
+		// README.md intentionally references catgoose/harmony as the source template.
+		if rel == "README.md" {
 			return nil
 		}
 		data, err := os.ReadFile(path)
@@ -487,16 +494,8 @@ func TestSetup_FeaturesNone(t *testing.T) {
 	}
 	assertDirRemoved(t, filepath.Join(dest, "fastlane"))
 
-	// Dothog-specific docs should be removed (#355)
-	for _, f := range []string{"HAL.md", "COMPONENTS.md", "LINK_RELATIONS.md", "ARCHITECTURE.md", "index.md", "mkdocs.yml"} {
-		_, err = os.Stat(filepath.Join(dest, "docs", f))
-		require.True(t, os.IsNotExist(err), "docs/%s should be removed during setup", f)
-	}
-	assertDirRemoved(t, filepath.Join(dest, "docs", "audit"))
-
-	// Auto-generated package docs and screenshots should be removed (#377)
-	assertDirRemoved(t, filepath.Join(dest, "docs", "packages"))
-	assertDirRemoved(t, filepath.Join(dest, "docs", "screenshots"))
+	// Entire docs/ directory should be removed — it's all dothog-specific.
+	assertDirRemoved(t, filepath.Join(dest, "docs"))
 
 	// Setup package and setup tests should be removed (#377)
 	assertDirRemoved(t, filepath.Join(dest, "internal", "setup"))
