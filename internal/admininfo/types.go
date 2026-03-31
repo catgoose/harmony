@@ -1,3 +1,5 @@
+// setup:feature:demo
+
 // Package admininfo provides types for admin dashboard pages.
 package admininfo
 

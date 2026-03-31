@@ -1,3 +1,5 @@
+// setup:feature:demo
+
 package params
 
 import (

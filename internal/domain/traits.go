@@ -18,13 +18,6 @@ type SoftDelete struct {
 	DeletedAt sql.NullTime `db:"DeletedAt" json:"deletedAt,omitzero"`
 }
 
-// AuditTrail provides CreatedBy, UpdatedBy, and DeletedBy fields for embedding in domain models.
-type AuditTrail struct {
-	CreatedBy sql.NullString `db:"CreatedBy" json:"createdBy,omitzero"`
-	UpdatedBy sql.NullString `db:"UpdatedBy" json:"updatedBy,omitzero"`
-	DeletedBy sql.NullString `db:"DeletedBy" json:"deletedBy,omitzero"`
-}
-
 // Version provides an optimistic concurrency control field for embedding in domain models.
 type Version struct {
 	Version int `db:"Version" json:"version"`
@@ -43,21 +36,6 @@ type Status struct {
 // Notes provides a nullable notes field for embedding in domain models.
 type Notes struct {
 	Notes sql.NullString `db:"Notes" json:"notes,omitzero"`
-}
-
-// UUID provides a unique identifier field for embedding in domain models.
-type UUID struct {
-	UUID string `db:"UUID" json:"uuid"`
-}
-
-// Parent provides a nullable parent reference for tree structures.
-type Parent struct {
-	ParentID sql.NullInt64 `db:"ParentID" json:"parentId,omitzero"`
-}
-
-// Expiry provides a nullable expiration timestamp for embedding in domain models.
-type Expiry struct {
-	ExpiresAt sql.NullTime `db:"ExpiresAt" json:"expiresAt,omitzero"`
 }
 
 // Archive provides a nullable ArchivedAt timestamp for embedding in domain models.
