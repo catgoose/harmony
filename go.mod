@@ -11,7 +11,7 @@ require (
 	github.com/catgoose/dio v1.0.26
 	github.com/catgoose/flighty v0.2.3
 	github.com/catgoose/fraggle v0.1.12
-	github.com/catgoose/linkwell v0.2.0
+	github.com/catgoose/linkwell v0.2.1
 	github.com/catgoose/porter v0.3.1
 	github.com/catgoose/tavern v0.3.1
 	github.com/charmbracelet/huh v1.0.0

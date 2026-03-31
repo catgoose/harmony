@@ -529,6 +529,8 @@ func removeOptionalContent(dir string, opts Options) error {
 	_ = os.RemoveAll(filepath.Join(dir, "scripts"))
 	_ = os.Remove(filepath.Join(dir, ".github", "workflows", "screenshots.yml"))
 	_ = os.Remove(filepath.Join(dir, ".github", "workflows", "docs.yml"))
+	_ = os.Remove(filepath.Join(dir, ".github", "workflows", "pipeline.yml"))
+	_ = os.RemoveAll(filepath.Join(dir, ".github", "harmony"))
 
 	// Create docs/screenshots/ for derived app documentation assets (#355).
 	screenshotsDir := filepath.Join(dir, "docs", "screenshots")
