@@ -168,7 +168,7 @@ This depends on what you are using it FOR.
 
 **If you are building a browser application:** use HTML. HTML IS the hypermedia format. It has links AND forms AND controls AND accessibility AND progressive enhancement AND thirty years of browser optimization. Adding HAL to a browser application is like adding a bicycle rack to a car. The car already moves. The bicycle rack is technically functional. Nobody is impressed.
 
-This project — Dothog — uses HTML as its hypermedia format. HTMX extends HTML's capabilities. The `Control` struct maps to HTMX attributes. Forms submit. Links navigate. The browser renders. This is the right architecture for data-centric applications, and no amount of HAL will make it more right.
+This project — Harmony — uses HTML as its hypermedia format. HTMX extends HTML's capabilities. The `Control` struct maps to HTMX attributes. Forms submit. Links navigate. The browser renders. This is the right architecture for data-centric applications, and no amount of HAL will make it more right.
 
 **If you are building a JSON API that other programs consume:** HAL is a meaningful improvement over bare JSON. Your API consumers discover URLs instead of hardcoding them. Your API can evolve its URL structure without breaking clients. Link relations carry semantic meaning via the IANA registry. This is real value. It is incomplete value — the client still needs out-of-band knowledge for mutations — but it is value.
 
@@ -194,7 +194,7 @@ Three things.
 
 **Second:** The limitation of HAL is the limitation of any format without affordances for unsafe methods. Navigation is discovery — "here is what exists." Affordances are capability — "here is what you can do." A complete hypermedia format needs both. HTML has both. HAL has one. Siren has both. The market chose the one with one. This is not a technical decision. It is a human one.
 
-**Third:** The reason this project includes a HAL demo is not because HAL is the right format for Dothog. It is not. Dothog uses HTML. The reason is that HAL makes the principles _visible in a format developers already understand_. Most developers have never seen `_links` in a JSON response. Most developers have never followed a link relation from one resource to another without constructing a URL. The HAL explorer lets them do this with a click and see both representations — the human one (HTML) and the machine one (JSON) — side by side. And then maybe, just maybe, they look at the HTML side and say: "wait, HTML has been doing this the whole time?"
+**Third:** The reason this project includes a HAL demo is not because HAL is the right format for Harmony. It is not. Harmony uses HTML. The reason is that HAL makes the principles _visible in a format developers already understand_. Most developers have never seen `_links` in a JSON response. Most developers have never followed a link relation from one resource to another without constructing a URL. The HAL explorer lets them do this with a click and see both representations — the human one (HTML) and the machine one (JSON) — side by side. And then maybe, just maybe, they look at the HTML side and say: "wait, HTML has been doing this the whole time?"
 
 Yes. Yes it has.
 

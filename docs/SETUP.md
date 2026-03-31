@@ -1,6 +1,6 @@
 # Setup Guide
 
-Dothog is a template. Running `mage setup` scaffolds a new application by rewriting module paths, configuring ports, and stripping features you don't need.
+Harmony is a template. Running `mage setup` scaffolds a new application by rewriting module paths, configuring ports, and stripping features you don't need.
 
 ## Quick Start
 

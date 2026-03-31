@@ -3,7 +3,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.catgoose.dothog',
-  appName: 'Dothog',
+  appName: 'Harmony',
   webDir: 'build/web/assets/public',
   server: {
     // In development, point at the local Go server.

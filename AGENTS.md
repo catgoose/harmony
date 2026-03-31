@@ -1,4 +1,4 @@
-# Dothog Documentation Index
+# Harmony Documentation Index
 
 ## Architecture & Philosophy
 - [PHILOSOPHY.md](PHILOSOPHY.md) — Design principles, web standards strategy, hypermedia architecture

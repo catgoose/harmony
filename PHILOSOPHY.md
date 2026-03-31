@@ -896,7 +896,7 @@ logger.WithContext(c.Request().Context()).Error("Request error",
 
 Not every request deserves to be remembered. The hot path — the 99% of requests that succeed — should not pay for observability infrastructure it doesn't need. This is why logging follows a **promote-on-error** pattern: buffer everything per-request, discard on success, persist on error. The successful request pays only the cost of appending to a local slice. The failed request gets a full forensic record.
 
-The mechanics — per-request buffers, SQLite-backed trace storage, TTL cleanup, the `Promote` call and its `ErrorTrace` payload — live in [promolog](https://github.com/catgoose/promolog). Dothog wires promolog into its middleware stack:
+The mechanics — per-request buffers, SQLite-backed trace storage, TTL cleanup, the `Promote` call and its `ErrorTrace` payload — live in [promolog](https://github.com/catgoose/promolog). Harmony wires promolog into its middleware stack:
 
 1. **Correlation middleware** attaches a request ID and promolog buffer to each request's context
 2. **The slog handler** (wrapped by `promolog.NewHandler`) captures every log record into the buffer
@@ -909,7 +909,7 @@ The demo page at `/demo/logging` demonstrates the full flow with simulated suppo
 
 User-initiated actions (HTTP requests) and background operations (workers, async jobs, scheduled tasks) both flow through the same structured logger, but they're tagged differently so you can filter by origin. Requests carry a `request_id`; background work carries a `context_id` and `context_description`.
 
-Dothog builds on top of promolog's trace storage to provide:
+Harmony builds on top of promolog's trace storage to provide:
 
 - **Admin UI** at `/admin/error-traces` — sortable, filterable, paginated browser for all persisted error traces
 - **Real-time monitoring** — SSE broadcasts new traces as they're promoted, so the admin dashboard updates live
