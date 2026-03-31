@@ -164,13 +164,14 @@ func (ar *appRoutes) InitRoutes() error {
 	ar.initComponents3Routes()
 	// setup:feature:demo:end
 
-	// setup:feature:demo:start
 	// setup:feature:sse:start
 	ar.broker = tavern.NewSSEBroker()
 	// setup:feature:sse:end
 	// setup:feature:session_settings:start
 	ar.initThemeRoutes(ar.broker)
 	// setup:feature:session_settings:end
+
+	// setup:feature:demo:start
 	ar.initHypermediaRoutes()
 	ar.initHALRoutes()
 	ar.initErrorsRoutes()
@@ -323,7 +324,11 @@ func InitEcho(ctx context.Context, staticFS fs.FS, cfg *config.AppConfig,
 
 	// setup:feature:session_settings:start
 	if settingsRepo != nil {
-		e.Use(porter.SessionSettingsMiddleware(settingsRepo, nil))
+		var sessCfg porter.SessionConfig
+		if cfg != nil && cfg.AppName != "" {
+			sessCfg.CookieName = cfg.AppName + "_session_id"
+		}
+		e.Use(porter.SessionSettingsMiddleware(settingsRepo, nil, sessCfg))
 	}
 	// setup:feature:session_settings:end
 

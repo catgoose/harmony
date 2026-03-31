@@ -16,7 +16,6 @@ import (
 	"catgoose/harmony/internal/setup"
 
 	"github.com/charmbracelet/huh"
-	"github.com/magefile/mage/sh"
 )
 
 const templateModulePath = "catgoose/harmony"
@@ -161,13 +160,7 @@ func Setup() error {
 		if err := os.MkdirAll(filepath.Dir(absTarget), 0755); err != nil {
 			return err
 		}
-		// Ensure node_modules are present before copying
-		if _, err := os.Stat("package-lock.json"); err == nil {
-			if err := sh.Run("npm", "ci"); err != nil {
-				return fmt.Errorf("npm ci: %w", err)
-			}
-		}
-		if err := setup.CopyRepoTo(".", absTarget, []string{".git", "bin", "build", "tmp"}); err != nil {
+		if err := setup.CopyRepoTo(".", absTarget, []string{".git", ".claude", ".cursor", "bin", "build", "log", "node_modules", "test-results", "tmp"}); err != nil {
 			return fmt.Errorf("copying template: %w", err)
 		}
 		gitInit, _ := huhConfirm("Run git init in the new directory?")

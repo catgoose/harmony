@@ -666,15 +666,8 @@ func SetupTo(dest, appName string) error {
 		}
 	}
 
-	// Ensure node_modules are present before copying
-	if _, err := os.Stat(filepath.Join(src, "package-lock.json")); err == nil {
-		if err := sh.Run("npm", "ci"); err != nil {
-			return fmt.Errorf("npm ci: %w", err)
-		}
-	}
-
 	fmt.Printf("Copying template to %s...\n", absDest)
-	if err := setup.CopyRepoTo(src, absDest, []string{".git", "bin", "build", "tmp"}); err != nil {
+	if err := setup.CopyRepoTo(src, absDest, []string{".git", ".claude", ".cursor", "bin", "build", "log", "node_modules", "test-results", "tmp"}); err != nil {
 		return fmt.Errorf("copy: %w", err)
 	}
 

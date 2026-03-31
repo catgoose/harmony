@@ -335,7 +335,7 @@ func Run(ctx context.Context, dir string, opts Options) error {
 		_ = os.Remove(filepath.Join(dir, "config", "Caddyfile"))
 	}
 
-	// Compose .env.dev and .env.development from the tracked .env.development.
+	// Compose .env.development from the tracked .env.development.
 	// Lines tagged with "# setup:env " are activated (prefix stripped, literal
 	// default removed) and template placeholders are resolved to real ports.
 	envDevPath := filepath.Join(dir, ".env.development")
@@ -348,10 +348,8 @@ func Run(ctx context.Context, dir string, opts Options) error {
 		if !strings.Contains(content, "APP_NAME=") {
 			content += "\n# Application\nAPP_NAME=" + opts.AppName + "\n"
 		}
-		for _, envTarget := range []string{".env.dev", ".env.development"} {
-			if err := os.WriteFile(filepath.Join(dir, envTarget), []byte(content), 0644); err != nil {
-				return err
-			}
+		if err := os.WriteFile(envDevPath, []byte(content), 0644); err != nil {
+			return err
 		}
 	}
 
@@ -538,7 +536,9 @@ func removeOptionalContent(dir string, opts Options) error {
 	_ = os.Remove(filepath.Join(dir, "AGENTS.md"))
 	_ = os.Remove(filepath.Join(dir, "README.harmony.md"))
 
-	// Remove dothog-specific scripts (doc generation, screenshot automation).
+	// Remove dothog-specific development tooling.
+	_ = os.RemoveAll(filepath.Join(dir, "cmd", "testwatcher"))
+	stripTestWatchTarget(filepath.Join(dir, "magefile.go"))
 	_ = os.RemoveAll(filepath.Join(dir, "scripts"))
 	_ = os.Remove(filepath.Join(dir, ".github", "workflows", "screenshots.yml"))
 	_ = os.Remove(filepath.Join(dir, ".github", "workflows", "docs.yml"))
@@ -565,6 +565,14 @@ func removeOptionalContent(dir string, opts Options) error {
 	if matches, err := filepath.Glob(filepath.Join(dir, "db", "*.db*")); err == nil {
 		for _, m := range matches {
 			_ = os.Remove(m)
+		}
+	}
+	// Remove root-level demo.db (and WAL/SHM) when demo feature is not selected.
+	if removeTags[FeatureDemo] {
+		if matches, err := filepath.Glob(filepath.Join(dir, "demo.db*")); err == nil {
+			for _, m := range matches {
+				_ = os.Remove(m)
+			}
 		}
 	}
 
@@ -790,6 +798,19 @@ func parseFeatureBlockEnd(trimmed string) (string, bool) {
 		}
 	}
 	return "", false
+}
+
+// stripTestWatchTarget removes the TestWatch mage target from the generated
+// magefile. The function and its doc comment reference cmd/testwatcher which
+// is only present in the dothog development tree.
+func stripTestWatchTarget(magePath string) {
+	data, err := os.ReadFile(magePath)
+	if err != nil {
+		return
+	}
+	re := regexp.MustCompile(`(?ms)^// TestWatch runs tests.*?^}\n`)
+	cleaned := re.ReplaceAllString(string(data), "")
+	_ = os.WriteFile(magePath, []byte(cleaned), 0644)
 }
 
 // collapseBlankLines collapses runs of 3+ blank lines down to 2.
