@@ -7,9 +7,9 @@ require (
 	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/a-h/templ v0.3.1001
 	github.com/angelofallars/htmx-go v0.5.0
-	github.com/catgoose/crooner v1.4.3
+	github.com/catgoose/crooner v1.4.4
 	github.com/catgoose/dio v1.0.26
-	github.com/catgoose/flighty v0.2.6
+	github.com/catgoose/flighty v0.2.7
 	github.com/catgoose/fraggle v0.1.15
 	github.com/catgoose/linkwell v0.2.4
 	github.com/catgoose/porter v0.3.4
@@ -27,15 +27,12 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
-require (
-	github.com/catgoose/cheddar v0.2.2 // indirect
-	github.com/lib/pq v1.12.1 // indirect
-)
+require github.com/lib/pq v1.12.1 // indirect
 
 require (
 	dario.cat/mergo v1.0.2 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.21.0 // indirect
-	github.com/Azure/azure-sdk-for-go/sdk/internal v1.11.2 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/internal v1.12.0 // indirect
 	github.com/AzureAD/microsoft-authentication-library-for-go v1.7.0 // indirect
 	github.com/a-h/parse v0.0.0-20250122154542-74294addb73e // indirect
 	github.com/air-verse/air v1.62.0 // indirect
