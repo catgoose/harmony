@@ -14,8 +14,8 @@ import (
 	"fmt"
 
 	"catgoose/harmony/internal/demo"
-	"github.com/catgoose/linkwell"
 	components "catgoose/harmony/web/components/core"
+	"github.com/catgoose/linkwell"
 )
 
 func VendorContactsPage(vendors []demo.Vendor, bar linkwell.FilterBar) templ.Component {

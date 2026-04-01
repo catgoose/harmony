@@ -13,8 +13,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/catgoose/linkwell"
 	components "catgoose/harmony/web/components/core"
+	"github.com/catgoose/linkwell"
 	"github.com/catgoose/promolog"
 )
 

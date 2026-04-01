@@ -89,7 +89,7 @@ func AdminSessionsTable(sessions []porter.SessionSettings) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", s.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/admin_sessions.templ`, Line: 45, Col: 63}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/admin_sessions.templ`, Line: 46, Col: 63}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -102,7 +102,7 @@ func AdminSessionsTable(sessions []porter.SessionSettings) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(s.SessionUUID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/admin_sessions.templ`, Line: 46, Col: 53}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/admin_sessions.templ`, Line: 47, Col: 53}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -115,7 +115,7 @@ func AdminSessionsTable(sessions []porter.SessionSettings) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(s.Theme)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/admin_sessions.templ`, Line: 48, Col: 61}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/admin_sessions.templ`, Line: 49, Col: 61}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -128,7 +128,7 @@ func AdminSessionsTable(sessions []porter.SessionSettings) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(formatAge(s.UpdatedAt))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/admin_sessions.templ`, Line: 50, Col: 52}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/admin_sessions.templ`, Line: 51, Col: 52}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {

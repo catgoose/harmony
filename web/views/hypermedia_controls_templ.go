@@ -11,8 +11,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/catgoose/linkwell"
 	components "catgoose/harmony/web/components/core"
+	"github.com/catgoose/linkwell"
 )
 
 // HypermediaControlsPage is the interactive gallery of every hypermedia control,

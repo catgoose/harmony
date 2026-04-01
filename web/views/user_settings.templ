@@ -2,7 +2,10 @@
 
 package views
 
-import "catgoose/harmony/internal/admininfo"
+import (
+	"catgoose/harmony/internal/admininfo"
+	components "catgoose/harmony/web/components/core"
+)
 
 // UserSettingsPage renders the user preferences dashboard.
 templ UserSettingsPage(prefs admininfo.UserPreferences) {
@@ -40,42 +43,37 @@ templ UserSettingsPage(prefs admininfo.UserPreferences) {
 						</select>
 					</div>
 					<div class="fieldset">
-						<label class="label cursor-pointer justify-start gap-3">
+						@components.FormCheckbox("Compact table rows") {
 							<input type="checkbox" name="compact_tables" value="true" class="checkbox checkbox-sm" checked?={ prefs.CompactTables } />
-							<span class="label-text">Compact table rows</span>
-						</label>
+						}
 					</div>
 					<div class="divider my-0"></div>
 
 					<!-- Notifications -->
 					<h3 class="font-semibold text-sm">Notifications</h3>
 					<div class="fieldset">
-						<label class="label cursor-pointer justify-start gap-3">
+						@components.FormCheckbox("Email me when an error is reported") {
 							<input type="checkbox" name="email_on_error" value="true" class="checkbox checkbox-sm" checked?={ prefs.EmailOnError } />
-							<span class="label-text">Email me when an error is reported</span>
-						</label>
+						}
 					</div>
 					<div class="fieldset">
-						<label class="label cursor-pointer justify-start gap-3">
+						@components.FormCheckbox("Desktop notifications for real-time events") {
 							<input type="checkbox" name="desktop_notifications" value="true" class="checkbox checkbox-sm" checked?={ prefs.DesktopNotifications } />
-							<span class="label-text">Desktop notifications for real-time events</span>
-						</label>
+						}
 					</div>
 					<div class="divider my-0"></div>
 
 					<!-- Accessibility -->
 					<h3 class="font-semibold text-sm">Accessibility</h3>
 					<div class="fieldset">
-						<label class="label cursor-pointer justify-start gap-3">
+						@components.FormCheckbox("Reduce motion and animations") {
 							<input type="checkbox" name="reduce_motion" value="true" class="checkbox checkbox-sm" checked?={ prefs.ReduceMotion } />
-							<span class="label-text">Reduce motion and animations</span>
-						</label>
+						}
 					</div>
 					<div class="fieldset">
-						<label class="label cursor-pointer justify-start gap-3">
+						@components.FormCheckbox("High contrast mode") {
 							<input type="checkbox" name="high_contrast" value="true" class="checkbox checkbox-sm" checked?={ prefs.HighContrast } />
-							<span class="label-text">High contrast mode</span>
-						</label>
+						}
 					</div>
 
 					<div class="flex justify-end gap-2 pt-2">

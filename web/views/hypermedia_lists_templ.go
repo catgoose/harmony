@@ -13,8 +13,8 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"strconv"
 
-	"github.com/catgoose/linkwell"
 	components "catgoose/harmony/web/components/core"
+	"github.com/catgoose/linkwell"
 )
 
 // ListsDemoItem is a dummy row for the pagination demo table.

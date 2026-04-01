@@ -15,8 +15,8 @@ import (
 	"strconv"
 
 	"catgoose/harmony/internal/demo"
-	"github.com/catgoose/linkwell"
 	components "catgoose/harmony/web/components/core"
+	"github.com/catgoose/linkwell"
 )
 
 // bulkColAttrs builds templ.Attributes for a sortable column header link in the bulk table.

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"catgoose/harmony/internal/demo"
+	components "catgoose/harmony/web/components/core"
 )
 
 var settingsIcons = map[string]string{
@@ -101,10 +102,9 @@ templ SettingsSectionForm(sec demo.SettingsSection) {
 templ settingsField(f demo.SettingField) {
 	switch f.Kind {
 		case "toggle":
-			<label class="flex items-center justify-between max-w-sm cursor-pointer">
-				<span class="text-sm">{ f.Label }</span>
+			@components.FormToggle(f.Label) {
 				<input type="checkbox" name={ f.Key } value="true" class="toggle toggle-sm toggle-primary" checked?={ f.Value == "true" }/>
-			</label>
+			}
 		default:
 			<div class="fieldset max-w-sm">
 				<label class="label py-1">

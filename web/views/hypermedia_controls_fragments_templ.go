@@ -14,8 +14,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/catgoose/linkwell"
 	components "catgoose/harmony/web/components/core"
+	"github.com/catgoose/linkwell"
 )
 
 // GalleryItem is a simple named item for the empty-state demo.

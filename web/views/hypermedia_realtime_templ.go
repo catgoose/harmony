@@ -11,8 +11,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/catgoose/tavern"
 	"fmt"
+	"github.com/catgoose/tavern"
 )
 
 // RealtimePage is the full-page layout for /hypermedia/realtime.

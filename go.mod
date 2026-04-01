@@ -6,14 +6,14 @@ require (
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.13.1
 	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/a-h/templ v0.3.1001
-	github.com/catgoose/cheddar v0.2.1
+	github.com/catgoose/cheddar v0.2.2
 	github.com/catgoose/crooner v1.4.3
 	github.com/catgoose/dio v1.0.26
-	github.com/catgoose/flighty v0.2.5
-	github.com/catgoose/fraggle v0.1.14
-	github.com/catgoose/linkwell v0.2.1
-	github.com/catgoose/porter v0.3.3
-	github.com/catgoose/tavern v0.4.1
+	github.com/catgoose/flighty v0.2.6
+	github.com/catgoose/fraggle v0.1.15
+	github.com/catgoose/linkwell v0.2.3
+	github.com/catgoose/porter v0.3.4
+	github.com/catgoose/tavern v0.4.3
 	github.com/charmbracelet/huh v1.0.0
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/jmoiron/sqlx v1.4.0
@@ -42,7 +42,7 @@ require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/bep/godartsass/v2 v2.5.0 // indirect
 	github.com/bep/golibsass v1.2.0 // indirect
-	github.com/catgoose/promolog v0.2.5
+	github.com/catgoose/promolog v0.2.6
 	github.com/catppuccin/go v0.3.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect

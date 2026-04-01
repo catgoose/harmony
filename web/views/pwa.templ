@@ -2,6 +2,8 @@
 
 package views
 
+import components "catgoose/harmony/web/components/core"
+
 // PwaIndexPage renders the PWA landing page with offline data collection forms.
 templ PwaIndexPage() {
 	<div class="p-4 space-y-6 max-w-4xl mx-auto">
@@ -64,20 +66,16 @@ templ PwaSiteInspectionForm() {
 			hx-swap="outerHTML"
 			class="space-y-4"
 		>
-			<div class="form-control">
-				<label class="label"><span class="label-text">Location</span></label>
+			@components.FormField("Location") {
 				<input type="text" name="location" class="input input-bordered w-full" placeholder="Site address or identifier" required/>
-			</div>
-			<div class="form-control">
-				<label class="label"><span class="label-text">Inspector</span></label>
+			}
+			@components.FormField("Inspector") {
 				<input type="text" name="inspector" class="input input-bordered w-full" placeholder="Your name" required/>
-			</div>
-			<div class="form-control">
-				<label class="label"><span class="label-text">Date</span></label>
+			}
+			@components.FormField("Date") {
 				<input type="date" name="date" class="input input-bordered w-full" required/>
-			</div>
-			<div class="form-control">
-				<label class="label"><span class="label-text">Condition</span></label>
+			}
+			@components.FormField("Condition") {
 				<select name="condition" class="select select-bordered w-full" required>
 					<option value="" disabled selected>Select condition</option>
 					<option value="good">Good</option>
@@ -85,15 +83,13 @@ templ PwaSiteInspectionForm() {
 					<option value="poor">Poor</option>
 					<option value="critical">Critical</option>
 				</select>
-			</div>
-			<div class="form-control">
-				<label class="label"><span class="label-text">Notes</span></label>
+			}
+			@components.FormField("Notes") {
 				<textarea name="notes" class="textarea textarea-bordered w-full" rows="4" placeholder="Observations, issues, or follow-up items"></textarea>
-			</div>
-			<div class="form-control">
-				<label class="label"><span class="label-text">Photo Reference</span></label>
+			}
+			@components.FormField("Photo Reference") {
 				<input type="text" name="photo_ref" class="input input-bordered w-full" placeholder="Photo filename or reference number"/>
-			</div>
+			}
 			<div class="flex gap-2">
 				<button type="submit" class="btn btn-primary">Submit Inspection</button>
 				<a href="/pwa" hx-get="/pwa" hx-target="#base-content" hx-swap="innerHTML" hx-push-url="true" class="btn btn-ghost">Cancel</a>
@@ -114,16 +110,13 @@ templ PwaFieldReportForm() {
 			hx-swap="outerHTML"
 			class="space-y-4"
 		>
-			<div class="form-control">
-				<label class="label"><span class="label-text">Reporter</span></label>
+			@components.FormField("Reporter") {
 				<input type="text" name="reporter" class="input input-bordered w-full" placeholder="Your name" required/>
-			</div>
-			<div class="form-control">
-				<label class="label"><span class="label-text">Date</span></label>
+			}
+			@components.FormField("Date") {
 				<input type="date" name="date" class="input input-bordered w-full" required/>
-			</div>
-			<div class="form-control">
-				<label class="label"><span class="label-text">Category</span></label>
+			}
+			@components.FormField("Category") {
 				<select name="category" class="select select-bordered w-full" required>
 					<option value="" disabled selected>Select category</option>
 					<option value="safety">Safety</option>
@@ -132,9 +125,8 @@ templ PwaFieldReportForm() {
 					<option value="quality">Quality</option>
 					<option value="other">Other</option>
 				</select>
-			</div>
-			<div class="form-control">
-				<label class="label"><span class="label-text">Priority</span></label>
+			}
+			@components.FormField("Priority") {
 				<select name="priority" class="select select-bordered w-full" required>
 					<option value="" disabled selected>Select priority</option>
 					<option value="low">Low</option>
@@ -142,15 +134,13 @@ templ PwaFieldReportForm() {
 					<option value="high">High</option>
 					<option value="urgent">Urgent</option>
 				</select>
-			</div>
-			<div class="form-control">
-				<label class="label"><span class="label-text">Description</span></label>
+			}
+			@components.FormField("Description") {
 				<textarea name="description" class="textarea textarea-bordered w-full" rows="4" placeholder="Describe the incident or observation" required></textarea>
-			</div>
-			<div class="form-control">
-				<label class="label"><span class="label-text">Action Taken</span></label>
+			}
+			@components.FormField("Action Taken") {
 				<textarea name="action_taken" class="textarea textarea-bordered w-full" rows="3" placeholder="Corrective actions or next steps"></textarea>
-			</div>
+			}
 			<div class="flex gap-2">
 				<button type="submit" class="btn btn-primary">Submit Report</button>
 				<a href="/pwa" hx-get="/pwa" hx-target="#base-content" hx-swap="innerHTML" hx-push-url="true" class="btn btn-ghost">Cancel</a>
@@ -171,22 +161,18 @@ templ PwaNotesForm() {
 			hx-swap="outerHTML"
 			class="space-y-4"
 		>
-			<div class="form-control">
-				<label class="label"><span class="label-text">Author</span></label>
+			@components.FormField("Author") {
 				<input type="text" name="author" class="input input-bordered w-full" placeholder="Your name" required/>
-			</div>
-			<div class="form-control">
-				<label class="label"><span class="label-text">Subject</span></label>
+			}
+			@components.FormField("Subject") {
 				<input type="text" name="subject" class="input input-bordered w-full" placeholder="Brief subject line" required/>
-			</div>
-			<div class="form-control">
-				<label class="label"><span class="label-text">Body</span></label>
+			}
+			@components.FormField("Body") {
 				<textarea name="body" class="textarea textarea-bordered w-full" rows="6" placeholder="Your notes" required></textarea>
-			</div>
-			<div class="form-control">
-				<label class="label"><span class="label-text">Tags</span></label>
+			}
+			@components.FormField("Tags") {
 				<input type="text" name="tags" class="input input-bordered w-full" placeholder="Comma-separated tags"/>
-			</div>
+			}
 			<div class="flex gap-2">
 				<button type="submit" class="btn btn-primary">Save Notes</button>
 				<a href="/pwa" hx-get="/pwa" hx-target="#base-content" hx-swap="innerHTML" hx-push-url="true" class="btn btn-ghost">Cancel</a>
