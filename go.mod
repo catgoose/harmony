@@ -9,10 +9,10 @@ require (
 	github.com/catgoose/cheddar v0.2.1
 	github.com/catgoose/crooner v1.4.3
 	github.com/catgoose/dio v1.0.26
-	github.com/catgoose/flighty v0.2.4
-	github.com/catgoose/fraggle v0.1.13
+	github.com/catgoose/flighty v0.2.5
+	github.com/catgoose/fraggle v0.1.14
 	github.com/catgoose/linkwell v0.2.1
-	github.com/catgoose/porter v0.3.2
+	github.com/catgoose/porter v0.3.3
 	github.com/catgoose/tavern v0.4.1
 	github.com/charmbracelet/huh v1.0.0
 	github.com/fsnotify/fsnotify v1.9.0
