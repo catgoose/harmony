@@ -10,7 +10,7 @@ import (
 	"catgoose/harmony/internal/routes/handler"
 	"catgoose/harmony/web/views"
 
-	"github.com/catgoose/porter"
+	"catgoose/harmony/internal/session"
 	"github.com/labstack/echo/v4"
 )
 
@@ -50,7 +50,7 @@ func (ar *appRoutes) handleUserSettingsSave(c echo.Context) error {
 		prefs.DateFormat = "relative"
 	}
 
-	sessionID := porter.GetSessionSettings(c.Request()).SessionUUID
+	sessionID := session.GetSettings(c.Request()).SessionUUID
 	prefsStore.Lock()
 	prefsStore.m[sessionID] = prefs
 	prefsStore.Unlock()
@@ -59,7 +59,7 @@ func (ar *appRoutes) handleUserSettingsSave(c echo.Context) error {
 }
 
 func getUserPrefs(c echo.Context) admininfo.UserPreferences {
-	sessionID := porter.GetSessionSettings(c.Request()).SessionUUID
+	sessionID := session.GetSettings(c.Request()).SessionUUID
 	prefsStore.RLock()
 	prefs, ok := prefsStore.m[sessionID]
 	prefsStore.RUnlock()

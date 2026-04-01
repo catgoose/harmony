@@ -7,7 +7,7 @@ import (
 
 	"catgoose/harmony/internal/logger"
 	// setup:feature:session_settings:start
-	"github.com/catgoose/porter"
+	"catgoose/harmony/internal/session"
 	// setup:feature:session_settings:end
 	"github.com/catgoose/promolog"
 	"github.com/catgoose/linkwell"
@@ -118,7 +118,7 @@ func handleErrorWithContext(c echo.Context, ec linkwell.ErrorContext) error {
 // hypermedia responses. Assign it to e.HTTPErrorHandler in place of the default.
 // When reqLogStore is non-nil, the per-request log buffer is promoted to the
 // shared store on error so it can be retrieved for issue reports.
-func NewHTTPErrorHandler(reqLogStore *promolog.Store) func(err error, c echo.Context) {
+func NewHTTPErrorHandler(reqLogStore promolog.Storer) func(err error, c echo.Context) {
 	return func(err error, c echo.Context) {
 		// Determine status code from error type before promoting.
 		statusCode := http.StatusInternalServerError
@@ -136,7 +136,7 @@ func NewHTTPErrorHandler(reqLogStore *promolog.Store) func(err error, c echo.Con
 			if requestID != "" {
 				var entries []promolog.Entry
 				if buf := promolog.GetBuffer(c.Request().Context()); buf != nil {
-					entries = buf.Snapshot()
+					entries = buf.Entries()
 				}
 				var userID string
 				// setup:feature:auth:start
@@ -202,7 +202,7 @@ func NewHTTPErrorHandler(reqLogStore *promolog.Store) func(err error, c echo.Con
 // Falls back to "dark" if session settings are unavailable.
 func errorPageTheme(c echo.Context) string {
 	// setup:feature:session_settings:start
-	if s := porter.GetSessionSettings(c.Request()); s != nil && s.Theme != "" {
+	if s := session.GetSettings(c.Request()); s != nil && s.Theme != "" {
 		return s.Theme
 	}
 	// setup:feature:session_settings:end
