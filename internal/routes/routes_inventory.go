@@ -8,7 +8,7 @@ import (
 
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
-	"github.com/catgoose/cheddar"
+	htmx "github.com/angelofallars/htmx-go"
 	"github.com/catgoose/linkwell"
 	"catgoose/harmony/internal/routes/params"
 	"catgoose/harmony/web/views"
@@ -48,7 +48,7 @@ func (d *inventoryRoutes) handleInventoryItems(c echo.Context) error {
 	if err != nil {
 		return handler.HandleHypermediaError(c, 500, "Failed to load items", err)
 	}
-	if cheddar.IsBoosted(c) {
+	if htmx.IsBoosted(c.Request()) {
 		return handler.RenderBaseLayout(c, views.InventoryPage(bar, container))
 	}
 	setTableReplaceURL(c, inventoryBase)
@@ -102,7 +102,7 @@ func (d *inventoryRoutes) handleItemRow(c echo.Context) error {
 	if err != nil {
 		return handler.HandleHypermediaError(c, 404, "Item not found", err)
 	}
-	if !cheddar.IsHTMX(c) || cheddar.IsBoosted(c) {
+	if !htmx.IsHTMX(c.Request()) || htmx.IsBoosted(c.Request()) {
 		handler.SetPageLabel(c, item.Name)
 		return handler.RenderBaseLayout(c, views.InventoryDetailPage(item))
 	}
