@@ -28,155 +28,6 @@ type contextBarGroup struct {
 	Items []contextBarItem
 }
 
-// contextBarGroups builds the context bar groups for the current page.
-// It finds the hub this page belongs to (either as center or spoke) and
-// resolves all spokes into their ring groups. Both hub centers and spoke
-// pages see the same grouped view.
-func contextBarGroups(links []linkwell.LinkRelation, currentPath string) []contextBarGroup {
-	// Determine the hub path: either we ARE the hub (have outgoing related links
-	// with a hub group) or we have a rel="up" pointing to our hub.
-	var hubPath string
-	var hubName string
-	var isHubCenter bool
-
-	for _, l := range links {
-		if l.Rel == "up" {
-			hubPath = l.Href
-			hubName = l.Title
-			break
-		}
-	}
-
-	// No rel="up" — check if we're a hub center (have outgoing related with a group matching our title)
-	if hubPath == "" {
-		for _, l := range links {
-			if l.Rel == "related" && l.Group != "" {
-				hubPath = currentPath
-				hubName = l.Group
-				isHubCenter = true
-				break
-			}
-		}
-	}
-
-	if hubPath == "" {
-		// No hub relationship — fall back to simple grouping
-		return simpleGroups(links, currentPath)
-	}
-
-	// Get the hub's spokes
-	var spokes []contextBarItem
-	if isHubCenter {
-		for _, l := range links {
-			if l.Rel == "related" && l.Href != currentPath {
-				spokes = append(spokes, contextBarItem{Href: l.Href, Title: l.Title})
-			}
-		}
-	} else {
-		hubLinks := linkwell.LinksFor(hubPath, "related")
-		for _, l := range hubLinks {
-			if l.Href != currentPath {
-				spokes = append(spokes, contextBarItem{Href: l.Href, Title: l.Title})
-			}
-		}
-	}
-
-	// Resolve spokes into ring groups
-	resolved := resolveIntoRings(spokes, hubName, currentPath)
-
-	// For spoke pages, prepend the hub parent link
-	if !isHubCenter && hubPath != "" {
-		upGroup := contextBarGroup{
-			IsHub: true,
-			Items: []contextBarItem{{Href: hubPath, Title: hubName, IsUp: true}},
-		}
-		resolved = append([]contextBarGroup{upGroup}, resolved...)
-	}
-
-	return resolved
-}
-
-// simpleGroups is the fallback grouping when no hub relationship exists.
-func simpleGroups(links []linkwell.LinkRelation, currentPath string) []contextBarGroup {
-	seen := map[string]int{}
-	var groups []contextBarGroup
-	for _, l := range links {
-		if l.Href == currentPath || (l.Rel != "related" && l.Rel != "up") {
-			continue
-		}
-		idx, ok := seen[l.Group]
-		if !ok {
-			idx = len(groups)
-			seen[l.Group] = idx
-			groups = append(groups, contextBarGroup{Name: l.Group})
-		}
-		isUp := l.Rel == "up"
-		if isUp {
-			groups[idx].IsHub = true
-		}
-		groups[idx].Items = append(groups[idx].Items, contextBarItem{
-			Href: l.Href, Title: l.Title, IsUp: isUp,
-		})
-	}
-	return groups
-}
-
-// resolveIntoRings takes a flat list of spokes and groups them by their
-// ring memberships from the registry. Used by both hub centers and spoke pages.
-func resolveIntoRings(spokes []contextBarItem, hubName string, currentPath string) []contextBarGroup {
-	seen := map[string]int{}
-	var groups []contextBarGroup
-	placed := map[string]bool{}
-
-	for _, item := range spokes {
-		spokeLinks := linkwell.LinksFor(item.Href, "related")
-		for _, sl := range spokeLinks {
-			if sl.Group != "" && sl.Group != hubName && !placed[item.Href+"|"+sl.Group] {
-				idx, ok := seen[sl.Group]
-				if !ok {
-					idx = len(groups)
-					seen[sl.Group] = idx
-					groups = append(groups, contextBarGroup{Name: sl.Group})
-				}
-				if !hasItem(groups[idx].Items, item.Href) {
-					groups[idx].Items = append(groups[idx].Items, contextBarItem{
-						Href:  item.Href,
-						Title: item.Title,
-					})
-				}
-				placed[item.Href+"|"+sl.Group] = true
-			}
-		}
-	}
-
-	// Sort items within each group alphabetically
-	for i := range groups {
-		sort.Slice(groups[i].Items, func(a, b int) bool {
-			return groups[i].Items[a].Title < groups[i].Items[b].Title
-		})
-	}
-
-	// Any spokes not in any ring go into an ungrouped section
-	var ungrouped []contextBarItem
-	for _, item := range spokes {
-		inRing := false
-		for _, g := range groups {
-			if hasItem(g.Items, item.Href) {
-				inRing = true
-				break
-			}
-		}
-		if !inRing {
-			ungrouped = append(ungrouped, item)
-		}
-	}
-	if len(ungrouped) > 0 {
-		groups = append(groups, contextBarGroup{Items: ungrouped})
-	}
-
-	return groups
-}
-
 func hasItem(items []contextBarItem, href string) bool {
 	for _, it := range items {
 		if it.Href == href {
@@ -184,67 +35,6 @@ func hasItem(items []contextBarItem, href string) bool {
 		}
 	}
 	return false
-}
-
-// ContextBar renders a horizontal strip of related page links grouped by ring name.
-// Server-rendered with a stable ID so it can be updated via hx-swap-oob on navigation.
-func ContextBar(links []linkwell.LinkRelation, currentPath string) templ.Component {
-	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
-		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
-		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
-			return templ_7745c5c3_CtxErr
-		}
-		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
-		if !templ_7745c5c3_IsBuffer {
-			defer func() {
-				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err == nil {
-					templ_7745c5c3_Err = templ_7745c5c3_BufErr
-				}
-			}()
-		}
-		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var1 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var1 == nil {
-			templ_7745c5c3_Var1 = templ.NopComponent
-		}
-		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"context-bar\" _=\"init if localStorage.getItem('dothog_show_context_bar') !== 'true' then hide me\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		if groups := contextBarGroups(links, currentPath); len(groups) > 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"border-b border-base-300\"><div class=\"flex items-center justify-center gap-3 overflow-x-auto px-8 py-1.5 bg-base-200/50 text-sm\">")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			for i, group := range groups {
-				templ_7745c5c3_Err = contextBarGroupItems(group).Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, " ")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				if i < len(groups)-1 {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"w-px h-4 bg-base-300 shrink-0\"></div>")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-				}
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div></div>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		return nil
-	})
 }
 
 // LocalContextBar renders a compact strip of the current page's immediate
@@ -265,122 +55,122 @@ func LocalContextBar(links []linkwell.LinkRelation, currentPath string) templ.Co
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var2 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var2 == nil {
-			templ_7745c5c3_Var2 = templ.NopComponent
+		templ_7745c5c3_Var1 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var1 == nil {
+			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div id=\"local-context-bar\" _=\"init if localStorage.getItem('dothog_hide_local_context_bar') === 'true' then hide me\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"local-context-bar\" _=\"init if localStorage.getItem('dothog_hide_local_context_bar') === 'true' then hide me\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if groups := localGroups(links, currentPath); len(groups) > 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<div class=\"border-b border-base-300\"><div class=\"flex items-center justify-center gap-3 overflow-x-auto px-8 py-1 bg-base-100/50 text-xs\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"border-b border-base-300\"><div class=\"flex items-center justify-center gap-3 overflow-x-auto px-8 py-1 bg-base-100/50 text-xs\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			for i, group := range groups {
 				if group.Name != "" {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<span class=\"text-base-content/25 font-medium whitespace-nowrap\">")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<span class=\"text-base-content/25 font-medium whitespace-nowrap\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					var templ_7745c5c3_Var3 string
-					templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(group.Name)
+					var templ_7745c5c3_Var2 string
+					templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(group.Name)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/context_bar.templ`, Line: 213, Col: 84}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/context_bar.templ`, Line: 43, Col: 84}
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</span> ")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</span> ")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
 				for _, item := range group.Items {
 					if item.IsUp {
-						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<a href=\"")
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<a href=\"")
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
-						var templ_7745c5c3_Var4 templ.SafeURL
-						templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL(item.Href))
+						var templ_7745c5c3_Var3 templ.SafeURL
+						templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL(item.Href))
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/context_bar.templ`, Line: 217, Col: 38}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/context_bar.templ`, Line: 47, Col: 38}
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\" class=\"link link-hover text-base-content/50 hover:text-base-content whitespace-nowrap\">↑ ")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						var templ_7745c5c3_Var4 string
+						templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(item.Title)
+						if templ_7745c5c3_Err != nil {
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/context_bar.templ`, Line: 47, Col: 144}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
-						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "\" class=\"link link-hover text-base-content/50 hover:text-base-content whitespace-nowrap\">↑ ")
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</a>")
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
-						var templ_7745c5c3_Var5 string
-						templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(item.Title)
+					} else {
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<a href=\"")
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/context_bar.templ`, Line: 217, Col: 144}
+							return templ_7745c5c3_Err
+						}
+						var templ_7745c5c3_Var5 templ.SafeURL
+						templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL(item.Href))
+						if templ_7745c5c3_Err != nil {
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/context_bar.templ`, Line: 49, Col: 38}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
-						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "</a>")
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\" class=\"link link-hover text-base-content/50 hover:text-base-content whitespace-nowrap\">")
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
-					} else {
-						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "<a href=\"")
+						var templ_7745c5c3_Var6 string
+						templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(item.Title)
 						if templ_7745c5c3_Err != nil {
-							return templ_7745c5c3_Err
-						}
-						var templ_7745c5c3_Var6 templ.SafeURL
-						templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL(item.Href))
-						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/context_bar.templ`, Line: 219, Col: 38}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/context_bar.templ`, Line: 49, Col: 140}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
-						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "\" class=\"link link-hover text-base-content/50 hover:text-base-content whitespace-nowrap\">")
-						if templ_7745c5c3_Err != nil {
-							return templ_7745c5c3_Err
-						}
-						var templ_7745c5c3_Var7 string
-						templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(item.Title)
-						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/context_bar.templ`, Line: 219, Col: 140}
-						}
-						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
-						if templ_7745c5c3_Err != nil {
-							return templ_7745c5c3_Err
-						}
-						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "</a>")
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</a>")
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
 					}
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, " ")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, " ")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				if i < len(groups)-1 {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<div class=\"w-px h-3 bg-base-300 shrink-0\"></div>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<div class=\"w-px h-3 bg-base-300 shrink-0\"></div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "</div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "</div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -393,7 +183,7 @@ func LocalContextBar(links []linkwell.LinkRelation, currentPath string) templ.Co
 func localGroups(links []linkwell.LinkRelation, currentPath string) []contextBarGroup {
 	var groups []contextBarGroup
 
-	// Prepend hub parent link if present, matching ContextBar behaviour.
+	// Prepend hub parent link if present.
 	for _, l := range links {
 		if l.Rel == "up" {
 			groups = append(groups, contextBarGroup{
@@ -452,123 +242,14 @@ func HistoryBreadcrumbs() templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var8 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var8 == nil {
-			templ_7745c5c3_Var8 = templ.NopComponent
+		templ_7745c5c3_Var7 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var7 == nil {
+			templ_7745c5c3_Var7 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "<div id=\"history-breadcrumbs\" x-data=\"historyBreadcrumbs()\" x-show=\"trail.length > 0\" x-cloak _=\"init if localStorage.getItem('dothog_show_history_crumbs') !== 'true' then hide me\"><div class=\"border-b border-base-300\"><div class=\"flex items-center gap-2 overflow-x-auto px-8 py-1 bg-base-100/30 text-xs\"><template x-for=\"(item, idx) in trail\" :key=\"item.path\"><div class=\"flex items-center gap-2\"><a :href=\"item.path\" x-text=\"item.title\" class=\"link link-hover text-base-content/40 hover:text-base-content whitespace-nowrap\"></a> <span class=\"text-base-content/20\">›</span></div></template><span class=\"text-base-content/60 font-medium whitespace-nowrap\" x-text=\"(document.querySelector('meta[name=page-title]') || {}).content || titleFromPath(window.location.pathname)\"></span></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<div id=\"history-breadcrumbs\" x-data=\"historyBreadcrumbs()\" x-show=\"trail.length > 0\" x-cloak _=\"init if localStorage.getItem('dothog_show_history_crumbs') !== 'true' then hide me\"><div class=\"border-b border-base-300\"><div class=\"flex items-center gap-2 overflow-x-auto px-8 py-1 bg-base-100/30 text-xs\"><template x-for=\"(item, idx) in trail\" :key=\"item.path\"><div class=\"flex items-center gap-2\"><a :href=\"item.path\" x-text=\"item.title\" class=\"link link-hover text-base-content/40 hover:text-base-content whitespace-nowrap\"></a> <span class=\"text-base-content/20\">›</span></div></template><span class=\"text-base-content/60 font-medium whitespace-nowrap\" x-text=\"(document.querySelector('meta[name=page-title]') || {}).content || titleFromPath(window.location.pathname)\"></span></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
-		}
-		return nil
-	})
-}
-
-func contextBarGroupItems(group contextBarGroup) templ.Component {
-	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
-		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
-		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
-			return templ_7745c5c3_CtxErr
-		}
-		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
-		if !templ_7745c5c3_IsBuffer {
-			defer func() {
-				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err == nil {
-					templ_7745c5c3_Err = templ_7745c5c3_BufErr
-				}
-			}()
-		}
-		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var9 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var9 == nil {
-			templ_7745c5c3_Var9 = templ.NopComponent
-		}
-		ctx = templ.ClearChildren(ctx)
-		if group.Name != "" && !group.IsHub {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "<span class=\"text-base-content/30 text-xs font-medium whitespace-nowrap\">")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var10 string
-			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(group.Name)
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/context_bar.templ`, Line: 306, Col: 87}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "</span> ")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-		}
-		for _, item := range group.Items {
-			if item.IsUp {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "<a href=\"")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				var templ_7745c5c3_Var11 templ.SafeURL
-				templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL(item.Href))
-				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/context_bar.templ`, Line: 310, Col: 33}
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "\" class=\"link link-hover text-base-content/60 hover:text-base-content whitespace-nowrap\">↑ ")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				var templ_7745c5c3_Var12 string
-				templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(item.Title)
-				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/context_bar.templ`, Line: 310, Col: 139}
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "</a>")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-			} else {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<a href=\"")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				var templ_7745c5c3_Var13 templ.SafeURL
-				templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL(item.Href))
-				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/context_bar.templ`, Line: 312, Col: 33}
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "\" class=\"link link-hover text-base-content/60 hover:text-base-content whitespace-nowrap\">")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				var templ_7745c5c3_Var14 string
-				templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(item.Title)
-				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/components/core/context_bar.templ`, Line: 312, Col: 135}
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "</a>")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-			}
 		}
 		return nil
 	})

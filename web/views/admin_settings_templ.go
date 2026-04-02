@@ -11,8 +11,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"fmt"
 	"catgoose/harmony/internal/health"
+	"fmt"
 )
 
 // AdminPanelData holds all data for the admin control panel.

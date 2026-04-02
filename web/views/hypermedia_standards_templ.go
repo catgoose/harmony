@@ -229,7 +229,7 @@ func standardsNavigation() templ.Component {
 			templ_7745c5c3_Var10 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body\"><h2 class=\"card-title text-base\">Navigation Architecture</h2><p class=\"text-sm text-base-content/70 mb-3\">Multiple complementary navigation layers, all derived from the link registry and URL structure.</p><div class=\"space-y-3\"><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Full Context Bar</h3><p class=\"text-sm text-base-content/70\">Shows hub and ring relations for the current page. Provides lateral navigation to related pages without going back to an index.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Local Context Bar</h3><p class=\"text-sm text-base-content/70\">Shows only direct siblings within a ring. Appears when a page belongs to a peer group.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">History Breadcrumbs</h3><p class=\"text-sm text-base-content/70\">Tracked via <code class=\"text-xs bg-base-200 px-1 rounded\">sessionStorage</code>. Shows the actual navigation trail, not just the URL hierarchy.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Hierarchy Breadcrumbs</h3><p class=\"text-sm text-base-content/70\">Derived from <code class=\"text-xs bg-base-200 px-1 rounded\">rel=\"up\"</code> chain or path segments. Priority: <code class=\"text-xs bg-base-200 px-1 rounded\">?from=</code> param, then rel=\"up\", then path-derived.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Site Map and Toggles</h3><p class=\"text-sm text-base-content/70\">Footer site map generated from hubs. Dismiss and settings toggles let users control context bar visibility via session preferences.</p></div></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body\"><h2 class=\"card-title text-base\">Navigation Architecture</h2><p class=\"text-sm text-base-content/70 mb-3\">Multiple complementary navigation layers, all derived from the link registry and URL structure.</p><div class=\"space-y-3\"><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Local Context Bar</h3><p class=\"text-sm text-base-content/70\">Shows only direct siblings within a ring. Appears when a page belongs to a peer group.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">History Breadcrumbs</h3><p class=\"text-sm text-base-content/70\">Tracked via <code class=\"text-xs bg-base-200 px-1 rounded\">sessionStorage</code>. Shows the actual navigation trail, not just the URL hierarchy.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Hierarchy Breadcrumbs</h3><p class=\"text-sm text-base-content/70\">Derived from <code class=\"text-xs bg-base-200 px-1 rounded\">rel=\"up\"</code> chain or path segments. Priority: <code class=\"text-xs bg-base-200 px-1 rounded\">?from=</code> param, then rel=\"up\", then path-derived.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Site Map and Toggles</h3><p class=\"text-sm text-base-content/70\">Footer site map generated from hubs. Settings toggles let users control local context bar visibility.</p></div></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -294,7 +294,7 @@ func standardsFormAttributes() templ.Component {
 		var templ_7745c5c3_Var13 string
 		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs("for")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_standards.templ`, Line: 233, Col: 87}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_standards.templ`, Line: 226, Col: 87}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {
@@ -365,7 +365,7 @@ func standardsBrowserAPIs() templ.Component {
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs("for")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_standards.templ`, Line: 310, Col: 81}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_standards.templ`, Line: 303, Col: 81}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {
