@@ -173,6 +173,7 @@ func main() {
 		settingsRepo,
 		// setup:feature:session_settings:end
 	)
+	defer ar.Close()
 	if err := ar.InitRoutes(); err != nil {
 		logger.Fatal("Failed to setup routes", "error", err)
 	}

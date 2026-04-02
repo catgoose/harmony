@@ -7,12 +7,12 @@ require (
 	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/a-h/templ v0.3.1001
 	github.com/angelofallars/htmx-go v0.5.0
-	github.com/catgoose/crooner v1.4.12
+	github.com/catgoose/crooner v1.4.13
 	github.com/catgoose/fraggle v0.1.24
 	github.com/catgoose/linkwell v0.2.11
 	github.com/catgoose/porter v0.4.3
 	github.com/catgoose/promolog/sqlite v0.0.0-20260402015030-8a14a83f0295
-	github.com/catgoose/tavern v0.4.13
+	github.com/catgoose/tavern v0.4.14
 	github.com/charmbracelet/huh v1.0.0
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/jmoiron/sqlx v1.4.0

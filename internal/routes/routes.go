@@ -39,6 +39,8 @@ import (
 // AppRoutes defines the interface for app routes
 type AppRoutes interface {
 	InitRoutes() error
+	// Close shuts down the SSE broker and releases resources. Call during graceful shutdown.
+	Close()
 	// SetHealthDB sets the database connection for the /health endpoint to ping.
 	SetHealthDB(db health.Pinger)
 	// SetHealthStats sets a function that returns app-specific stats for /health.
@@ -76,6 +78,15 @@ type appRoutes struct {
 	// setup:feature:demo:end
 	// setup:feature:sse:start
 	broker *tavern.SSEBroker
+	// setup:feature:sse:end
+}
+
+// Close shuts down the SSE broker and releases resources.
+func (ar *appRoutes) Close() {
+	// setup:feature:sse:start
+	if ar.broker != nil {
+		ar.broker.Close()
+	}
 	// setup:feature:sse:end
 }
 
