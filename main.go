@@ -197,7 +197,9 @@ func main() {
 		if err != nil {
 			logger.Fatal("Failed to open in-memory SQLite for user cache", "error", err)
 		}
-		defer func() { _ = sqliteDB.Close() }()
+		if sqliteDB != nil {
+			defer func() { _ = sqliteDB.Close() }()
+		}
 		userCache := graph.NewUserCache(sqliteDB)
 		afterSync := func(ctx context.Context, users []domain.GraphUser) {
 			if err := graph.SyncPhotos(ctx, graphClient, photoStore, users, false); err != nil {

@@ -131,7 +131,13 @@ func Middleware(repo Provider, idFunc IDFunc, cfgs ...SessionConfig) func(http.H
 				sessionID = idFunc(r)
 			}
 			if sessionID == "" {
-				sessionID = getOrCreateSessionCookie(w, r, cfg.cookieName())
+				var err error
+				sessionID, err = getOrCreateSessionCookie(w, r, cfg.cookieName())
+				if err != nil {
+					cfg.logger().ErrorContext(ctx, "Failed to create session cookie", "error", err)
+					http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+					return
+				}
 			}
 
 			settings, err := repo.GetByUUID(ctx, sessionID)
@@ -164,11 +170,14 @@ func GetSettings(r *http.Request) *SessionSettings {
 	return NewDefaultSettings("")
 }
 
-func getOrCreateSessionCookie(w http.ResponseWriter, r *http.Request, cookieName string) string {
+func getOrCreateSessionCookie(w http.ResponseWriter, r *http.Request, cookieName string) (string, error) {
 	if cookie, err := r.Cookie(cookieName); err == nil && cookie.Value != "" {
-		return cookie.Value
+		return cookie.Value, nil
 	}
-	id := randomUUID()
+	id, err := randomUUID()
+	if err != nil {
+		return "", err
+	}
 	http.SetCookie(w, &http.Cookie{
 		Name:     cookieName,
 		Value:    id,
@@ -177,13 +186,15 @@ func getOrCreateSessionCookie(w http.ResponseWriter, r *http.Request, cookieName
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,
 	})
-	return id
+	return id, nil
 }
 
-func randomUUID() string {
+func randomUUID() (string, error) {
 	b := make([]byte, 16)
-	_, _ = rand.Read(b)
+	if _, err := rand.Read(b); err != nil {
+		return "", fmt.Errorf("generate session ID: %w", err)
+	}
 	b[6] = (b[6] & 0x0f) | 0x40
 	b[8] = (b[8] & 0x3f) | 0x80
-	return fmt.Sprintf("%08x-%04x-%04x-%04x-%012x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:16])
+	return fmt.Sprintf("%08x-%04x-%04x-%04x-%012x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:16]), nil
 }

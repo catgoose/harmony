@@ -5,6 +5,7 @@ package routes
 import (
 	"strconv"
 	"sync"
+	"time"
 
 	"catgoose/harmony/internal/admininfo"
 	"catgoose/harmony/internal/routes/handler"
@@ -14,12 +15,27 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// prefsStore is a simple in-memory store keyed by session UUID.
-// Applications should replace this with their own persistence.
+type prefsEntry struct {
+	prefs   admininfo.UserPreferences
+	touchedAt time.Time
+}
+
+// prefsStore is a simple in-memory store keyed by session UUID with TTL eviction.
 var prefsStore = struct {
 	sync.RWMutex
-	m map[string]admininfo.UserPreferences
-}{m: make(map[string]admininfo.UserPreferences)}
+	m map[string]prefsEntry
+}{m: make(map[string]prefsEntry)}
+
+const prefsTTL = 24 * time.Hour
+
+func evictStalePrefs() {
+	now := time.Now()
+	for k, v := range prefsStore.m {
+		if now.Sub(v.touchedAt) > prefsTTL {
+			delete(prefsStore.m, k)
+		}
+	}
+}
 
 func (ar *appRoutes) initUserSettingsRoutes() {
 	ar.e.GET("/user/settings", ar.handleUserSettings)
@@ -52,7 +68,8 @@ func (ar *appRoutes) handleUserSettingsSave(c echo.Context) error {
 
 	sessionID := session.GetSettings(c.Request()).SessionUUID
 	prefsStore.Lock()
-	prefsStore.m[sessionID] = prefs
+	evictStalePrefs()
+	prefsStore.m[sessionID] = prefsEntry{prefs: prefs, touchedAt: time.Now()}
 	prefsStore.Unlock()
 
 	return handler.RenderComponent(c, views.UserSettingsSaved())
@@ -61,10 +78,10 @@ func (ar *appRoutes) handleUserSettingsSave(c echo.Context) error {
 func getUserPrefs(c echo.Context) admininfo.UserPreferences {
 	sessionID := session.GetSettings(c.Request()).SessionUUID
 	prefsStore.RLock()
-	prefs, ok := prefsStore.m[sessionID]
+	entry, ok := prefsStore.m[sessionID]
 	prefsStore.RUnlock()
-	if !ok {
+	if !ok || time.Since(entry.touchedAt) > prefsTTL {
 		return admininfo.DefaultUserPreferences()
 	}
-	return prefs
+	return entry.prefs
 }

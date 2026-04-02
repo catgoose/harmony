@@ -42,11 +42,7 @@ func (c *UserCache) InsertOrUpdateUsers(ctx context.Context, users []domain.Grap
 	defer func() {
 		if err != nil {
 			if rollbackErr := tx.Rollback(); rollbackErr != nil {
-				if err == nil {
-					err = fmt.Errorf("failed to rollback transaction: %w", rollbackErr)
-				} else {
-					log.Error("Failed to rollback transaction", "rollback_error", rollbackErr, "original_error", err)
-				}
+				log.Error("Failed to rollback transaction", "rollback_error", rollbackErr, "original_error", err)
 			}
 		}
 	}()
@@ -83,11 +79,10 @@ func (c *UserCache) InsertOrUpdateUsers(ctx context.Context, users []domain.Grap
 		rollbackErr := tx.Rollback()
 		if rollbackErr != nil {
 			log.Error("Failed to rollback transaction after commit error", "rollback_error", rollbackErr, "commit_error", err)
-			return fmt.Errorf("failed to rollback transaction: %w", rollbackErr)
 		}
 		return fmt.Errorf("failed to commit transaction: %w", err)
 	}
-	return err
+	return nil
 }
 
 const (
