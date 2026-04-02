@@ -16,10 +16,9 @@ var envFlag = flag.String("env", "development", "application environment (reads 
 var mode string
 
 // Init loads environment variables from the .env.{mode} file. The mode is
-// determined by (in order): the env parameter if non-empty, the ENV
-// environment variable if set, or the -env flag (default "development").
-// Returns an error if the env file is missing; callers may choose to continue
-// with OS environment variables.
+// determined by: the env parameter if non-empty, otherwise the -env flag
+// (default "development"). Returns an error if the env file is missing;
+// callers may choose to continue with OS environment variables.
 func Init(env string) error {
 	if env == "" {
 		env = *envFlag

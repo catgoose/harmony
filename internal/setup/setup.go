@@ -393,7 +393,7 @@ func Run(ctx context.Context, dir string, opts Options) error {
 		filepath.Join("web", "assets", "public", "js", "sw.js"),
 		filepath.Join("web", "assets", "public", "js", "sync.js"),
 		filepath.Join("web", "assets", "public", "js", "broadcast.js"),
-		filepath.Join("internal", "routes", "middleware", "session_settings.go"),
+		filepath.Join("internal", "session", "session.go"),
 	} {
 		p := filepath.Join(dir, f)
 		data, err := os.ReadFile(p)

@@ -14,12 +14,11 @@ Request
   ├─ Correlation ID (promolog.CorrelationMiddleware → X-Request-ID)
   ├─ Request Logger (structured access log)
   ├─ Recover (panic recovery)
-  ├─ Secure (security headers: X-Frame-Options, X-Content-Type-Options, etc.)
-  ├─ Permissions-Policy + COOP headers
+  ├─ Security Headers (porter.SecurityHeaders — X-Frame-Options, HSTS, Permissions-Policy, etc.)
   ├─ Gzip (skipped when behind templ proxy; Caddy handles compression)
   ├─ Session (crooner/SCS — loads session, wraps LoadAndSave)
   ├─ Auth (crooner — OAuth/OIDC flow, login redirect)
-  ├─ CSRF (gorilla/csrf — cookie-based double-submit token)
+  ├─ CSRF (porter.CSRFProtect — HMAC-SHA256 double-submit cookie)
   ├─ Session Settings (loads shared settings row from SQLite → echo context)
   ├─ Link Relations (resolves LinksFor(path) → echo context + Link HTTP header)
   ├─ Vary: HX-Request header
@@ -124,18 +123,18 @@ Session settings provide per-session preferences (theme, layout choice) stored i
 
 ### Storage
 
-- `domain.SessionSettings` struct: UUID, Theme, Layout, CreatedAt, UpdatedAt
-- SQLite repository implementing `SessionSettingsProvider` interface
+- `session.SessionSettings` struct: UUID, Theme, Layout, CreatedAt, UpdatedAt
+- SQLite repository implementing `session.Provider` interface
 - All visitors share a single row (shared UUID) for the demo
 
 ### Middleware
 
-`SessionSettingsMiddleware` (`internal/routes/middleware/session_settings.go`):
+`session.Middleware` (`internal/session/session.go`):
 1. Loads settings by shared UUID via `repo.GetByUUID()`
-2. Falls back to `domain.NewDefaultSettings()` on error or missing row
+2. Falls back to `session.NewDefaultSettings()` on error or missing row
 3. Auto-creates the row if it doesn't exist
 4. Touches the row if last update was > 24 hours ago
-5. Stores settings on the echo context via `c.Set()`
+5. Stores settings on the request context
 
 ### Handlers
 
@@ -149,7 +148,7 @@ Server-Sent Events provide real-time updates without polling.
 
 ### SSEBroker
 
-`internal/ssebroker/ssebroker.go` implements topic-based pub/sub:
+`tavern.NewSSEBroker()` (from `github.com/catgoose/tavern`) implements topic-based pub/sub:
 
 - `NewSSEBroker()` — creates a broker instance
 - `Subscribe(topic)` — returns a read channel and unsubscribe function
@@ -158,8 +157,8 @@ Server-Sent Events provide real-time updates without polling.
 
 ### Wiring
 
-1. `routes.go` creates a single `ssebroker.NewSSEBroker()` instance.
-2. Route initializers receive the broker (e.g., `initPeopleRoutes(db, broker, actLog)`).
+1. `routes.go` creates a single `tavern.NewSSEBroker()` instance.
+2. Route initializers receive the broker.
 3. SSE endpoints use `broker.Subscribe(topic)` and stream events.
 4. Mutation handlers call `broker.Publish(topic, html)` to push OOB swap fragments.
 
@@ -230,8 +229,8 @@ internal/
 │   ├── routes_links.go     Hub/Ring/Link declarations
 │   ├── routes_inventory.go Example: table with CRUD
 │   └── routes_*.go         One file per feature area
+├── session/         Per-session settings middleware and types
 ├── setup/           Feature flag stripping, template setup logic
-├── ssebroker/       Topic-based pub/sub for SSE
 └── version/         Build version info
 
 web/

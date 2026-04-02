@@ -316,8 +316,13 @@ func InitEcho(ctx context.Context, staticFS fs.FS, cfg *config.AppConfig,
 				csrfKey = csrfKey[:32]
 			}
 			csrfMw := porter.CSRFProtect(porter.CSRFConfig{
-				Key: csrfKey, CookiePath: "/", FieldName: "csrf_token", RequestHeader: "X-CSRF-Token",
-				ExemptPaths: cfg.CSRFExemptPaths,
+				Key:              csrfKey,
+				CookiePath:       "/",
+				FieldName:        "csrf_token",
+				RequestHeader:    "X-CSRF-Token",
+				ExemptPaths:      cfg.CSRFExemptPaths,
+				RotatePerRequest: cfg.CSRFRotatePerRequest,
+				PerRequestPaths:  cfg.CSRFPerRequestPaths,
 			})
 			e.Use(echo.WrapMiddleware(csrfMw))
 			// Inject token into echo context for templates

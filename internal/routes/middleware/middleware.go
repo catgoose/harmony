@@ -1,2 +1,2 @@
-// Package middleware provides middleware for applicaiton
+// Package middleware provides middleware for application
 package middleware

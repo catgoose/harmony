@@ -183,7 +183,7 @@ func TestGetLogLevel(t *testing.T) {
 	// Test default levels
 	os.Unsetenv("LOG_LEVEL")
 
-	// This would require mocking dio.Dev() to test properly
+	// This would require mocking env.Dev() to test properly
 	// For now, we'll just test that the function exists and doesn't panic
 	assert.NotPanics(t, func() {
 		// We can't easily test this without mocking, but we can ensure it doesn't panic
