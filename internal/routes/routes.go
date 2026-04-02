@@ -66,7 +66,6 @@ type appRoutes struct {
 	issueReporter IssueReporter
 	startTime     time.Time
 	healthCfg     health.Config
-	pollCount     int64 // atomic; demo counter for SSE polling
 	// setup:feature:session_settings:start
 	settingsRepo SessionSettingsStore
 	// setup:feature:session_settings:end

@@ -188,25 +188,6 @@ templ RealtimePage(initial health.SystemStats, snap MetricsSnapshot, services []
 			hx-trigger="load"
 			hx-swap="innerHTML"
 		></div>
-		<!-- Polling Demo (collapsed) -->
-		<details class="collapse collapse-arrow bg-base-100 shadow border border-base-300 mt-4">
-			<summary class="collapse-title text-sm font-semibold">Polling Demo</summary>
-			<div class="collapse-content">
-				<p class="text-sm text-base-content/70 mb-3"><code class="text-xs bg-base-200 px-1 rounded">hx-trigger="every 2s"</code> issues a GET every 2 seconds.</p>
-				<div class="flex items-center gap-3">
-					<span class="text-sm">Poll count:</span>
-					<span
-						class="font-bold text-2xl tabular-nums"
-						hx-get="/hypermedia/realtime/poll"
-						hx-trigger="every 2s"
-						hx-target="this"
-						hx-swap="outerHTML"
-					>
-						@PollCountFragment(0)
-					</span>
-				</div>
-			</div>
-		</details>
 		<!-- Pattern explanation cards -->
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
 			@realtimePatternCard("SSE Multiplexing", "GET /sse/dashboard (4 topics)", "Single EventSource multiplexes system-stats, metrics, services, and events via hx-swap-oob targeting.")
@@ -454,17 +435,6 @@ templ SystemStatsOOB(s health.SystemStats) {
 	@oobKpiCard("kpi-goroutines", "Goroutines", fmt.Sprintf("%d", s.Goroutines), "text-info")
 }
 
-// PollCountFragment is the polling counter element.
-templ PollCountFragment(n int64) {
-	<span
-		id="poll-counter"
-		class="font-bold text-2xl tabular-nums"
-		hx-get="/hypermedia/realtime/poll"
-		hx-trigger="every 2s"
-		hx-target="this"
-		hx-swap="outerHTML"
-	>{ fmt.Sprintf("%d", n) }</span>
-}
 
 templ statsCard(id, label, value string) {
 	<div id={ id } class="bg-base-200 rounded p-3 text-center">

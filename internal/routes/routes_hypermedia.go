@@ -9,7 +9,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"sync/atomic"
 
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
@@ -381,10 +380,6 @@ func crudItemsToView(items []crudItem) []views.CRUDViewItem {
 		out[i] = it.toView()
 	}
 	return out
-}
-
-func (ar *appRoutes) incrementPollCount() int64 {
-	return atomic.AddInt64(&ar.pollCount, 1)
 }
 
 // ─── Links editor handlers ───────────────────────────────────────────────────

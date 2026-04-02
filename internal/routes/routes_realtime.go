@@ -24,7 +24,6 @@ import (
 
 func (ar *appRoutes) initRealtimeRoutes(broker *tavern.SSEBroker) {
 	ar.e.GET("/hypermedia/realtime", ar.handleRealtimePage())
-	ar.e.GET("/hypermedia/realtime/poll", ar.handleRealtimePoll)
 	ar.e.GET("/hypermedia/realtime/sse-connect", handleSSEConnect)
 	ar.e.GET("/sse/system", handleSSESystem(broker))
 	ar.e.GET("/sse/dashboard", handleSSEDashboard(broker))
@@ -44,11 +43,6 @@ func (ar *appRoutes) handleRealtimePage() echo.HandlerFunc {
 		svcLatencies := initialServiceLatencies()
 		return handler.RenderBaseLayout(c, views.RealtimePage(stats, snap, services, svcLatencies))
 	}
-}
-
-func (ar *appRoutes) handleRealtimePoll(c echo.Context) error {
-	n := ar.incrementPollCount()
-	return handler.RenderComponent(c, views.PollCountFragment(n))
 }
 
 func handleSSEConnect(c echo.Context) error {
