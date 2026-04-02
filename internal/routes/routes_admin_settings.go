@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"catgoose/harmony/internal/routes/handler"
+	"catgoose/harmony/internal/health"
 	"github.com/catgoose/tavern"
 	"catgoose/harmony/internal/version"
 	"catgoose/harmony/web/views"
@@ -28,7 +29,7 @@ func (ar *appRoutes) handleAdminSettings(broker *tavern.SSEBroker) echo.HandlerF
 }
 
 func (ar *appRoutes) handleAdminSettingsSystem(c echo.Context) error {
-	stats := tavern.CollectRuntimeStats(ar.startTime)
+	stats := health.CollectRuntimeStats(ar.startTime)
 	return handler.RenderComponent(c, views.AdminSettingsSystemFragment(stats, formatUptime(time.Since(ar.startTime))))
 }
 
@@ -40,7 +41,7 @@ func (ar *appRoutes) handleAdminSettingsSSE(broker *tavern.SSEBroker) echo.Handl
 }
 
 func (ar *appRoutes) buildAdminPanelData(broker *tavern.SSEBroker, c echo.Context) views.AdminPanelData {
-	stats := tavern.CollectRuntimeStats(ar.startTime)
+	stats := health.CollectRuntimeStats(ar.startTime)
 	counts := broker.TopicCounts()
 
 	// Collect registered routes
