@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	dialect "github.com/catgoose/fraggle"
+	dialect "github.com/catgoose/chuck"
 	dbrepo "catgoose/harmony/internal/database/repository"
 	"catgoose/harmony/internal/domain"
 

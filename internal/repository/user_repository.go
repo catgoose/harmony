@@ -12,7 +12,7 @@ import (
 	"catgoose/harmony/internal/database/schema"
 	"catgoose/harmony/internal/domain"
 
-	"github.com/catgoose/fraggle/dbrepo"
+	"github.com/catgoose/chuck/dbrepo"
 	"github.com/jmoiron/sqlx"
 )
 

@@ -2,9 +2,9 @@ package main
 
 import (
 	"catgoose/harmony/internal/config"
-	dialect "github.com/catgoose/fraggle"
-	_ "github.com/catgoose/fraggle/driver/postgres"
-	_ "github.com/catgoose/fraggle/driver/sqlite"
+	dialect "github.com/catgoose/chuck"
+	_ "github.com/catgoose/chuck/driver/postgres"
+	_ "github.com/catgoose/chuck/driver/sqlite"
 	// setup:feature:session_settings:start
 	"catgoose/harmony/internal/database"
 	// setup:feature:session_settings:end

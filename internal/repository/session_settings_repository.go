@@ -10,7 +10,7 @@ import (
 	dbrepoManager "catgoose/harmony/internal/database/repository"
 	"catgoose/harmony/internal/database/schema"
 
-	"github.com/catgoose/fraggle/dbrepo"
+	"github.com/catgoose/chuck/dbrepo"
 
 	"catgoose/harmony/internal/session"
 )
