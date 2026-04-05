@@ -40,7 +40,6 @@ const PRECACHE_URLS = [
   '/public/js/alpine.min.js?v={{APP_VERSION}}',
   '/public/js/alpine.morph.min.js?v={{APP_VERSION}}',
   '/public/js/htmx.alpine-morph.js?v={{APP_VERSION}}',
-  '/public/js/beacon.js?v={{APP_VERSION}}',
   '/public/js/broadcast.js?v={{APP_VERSION}}',
   '/pwa',
   '/pwa/inspection',
@@ -129,7 +128,7 @@ async function networkFirst(request) {
       cache.put(cacheKey, response.clone());
     }
     return response;
-  } catch (err) {
+  } catch (_err) {
     // Network failed — try cache
     const cached = await caches.match(cacheKey);
     if (cached) {
