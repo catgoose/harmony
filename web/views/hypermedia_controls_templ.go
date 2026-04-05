@@ -38,7 +38,7 @@ func HypermediaControlsPage() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"p-4 space-y-6 max-w-5xl mx-auto\"><div class=\"flex items-center justify-between mb-4\"><h1 class=\"text-2xl font-bold\">Controls Gallery</h1><a href=\"/demo/inventory\" class=\"btn btn-sm btn-primary\">Live Demo</a></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"p-4 space-y-6 max-w-5xl mx-auto\"><div class=\"flex items-center justify-between mb-4\"><h1 class=\"text-2xl font-bold\">Controls Gallery</h1><a href=\"/apps/inventory\" class=\"btn btn-sm btn-primary\">Live Demo</a></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -60,15 +60,15 @@ func HypermediaControlsPage() templ.Component {
 			}
 			templ_7745c5c3_Err = components.Controls([]linkwell.Control{
 				{Kind: linkwell.ControlKindHTMX, Label: "Primary", Variant: linkwell.VariantPrimary,
-					HxRequest: linkwell.HxPost("/hypermedia/controls/echo?v=primary", "#variant-result"), Swap: linkwell.SwapInnerHTML},
+					HxRequest: linkwell.HxPost("/patterns/controls/echo?v=primary", "#variant-result"), Swap: linkwell.SwapInnerHTML},
 				{Kind: linkwell.ControlKindHTMX, Label: "Secondary", Variant: linkwell.VariantSecondary,
-					HxRequest: linkwell.HxPost("/hypermedia/controls/echo?v=secondary", "#variant-result"), Swap: linkwell.SwapInnerHTML},
+					HxRequest: linkwell.HxPost("/patterns/controls/echo?v=secondary", "#variant-result"), Swap: linkwell.SwapInnerHTML},
 				{Kind: linkwell.ControlKindHTMX, Label: "Danger", Variant: linkwell.VariantDanger,
-					HxRequest: linkwell.HxPost("/hypermedia/controls/echo?v=danger", "#variant-result"), Swap: linkwell.SwapInnerHTML},
+					HxRequest: linkwell.HxPost("/patterns/controls/echo?v=danger", "#variant-result"), Swap: linkwell.SwapInnerHTML},
 				{Kind: linkwell.ControlKindHTMX, Label: "Ghost", Variant: linkwell.VariantGhost,
-					HxRequest: linkwell.HxPost("/hypermedia/controls/echo?v=ghost", "#variant-result"), Swap: linkwell.SwapInnerHTML},
+					HxRequest: linkwell.HxPost("/patterns/controls/echo?v=ghost", "#variant-result"), Swap: linkwell.SwapInnerHTML},
 				{Kind: linkwell.ControlKindHTMX, Label: "Link", Variant: linkwell.VariantLink,
-					HxRequest: linkwell.HxPost("/hypermedia/controls/echo?v=link", "#variant-result"), Swap: linkwell.SwapInnerHTML},
+					HxRequest: linkwell.HxPost("/patterns/controls/echo?v=link", "#variant-result"), Swap: linkwell.SwapInnerHTML},
 			}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -100,8 +100,8 @@ func HypermediaControlsPage() templ.Component {
 				return templ_7745c5c3_Err
 			}
 			templ_7745c5c3_Err = components.Controls([]linkwell.Control{
-				linkwell.RetryButton("Retry", linkwell.HxMethodGet, "/hypermedia/controls/retry", "#kind-result"),
-				linkwell.HTMXAction("HTMX Action", linkwell.HxPost("/hypermedia/controls/action", "#kind-result")),
+				linkwell.RetryButton("Retry", linkwell.HxMethodGet, "/patterns/controls/retry", "#kind-result"),
+				linkwell.HTMXAction("HTMX Action", linkwell.HxPost("/patterns/controls/action", "#kind-result")),
 				linkwell.BackButton("Go Back"),
 				linkwell.RedirectLink("Link", "/"),
 			}).Render(ctx, templ_7745c5c3_Buffer)
@@ -116,7 +116,7 @@ func HypermediaControlsPage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div><button id=\"dismiss-reset-btn\" class=\"btn btn-sm btn-outline hidden\" hx-get=\"/hypermedia/controls/dismiss-reset\" hx-target=\"#dismiss-demo\" hx-swap=\"innerHTML\">Reset Dismiss Demo</button></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div><button id=\"dismiss-reset-btn\" class=\"btn btn-sm btn-outline hidden\" hx-get=\"/patterns/controls/dismiss-reset\" hx-target=\"#dismiss-demo\" hx-swap=\"innerHTML\">Reset Dismiss Demo</button></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -299,7 +299,7 @@ func HypermediaControlsPage() templ.Component {
 				return templ_7745c5c3_Err
 			}
 			templ_7745c5c3_Err = components.ErrorControls(linkwell.InternalErrorControls(linkwell.ErrorControlOpts{
-				RetryURL:    "/hypermedia/controls/retry",
+				RetryURL:    "/patterns/controls/retry",
 				RetryTarget: "#error-retry-demo",
 			})).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
@@ -335,22 +335,22 @@ func HypermediaControlsPage() templ.Component {
 				{
 					Label: "Tables",
 					Children: []linkwell.NavItem{
-						{Label: "Inventory", Href: "/demo/inventory"},
-						{Label: "Catalog", Href: "/demo/catalog"},
-						{Label: "Bulk", Href: "/demo/bulk"},
+						{Label: "Inventory", Href: "/apps/inventory"},
+						{Label: "Catalog", Href: "/apps/catalog"},
+						{Label: "Bulk", Href: "/apps/bulk"},
 					},
 				},
 				{
 					Label: "Hypermedia Controls",
 					Children: []linkwell.NavItem{
-						{Label: "Controls", Href: "/hypermedia/controls"},
+						{Label: "Controls", Href: "/patterns/controls"},
 					},
 				},
-			}, "/hypermedia/controls")).Render(ctx, templ_7745c5c3_Buffer)
+			}, "/patterns/controls")).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.Breadcrumbs(linkwell.BreadcrumbsFromPath("/demo/inventory", map[int]string{0: "Tables", 1: "Inventory"})).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = components.Breadcrumbs(linkwell.BreadcrumbsFromPath("/apps/inventory", map[int]string{0: "Tables", 1: "Inventory"})).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -380,7 +380,7 @@ func HypermediaControlsPage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.FilterBar(linkwell.NewFilterBar("/hypermedia/controls/filter", "#filter-results",
+			templ_7745c5c3_Err = components.FilterBar(linkwell.NewFilterBar("/patterns/controls/filter", "#filter-results",
 				linkwell.SearchField("q", "Search\u2026", ""),
 				linkwell.SelectField("cat", "Category", "",
 					linkwell.SelectOptions("",
@@ -396,7 +396,7 @@ func HypermediaControlsPage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, " <div id=\"filter-results\" hx-get=\"/hypermedia/controls/filter\" hx-trigger=\"load\" class=\"mt-4 text-sm text-base-content/50\"><span class=\"loading loading-spinner loading-xs\"></span> Loading…</div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, " <div id=\"filter-results\" hx-get=\"/patterns/controls/filter\" hx-trigger=\"load\" class=\"mt-4 text-sm text-base-content/50\"><span class=\"loading loading-spinner loading-xs\"></span> Loading…</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -418,7 +418,7 @@ func HypermediaControlsPage() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<div role=\"alert\" class=\"alert alert-info\"><span>The live demo shows FilterBar + Table + PaginationBar with a real SQLite backend.</span> <a href=\"/demo/inventory\" class=\"btn btn-sm btn-primary\">Open Inventory</a></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<div role=\"alert\" class=\"alert alert-info\"><span>The live demo shows FilterBar + Table + PaginationBar with a real SQLite backend.</span> <a href=\"/apps/inventory\" class=\"btn btn-sm btn-primary\">Open Inventory</a></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -500,7 +500,7 @@ func HypermediaControlsPage() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "<p class=\"text-sm text-base-content/70 mb-3\">Each scenario returns an error panel with <strong>embedded recovery controls</strong> — the server tells the client exactly how to fix each problem. This is the power of HATEOAS: the API response <em>itself</em> contains the next possible actions.</p><div class=\"space-y-4\"><div class=\"card bg-base-200\"><div class=\"card-body p-4\"><h3 class=\"font-semibold text-sm\">A. Transient Failure (500)</h3><p class=\"text-xs text-base-content/60 mb-2\">Odd attempts fail, even attempts succeed. Click Retry inside the error panel to try again.</p><button class=\"btn btn-sm btn-error\" hx-post=\"/hypermedia/controls/errors/transient\" hx-target=\"#transient-result\" hx-swap=\"innerHTML\">Save Record</button><div id=\"transient-result\" class=\"mt-2\"></div></div></div><div class=\"card bg-base-200\"><div class=\"card-body p-4\"><h3 class=\"font-semibold text-sm\">B. Validation Error (422)</h3><p class=\"text-xs text-base-content/60 mb-2\">Bad data triggers 422. The error panel includes a pre-filled <em>fix form</em> so you can correct values and resubmit without leaving the page.</p><form hx-post=\"/hypermedia/controls/errors/validate\" hx-target=\"#validate-result\" hx-swap=\"innerHTML\" class=\"flex items-end gap-2\"><div class=\"fieldset\"><label class=\"label label-text text-xs\">Name</label> <input name=\"name\" class=\"input input-sm w-28\" value=\"ab\"></div><div class=\"fieldset\"><label class=\"label label-text text-xs\">Price</label> <input name=\"price\" type=\"number\" step=\"0.01\" class=\"input input-sm w-24\" value=\"-5\"></div><button type=\"submit\" class=\"btn btn-sm btn-error\">Submit</button></form><div id=\"validate-result\" class=\"mt-2\"></div></div></div><div class=\"card bg-base-200\"><div class=\"card-body p-4\"><h3 class=\"font-semibold text-sm\">C. Conflict (409)</h3><p class=\"text-xs text-base-content/60 mb-2\">Name already exists. The error panel offers two paths: <strong>Update Existing</strong> or <strong>Create as Copy</strong>.</p><button class=\"btn btn-sm btn-error\" hx-post=\"/hypermedia/controls/errors/conflict\" hx-target=\"#conflict-result\" hx-swap=\"innerHTML\">Create \"Widget\"</button><div id=\"conflict-result\" class=\"mt-2\"></div></div></div><div class=\"card bg-base-200\"><div class=\"card-body p-4\"><h3 class=\"font-semibold text-sm\">D. Stale Data (412)</h3><p class=\"text-xs text-base-content/60 mb-2\">Version mismatch — someone else edited the record. The error panel lets you <strong>Refresh</strong> (get latest) or <strong>Force Save</strong> (overwrite).</p><form hx-post=\"/hypermedia/controls/errors/stale\" hx-target=\"#stale-result\" hx-swap=\"innerHTML\" class=\"flex items-end gap-2\"><div class=\"fieldset\"><label class=\"label label-text text-xs\">Name</label> <input name=\"name\" class=\"input input-sm w-40\" value=\"My Widget\"></div><input type=\"hidden\" name=\"version\" value=\"0\"> <button type=\"submit\" class=\"btn btn-sm btn-error\">Save (v0)</button></form><div id=\"stale-result\" class=\"mt-2\"></div></div></div><div class=\"card bg-base-200\"><div class=\"card-body p-4\"><h3 class=\"font-semibold text-sm\">E. Dependency Block (409)</h3><p class=\"text-xs text-base-content/60 mb-2\">Can't delete a category with items. The error panel lists dependent items and offers <strong>Reassign &amp; Delete</strong> or <strong>Force Delete</strong>.</p><button class=\"btn btn-sm btn-error\" hx-delete=\"/hypermedia/controls/errors/cascade\" hx-target=\"#cascade-result\" hx-swap=\"innerHTML\">Delete \"Electronics\"</button><div id=\"cascade-result\" class=\"mt-2\"></div></div></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "<p class=\"text-sm text-base-content/70 mb-3\">Each scenario returns an error panel with <strong>embedded recovery controls</strong> — the server tells the client exactly how to fix each problem. This is the power of HATEOAS: the API response <em>itself</em> contains the next possible actions.</p><div class=\"space-y-4\"><div class=\"card bg-base-200\"><div class=\"card-body p-4\"><h3 class=\"font-semibold text-sm\">A. Transient Failure (500)</h3><p class=\"text-xs text-base-content/60 mb-2\">Odd attempts fail, even attempts succeed. Click Retry inside the error panel to try again.</p><button class=\"btn btn-sm btn-error\" hx-post=\"/patterns/controls/errors/transient\" hx-target=\"#transient-result\" hx-swap=\"innerHTML\">Save Record</button><div id=\"transient-result\" class=\"mt-2\"></div></div></div><div class=\"card bg-base-200\"><div class=\"card-body p-4\"><h3 class=\"font-semibold text-sm\">B. Validation Error (422)</h3><p class=\"text-xs text-base-content/60 mb-2\">Bad data triggers 422. The error panel includes a pre-filled <em>fix form</em> so you can correct values and resubmit without leaving the page.</p><form hx-post=\"/patterns/controls/errors/validate\" hx-target=\"#validate-result\" hx-swap=\"innerHTML\" class=\"flex items-end gap-2\"><div class=\"fieldset\"><label class=\"label label-text text-xs\">Name</label> <input name=\"name\" class=\"input input-sm w-28\" value=\"ab\"></div><div class=\"fieldset\"><label class=\"label label-text text-xs\">Price</label> <input name=\"price\" type=\"number\" step=\"0.01\" class=\"input input-sm w-24\" value=\"-5\"></div><button type=\"submit\" class=\"btn btn-sm btn-error\">Submit</button></form><div id=\"validate-result\" class=\"mt-2\"></div></div></div><div class=\"card bg-base-200\"><div class=\"card-body p-4\"><h3 class=\"font-semibold text-sm\">C. Conflict (409)</h3><p class=\"text-xs text-base-content/60 mb-2\">Name already exists. The error panel offers two paths: <strong>Update Existing</strong> or <strong>Create as Copy</strong>.</p><button class=\"btn btn-sm btn-error\" hx-post=\"/patterns/controls/errors/conflict\" hx-target=\"#conflict-result\" hx-swap=\"innerHTML\">Create \"Widget\"</button><div id=\"conflict-result\" class=\"mt-2\"></div></div></div><div class=\"card bg-base-200\"><div class=\"card-body p-4\"><h3 class=\"font-semibold text-sm\">D. Stale Data (412)</h3><p class=\"text-xs text-base-content/60 mb-2\">Version mismatch — someone else edited the record. The error panel lets you <strong>Refresh</strong> (get latest) or <strong>Force Save</strong> (overwrite).</p><form hx-post=\"/patterns/controls/errors/stale\" hx-target=\"#stale-result\" hx-swap=\"innerHTML\" class=\"flex items-end gap-2\"><div class=\"fieldset\"><label class=\"label label-text text-xs\">Name</label> <input name=\"name\" class=\"input input-sm w-40\" value=\"My Widget\"></div><input type=\"hidden\" name=\"version\" value=\"0\"> <button type=\"submit\" class=\"btn btn-sm btn-error\">Save (v0)</button></form><div id=\"stale-result\" class=\"mt-2\"></div></div></div><div class=\"card bg-base-200\"><div class=\"card-body p-4\"><h3 class=\"font-semibold text-sm\">E. Dependency Block (409)</h3><p class=\"text-xs text-base-content/60 mb-2\">Can't delete a category with items. The error panel lists dependent items and offers <strong>Reassign &amp; Delete</strong> or <strong>Force Delete</strong>.</p><button class=\"btn btn-sm btn-error\" hx-delete=\"/patterns/controls/errors/cascade\" hx-target=\"#cascade-result\" hx-swap=\"innerHTML\">Delete \"Electronics\"</button><div id=\"cascade-result\" class=\"mt-2\"></div></div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -522,7 +522,7 @@ func HypermediaControlsPage() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "<div class=\"space-y-4\"><p class=\"text-sm text-base-content/70\">Links carry a <code class=\"text-xs bg-base-200 px-1 rounded\">?from=N</code> bitmask that tells the destination page where the user came from. The server resolves the mask to a breadcrumb trail, derives intermediate crumbs from the URL path, and renders the bar between the navbar and content. No client state needed.</p><div class=\"overflow-x-auto\"><table class=\"table table-sm\"><thead><tr><th>Bit</th><th>Value</th><th>Label</th><th>Href</th></tr></thead> <tbody><tr><td>0</td><td>1</td><td>Home</td><td>/</td></tr><tr><td>1</td><td>2</td><td>Dashboard</td><td>/dashboard</td></tr></tbody></table></div><p class=\"text-sm text-base-content/70\"><code class=\"text-xs bg-base-200 px-1 rounded\">from=3</code> = bits 0+1 = <strong>Home + Dashboard</strong>. The destination page appends path-derived crumbs automatically. Click to see real breadcrumbs:</p><div class=\"flex flex-wrap gap-2\"><a href=\"/demo/inventory?from=1\" class=\"btn btn-sm btn-outline\">Inventory (from=1: Home only)</a> <a href=\"/demo/inventory?from=3\" class=\"btn btn-sm btn-outline\">Inventory (from=3: Home + Dashboard)</a> <a href=\"/demo/people?from=3\" class=\"btn btn-sm btn-outline\">People (from=3: Home + Dashboard)</a></div><p class=\"text-sm text-base-content/70\">Use <code class=\"text-xs bg-base-200 px-1 rounded\">FromNav(href, from)</code> to forward the param on outbound links. Use <code class=\"text-xs bg-base-200 px-1 rounded\">SetPageLabel(c, name)</code> to replace the terminal crumb's auto-generated label with a human name (e.g., a person's name instead of their ID).</p></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "<div class=\"space-y-4\"><p class=\"text-sm text-base-content/70\">Links carry a <code class=\"text-xs bg-base-200 px-1 rounded\">?from=N</code> bitmask that tells the destination page where the user came from. The server resolves the mask to a breadcrumb trail, derives intermediate crumbs from the URL path, and renders the bar between the navbar and content. No client state needed.</p><div class=\"overflow-x-auto\"><table class=\"table table-sm\"><thead><tr><th>Bit</th><th>Value</th><th>Label</th><th>Href</th></tr></thead> <tbody><tr><td>0</td><td>1</td><td>Home</td><td>/</td></tr><tr><td>1</td><td>2</td><td>Dashboard</td><td>/dashboard</td></tr></tbody></table></div><p class=\"text-sm text-base-content/70\"><code class=\"text-xs bg-base-200 px-1 rounded\">from=3</code> = bits 0+1 = <strong>Home + Dashboard</strong>. The destination page appends path-derived crumbs automatically. Click to see real breadcrumbs:</p><div class=\"flex flex-wrap gap-2\"><a href=\"/apps/inventory?from=1\" class=\"btn btn-sm btn-outline\">Inventory (from=1: Home only)</a> <a href=\"/apps/inventory?from=3\" class=\"btn btn-sm btn-outline\">Inventory (from=3: Home + Dashboard)</a> <a href=\"/apps/people?from=3\" class=\"btn btn-sm btn-outline\">People (from=3: Home + Dashboard)</a></div><p class=\"text-sm text-base-content/70\">Use <code class=\"text-xs bg-base-200 px-1 rounded\">FromNav(href, from)</code> to forward the param on outbound links. Use <code class=\"text-xs bg-base-200 px-1 rounded\">SetPageLabel(c, name)</code> to replace the terminal crumb's auto-generated label with a human name (e.g., a person's name instead of their ID).</p></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

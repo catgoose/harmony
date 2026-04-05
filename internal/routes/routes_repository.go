@@ -17,7 +17,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-const repoBase = "/demo/repository"
+const repoBase = "/platform/repository"
 
 type repositoryRoutes struct {
 	store *demo.TaskStore

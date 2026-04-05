@@ -16,9 +16,9 @@ type settingsRoutes struct {
 
 func (ar *appRoutes) initSettingsRoutes(store *demo.SettingsStore) {
 	s := &settingsRoutes{store: store}
-	ar.e.GET("/demo/settings", s.handleSettingsPage)
-	ar.e.GET("/demo/settings/:id", s.handleSettingsSection)
-	ar.e.PUT("/demo/settings/:id", s.handleSettingsSave)
+	ar.e.GET("/platform/settings", s.handleSettingsPage)
+	ar.e.GET("/platform/settings/:id", s.handleSettingsSection)
+	ar.e.PUT("/platform/settings/:id", s.handleSettingsSave)
 }
 
 func (s *settingsRoutes) handleSettingsPage(c echo.Context) error {

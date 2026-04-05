@@ -19,13 +19,10 @@ type Components2PageData struct {
 	SelectedTheme string
 }
 
-// Components2Page is the full-page layout for /hypermedia/components2.
+// Components2Page is the full-page layout for /components/cards.
 templ Components2Page(data Components2PageData) {
 	<div class="p-4 space-y-6 max-w-4xl mx-auto">
-		<div class="flex items-center justify-between mb-4">
-			<h1 class="text-2xl font-bold">Component Patterns 2</h1>
-			<a href="/hypermedia/components" class="btn btn-sm btn-ghost">← Components 1</a>
-		</div>
+		<h1 class="text-2xl font-bold mb-4">Component Patterns 2</h1>
 		<div role="alert" class="alert alert-info text-sm">
 			<span>Demonstrates: <strong>carousel</strong>, <strong>dropdown/typeahead</strong>, <strong>cascading select</strong>, <strong>range slider</strong>, <strong>file upload</strong>, <strong>accordion</strong>, <strong>indicator</strong>, <strong>theme controller</strong>.</span>
 		</div>
@@ -56,7 +53,7 @@ templ Components2Page(data Components2PageData) {
 					placeholder="Search languages…"
 					class="input input-sm w-full max-w-xs"
 					autocomplete="off"
-					hx-get="/hypermedia/components2/dropdown/search"
+					hx-get="/components/cards/dropdown/search"
 					hx-trigger="keyup changed delay:300ms, load"
 					hx-target="#dropdown-results"
 				/>
@@ -74,11 +71,11 @@ templ Components2Page(data Components2PageData) {
 						<select
 							id="country-select"
 							class="select select-sm"
-							hx-get="/hypermedia/components2/cascading/placeholder"
+							hx-get="/components/cards/cascading/placeholder"
 							hx-target="#sub-select"
 							hx-swap="innerHTML"
 							hx-trigger="change"
-							_="on htmx:configRequest(detail) set detail.path to '/hypermedia/components2/cascading/' + my value"
+							_="on htmx:configRequest(detail) set detail.path to '/components/cards/cascading/' + my value"
 						>
 							<option disabled selected>Pick a country</option>
 							for _, cat := range sortedCategories(data.Categories) {
@@ -108,7 +105,7 @@ templ Components2Page(data Components2PageData) {
 						max="100"
 						value={ fmt.Sprintf("%d", data.RangeValue) }
 						class="range range-primary range-sm flex-1"
-						hx-post="/hypermedia/components2/range"
+						hx-post="/components/cards/range"
 						hx-trigger="input changed delay:300ms"
 						hx-target="#range-result"
 					/>
@@ -122,7 +119,7 @@ templ Components2Page(data Components2PageData) {
 				<h2 class="card-title text-base">File Input — Multipart Upload</h2>
 				<p class="text-sm text-base-content/70 mb-3">Uses <code class="text-xs bg-base-200 px-1 rounded">hx-encoding="multipart/form-data"</code> to upload a file. Server parses metadata only (no storage).</p>
 				<form
-					hx-post="/hypermedia/components2/upload"
+					hx-post="/components/cards/upload"
 					hx-encoding="multipart/form-data"
 					hx-target="#upload-result"
 					class="flex gap-3 items-end flex-wrap"
@@ -144,7 +141,7 @@ templ Components2Page(data Components2PageData) {
 							<input type="radio" name="accordion-panels"/>
 							<div
 								class="collapse-title font-medium text-sm"
-								hx-get={ fmt.Sprintf("/hypermedia/components2/accordion/%d", panel.ID) }
+								hx-get={ fmt.Sprintf("/components/cards/accordion/%d", panel.ID) }
 								hx-trigger="click once"
 								hx-target={ fmt.Sprintf("#accordion-body-%d", panel.ID) }
 							>
@@ -172,7 +169,7 @@ templ Components2Page(data Components2PageData) {
 					</div>
 					<button
 						class="btn btn-sm btn-ghost"
-						hx-post="/hypermedia/components2/indicator/reset"
+						hx-post="/components/cards/indicator/reset"
 						hx-target="#indicator-badge"
 						hx-swap="outerHTML"
 					>Mark all read</button>
@@ -193,7 +190,7 @@ templ Components2Page(data Components2PageData) {
 							aria-label={ theme }
 							value={ theme }
 							checked?={ theme == data.SelectedTheme }
-							hx-post="/hypermedia/components2/theme"
+							hx-post="/components/cards/theme"
 							hx-vals={ fmt.Sprintf(`{"theme":"%s"}`, theme) }
 							hx-target="#theme-result"
 						/>

@@ -10,7 +10,7 @@ import (
 	components "catgoose/harmony/web/components/core"
 )
 
-// CatalogPage is the full page content for /demo/catalog.
+// CatalogPage is the full page content for /apps/catalog.
 // The FilterBar lives outside the table container so it is never replaced by HTMX swaps.
 templ CatalogPage(bar linkwell.FilterBar, tableContainer templ.Component) {
 	<div class="p-4 space-y-4">
@@ -43,10 +43,10 @@ templ CatalogItemsBody(items []demo.Item) {
 // CatalogItemRow renders a single read-only row with a Details expand button.
 templ CatalogItemRow(item demo.Item) {
 	{{ rowID := fmt.Sprintf("item-row-%d", item.ID) }}
-	{{ detailURL := fmt.Sprintf("/demo/catalog/items/%d/details", item.ID) }}
+	{{ detailURL := fmt.Sprintf("/apps/catalog/items/%d/details", item.ID) }}
 	{{ detailRowTarget := fmt.Sprintf("#detail-row-%d", item.ID) }}
 	<tr id={ rowID }>
-		<td><a href={ templ.URL(fmt.Sprintf("/demo/catalog/items/%d", item.ID)) } class="link link-hover">{ item.Name }</a></td>
+		<td><a href={ templ.URL(fmt.Sprintf("/apps/catalog/items/%d", item.ID)) } class="link link-hover">{ item.Name }</a></td>
 		<td>{ item.Category }</td>
 		<td>{ fmt.Sprintf("$%.2f", item.Price) }</td>
 		<td>{ strconv.Itoa(item.Stock) }</td>

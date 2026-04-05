@@ -19,7 +19,7 @@ import (
 	"github.com/catgoose/linkwell"
 )
 
-// RepositoryPage is the full page for /demo/repository.
+// RepositoryPage is the full page for /platform/repository.
 func RepositoryPage(bar linkwell.FilterBar, tableContainer templ.Component) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -51,7 +51,7 @@ func RepositoryPage(bar linkwell.FilterBar, tableContainer templ.Component) temp
 				Label:     "+ New Task",
 				Variant:   linkwell.VariantPrimary,
 				Swap:      linkwell.SwapOuterHTML,
-				HxRequest: linkwell.HxGet("/demo/repository/tasks/new", "#new-task-row"),
+				HxRequest: linkwell.HxGet("/platform/repository/tasks/new", "#new-task-row"),
 			},
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
@@ -178,9 +178,9 @@ func RepositoryTaskRow(task demo.Task) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		rowID := fmt.Sprintf("task-row-%d", task.ID)
-		editURL := fmt.Sprintf("/demo/repository/tasks/%d/edit", task.ID)
-		deleteURL := fmt.Sprintf("/demo/repository/tasks/%d", task.ID)
-		patchURL := fmt.Sprintf("/demo/repository/tasks/%d", task.ID)
+		editURL := fmt.Sprintf("/platform/repository/tasks/%d/edit", task.ID)
+		deleteURL := fmt.Sprintf("/platform/repository/tasks/%d", task.ID)
+		patchURL := fmt.Sprintf("/platform/repository/tasks/%d", task.ID)
 		rowTarget := "#" + rowID
 		_ = rowTarget
 		var templ_7745c5c3_Var5 = []any{templ.KV("opacity-50", task.DeletedAt.Valid || task.ArchivedAt.Valid)}

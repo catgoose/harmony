@@ -15,13 +15,10 @@ type ComponentsPageData struct {
 	Rating       int
 }
 
-// ComponentsPage is the full-page layout for /hypermedia/components.
+// ComponentsPage is the full-page layout for /components/widgets.
 templ ComponentsPage(data ComponentsPageData) {
 	<div class="p-4 space-y-6 max-w-4xl mx-auto">
-		<div class="flex items-center justify-between mb-4">
-			<h1 class="text-2xl font-bold">Component Patterns</h1>
-			<a href="/hypermedia/controls" class="btn btn-sm btn-ghost">← Overview</a>
-		</div>
+		<h1 class="text-2xl font-bold mb-4">Component Patterns</h1>
 		<div role="alert" class="alert alert-info text-sm">
 			<span>Demonstrates: <strong>steps</strong>, <strong>tabs</strong>, <strong>toast</strong>, <strong>chat</strong>, <strong>swap</strong>, <strong>skeleton</strong>, <strong>timeline</strong>, <strong>drawer</strong>, <strong>rating</strong>.</span>
 		</div>
@@ -42,28 +39,28 @@ templ ComponentsPage(data ComponentsPageData) {
 					<button
 						role="tab"
 						class="tab tab-active"
-						hx-get="/hypermedia/components/tabs/overview"
+						hx-get="/components/widgets/tabs/overview"
 						hx-target="#tab-panel"
 						_="on click remove .tab-active from .tab in closest <div[role='tablist']/> then add .tab-active to me"
 					>Overview</button>
 					<button
 						role="tab"
 						class="tab"
-						hx-get="/hypermedia/components/tabs/details"
+						hx-get="/components/widgets/tabs/details"
 						hx-target="#tab-panel"
 						_="on click remove .tab-active from .tab in closest <div[role='tablist']/> then add .tab-active to me"
 					>Details</button>
 					<button
 						role="tab"
 						class="tab"
-						hx-get="/hypermedia/components/tabs/settings"
+						hx-get="/components/widgets/tabs/settings"
 						hx-target="#tab-panel"
 						_="on click remove .tab-active from .tab in closest <div[role='tablist']/> then add .tab-active to me"
 					>Settings</button>
 				</div>
 				<div
 					id="tab-panel"
-					hx-get="/hypermedia/components/tabs/overview"
+					hx-get="/components/widgets/tabs/overview"
 					hx-trigger="load"
 					hx-swap="innerHTML"
 				>
@@ -82,7 +79,7 @@ templ ComponentsPage(data ComponentsPageData) {
 				<div>
 					<button
 						class="btn btn-sm btn-primary"
-						hx-post="/hypermedia/components/toast"
+						hx-post="/components/widgets/toast"
 						hx-target="#toast-result"
 						hx-swap="outerHTML"
 					>Trigger Toast</button>
@@ -101,7 +98,7 @@ templ ComponentsPage(data ComponentsPageData) {
 					}
 				</div>
 				<form
-					hx-post="/hypermedia/components/chat"
+					hx-post="/components/widgets/chat"
 					hx-target="#chat-window"
 					hx-swap="beforeend scroll:#chat-window:bottom"
 					hx-on::after-request="this.reset()"
@@ -131,7 +128,7 @@ templ ComponentsPage(data ComponentsPageData) {
 				<div>
 					<button
 						class="btn btn-sm btn-primary mb-3"
-						hx-get="/hypermedia/components/skeleton/content"
+						hx-get="/components/widgets/skeleton/content"
 						hx-target="#skeleton-target"
 						hx-swap="outerHTML"
 						hx-indicator="#skeleton-indicator"
@@ -181,7 +178,7 @@ templ ComponentsPage(data ComponentsPageData) {
 						if data.TimelineMore {
 							<li
 								id="timeline-sentinel"
-								hx-get={ fmt.Sprintf("/hypermedia/components/timeline?after=%d", data.TimelineNext) }
+								hx-get={ fmt.Sprintf("/components/widgets/timeline?after=%d", data.TimelineNext) }
 								hx-trigger="intersect once"
 								hx-target="#timeline-sentinel"
 								hx-swap="outerHTML"
@@ -209,7 +206,7 @@ templ ComponentsPage(data ComponentsPageData) {
 					<div class="drawer-content">
 						<button
 							class="btn btn-sm btn-primary"
-							hx-get="/hypermedia/components/drawer/content"
+							hx-get="/components/widgets/drawer/content"
 							hx-target="#drawer-body"
 							_="on click set #components-drawer.checked to true"
 						>Open Drawer</button>

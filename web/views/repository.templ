@@ -10,7 +10,7 @@ import (
 	components "catgoose/harmony/web/components/core"
 )
 
-// RepositoryPage is the full page for /demo/repository.
+// RepositoryPage is the full page for /platform/repository.
 templ RepositoryPage(bar linkwell.FilterBar, tableContainer templ.Component) {
 	<div class="p-4 space-y-4">
 		<div class="flex items-center justify-between">
@@ -27,7 +27,7 @@ templ RepositoryPage(bar linkwell.FilterBar, tableContainer templ.Component) {
 						Label:   "+ New Task",
 						Variant: linkwell.VariantPrimary,
 						Swap:    linkwell.SwapOuterHTML,
-						HxRequest: linkwell.HxGet("/demo/repository/tasks/new", "#new-task-row"),
+						HxRequest: linkwell.HxGet("/platform/repository/tasks/new", "#new-task-row"),
 					},
 				})
 			</div>
@@ -75,9 +75,9 @@ templ RepositoryTasksBody(tasks []demo.Task) {
 // RepositoryTaskRow renders a single display row for a task.
 templ RepositoryTaskRow(task demo.Task) {
 	{{ rowID := fmt.Sprintf("task-row-%d", task.ID) }}
-	{{ editURL := fmt.Sprintf("/demo/repository/tasks/%d/edit", task.ID) }}
-	{{ deleteURL := fmt.Sprintf("/demo/repository/tasks/%d", task.ID) }}
-	{{ patchURL := fmt.Sprintf("/demo/repository/tasks/%d", task.ID) }}
+	{{ editURL := fmt.Sprintf("/platform/repository/tasks/%d/edit", task.ID) }}
+	{{ deleteURL := fmt.Sprintf("/platform/repository/tasks/%d", task.ID) }}
+	{{ patchURL := fmt.Sprintf("/platform/repository/tasks/%d", task.ID) }}
 	{{ rowTarget := "#" + rowID }}
 	{{ _ = rowTarget }}
 	<tr id={ rowID } class={ templ.KV("opacity-50", task.DeletedAt.Valid || task.ArchivedAt.Valid) }>

@@ -3,13 +3,10 @@ package views
 
 import "fmt"
 
-// StatePage is the full-page layout for /hypermedia/state.
+// StatePage is the full-page layout for /patterns/state.
 templ StatePage(likeCount int, toggleOn bool) {
 	<div class="p-4 space-y-6 max-w-4xl mx-auto">
-		<div class="flex items-center justify-between mb-4">
-			<h1 class="text-2xl font-bold">State Patterns</h1>
-			<a href="/hypermedia/controls" class="btn btn-sm btn-ghost">← Overview</a>
-		</div>
+		<h1 class="text-2xl font-bold mb-4">State Patterns</h1>
 		<div role="alert" class="alert alert-info text-sm">
 			<span>Demonstrates: <strong>like</strong>, <strong>toggle</strong>, <strong>load</strong>, <strong>reveal</strong>, <strong>show/hide</strong>.</span>
 		</div>
@@ -49,7 +46,7 @@ templ StatePage(likeCount int, toggleOn bool) {
 				<h2 class="card-title text-base">Auto-Load</h2>
 				<p class="text-sm text-base-content/70 mb-3"><code class="text-xs bg-base-200 px-1 rounded">hx-trigger="load"</code> fires immediately after the element is added to the DOM.</p>
 				<div
-					hx-get="/hypermedia/state/panel"
+					hx-get="/patterns/state/panel"
 					hx-trigger="load"
 					hx-swap="outerHTML"
 					class="flex items-center gap-2 text-sm text-base-content/50"
@@ -65,7 +62,7 @@ templ StatePage(likeCount int, toggleOn bool) {
 				<h2 class="card-title text-base">Lazy Reveal (intersect)</h2>
 				<p class="text-sm text-base-content/70 mb-3"><code class="text-xs bg-base-200 px-1 rounded">hx-trigger="intersect once"</code> fires when the element enters the viewport.</p>
 				<div
-					hx-get="/hypermedia/state/panel"
+					hx-get="/patterns/state/panel"
 					hx-trigger="intersect once"
 					hx-swap="outerHTML"
 					class="flex items-center gap-2 text-sm text-base-content/50"
@@ -90,7 +87,7 @@ templ LikeButtonFragment(count int) {
 	<div id="like-btn" class="flex items-center gap-3">
 		<button
 			class="btn btn-sm btn-primary"
-			hx-post="/hypermedia/state/like"
+			hx-post="/patterns/state/like"
 			hx-target="#like-btn"
 			hx-swap="outerHTML"
 		>♥ Like</button>
@@ -110,7 +107,7 @@ templ ToggleFragment(on bool) {
 	<div id="state-toggle" class="flex items-center gap-3">
 		<button
 			class="btn btn-sm btn-secondary"
-			hx-post="/hypermedia/state/toggle"
+			hx-post="/patterns/state/toggle"
 			hx-target="#state-toggle"
 			hx-swap="outerHTML"
 		>

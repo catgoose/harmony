@@ -14,6 +14,7 @@ import (
 	"strconv"
 	"time"
 
+	appenv "catgoose/harmony/internal/env"
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
 	"github.com/catgoose/tavern"
@@ -32,10 +33,10 @@ type canvasRoutes struct {
 
 func (ar *appRoutes) initCanvasRoutes(canvas *demo.PixelCanvas, broker *tavern.SSEBroker) {
 	cr := &canvasRoutes{canvas: canvas, broker: broker, ctx: ar.ctx}
-	ar.e.GET("/demo/canvas", cr.handleCanvasPage)
-	ar.e.GET("/demo/canvas/state", cr.handleCanvasState)
-	ar.e.POST("/demo/canvas/place", cr.handlePlace)
-	ar.e.POST("/demo/canvas/reset", cr.handleReset)
+	ar.e.GET("/realtime/canvas", cr.handleCanvasPage)
+	ar.e.GET("/realtime/canvas/state", cr.handleCanvasState)
+	ar.e.POST("/realtime/canvas/place", cr.handlePlace)
+	ar.e.POST("/realtime/canvas/reset", cr.handleReset)
 	ar.e.GET("/sse/canvas", cr.handleCanvasSSE)
 
 	go cr.runTicker()
@@ -124,7 +125,7 @@ func (cr *canvasRoutes) handleCanvasSSE(c echo.Context) error {
 			if !ok {
 				return nil
 			}
-			fmt.Fprint(c.Response(), msg)
+			_, _ = fmt.Fprint(c.Response(), msg)
 			flusher.Flush()
 		}
 	}
@@ -185,6 +186,7 @@ func getOrCreateClientID(c echo.Context) string {
 		Path:     "/",
 		MaxAge:   86400 * 30,
 		HttpOnly: true,
+		Secure:   !appenv.Dev(),
 		SameSite: http.SameSiteLaxMode,
 	})
 	return id

@@ -12,7 +12,7 @@ COPY . .
 RUN go tool templ generate
 RUN CGO_ENABLED=1 go build -ldflags="-w -s -X catgoose/harmony/internal/version.Version=${APP_VERSION} -X catgoose/harmony/internal/version.BuildDate=$(date -u +%Y-%m-%d)" -o /harmony .
 
-FROM alpine:latest
+FROM alpine:3.21
 
 RUN apk add --no-cache ca-certificates tzdata
 COPY --from=build /harmony /usr/local/bin/harmony

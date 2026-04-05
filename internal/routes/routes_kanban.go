@@ -20,8 +20,8 @@ type kanbanRoutes struct {
 
 func (ar *appRoutes) initKanbanRoutes(board *demo.KanbanBoard, actLog *demo.ActivityLog, broker *tavern.SSEBroker) {
 	k := &kanbanRoutes{board: board, actLog: actLog, broker: broker}
-	ar.e.GET("/demo/kanban", k.handleKanbanPage)
-	ar.e.PATCH("/demo/kanban/tasks/:id", k.handleMoveTask)
+	ar.e.GET("/apps/kanban", k.handleKanbanPage)
+	ar.e.PATCH("/apps/kanban/tasks/:id", k.handleMoveTask)
 }
 
 func (k *kanbanRoutes) handleKanbanPage(c echo.Context) error {

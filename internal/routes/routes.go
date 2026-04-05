@@ -11,27 +11,31 @@ import (
 	"github.com/catgoose/tavern"
 	// setup:feature:sse:end
 	"catgoose/harmony/internal/health"
+	"catgoose/harmony/internal/routes/handler"
 	"catgoose/harmony/internal/version"
 	"github.com/catgoose/promolog"
-	"catgoose/harmony/internal/routes/handler"
 	// setup:feature:demo:start
 	"github.com/catgoose/linkwell"
 	// setup:feature:demo:end
-	"catgoose/harmony/web/views"
 	"catgoose/harmony/internal/routes/middleware"
+	"catgoose/harmony/web/views"
 	// setup:feature:session_settings:start
 	"catgoose/harmony/internal/session"
 	// setup:feature:session_settings:end
-	"github.com/catgoose/porter"
 	"context"
 	"fmt"
+	"github.com/catgoose/porter"
+	"io"
 	"io/fs"
+	"log/slog"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 	// setup:feature:auth:start
 	"github.com/catgoose/crooner"
 	// setup:feature:auth:end
+	"github.com/CAFxX/httpcompression"
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 )
@@ -58,26 +62,32 @@ type SessionSettingsStore interface {
 
 // setup:feature:session_settings:end
 
+// Repos groups repository and store dependencies for the application routes.
+// Generated apps add fields here as features are added.
+type Repos struct {
+	ReqLogStore   promolog.Storer
+	IssueReporter IssueReporter
+	// setup:feature:session_settings:start
+	Settings SessionSettingsStore
+	// setup:feature:session_settings:end
+}
+
 // appRoutes implements AppRoutes
 type appRoutes struct {
-	e             *echo.Echo
-	ctx           context.Context
-	reqLogStore   promolog.Storer
-	issueReporter IssueReporter
-	startTime     time.Time
-	healthCfg     health.Config
-	// setup:feature:session_settings:start
-	settingsRepo SessionSettingsStore
-	// setup:feature:session_settings:end
+	repos     Repos
+	startTime time.Time
+	ctx       context.Context
 	// setup:feature:sync:start
 	versionChecker VersionChecker
 	// setup:feature:sync:end
+	e *echo.Echo
 	// setup:feature:demo:start
 	demoDB *demo.DB
 	// setup:feature:demo:end
 	// setup:feature:sse:start
 	broker *tavern.SSEBroker
 	// setup:feature:sse:end
+	healthCfg health.Config
 }
 
 // Close shuts down the SSE broker and releases resources.
@@ -90,30 +100,22 @@ func (ar *appRoutes) Close() {
 }
 
 // NewAppRoutes initializes routes.
-// reqLogStore may be nil if request log capture is disabled.
-// reporter may be nil; a default no-op reporter is used.
-func NewAppRoutes(ctx context.Context, e *echo.Echo, reqLogStore promolog.Storer, reporter IssueReporter,
-	// setup:feature:session_settings:start
-	settingsRepo SessionSettingsStore,
-	// setup:feature:session_settings:end
-) AppRoutes {
-	if reporter == nil {
-		reporter = defaultReporter{}
+// repos.ReqLogStore may be nil if request log capture is disabled.
+// repos.IssueReporter may be nil; a default no-op reporter is used.
+func NewAppRoutes(ctx context.Context, e *echo.Echo, repos Repos) AppRoutes {
+	if repos.IssueReporter == nil {
+		repos.IssueReporter = defaultReporter{}
 	}
 	startTime := time.Now()
 	return &appRoutes{
-		e:             e,
-		ctx:           ctx,
-		reqLogStore:   reqLogStore,
-		issueReporter: reporter,
-		startTime:     startTime,
+		e:         e,
+		ctx:       ctx,
+		repos:     repos,
+		startTime: startTime,
 		healthCfg: health.Config{
 			Version:   version.Version,
 			StartTime: startTime,
 		},
-		// setup:feature:session_settings:start
-		settingsRepo: settingsRepo,
-		// setup:feature:session_settings:end
 	}
 }
 
@@ -144,8 +146,12 @@ func (ar *appRoutes) InitRoutes() error {
 	// setup:feature:demo:start
 	ar.initLinkRelations()
 	ar.e.GET("/welcome", handler.HandleComponent(views.WelcomePage()))
-	ar.e.GET("/hypermedia", handler.HandleComponent(views.PatternsIndexPage()))
-	ar.e.GET("/demo", handler.HandleComponent(views.DemoIndexPage()))
+	ar.e.GET("/patterns", handler.HandleComponent(views.PatternsIndexPage()))
+	ar.e.GET("/components", handler.HandleComponent(views.ComponentsIndexPage()))
+	ar.e.GET("/realtime", handler.HandleComponent(views.RealtimeIndexPage()))
+	ar.e.GET("/api", handler.HandleComponent(views.APIIndexPage()))
+	ar.e.GET("/apps", handler.HandleComponent(views.ApplicationsIndexPage()))
+	ar.e.GET("/platform", handler.HandleComponent(views.PlatformIndexPage()))
 	// setup:feature:demo:end
 
 	// Health check endpoint — returns structured ops metadata.
@@ -168,7 +174,6 @@ func (ar *appRoutes) InitRoutes() error {
 	// setup:feature:demo:start
 	ar.initPwaRoutes()
 	ar.initReportDemoRoutes()
-	ar.initLoggingRoutes()
 	ar.initControlsGalleryRoutes()
 	ar.initComponentsRoutes()
 	ar.initComponents2Routes()
@@ -183,6 +188,10 @@ func (ar *appRoutes) InitRoutes() error {
 	// setup:feature:session_settings:end
 
 	// setup:feature:demo:start
+	ar.initLoggingRoutes(ar.broker)
+	// setup:feature:demo:end
+
+	// setup:feature:demo:start
 	ar.initHypermediaRoutes()
 	ar.initHALRoutes()
 	ar.initErrorsRoutes()
@@ -192,7 +201,7 @@ func (ar *appRoutes) InitRoutes() error {
 
 	db, err := demo.Open("db/demo.db")
 	if err != nil {
-		logger.WithContext(ar.ctx).Warn("Demo DB unavailable; /demo/* routes disabled", "error", err)
+		logger.WithContext(ar.ctx).Warn("Demo DB unavailable; app routes disabled", "error", err)
 		return nil
 	}
 	// setup:feature:sync:start
@@ -262,9 +271,9 @@ func InitEcho(ctx context.Context, staticFS fs.FS, cfg *config.AppConfig,
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			preloadLinks := []string{
-				"</public/css/tailwind.css>; rel=preload; as=style",
-				"</public/css/daisyui.css>; rel=preload; as=style",
-				"</public/js/htmx.min.js>; rel=preload; as=script",
+				"<" + version.Asset("/public/css/tailwind.css") + ">; rel=preload; as=style; fetchpriority=high",
+				"<" + version.Asset("/public/css/daisyui.css") + ">; rel=preload; as=style",
+				"<" + version.Asset("/public/js/htmx.min.js") + ">; rel=preload; as=script; fetchpriority=high",
 			}
 			if !behindProxy && c.Request().ProtoMajor >= 2 {
 				w := c.Response().Writer
@@ -284,19 +293,29 @@ func InitEcho(ctx context.Context, staticFS fs.FS, cfg *config.AppConfig,
 		}
 	})
 
+	e.Use(echoMiddleware.Recover())
 	e.Use(middleware.ServerTimingMiddleware())
 	e.Use(echo.WrapMiddleware(promolog.CorrelationMiddleware))
 	e.Use(echoMiddleware.RequestLogger())
-	e.Use(echoMiddleware.Recover())
 	e.Use(echo.WrapMiddleware(porter.SecurityHeaders(porter.SecurityHeadersConfig{
 		PermissionsPolicy:       "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
 		CrossOriginOpenerPolicy: "same-origin",
 	})))
-	// Skip gzip when running behind the templ proxy (mage watch).
-	// Echo's chunked gzip responses cause h2 framing errors through
+	// Save the raw response writer before the compression middleware wraps it.
+	// The error handler needs the unwrapped writer because httpcompression
+	// finalizes (closes) its writer when the middleware chain unwinds, making
+	// it unusable by the time Echo's HTTPErrorHandler runs.
+	e.Use(middleware.RawWriterMiddleware())
+	// Skip compression when running behind the templ proxy (mage watch).
+	// Chunked compressed responses cause h2 framing errors through
 	// the templ-proxy → Caddy chain. Caddy handles compression instead.
 	if os.Getenv("TEMPL_PROXY") == "" {
-		e.Use(echoMiddleware.Gzip())
+		compress, err := httpcompression.DefaultAdapter()
+		if err != nil {
+			slog.Error("failed to create compression adapter", "error", err)
+		} else {
+			e.Use(echo.WrapMiddleware(compress))
+		}
 	}
 
 	// setup:feature:auth:start
@@ -372,7 +391,11 @@ func InitEcho(ctx context.Context, staticFS fs.FS, cfg *config.AppConfig,
 
 	static := e.Group("/public", func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			c.Response().Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+			if behindProxy {
+				c.Response().Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+			} else {
+				c.Response().Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+			}
 			return next(c)
 		}
 	})
@@ -385,13 +408,17 @@ func InitEcho(ctx context.Context, staticFS fs.FS, cfg *config.AppConfig,
 		if err != nil {
 			return echo.NewHTTPError(http.StatusNotFound)
 		}
-		defer f.Close()
-		c.Response().Header().Set("Content-Type", "application/javascript")
+		defer func() { _ = f.Close() }()
+		raw, err := io.ReadAll(f)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError)
+		}
+		content := strings.ReplaceAll(string(raw), "{{APP_VERSION}}", version.Version)
 		c.Response().Header().Set("Service-Worker-Allowed", "/")
-		return c.Stream(http.StatusOK, "application/javascript", f)
+		c.Response().Header().Set("Cache-Control", "no-cache")
+		return c.String(http.StatusOK, content)
 	})
 	// setup:feature:offline:end
 
 	return e, nil
 }
-

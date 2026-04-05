@@ -12,19 +12,19 @@ var KanbanPriorities = []string{"low", "medium", "high", "critical"}
 
 // KanbanTask represents a single task on the board.
 type KanbanTask struct {
-	ID          int
 	Title       string
 	Description string
 	Status      string
 	Priority    string
 	Assignee    string
+	ID          int
 }
 
 // KanbanBoard is a thread-safe in-memory kanban board.
 type KanbanBoard struct {
-	mu     sync.RWMutex
 	tasks  []KanbanTask
 	nextID int
+	mu     sync.RWMutex
 }
 
 // NewKanbanBoard creates a board seeded with sample tasks.

@@ -302,8 +302,8 @@ func ResourceViewFragment(name, desc string) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = components.Controls(linkwell.ResourceActions(linkwell.ResourceActionCfg{
-			EditURL:    "/hypermedia/controls/resource/edit",
-			DeleteURL:  "/hypermedia/controls/resource",
+			EditURL:    "/patterns/controls/resource/edit",
+			DeleteURL:  "/patterns/controls/resource",
 			ConfirmMsg: "Delete this resource?",
 			Target:     "#resource-demo",
 		})).Render(ctx, templ_7745c5c3_Buffer)
@@ -365,7 +365,7 @@ func ResourceEditFragment(name, desc string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "\"></div><div class=\"flex gap-2\"><button type=\"button\" class=\"btn btn-sm btn-primary\" hx-put=\"/hypermedia/controls/resource\" hx-target=\"#resource-demo\" hx-include=\"#resource-edit-form\">Save</button> <button type=\"button\" class=\"btn btn-sm btn-ghost\" hx-get=\"/hypermedia/controls/resource\" hx-target=\"#resource-demo\">Cancel</button></div></form>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "\"></div><div class=\"flex gap-2\"><button type=\"button\" class=\"btn btn-sm btn-primary\" hx-put=\"/patterns/controls/resource\" hx-target=\"#resource-demo\" hx-include=\"#resource-edit-form\">Save</button> <button type=\"button\" class=\"btn btn-sm btn-ghost\" hx-get=\"/patterns/controls/resource\" hx-target=\"#resource-demo\">Cancel</button></div></form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -394,7 +394,7 @@ func ResourceDeletedFragment() templ.Component {
 			templ_7745c5c3_Var17 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<div class=\"alert alert-error text-sm\"><span>Resource deleted!</span> <button class=\"btn btn-sm btn-ghost\" hx-get=\"/hypermedia/controls/resource\" hx-target=\"#resource-demo\">Undo</button></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<div class=\"alert alert-error text-sm\"><span>Resource deleted!</span> <button class=\"btn btn-sm btn-ghost\" hx-get=\"/patterns/controls/resource\" hx-target=\"#resource-demo\">Undo</button></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -424,11 +424,11 @@ func FormDemoFragment() templ.Component {
 			templ_7745c5c3_Var18 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "<form hx-post=\"/hypermedia/controls/form\" hx-target=\"#form-demo\" hx-swap=\"innerHTML\" class=\"space-y-3\"><div class=\"grid grid-cols-2 gap-3\"><div class=\"fieldset\"><label class=\"label label-text text-sm\">Label</label> <input name=\"label\" class=\"input input-sm\" value=\"Widget\"></div><div class=\"fieldset\"><label class=\"label label-text text-sm\">Value</label> <input name=\"value\" class=\"input input-sm\" value=\"42\"></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "<form hx-post=\"/patterns/controls/form\" hx-target=\"#form-demo\" hx-swap=\"innerHTML\" class=\"space-y-3\"><div class=\"grid grid-cols-2 gap-3\"><div class=\"fieldset\"><label class=\"label label-text text-sm\">Label</label> <input name=\"label\" class=\"input input-sm\" value=\"Widget\"></div><div class=\"fieldset\"><label class=\"label label-text text-sm\">Value</label> <input name=\"value\" class=\"input input-sm\" value=\"42\"></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.Controls(linkwell.FormActions("/hypermedia/controls")).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.Controls(linkwell.FormActions("/patterns/controls")).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -487,7 +487,7 @@ func FormSubmitResultFragment(label, value string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "</p></div><button class=\"btn btn-sm btn-ghost\" hx-get=\"/hypermedia/controls/form/reset\" hx-target=\"#form-demo\" hx-swap=\"innerHTML\">Reset</button></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "</p></div><button class=\"btn btn-sm btn-ghost\" hx-get=\"/patterns/controls/form/reset\" hx-target=\"#form-demo\" hx-swap=\"innerHTML\">Reset</button></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -526,7 +526,7 @@ func EmptyStateFragment() templ.Component {
 				Kind:      linkwell.ControlKindHTMX,
 				Label:     "Create Item",
 				Variant:   linkwell.VariantPrimary,
-				HxRequest: linkwell.HxPost("/hypermedia/controls/items", "#items-demo"),
+				HxRequest: linkwell.HxPost("/patterns/controls/items", "#items-demo"),
 				Swap:      linkwell.SwapInnerHTML,
 			},
 		}).Render(ctx, templ_7745c5c3_Buffer)
@@ -598,7 +598,7 @@ func ItemsListFragment(items []GalleryItem) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "</ul><div class=\"flex gap-2\"><button class=\"btn btn-sm btn-primary\" hx-post=\"/hypermedia/controls/items\" hx-target=\"#items-demo\" hx-swap=\"innerHTML\">Create Another</button> <button class=\"btn btn-sm btn-ghost\" hx-get=\"/hypermedia/controls/items/reset\" hx-target=\"#items-demo\" hx-swap=\"innerHTML\">Reset</button></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "</ul><div class=\"flex gap-2\"><button class=\"btn btn-sm btn-primary\" hx-post=\"/patterns/controls/items\" hx-target=\"#items-demo\" hx-swap=\"innerHTML\">Create Another</button> <button class=\"btn btn-sm btn-ghost\" hx-get=\"/patterns/controls/items/reset\" hx-target=\"#items-demo\" hx-swap=\"innerHTML\">Reset</button></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -831,8 +831,8 @@ func RowViewFragment(item GalleryRowItem) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = components.Controls(linkwell.RowActions(linkwell.RowActionCfg{
-			EditURL:    fmt.Sprintf("/hypermedia/controls/rows/%d/edit", item.ID),
-			DeleteURL:  fmt.Sprintf("/hypermedia/controls/rows/%d", item.ID),
+			EditURL:    fmt.Sprintf("/patterns/controls/rows/%d/edit", item.ID),
+			DeleteURL:  fmt.Sprintf("/patterns/controls/rows/%d", item.ID),
 			RowTarget:  fmt.Sprintf("#cg-row-%d", item.ID),
 			ConfirmMsg: "Delete this item?",
 		})).Render(ctx, templ_7745c5c3_Buffer)
@@ -972,8 +972,8 @@ func RowEditFragment(item GalleryRowItem) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = components.Controls(linkwell.RowFormActions(linkwell.RowFormActionCfg{
-			SaveURL:      fmt.Sprintf("/hypermedia/controls/rows/%d", item.ID),
-			CancelURL:    fmt.Sprintf("/hypermedia/controls/rows/%d", item.ID),
+			SaveURL:      fmt.Sprintf("/patterns/controls/rows/%d", item.ID),
+			CancelURL:    fmt.Sprintf("/patterns/controls/rows/%d", item.ID),
 			SaveTarget:   fmt.Sprintf("#cg-row-%d", item.ID),
 			CancelTarget: fmt.Sprintf("#cg-row-%d", item.ID),
 		})).Render(ctx, templ_7745c5c3_Buffer)
@@ -1144,7 +1144,7 @@ func ValidationFixForm(name, price string) templ.Component {
 			templ_7745c5c3_Var47 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 79, "<div class=\"p-4 bg-base-200 rounded-lg space-y-3\"><p class=\"text-sm font-medium\">Fix the data and resubmit:</p><form hx-post=\"/hypermedia/controls/errors/validate\" hx-target=\"#validate-result\" hx-swap=\"innerHTML\" class=\"space-y-2\"><div class=\"grid grid-cols-2 gap-3\"><div class=\"fieldset\"><label class=\"label label-text text-xs\">Name (min 3 chars)</label> <input name=\"name\" class=\"input input-sm\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 79, "<div class=\"p-4 bg-base-200 rounded-lg space-y-3\"><p class=\"text-sm font-medium\">Fix the data and resubmit:</p><form hx-post=\"/patterns/controls/errors/validate\" hx-target=\"#validate-result\" hx-swap=\"innerHTML\" class=\"space-y-2\"><div class=\"grid grid-cols-2 gap-3\"><div class=\"fieldset\"><label class=\"label label-text text-xs\">Name (min 3 chars)</label> <input name=\"name\" class=\"input input-sm\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -1213,7 +1213,7 @@ func StaleRefreshForm(name string, version int) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 83, ") — edit and save:</p><form hx-post=\"/hypermedia/controls/errors/stale\" hx-target=\"#stale-result\" hx-swap=\"innerHTML\" class=\"space-y-2\"><input name=\"name\" class=\"input input-sm w-full\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 83, ") — edit and save:</p><form hx-post=\"/patterns/controls/errors/stale\" hx-target=\"#stale-result\" hx-swap=\"innerHTML\" class=\"space-y-2\"><input name=\"name\" class=\"input input-sm w-full\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -1292,7 +1292,7 @@ func CascadeReassignForm(items []string) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 89, "</ul><form hx-post=\"/hypermedia/controls/errors/cascade/reassign\" hx-target=\"#cascade-result\" hx-swap=\"innerHTML\" class=\"flex items-end gap-2\"><div class=\"fieldset\"><label class=\"label label-text text-xs\">Move to</label> <select name=\"new-category\" class=\"select select-sm\"><option value=\"General\">General</option> <option value=\"Clearance\">Clearance</option> <option value=\"Archive\">Archive</option></select></div><button type=\"submit\" class=\"btn btn-sm btn-primary\">Reassign &amp; Delete</button></form></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 89, "</ul><form hx-post=\"/patterns/controls/errors/cascade/reassign\" hx-target=\"#cascade-result\" hx-swap=\"innerHTML\" class=\"flex items-end gap-2\"><div class=\"fieldset\"><label class=\"label label-text text-xs\">Move to</label> <select name=\"new-category\" class=\"select select-sm\"><option value=\"General\">General</option> <option value=\"Clearance\">Clearance</option> <option value=\"Archive\">Archive</option></select></div><button type=\"submit\" class=\"btn btn-sm btn-primary\">Reassign &amp; Delete</button></form></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

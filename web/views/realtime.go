@@ -52,21 +52,20 @@ type ServiceLatency struct {
 
 // MetricsSnapshot holds the current dashboard metrics state.
 type MetricsSnapshot struct {
-	RPS        float64
-	ErrorPct   float64
-	P99Ms      float64
-	CPUPercent float64
-	MemPercent float64
-	Network    []NetworkPoint
-	MaxNetwork float64 // max combined MB/s for chart normalization
-	ConnActive int
-	ConnIdle   int
-	ConnWait   int
-	// New chart data
-	LatencyHist  []LatencyBucket
-	ErrorHistory []ErrorRatePoint
+	Network      []NetworkPoint
 	DiskIO       []DiskIOPoint
+	ErrorHistory []ErrorRatePoint
+	LatencyHist  []LatencyBucket
 	StatusDist   StatusDistribution
+	MemPercent   float64
+	MaxNetwork   float64
+	ConnActive   int
+	ConnIdle     int
+	ConnWait     int
+	RPS          float64
+	CPUPercent   float64
+	P99Ms        float64
+	ErrorPct     float64
 	MaxLatency   float64
 	MaxDiskIO    float64
 }
@@ -152,8 +151,8 @@ func fmtSize(v float64) string {
 // ServiceStatus represents the health and load of a single service.
 type ServiceStatus struct {
 	Name   string
-	Load   float64 // 0.0–1.0
-	Status string  // "healthy", "degraded", "critical"
+	Status string
+	Load   float64
 }
 
 // serviceBarColor returns a hex color based on service status.
@@ -406,4 +405,3 @@ func svcLatencyBarStyle(svc ServiceLatency, maxMs float64) string {
 	}
 	return fmt.Sprintf("--size: %s; --color: %s", fmtSize(size), color)
 }
-

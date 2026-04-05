@@ -121,10 +121,10 @@ func (ar *appRoutes) handleConfigInfo(c echo.Context) error {
 // setup:feature:session_settings:start
 
 func (ar *appRoutes) handleSessionsPage(c echo.Context) error {
-	if ar.settingsRepo == nil {
+	if ar.repos.Settings == nil {
 		return handler.HandleHypermediaError(c, 500, "Session settings not configured", nil)
 	}
-	sessions, err := ar.settingsRepo.ListAll(c.Request().Context())
+	sessions, err := ar.repos.Settings.ListAll(c.Request().Context())
 	if err != nil {
 		return handler.HandleHypermediaError(c, 500, "Failed to load sessions", err)
 	}
@@ -132,10 +132,10 @@ func (ar *appRoutes) handleSessionsPage(c echo.Context) error {
 }
 
 func (ar *appRoutes) handleSessionsTable(c echo.Context) error {
-	if ar.settingsRepo == nil {
+	if ar.repos.Settings == nil {
 		return handler.HandleHypermediaError(c, 500, "Session settings not configured", nil)
 	}
-	sessions, err := ar.settingsRepo.ListAll(c.Request().Context())
+	sessions, err := ar.repos.Settings.ListAll(c.Request().Context())
 	if err != nil {
 		return handler.HandleHypermediaError(c, 500, "Failed to load sessions", err)
 	}

@@ -1,13 +1,10 @@
 // setup:feature:demo
 package views
 
-// ErrorsPage is the full-page layout for /hypermedia/errors.
+// ErrorsPage is the full-page layout for /patterns/errors.
 templ ErrorsPage() {
 	<div class="p-4 space-y-6 max-w-4xl mx-auto">
-		<div class="flex items-center justify-between mb-4">
-			<h1 class="text-2xl font-bold">Error Patterns</h1>
-			<a href="/hypermedia/controls" class="btn btn-sm btn-ghost">← Overview</a>
-		</div>
+		<h1 class="text-2xl font-bold mb-4">Error Patterns</h1>
 		<div role="alert" class="alert alert-info text-sm">
 			<span>Demonstrates: <strong>banner errors</strong>, <strong>inline form errors</strong>, <strong>OOB error swaps</strong>, <strong>RESTful error responses</strong>, <strong>report issue</strong>.</span>
 		</div>
@@ -24,25 +21,25 @@ templ ErrorsPage() {
 				<div class="flex flex-wrap gap-2">
 					<button
 						class="btn btn-sm btn-error btn-outline"
-						hx-get="/hypermedia/errors/trigger/404"
+						hx-get="/patterns/errors/trigger/404"
 						hx-target="#errors-banner-result"
 						hx-swap="innerHTML"
 					>Trigger 404</button>
 					<button
 						class="btn btn-sm btn-error btn-outline"
-						hx-get="/hypermedia/errors/trigger/400"
+						hx-get="/patterns/errors/trigger/400"
 						hx-target="#errors-banner-result"
 						hx-swap="innerHTML"
 					>Trigger 400</button>
 					<button
 						class="btn btn-sm btn-error btn-outline"
-						hx-get="/hypermedia/errors/trigger/500"
+						hx-get="/patterns/errors/trigger/500"
 						hx-target="#errors-banner-result"
 						hx-swap="innerHTML"
 					>Trigger 500</button>
 					<button
 						class="btn btn-sm btn-error btn-outline"
-						hx-get="/hypermedia/errors/trigger/403"
+						hx-get="/patterns/errors/trigger/403"
 						hx-target="#errors-banner-result"
 						hx-swap="innerHTML"
 					>Trigger 403</button>
@@ -60,7 +57,7 @@ templ ErrorsPage() {
 					The server returns a 422 with the error swapped into the form's error target.
 				</p>
 				<form
-					hx-post="/hypermedia/errors/form"
+					hx-post="/patterns/errors/form"
 					hx-target="#errors-form-result"
 					hx-swap="innerHTML"
 					class="space-y-3 max-w-sm"
@@ -90,7 +87,7 @@ templ ErrorsPage() {
 				</p>
 				<button
 					class="btn btn-sm btn-warning btn-outline"
-					hx-get="/hypermedia/errors/oob-warning"
+					hx-get="/patterns/errors/oob-warning"
 					hx-target="#errors-oob-result"
 					hx-swap="innerHTML"
 				>Load with Warning</button>
@@ -108,7 +105,7 @@ templ ErrorsPage() {
 				</p>
 				<button
 					class="btn btn-sm btn-secondary btn-outline"
-					hx-get="/hypermedia/errors/flaky"
+					hx-get="/patterns/errors/flaky"
 					hx-target="#errors-retry-result"
 					hx-swap="innerHTML"
 				>Call Flaky Endpoint</button>

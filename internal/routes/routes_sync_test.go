@@ -37,7 +37,7 @@ func TestHandleSync_SingleOperation(t *testing.T) {
 	body := `{
 		"operations": [{
 			"method": "PUT",
-			"url": "/demo/repository/tasks/1",
+			"url": "/platform/repository/tasks/1",
 			"body": "title=Updated&description=test",
 			"content_type": "application/x-www-form-urlencoded",
 			"version": 1,

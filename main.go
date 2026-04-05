@@ -21,7 +21,6 @@ import (
 	"catgoose/harmony/internal/repository"
 	// setup:feature:session_settings:end
 	// setup:feature:avatar:start
-	graphdb "catgoose/harmony/internal/database"
 	"catgoose/harmony/internal/domain"
 	"catgoose/harmony/internal/service/graph"
 	// setup:feature:avatar:end
@@ -63,7 +62,7 @@ func main() {
 	if envErr != nil {
 		// No .env file -- apply standalone defaults so the demo binary
 		// can run without any configuration.
-		os.Setenv("SERVER_LISTEN_PORT", appenv.GetDefault("SERVER_LISTEN_PORT", "3000"))
+		_ = os.Setenv("SERVER_LISTEN_PORT", appenv.GetDefault("SERVER_LISTEN_PORT", "3000"))
 	}
 	// setup:feature:demo:end
 	if envErr != nil {
@@ -78,11 +77,16 @@ func main() {
 	appCtx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	// Error trace store — persists error request logs to SQLite for debugging.
-	traceDB, _, err := dialect.OpenSQLite(appCtx, "db/error_traces.db")
+	// Error trace store — in-memory SQLite, seeded on each start.
+	traceDB, _, err := dialect.OpenSQLite(appCtx, ":memory:")
 	if err != nil {
 		logger.Fatal("Failed to open error traces database", "error", err)
 	}
+	// In-memory SQLite databases are destroyed when the connection closes.
+	// Override chuck's default ConnMaxLifetime/ConnMaxIdleTime so the single
+	// connection is never recycled.
+	traceDB.SetConnMaxLifetime(0)
+	traceDB.SetConnMaxIdleTime(0)
 	defer func() {
 		if closeErr := traceDB.Close(); closeErr != nil {
 			logger.Info("Error closing error traces database", "error", closeErr)
@@ -168,11 +172,12 @@ func main() {
 		logger.Fatal("Failed to initialize Echo", "error", err)
 	}
 
-	ar := routes.NewAppRoutes(appCtx, e, reqLogStore, nil,
+	ar := routes.NewAppRoutes(appCtx, e, routes.Repos{
+		ReqLogStore: reqLogStore,
 		// setup:feature:session_settings:start
-		settingsRepo,
+		Settings: settingsRepo,
 		// setup:feature:session_settings:end
-	)
+	})
 	defer ar.Close()
 	if err := ar.InitRoutes(); err != nil {
 		logger.Fatal("Failed to setup routes", "error", err)
@@ -193,7 +198,7 @@ func main() {
 		if err != nil {
 			logger.Fatal("Failed to create Graph client", "error", err)
 		}
-		sqliteDB, err := graphdb.OpenSQLiteInMemory()
+		sqliteDB, err := database.OpenSQLiteInMemory()
 		if err != nil {
 			logger.Fatal("Failed to open in-memory SQLite for user cache", "error", err)
 		}

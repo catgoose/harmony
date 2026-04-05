@@ -18,22 +18,19 @@ type ListsDemoItem struct {
 // ListsPage is a static showcase of list/pagination/filter/sort patterns.
 templ ListsPage(items []ListsDemoItem, info linkwell.PageInfo) {
 	<div class="p-4 space-y-6 max-w-4xl mx-auto">
-		<div class="flex items-center justify-between mb-4">
-			<h1 class="text-2xl font-bold">List Patterns</h1>
-			<a href="/hypermedia/controls" class="btn btn-sm btn-ghost">← Overview</a>
-		</div>
+		<h1 class="text-2xl font-bold mb-4">List Patterns</h1>
 		<div role="alert" class="alert alert-info text-sm">
-			<span>Demonstrates: <strong>next</strong>, <strong>prev</strong>, <strong>search</strong>, <strong>sort</strong>, <strong>filter</strong> — all driven by HTMX. See <a href="/demo/inventory" class="link link-primary">Tables → Inventory</a> { "for" } a live backend demo.</span>
+			<span>Demonstrates: <strong>next</strong>, <strong>prev</strong>, <strong>search</strong>, <strong>sort</strong>, <strong>filter</strong> — all driven by HTMX. See <a href="/apps/inventory" class="link link-primary">Tables → Inventory</a> { "for" } a live backend demo.</span>
 		</div>
 		@listsSection("Search") {
 			<p class="text-sm text-base-content/70 mb-3">A search input with <code class="text-xs bg-base-200 px-1 rounded">hx-trigger="input changed delay:400ms"</code> debounces keystrokes and replaces the table fragment.</p>
-			@components.FilterBar(linkwell.NewFilterBar("/demo/inventory/items", "#inventory-table-container",
+			@components.FilterBar(linkwell.NewFilterBar("/apps/inventory/items", "#inventory-table-container",
 				linkwell.SearchField("q", "Search items…", ""),
 			))
 		}
 		@listsSection("Filter") {
 			<p class="text-sm text-base-content/70 mb-3">Dropdown + checkbox filters submit via <code class="text-xs bg-base-200 px-1 rounded">hx-get</code> on change, replacing only the table container.</p>
-			@components.FilterBar(linkwell.NewFilterBar("/demo/inventory/items", "#inventory-table-container",
+			@components.FilterBar(linkwell.NewFilterBar("/apps/inventory/items", "#inventory-table-container",
 				linkwell.SelectField("category", "Category", "",
 					linkwell.SelectOptions("",
 						"", "All",
@@ -50,13 +47,13 @@ templ ListsPage(items []ListsDemoItem, info linkwell.PageInfo) {
 			<div class="overflow-x-auto">
 				<table class="table table-sm">
 					@components.TableHeader([]linkwell.TableCol{
-						linkwell.SortableCol("name", "Name", "name", "asc", "/demo/inventory/items", "#inventory-table-container", "#filter-form"),
-						linkwell.SortableCol("category", "Category", "name", "asc", "/demo/inventory/items", "#inventory-table-container", "#filter-form"),
-						linkwell.SortableCol("price", "Price", "", "", "/demo/inventory/items", "#inventory-table-container", "#filter-form"),
+						linkwell.SortableCol("name", "Name", "name", "asc", "/apps/inventory/items", "#inventory-table-container", "#filter-form"),
+						linkwell.SortableCol("category", "Category", "name", "asc", "/apps/inventory/items", "#inventory-table-container", "#filter-form"),
+						linkwell.SortableCol("price", "Price", "", "", "/apps/inventory/items", "#inventory-table-container", "#filter-form"),
 						{Label: "Actions"},
 					})
 					<tbody>
-						<tr><td colspan="4" class="text-center text-base-content/50 text-sm py-4">← live rows from /demo/inventory</td></tr>
+						<tr><td colspan="4" class="text-center text-base-content/50 text-sm py-4">← live rows from /apps/inventory</td></tr>
 					</tbody>
 				</table>
 			</div>

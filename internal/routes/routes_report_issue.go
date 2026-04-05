@@ -23,16 +23,16 @@ func (ar *appRoutes) initReportIssueRoutes() {
 	reportHandler := func(c echo.Context) error {
 		requestID := c.Param("requestID")
 		description := c.FormValue("description")
-		var trace *promolog.ErrorTrace
-		if ar.reqLogStore != nil && requestID != "" {
+		var trace *promolog.Trace
+		if ar.repos.ReqLogStore != nil && requestID != "" {
 			var err error
-			trace, err = ar.reqLogStore.Get(c.Request().Context(), requestID)
+			trace, err = ar.repos.ReqLogStore.Get(c.Request().Context(), requestID)
 			if err != nil {
 				logger.WithContext(c.Request().Context()).Error("Failed to retrieve error trace for report",
 					"request_id", requestID, "error", err)
 			}
 		}
-		if err := ar.issueReporter.Report(requestID, description, trace); err != nil {
+		if err := ar.repos.IssueReporter.Report(requestID, description, trace); err != nil {
 			logger.WithContext(c.Request().Context()).Error("Issue report failed",
 				"reported_request_id", requestID, "error", err)
 			c.Response().Header().Set("HX-Trigger", `{"showAlert":"Failed to submit report. Please try again."}`)

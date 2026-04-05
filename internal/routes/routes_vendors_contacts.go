@@ -22,12 +22,12 @@ type vendorContactRoutes struct {
 
 func (ar *appRoutes) initVendorContactRoutes(db *demo.DB, actLog *demo.ActivityLog, broker *tavern.SSEBroker) {
 	v := &vendorContactRoutes{db: db, actLog: actLog, broker: broker}
-	ar.e.GET("/demo/vendors", v.handleVendorsPage)
-	ar.e.GET("/demo/vendors/list", v.handleVendorsList)
-	ar.e.GET("/demo/vendors/:id/contacts", v.handleVendorContacts)
-	ar.e.GET("/demo/vendors/contacts/:id/edit", v.handleContactEdit)
-	ar.e.GET("/demo/vendors/contacts/:id/card", v.handleContactCard)
-	ar.e.PUT("/demo/vendors/contacts/:id", v.handleContactUpdate)
+	ar.e.GET("/apps/vendors", v.handleVendorsPage)
+	ar.e.GET("/apps/vendors/list", v.handleVendorsList)
+	ar.e.GET("/apps/vendors/:id/contacts", v.handleVendorContacts)
+	ar.e.GET("/apps/vendors/contacts/:id/edit", v.handleContactEdit)
+	ar.e.GET("/apps/vendors/contacts/:id/card", v.handleContactCard)
+	ar.e.PUT("/apps/vendors/contacts/:id", v.handleContactUpdate)
 }
 
 func (v *vendorContactRoutes) handleVendorsPage(c echo.Context) error {
@@ -113,7 +113,7 @@ func (v *vendorContactRoutes) handleContactUpdate(c echo.Context) error {
 }
 
 func (v *vendorContactRoutes) buildFilterBar(search, category string) linkwell.FilterBar {
-	return linkwell.NewFilterBar("/demo/vendors/list", "#vendor-list",
+	return linkwell.NewFilterBar("/apps/vendors/list", "#vendor-list",
 		linkwell.SearchField("q", "Search vendors\u2026", search),
 		linkwell.SelectField("category", "Category", category,
 			linkwell.SelectOptions(category, vendorCategoryPairs()...)),

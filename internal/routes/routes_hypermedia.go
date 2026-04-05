@@ -18,7 +18,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-const hypermediaBase = "/hypermedia"
+const patternsBase = "/patterns"
 
 // crudItem is the in-memory demo item for the CRUD page.
 type crudItem struct {
@@ -51,42 +51,42 @@ func newHypermediaState() *hypermediaState {
 
 func (ar *appRoutes) initHypermediaRoutes() {
 	// Links demo page
-	ar.e.GET(hypermediaBase+"/links", ar.handleLinksPage)
-	ar.e.POST(hypermediaBase+"/links", ar.handleLinksCreate)
-	ar.e.DELETE(hypermediaBase+"/links/:id", ar.handleLinksDelete)
+	ar.e.GET("/api/links", ar.handleLinksPage)
+	ar.e.POST("/api/links", ar.handleLinksCreate)
+	ar.e.DELETE("/api/links/:id", ar.handleLinksDelete)
 
 	s := newHypermediaState()
 
 	// CRUD page
-	ar.e.GET(hypermediaBase+"/crud", s.handleCRUDPage)
-	ar.e.GET(hypermediaBase+"/crud/items", s.handleCRUDItems)
-	ar.e.POST(hypermediaBase+"/crud/items", s.handleCRUDCreate)
-	ar.e.GET(hypermediaBase+"/crud/items/:id", s.handleCRUDItemRow)
-	ar.e.GET(hypermediaBase+"/crud/items/:id/edit", s.handleCRUDEditForm)
-	ar.e.PUT(hypermediaBase+"/crud/items/:id", s.handleCRUDUpdate)
-	ar.e.PATCH(hypermediaBase+"/crud/items/:id/toggle", s.handleCRUDPatchToggle)
-	ar.e.DELETE(hypermediaBase+"/crud/items/:id", s.handleCRUDDelete)
+	ar.e.GET(patternsBase+"/crud", s.handleCRUDPage)
+	ar.e.GET(patternsBase+"/crud/items", s.handleCRUDItems)
+	ar.e.POST(patternsBase+"/crud/items", s.handleCRUDCreate)
+	ar.e.GET(patternsBase+"/crud/items/:id", s.handleCRUDItemRow)
+	ar.e.GET(patternsBase+"/crud/items/:id/edit", s.handleCRUDEditForm)
+	ar.e.PUT(patternsBase+"/crud/items/:id", s.handleCRUDUpdate)
+	ar.e.PATCH(patternsBase+"/crud/items/:id/toggle", s.handleCRUDPatchToggle)
+	ar.e.DELETE(patternsBase+"/crud/items/:id", s.handleCRUDDelete)
 
 	// Lists page
-	ar.e.GET(hypermediaBase+"/lists", s.handleListsPage)
-	ar.e.GET(hypermediaBase+"/lists/items", handleListsItems)
+	ar.e.GET(patternsBase+"/lists", s.handleListsPage)
+	ar.e.GET(patternsBase+"/lists/items", handleListsItems)
 
 	// Interactions page
-	ar.e.GET(hypermediaBase+"/interactions", s.handleInteractionsPage)
-	ar.e.GET(hypermediaBase+"/interactions/modal", s.handleInteractionsModal)
-	ar.e.POST(hypermediaBase+"/interactions/submit", s.handleInteractionsSubmit)
-	ar.e.POST(hypermediaBase+"/interactions/preview", s.handleInteractionsPreview)
-	ar.e.POST(hypermediaBase+"/interactions/comment", s.handleInteractionsComment)
-	ar.e.POST(hypermediaBase+"/interactions/inline-title", handleInteractionsInlineTitle)
+	ar.e.GET(patternsBase+"/interactions", s.handleInteractionsPage)
+	ar.e.GET(patternsBase+"/interactions/modal", s.handleInteractionsModal)
+	ar.e.POST(patternsBase+"/interactions/submit", s.handleInteractionsSubmit)
+	ar.e.POST(patternsBase+"/interactions/preview", s.handleInteractionsPreview)
+	ar.e.POST(patternsBase+"/interactions/comment", s.handleInteractionsComment)
+	ar.e.POST(patternsBase+"/interactions/inline-title", handleInteractionsInlineTitle)
 
 	// Standards page
-	ar.e.GET(hypermediaBase+"/standards", handler.HandleComponent(views.HypermediaStandardsPage()))
+	ar.e.GET("/api/standards", handler.HandleComponent(views.HypermediaStandardsPage()))
 
 	// State page
-	ar.e.GET(hypermediaBase+"/state", s.handleStatePage)
-	ar.e.POST(hypermediaBase+"/state/like", s.handleStateLike)
-	ar.e.POST(hypermediaBase+"/state/toggle", s.handleStateToggle)
-	ar.e.GET(hypermediaBase+"/state/panel", s.handleStatePanel)
+	ar.e.GET(patternsBase+"/state", s.handleStatePage)
+	ar.e.POST(patternsBase+"/state/like", s.handleStateLike)
+	ar.e.POST(patternsBase+"/state/toggle", s.handleStateToggle)
+	ar.e.GET(patternsBase+"/state/panel", s.handleStatePanel)
 }
 
 // ─── CRUD handlers ────────────────────────────────────────────────────────────
@@ -236,7 +236,7 @@ func listsPageInfo(page int) linkwell.PageInfo {
 		PerPage:    listsDemoPerPage,
 		TotalItems: listsDemoTotal,
 		TotalPages: linkwell.ComputeTotalPages(listsDemoTotal, listsDemoPerPage),
-		BaseURL:    hypermediaBase + "/lists/items",
+		BaseURL:    patternsBase + "/lists/items",
 		Target:     "#lists-table-container",
 	}
 }

@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+
+	appenv "catgoose/harmony/internal/env"
 	"time"
 )
 
@@ -19,11 +21,11 @@ var settingsCtxKey settingsKeyType
 // cookie. The struct is designed to be stored in a database row; the db tags
 // match the expected column names.
 type SessionSettings struct {
+	UpdatedAt   time.Time         `db:"UpdatedAt"`
+	Extra       map[string]string `db:"Extra" json:"extra,omitempty"`
 	SessionUUID string            `db:"SessionUUID"`
 	Theme       string            `db:"Theme"`
 	Layout      string            `db:"Layout"`
-	Extra       map[string]string `db:"Extra" json:"extra,omitempty"`
-	UpdatedAt   time.Time         `db:"UpdatedAt"`
 	ID          int               `db:"Id"`
 }
 
@@ -87,8 +89,8 @@ func NewDefaultSettings(uuid string) *SessionSettings {
 
 // SessionConfig holds session middleware configuration.
 type SessionConfig struct {
-	CookieName string
 	Logger     *slog.Logger
+	CookieName string
 }
 
 func (cfg SessionConfig) cookieName() string {
@@ -184,6 +186,7 @@ func getOrCreateSessionCookie(w http.ResponseWriter, r *http.Request, cookieName
 		Path:     "/",
 		MaxAge:   365 * 24 * 60 * 60,
 		HttpOnly: true,
+		Secure:   !appenv.Dev(),
 		SameSite: http.SameSiteLaxMode,
 	})
 	return id, nil

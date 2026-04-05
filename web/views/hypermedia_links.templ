@@ -15,10 +15,7 @@ type LinksPageData struct {
 
 templ HypermediaLinksPage(data LinksPageData) {
 	<div class="p-4 space-y-6 max-w-5xl mx-auto">
-		<div class="flex items-center justify-between mb-4">
-			<h1 class="text-2xl font-bold">Link Relations</h1>
-			<a href="/hypermedia/controls" class="btn btn-sm btn-ghost">&larr; Controls</a>
-		</div>
+		<h1 class="text-2xl font-bold mb-4">Link Relations</h1>
 		<div role="alert" class="alert alert-info text-sm">
 			<span>
 				Composable primitives for declaring
@@ -86,14 +83,14 @@ templ HypermediaLinksPage(data LinksPageData) {
 
 templ linksEditorForm(routes []string) {
 	<form
-		hx-post="/hypermedia/links"
+		hx-post="/api/links"
 		hx-target="#links-table"
 		hx-swap="outerHTML"
 		class="flex flex-wrap items-end gap-2"
 	>
 		<div class="form-control">
 			<label class="label py-0"><span class="label-text text-xs">Source</span></label>
-			<input name="source" list="link-routes" placeholder="/demo/inventory" required class="input input-bordered input-sm w-44"/>
+			<input name="source" list="link-routes" placeholder="/apps/inventory" required class="input input-bordered input-sm w-44"/>
 		</div>
 		<div class="form-control">
 			<label class="label py-0"><span class="label-text text-xs">Rel</span></label>
@@ -105,7 +102,7 @@ templ linksEditorForm(routes []string) {
 		</div>
 		<div class="form-control">
 			<label class="label py-0"><span class="label-text text-xs">Target</span></label>
-			<input name="target" list="link-routes" placeholder="/demo/catalog" required class="input input-bordered input-sm w-44"/>
+			<input name="target" list="link-routes" placeholder="/apps/catalog" required class="input input-bordered input-sm w-44"/>
 		</div>
 		<div class="form-control">
 			<label class="label py-0"><span class="label-text text-xs">Title</span></label>

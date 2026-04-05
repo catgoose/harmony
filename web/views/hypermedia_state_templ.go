@@ -12,7 +12,7 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import "fmt"
 
-// StatePage is the full-page layout for /hypermedia/state.
+// StatePage is the full-page layout for /patterns/state.
 func StatePage(likeCount int, toggleOn bool) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -34,7 +34,7 @@ func StatePage(likeCount int, toggleOn bool) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"p-4 space-y-6 max-w-4xl mx-auto\"><div class=\"flex items-center justify-between mb-4\"><h1 class=\"text-2xl font-bold\">State Patterns</h1><a href=\"/hypermedia/controls\" class=\"btn btn-sm btn-ghost\">← Overview</a></div><div role=\"alert\" class=\"alert alert-info text-sm\"><span>Demonstrates: <strong>like</strong>, <strong>toggle</strong>, <strong>load</strong>, <strong>reveal</strong>, <strong>show/hide</strong>.</span></div><!-- Like --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Like Counter</h2><p class=\"text-sm text-base-content/70 mb-3\"><code class=\"text-xs bg-base-200 px-1 rounded\">hx-post</code> increments the counter server-side; the returned fragment replaces the entire button+counter unit.</p>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"p-4 space-y-6 max-w-4xl mx-auto\"><h1 class=\"text-2xl font-bold mb-4\">State Patterns</h1><div role=\"alert\" class=\"alert alert-info text-sm\"><span>Demonstrates: <strong>like</strong>, <strong>toggle</strong>, <strong>load</strong>, <strong>reveal</strong>, <strong>show/hide</strong>.</span></div><!-- Like --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Like Counter</h2><p class=\"text-sm text-base-content/70 mb-3\"><code class=\"text-xs bg-base-200 px-1 rounded\">hx-post</code> increments the counter server-side; the returned fragment replaces the entire button+counter unit.</p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -50,7 +50,7 @@ func StatePage(likeCount int, toggleOn bool) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div></div><!-- Show / Hide (client-only) --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Show / Hide</h2><p class=\"text-sm text-base-content/70 mb-3\">Pure HyperScript — no server round-trip. <code class=\"text-xs bg-base-200 px-1 rounded\">toggle .hidden</code> on the target element.</p><button class=\"btn btn-sm btn-secondary\" _=\"on click toggle .hidden on #reveal-panel\">Toggle Panel</button><div id=\"reveal-panel\" class=\"hidden mt-3 p-3 bg-base-200 rounded text-sm\"><strong>Revealed!</strong> This panel was toggled client-side by HyperScript with zero server requests.</div></div></div><!-- Load (auto on page load) --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Auto-Load</h2><p class=\"text-sm text-base-content/70 mb-3\"><code class=\"text-xs bg-base-200 px-1 rounded\">hx-trigger=\"load\"</code> fires immediately after the element is added to the DOM.</p><div hx-get=\"/hypermedia/state/panel\" hx-trigger=\"load\" hx-swap=\"outerHTML\" class=\"flex items-center gap-2 text-sm text-base-content/50\"><span class=\"loading loading-spinner loading-xs\"></span> Loading panel…</div></div></div><!-- Reveal on scroll (intersect) --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Lazy Reveal (intersect)</h2><p class=\"text-sm text-base-content/70 mb-3\"><code class=\"text-xs bg-base-200 px-1 rounded\">hx-trigger=\"intersect once\"</code> fires when the element enters the viewport.</p><div hx-get=\"/hypermedia/state/panel\" hx-trigger=\"intersect once\" hx-swap=\"outerHTML\" class=\"flex items-center gap-2 text-sm text-base-content/50\"><span class=\"loading loading-spinner loading-xs\"></span> Waiting for scroll…</div></div></div><div class=\"grid grid-cols-1 md:grid-cols-3 gap-4\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div></div><!-- Show / Hide (client-only) --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Show / Hide</h2><p class=\"text-sm text-base-content/70 mb-3\">Pure HyperScript — no server round-trip. <code class=\"text-xs bg-base-200 px-1 rounded\">toggle .hidden</code> on the target element.</p><button class=\"btn btn-sm btn-secondary\" _=\"on click toggle .hidden on #reveal-panel\">Toggle Panel</button><div id=\"reveal-panel\" class=\"hidden mt-3 p-3 bg-base-200 rounded text-sm\"><strong>Revealed!</strong> This panel was toggled client-side by HyperScript with zero server requests.</div></div></div><!-- Load (auto on page load) --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Auto-Load</h2><p class=\"text-sm text-base-content/70 mb-3\"><code class=\"text-xs bg-base-200 px-1 rounded\">hx-trigger=\"load\"</code> fires immediately after the element is added to the DOM.</p><div hx-get=\"/patterns/state/panel\" hx-trigger=\"load\" hx-swap=\"outerHTML\" class=\"flex items-center gap-2 text-sm text-base-content/50\"><span class=\"loading loading-spinner loading-xs\"></span> Loading panel…</div></div></div><!-- Reveal on scroll (intersect) --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Lazy Reveal (intersect)</h2><p class=\"text-sm text-base-content/70 mb-3\"><code class=\"text-xs bg-base-200 px-1 rounded\">hx-trigger=\"intersect once\"</code> fires when the element enters the viewport.</p><div hx-get=\"/patterns/state/panel\" hx-trigger=\"intersect once\" hx-swap=\"outerHTML\" class=\"flex items-center gap-2 text-sm text-base-content/50\"><span class=\"loading loading-spinner loading-xs\"></span> Waiting for scroll…</div></div></div><div class=\"grid grid-cols-1 md:grid-cols-3 gap-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -104,14 +104,14 @@ func LikeButtonFragment(count int) templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<div id=\"like-btn\" class=\"flex items-center gap-3\"><button class=\"btn btn-sm btn-primary\" hx-post=\"/hypermedia/state/like\" hx-target=\"#like-btn\" hx-swap=\"outerHTML\">♥ Like</button> <span class=\"font-bold text-lg\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<div id=\"like-btn\" class=\"flex items-center gap-3\"><button class=\"btn btn-sm btn-primary\" hx-post=\"/patterns/state/like\" hx-target=\"#like-btn\" hx-swap=\"outerHTML\">♥ Like</button> <span class=\"font-bold text-lg\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", count))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_state.templ`, Line: 97, Col: 60}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_state.templ`, Line: 94, Col: 60}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -162,7 +162,7 @@ func ToggleFragment(on bool) templ.Component {
 			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<div id=\"state-toggle\" class=\"flex items-center gap-3\"><button class=\"btn btn-sm btn-secondary\" hx-post=\"/hypermedia/state/toggle\" hx-target=\"#state-toggle\" hx-swap=\"outerHTML\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<div id=\"state-toggle\" class=\"flex items-center gap-3\"><button class=\"btn btn-sm btn-secondary\" hx-post=\"/patterns/state/toggle\" hx-target=\"#state-toggle\" hx-swap=\"outerHTML\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -258,7 +258,7 @@ func statePatternCard(title, method, desc string) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_state.templ`, Line: 141, Col: 44}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_state.templ`, Line: 138, Col: 44}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -271,7 +271,7 @@ func statePatternCard(title, method, desc string) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(method)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_state.templ`, Line: 142, Col: 76}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_state.templ`, Line: 139, Col: 76}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -284,7 +284,7 @@ func statePatternCard(title, method, desc string) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(desc)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_state.templ`, Line: 143, Col: 49}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_state.templ`, Line: 140, Col: 49}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {

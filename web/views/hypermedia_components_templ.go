@@ -24,7 +24,7 @@ type ComponentsPageData struct {
 	Rating       int
 }
 
-// ComponentsPage is the full-page layout for /hypermedia/components.
+// ComponentsPage is the full-page layout for /components/widgets.
 func ComponentsPage(data ComponentsPageData) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -46,7 +46,7 @@ func ComponentsPage(data ComponentsPageData) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"p-4 space-y-6 max-w-4xl mx-auto\"><div class=\"flex items-center justify-between mb-4\"><h1 class=\"text-2xl font-bold\">Component Patterns</h1><a href=\"/hypermedia/controls\" class=\"btn btn-sm btn-ghost\">← Overview</a></div><div role=\"alert\" class=\"alert alert-info text-sm\"><span>Demonstrates: <strong>steps</strong>, <strong>tabs</strong>, <strong>toast</strong>, <strong>chat</strong>, <strong>swap</strong>, <strong>skeleton</strong>, <strong>timeline</strong>, <strong>drawer</strong>, <strong>rating</strong>.</span></div><!-- 1. Steps --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Steps — Multi-step Wizard</h2><p class=\"text-sm text-base-content/70 mb-3\">Navigate a wizard with <code class=\"text-xs bg-base-200 px-1 rounded\">hx-get</code> on Next/Prev buttons. Server tracks current step and returns the updated steps indicator + content via <code class=\"text-xs bg-base-200 px-1 rounded\">hx-target</code> swap.</p>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"p-4 space-y-6 max-w-4xl mx-auto\"><h1 class=\"text-2xl font-bold mb-4\">Component Patterns</h1><div role=\"alert\" class=\"alert alert-info text-sm\"><span>Demonstrates: <strong>steps</strong>, <strong>tabs</strong>, <strong>toast</strong>, <strong>chat</strong>, <strong>swap</strong>, <strong>skeleton</strong>, <strong>timeline</strong>, <strong>drawer</strong>, <strong>rating</strong>.</span></div><!-- 1. Steps --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Steps — Multi-step Wizard</h2><p class=\"text-sm text-base-content/70 mb-3\">Navigate a wizard with <code class=\"text-xs bg-base-200 px-1 rounded\">hx-get</code> on Next/Prev buttons. Server tracks current step and returns the updated steps indicator + content via <code class=\"text-xs bg-base-200 px-1 rounded\">hx-target</code> swap.</p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -54,7 +54,7 @@ func ComponentsPage(data ComponentsPageData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div></div><!-- 2. Tabs --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Tabs — Lazy-loaded Content</h2><p class=\"text-sm text-base-content/70 mb-3\">Each tab button uses <code class=\"text-xs bg-base-200 px-1 rounded\">hx-get</code> to fetch content on demand. Active class managed via HyperScript.</p><div role=\"tablist\" class=\"tabs tabs-border\"><button role=\"tab\" class=\"tab tab-active\" hx-get=\"/hypermedia/components/tabs/overview\" hx-target=\"#tab-panel\" _=\"on click remove .tab-active from .tab in closest <div[role='tablist']/> then add .tab-active to me\">Overview</button> <button role=\"tab\" class=\"tab\" hx-get=\"/hypermedia/components/tabs/details\" hx-target=\"#tab-panel\" _=\"on click remove .tab-active from .tab in closest <div[role='tablist']/> then add .tab-active to me\">Details</button> <button role=\"tab\" class=\"tab\" hx-get=\"/hypermedia/components/tabs/settings\" hx-target=\"#tab-panel\" _=\"on click remove .tab-active from .tab in closest <div[role='tablist']/> then add .tab-active to me\">Settings</button></div><div id=\"tab-panel\" hx-get=\"/hypermedia/components/tabs/overview\" hx-trigger=\"load\" hx-swap=\"innerHTML\"><div class=\"flex items-center gap-2 p-4 text-sm text-base-content/50\"><span class=\"loading loading-spinner loading-xs\"></span> Loading…</div></div></div></div><!-- 3. Toast --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Toast — OOB Notifications</h2><p class=\"text-sm text-base-content/70 mb-3\">Button posts an action; server returns a result fragment <em>plus</em> an OOB toast via <code class=\"text-xs bg-base-200 px-1 rounded\">hx-swap-oob</code>. Toast auto-dismisses with HyperScript.</p><div><button class=\"btn btn-sm btn-primary\" hx-post=\"/hypermedia/components/toast\" hx-target=\"#toast-result\" hx-swap=\"outerHTML\">Trigger Toast</button></div><div id=\"toast-result\" class=\"text-sm text-base-content/50 mt-2\">Click to trigger a toast notification.</div></div></div><!-- 4. Chat Bubbles --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Chat Bubbles — Message Append</h2><p class=\"text-sm text-base-content/70 mb-3\">Form uses <code class=\"text-xs bg-base-200 px-1 rounded\">hx-post</code> with <code class=\"text-xs bg-base-200 px-1 rounded\">hx-swap=\"beforeend\"</code> to append messages. The server returns both user and bot bubbles.</p><div id=\"chat-window\" class=\"h-64 overflow-y-auto border border-base-300 rounded p-3 space-y-1 bg-base-200/30\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div></div><!-- 2. Tabs --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Tabs — Lazy-loaded Content</h2><p class=\"text-sm text-base-content/70 mb-3\">Each tab button uses <code class=\"text-xs bg-base-200 px-1 rounded\">hx-get</code> to fetch content on demand. Active class managed via HyperScript.</p><div role=\"tablist\" class=\"tabs tabs-border\"><button role=\"tab\" class=\"tab tab-active\" hx-get=\"/components/widgets/tabs/overview\" hx-target=\"#tab-panel\" _=\"on click remove .tab-active from .tab in closest <div[role='tablist']/> then add .tab-active to me\">Overview</button> <button role=\"tab\" class=\"tab\" hx-get=\"/components/widgets/tabs/details\" hx-target=\"#tab-panel\" _=\"on click remove .tab-active from .tab in closest <div[role='tablist']/> then add .tab-active to me\">Details</button> <button role=\"tab\" class=\"tab\" hx-get=\"/components/widgets/tabs/settings\" hx-target=\"#tab-panel\" _=\"on click remove .tab-active from .tab in closest <div[role='tablist']/> then add .tab-active to me\">Settings</button></div><div id=\"tab-panel\" hx-get=\"/components/widgets/tabs/overview\" hx-trigger=\"load\" hx-swap=\"innerHTML\"><div class=\"flex items-center gap-2 p-4 text-sm text-base-content/50\"><span class=\"loading loading-spinner loading-xs\"></span> Loading…</div></div></div></div><!-- 3. Toast --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Toast — OOB Notifications</h2><p class=\"text-sm text-base-content/70 mb-3\">Button posts an action; server returns a result fragment <em>plus</em> an OOB toast via <code class=\"text-xs bg-base-200 px-1 rounded\">hx-swap-oob</code>. Toast auto-dismisses with HyperScript.</p><div><button class=\"btn btn-sm btn-primary\" hx-post=\"/components/widgets/toast\" hx-target=\"#toast-result\" hx-swap=\"outerHTML\">Trigger Toast</button></div><div id=\"toast-result\" class=\"text-sm text-base-content/50 mt-2\">Click to trigger a toast notification.</div></div></div><!-- 4. Chat Bubbles --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Chat Bubbles — Message Append</h2><p class=\"text-sm text-base-content/70 mb-3\">Form uses <code class=\"text-xs bg-base-200 px-1 rounded\">hx-post</code> with <code class=\"text-xs bg-base-200 px-1 rounded\">hx-swap=\"beforeend\"</code> to append messages. The server returns both user and bot bubbles.</p><div id=\"chat-window\" class=\"h-64 overflow-y-auto border border-base-300 rounded p-3 space-y-1 bg-base-200/30\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -64,7 +64,7 @@ func ComponentsPage(data ComponentsPageData) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div><form hx-post=\"/hypermedia/components/chat\" hx-target=\"#chat-window\" hx-swap=\"beforeend scroll:#chat-window:bottom\" hx-on::after-request=\"this.reset()\" class=\"flex gap-2 mt-2\"><input type=\"text\" name=\"chat-msg\" placeholder=\"Type a message…\" class=\"input input-sm flex-1\" autocomplete=\"off\" enterkeyhint=\"send\"> <button type=\"submit\" class=\"btn btn-sm btn-primary\">Send</button></form></div></div><!-- 5. Swap --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Swap — Animated Toggle</h2><p class=\"text-sm text-base-content/70 mb-3\">Each button uses <code class=\"text-xs bg-base-200 px-1 rounded\">hx-post</code> with <code class=\"text-xs bg-base-200 px-1 rounded\">hx-swap=\"outerHTML\"</code> to toggle state. Server returns the updated button reflecting new state.</p><div class=\"flex gap-3\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div><form hx-post=\"/components/widgets/chat\" hx-target=\"#chat-window\" hx-swap=\"beforeend scroll:#chat-window:bottom\" hx-on::after-request=\"this.reset()\" class=\"flex gap-2 mt-2\"><input type=\"text\" name=\"chat-msg\" placeholder=\"Type a message…\" class=\"input input-sm flex-1\" autocomplete=\"off\" enterkeyhint=\"send\"> <button type=\"submit\" class=\"btn btn-sm btn-primary\">Send</button></form></div></div><!-- 5. Swap --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Swap — Animated Toggle</h2><p class=\"text-sm text-base-content/70 mb-3\">Each button uses <code class=\"text-xs bg-base-200 px-1 rounded\">hx-post</code> with <code class=\"text-xs bg-base-200 px-1 rounded\">hx-swap=\"outerHTML\"</code> to toggle state. Server returns the updated button reflecting new state.</p><div class=\"flex gap-3\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -76,7 +76,7 @@ func ComponentsPage(data ComponentsPageData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div></div></div><!-- 6. Skeleton --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Skeleton — Loading Placeholder</h2><p class=\"text-sm text-base-content/70 mb-3\">Button fires <code class=\"text-xs bg-base-200 px-1 rounded\">hx-get</code>; server delays 1.5s to simulate load. DaisyUI skeleton classes show placeholders, then real content replaces them.</p><div><button class=\"btn btn-sm btn-primary mb-3\" hx-get=\"/hypermedia/components/skeleton/content\" hx-target=\"#skeleton-target\" hx-swap=\"outerHTML\" hx-indicator=\"#skeleton-indicator\">Load Content</button></div><div id=\"skeleton-target\" class=\"space-y-3\"><div class=\"flex items-center gap-3\"><div class=\"skeleton h-12 w-12 shrink-0 rounded-full\"></div><div class=\"space-y-2 flex-1\"><div class=\"skeleton h-4 w-28\"></div><div class=\"skeleton h-3 w-20\"></div></div></div><div class=\"skeleton h-4 w-full\"></div><div class=\"skeleton h-4 w-4/5\"></div><div class=\"flex gap-2\"><div class=\"skeleton h-5 w-10 rounded-full\"></div><div class=\"skeleton h-5 w-12 rounded-full\"></div><div class=\"skeleton h-5 w-10 rounded-full\"></div></div></div></div></div><!-- 7. Timeline --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Timeline — Infinite Scroll</h2><p class=\"text-sm text-base-content/70 mb-3\">Sentinel div at the bottom uses <code class=\"text-xs bg-base-200 px-1 rounded\">hx-trigger=\"intersect once\"</code> to load more items. Each batch includes a new sentinel until all items are loaded.</p><div class=\"h-72 overflow-y-auto border border-base-300 rounded p-3\"><ul class=\"timeline timeline-vertical timeline-compact\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div></div></div><!-- 6. Skeleton --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Skeleton — Loading Placeholder</h2><p class=\"text-sm text-base-content/70 mb-3\">Button fires <code class=\"text-xs bg-base-200 px-1 rounded\">hx-get</code>; server delays 1.5s to simulate load. DaisyUI skeleton classes show placeholders, then real content replaces them.</p><div><button class=\"btn btn-sm btn-primary mb-3\" hx-get=\"/components/widgets/skeleton/content\" hx-target=\"#skeleton-target\" hx-swap=\"outerHTML\" hx-indicator=\"#skeleton-indicator\">Load Content</button></div><div id=\"skeleton-target\" class=\"space-y-3\"><div class=\"flex items-center gap-3\"><div class=\"skeleton h-12 w-12 shrink-0 rounded-full\"></div><div class=\"space-y-2 flex-1\"><div class=\"skeleton h-4 w-28\"></div><div class=\"skeleton h-3 w-20\"></div></div></div><div class=\"skeleton h-4 w-full\"></div><div class=\"skeleton h-4 w-4/5\"></div><div class=\"flex gap-2\"><div class=\"skeleton h-5 w-10 rounded-full\"></div><div class=\"skeleton h-5 w-12 rounded-full\"></div><div class=\"skeleton h-5 w-10 rounded-full\"></div></div></div></div></div><!-- 7. Timeline --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Timeline — Infinite Scroll</h2><p class=\"text-sm text-base-content/70 mb-3\">Sentinel div at the bottom uses <code class=\"text-xs bg-base-200 px-1 rounded\">hx-trigger=\"intersect once\"</code> to load more items. Each batch includes a new sentinel until all items are loaded.</p><div class=\"h-72 overflow-y-auto border border-base-300 rounded p-3\"><ul class=\"timeline timeline-vertical timeline-compact\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -88,7 +88,7 @@ func ComponentsPage(data ComponentsPageData) templ.Component {
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(evt.Time)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components.templ`, Line: 174, Col: 51}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components.templ`, Line: 171, Col: 51}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
@@ -101,7 +101,7 @@ func ComponentsPage(data ComponentsPageData) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(evt.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components.templ`, Line: 175, Col: 55}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components.templ`, Line: 172, Col: 55}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -114,7 +114,7 @@ func ComponentsPage(data ComponentsPageData) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(evt.Desc)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components.templ`, Line: 176, Col: 61}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components.templ`, Line: 173, Col: 61}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -131,9 +131,9 @@ func ComponentsPage(data ComponentsPageData) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var5 string
-			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/hypermedia/components/timeline?after=%d", data.TimelineNext))
+			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/components/widgets/timeline?after=%d", data.TimelineNext))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components.templ`, Line: 184, Col: 91}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components.templ`, Line: 181, Col: 88}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -144,7 +144,7 @@ func ComponentsPage(data ComponentsPageData) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</ul></div></div></div><!-- 8. Drawer --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Drawer — On-demand Side Panel</h2><p class=\"text-sm text-base-content/70 mb-3\">Open button uses <code class=\"text-xs bg-base-200 px-1 rounded\">hx-get</code> to load content into the drawer body. DaisyUI drawer toggled via checkbox + HyperScript.</p><div class=\"drawer drawer-end\"><input id=\"components-drawer\" type=\"checkbox\" class=\"drawer-toggle\"><div class=\"drawer-content\"><button class=\"btn btn-sm btn-primary\" hx-get=\"/hypermedia/components/drawer/content\" hx-target=\"#drawer-body\" _=\"on click set #components-drawer.checked to true\">Open Drawer</button></div><div class=\"drawer-side z-10\"><label for=\"components-drawer\" aria-label=\"close sidebar\" class=\"drawer-overlay\"></label><div id=\"drawer-body\" class=\"bg-base-100 min-h-full w-72 border-l border-base-300\"><div class=\"p-4 text-sm text-base-content/50\">Drawer content loads here…</div></div></div></div></div></div><!-- 9. Rating --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Rating — Star Input</h2><p class=\"text-sm text-base-content/70 mb-3\">Each star radio uses <code class=\"text-xs bg-base-200 px-1 rounded\">hx-post</code> with <code class=\"text-xs bg-base-200 px-1 rounded\">hx-vals</code> to post the selected rating. Server stores it and returns the updated fragment.</p>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</ul></div></div></div><!-- 8. Drawer --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Drawer — On-demand Side Panel</h2><p class=\"text-sm text-base-content/70 mb-3\">Open button uses <code class=\"text-xs bg-base-200 px-1 rounded\">hx-get</code> to load content into the drawer body. DaisyUI drawer toggled via checkbox + HyperScript.</p><div class=\"drawer drawer-end\"><input id=\"components-drawer\" type=\"checkbox\" class=\"drawer-toggle\"><div class=\"drawer-content\"><button class=\"btn btn-sm btn-primary\" hx-get=\"/components/widgets/drawer/content\" hx-target=\"#drawer-body\" _=\"on click set #components-drawer.checked to true\">Open Drawer</button></div><div class=\"drawer-side z-10\"><label for=\"components-drawer\" aria-label=\"close sidebar\" class=\"drawer-overlay\"></label><div id=\"drawer-body\" class=\"bg-base-100 min-h-full w-72 border-l border-base-300\"><div class=\"p-4 text-sm text-base-content/50\">Drawer content loads here…</div></div></div></div></div></div><!-- 9. Rating --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Rating — Star Input</h2><p class=\"text-sm text-base-content/70 mb-3\">Each star radio uses <code class=\"text-xs bg-base-200 px-1 rounded\">hx-post</code> with <code class=\"text-xs bg-base-200 px-1 rounded\">hx-vals</code> to post the selected rating. Server stores it and returns the updated fragment.</p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -228,7 +228,7 @@ func componentPatternCard(title, method, desc string) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components.templ`, Line: 254, Col: 44}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components.templ`, Line: 251, Col: 44}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -241,7 +241,7 @@ func componentPatternCard(title, method, desc string) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(method)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components.templ`, Line: 255, Col: 76}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components.templ`, Line: 252, Col: 76}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -254,7 +254,7 @@ func componentPatternCard(title, method, desc string) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(desc)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components.templ`, Line: 256, Col: 49}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components.templ`, Line: 253, Col: 49}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {

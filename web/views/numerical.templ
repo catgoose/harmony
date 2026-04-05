@@ -1,0 +1,95 @@
+// setup:feature:demo
+
+package views
+
+import (
+	components "catgoose/harmony/web/components/core"
+	"fmt"
+)
+
+// numTileWrapper is the static outer shell: holds the OOB data target + the slider.
+// The slider lives OUTSIDE the OOB target so it's never replaced by SSE updates.
+templ numTileWrapper(t NumTile) {
+	<div class="bg-base-200 rounded-lg p-4 relative">
+		<div class="absolute top-2 right-2">
+			@components.PinButton(t.ID, "/realtime/dashboard/pin", false, false)
+		</div>
+		@numTileData(t)
+		@components.IntervalSlider(components.IntervalSliderCfg{
+			ID: fmt.Sprintf("iv-%s", t.ID),
+			TargetKey: "tile", TargetValue: t.ID,
+			IntervalMs: t.IntervalMs, Scale: t.Scale,
+			PostURL: "/realtime/dashboard/tile-interval",
+		})
+	</div>
+}
+
+// numTileData is the OOB swap target — only the data portion, no slider.
+templ numTileData(t NumTile) {
+	<div id={ t.ID }>
+		<div class="text-xs text-base-content/50 uppercase tracking-wider mb-1">{ t.Title }</div>
+		<div class={ numValueClass(t.Color) }>{ t.Value }</div>
+		if t.Delta != "" {
+			<div class="flex items-center gap-1 text-xs mt-1">
+				if t.Neutral {
+					<span class="text-base-content/50">{ t.Delta }</span>
+				} else if t.DeltaUp {
+					<span class="text-success">▲ { t.Delta }</span>
+				} else {
+					<span class="text-error">▼ { t.Delta }</span>
+				}
+				if t.Subtitle != "" {
+					<span class="text-base-content/40">· { t.Subtitle }</span>
+				}
+			</div>
+		} else if t.Subtitle != "" {
+			<div class="text-xs text-base-content/40 mt-1">{ t.Subtitle }</div>
+		}
+	</div>
+}
+
+// oobNumTile replaces only the data div — the slider is untouched.
+templ oobNumTile(t NumTile) {
+	<div id={ t.ID } hx-swap-oob="innerHTML">
+		<div class="text-xs text-base-content/50 uppercase tracking-wider mb-1">{ t.Title }</div>
+		<div class={ numValueClass(t.Color) }>{ t.Value }</div>
+		if t.Delta != "" {
+			<div class="flex items-center gap-1 text-xs mt-1">
+				if t.Neutral {
+					<span class="text-base-content/50">{ t.Delta }</span>
+				} else if t.DeltaUp {
+					<span class="text-success">▲ { t.Delta }</span>
+				} else {
+					<span class="text-error">▼ { t.Delta }</span>
+				}
+				if t.Subtitle != "" {
+					<span class="text-base-content/40">· { t.Subtitle }</span>
+				}
+			</div>
+		} else if t.Subtitle != "" {
+			<div class="text-xs text-base-content/40 mt-1">{ t.Subtitle }</div>
+		}
+	</div>
+}
+
+templ NumericalOOB(tiles []NumTile) {
+	for _, t := range tiles {
+		@oobNumTile(t)
+	}
+}
+
+func numValueClass(color string) string {
+	base := "font-mono font-bold text-3xl "
+	switch color {
+	case "success":
+		return base + "text-success"
+	case "warning":
+		return base + "text-warning"
+	case "error":
+		return base + "text-error"
+	case "info":
+		return base + "text-info"
+	default:
+		return base + "text-base-content"
+	}
+}

@@ -20,7 +20,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-const peopleBase = "/demo/people"
+const peopleBase = "/apps/people"
 
 type peopleRoutes struct {
 	db     *demo.DB
@@ -176,7 +176,7 @@ func (p *peopleRoutes) handlePersonSSE(c echo.Context) error {
 			if !ok {
 				return nil
 			}
-			fmt.Fprint(c.Response(), msg)
+			_, _ = fmt.Fprint(c.Response(), msg)
 			flusher.Flush()
 		}
 	}

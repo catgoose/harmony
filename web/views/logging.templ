@@ -8,7 +8,7 @@ import (
 	"github.com/catgoose/promolog"
 )
 
-// LoggingPage is the full-page layout for /demo/logging.
+// LoggingPage is the full-page layout for /platform/logging.
 templ LoggingPage() {
 	<div class="p-4 space-y-6 max-w-5xl mx-auto">
 		<div class="flex items-center justify-between mb-4">
@@ -41,25 +41,25 @@ templ LoggingPage() {
 				<div class="flex flex-wrap gap-2">
 					<button
 						class="btn btn-sm btn-error btn-outline"
-						hx-get="/demo/logging/trigger/404"
+						hx-get="/platform/logging/trigger/404"
 						hx-target="#logging-trigger-result"
 						hx-swap="innerHTML"
 					>404 Not Found</button>
 					<button
 						class="btn btn-sm btn-error btn-outline"
-						hx-get="/demo/logging/trigger/400"
+						hx-get="/platform/logging/trigger/400"
 						hx-target="#logging-trigger-result"
 						hx-swap="innerHTML"
 					>400 Bad Request</button>
 					<button
 						class="btn btn-sm btn-error btn-outline"
-						hx-get="/demo/logging/trigger/500"
+						hx-get="/platform/logging/trigger/500"
 						hx-target="#logging-trigger-result"
 						hx-swap="innerHTML"
 					>500 Internal Error</button>
 					<button
 						class="btn btn-sm btn-error btn-outline"
-						hx-get="/demo/logging/trigger/403"
+						hx-get="/platform/logging/trigger/403"
 						hx-target="#logging-trigger-result"
 						hx-swap="innerHTML"
 					>403 Forbidden</button>
@@ -75,7 +75,7 @@ templ LoggingPage() {
 					<h2 class="card-title text-base">Captured Error Traces</h2>
 					<button
 						class="btn btn-sm btn-ghost"
-						hx-get="/demo/logging/traces"
+						hx-get="/platform/logging/traces"
 						hx-target="#logging-traces-list"
 						hx-swap="innerHTML"
 					>Refresh</button>
@@ -84,7 +84,7 @@ templ LoggingPage() {
 					Error traces persisted to SQLite. Click <strong>View Report</strong> to see the JSON payload
 					that would be sent to support (email attachment, Teams webhook, ticket system, etc).
 				</p>
-				<div id="logging-traces-list" hx-get="/demo/logging/traces" hx-trigger="load" hx-swap="innerHTML">
+				<div id="logging-traces-list" hx-get="/platform/logging/traces" hx-trigger="load" hx-swap="innerHTML">
 					<div class="text-center text-base-content/50 py-4">Loading...</div>
 				</div>
 			</div>
@@ -142,7 +142,7 @@ templ LoggingTracesList(traces []promolog.TraceSummary) {
 }
 
 templ loggingTraceRow(t promolog.TraceSummary) {
-	{{ reportURL := fmt.Sprintf("/demo/logging/report/%s", t.RequestID) }}
+	{{ reportURL := fmt.Sprintf("/platform/logging/report/%s", t.RequestID) }}
 	<tr>
 		<td class="text-xs font-mono whitespace-nowrap">{ t.CreatedAt.Format("2006-01-02 15:04:05") }</td>
 		<td>
@@ -180,7 +180,7 @@ templ loggingStatusBadge(code int) {
 }
 
 // LoggingReportOutput renders the simulated support report as formatted JSON.
-templ LoggingReportOutput(trace *promolog.ErrorTrace, jsonPayload string) {
+templ LoggingReportOutput(trace *promolog.Trace, jsonPayload string) {
 	<div class="card bg-base-100 shadow border border-base-300 mt-4">
 		<div class="card-body p-4">
 			<div class="flex items-center justify-between">

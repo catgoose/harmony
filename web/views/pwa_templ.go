@@ -34,19 +34,19 @@ func PwaIndexPage() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"p-4 space-y-6 max-w-4xl mx-auto\"><div class=\"space-y-1\"><h1 class=\"text-2xl font-bold\">PWA Offline Forms</h1><p class=\"text-sm text-base-content/60\">Data collection forms that work offline. Submissions are queued locally and synced when connectivity returns.</p></div><div class=\"mb-2\"><a href=\"/pwa/info\" hx-get=\"/pwa/info\" hx-target=\"#base-content\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"link link-primary text-sm\">Learn how the PWA works &rarr;</a></div><div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"p-4 space-y-6 max-w-4xl mx-auto\"><div class=\"space-y-1\"><h1 class=\"text-2xl font-bold\">PWA Offline Forms</h1><p class=\"text-sm text-base-content/60\">Data collection forms that work offline. Submissions are queued locally and synced when connectivity returns.</p></div><div class=\"mb-2\"><a href=\"/platform/pwa/info\" hx-get=\"/platform/pwa/info\" hx-target=\"#base-content\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"link link-primary text-sm\">Learn how the PWA works &rarr;</a></div><div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = pwaFormCard("/pwa/inspection", "Site Inspection", "On-site condition assessment with location, inspector, and photo references.", "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = pwaFormCard("/platform/pwa/inspection", "Site Inspection", "On-site condition assessment with location, inspector, and photo references.", "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = pwaFormCard("/pwa/report", "Field Report", "Incident and observation reports with priority classification and action tracking.", "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = pwaFormCard("/platform/pwa/report", "Field Report", "Incident and observation reports with priority classification and action tracking.", "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = pwaFormCard("/pwa/notes", "General Notes", "Free-form notes with subject tagging for field observations and reminders.", "M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = pwaFormCard("/platform/pwa/notes", "General Notes", "Free-form notes with subject tagging for field observations and reminders.", "M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -174,7 +174,7 @@ func PwaSiteInspectionForm() templ.Component {
 			templ_7745c5c3_Var8 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<div class=\"p-4 max-w-2xl mx-auto space-y-4\"><div class=\"space-y-1\"><h1 class=\"text-2xl font-bold\">Site Inspection</h1><p class=\"text-sm text-base-content/60\">Record on-site conditions and observations.</p></div><form hx-post=\"/pwa/inspection\" hx-swap=\"outerHTML\" class=\"space-y-4\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<div class=\"p-4 max-w-2xl mx-auto space-y-4\"><div class=\"space-y-1\"><h1 class=\"text-2xl font-bold\">Site Inspection</h1><p class=\"text-sm text-base-content/60\">Record on-site conditions and observations.</p></div><form hx-post=\"/platform/pwa/inspection\" hx-swap=\"outerHTML\" class=\"space-y-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -310,7 +310,7 @@ func PwaSiteInspectionForm() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<div class=\"flex gap-2\"><button type=\"submit\" class=\"btn btn-primary\">Submit Inspection</button> <a href=\"/pwa\" hx-get=\"/pwa\" hx-target=\"#base-content\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"btn btn-ghost\">Cancel</a></div></form></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<div class=\"flex gap-2\"><button type=\"submit\" class=\"btn btn-primary\">Submit Inspection</button> <a href=\"/platform/pwa\" hx-get=\"/platform/pwa\" hx-target=\"#base-content\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"btn btn-ghost\">Cancel</a></div></form></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -340,7 +340,7 @@ func PwaFieldReportForm() templ.Component {
 			templ_7745c5c3_Var15 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "<div class=\"p-4 max-w-2xl mx-auto space-y-4\"><div class=\"space-y-1\"><h1 class=\"text-2xl font-bold\">Field Report</h1><p class=\"text-sm text-base-content/60\">Log incidents, observations, and corrective actions.</p></div><form hx-post=\"/pwa/report\" hx-swap=\"outerHTML\" class=\"space-y-4\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "<div class=\"p-4 max-w-2xl mx-auto space-y-4\"><div class=\"space-y-1\"><h1 class=\"text-2xl font-bold\">Field Report</h1><p class=\"text-sm text-base-content/60\">Log incidents, observations, and corrective actions.</p></div><form hx-post=\"/platform/pwa/report\" hx-swap=\"outerHTML\" class=\"space-y-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -476,7 +476,7 @@ func PwaFieldReportForm() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "<div class=\"flex gap-2\"><button type=\"submit\" class=\"btn btn-primary\">Submit Report</button> <a href=\"/pwa\" hx-get=\"/pwa\" hx-target=\"#base-content\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"btn btn-ghost\">Cancel</a></div></form></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "<div class=\"flex gap-2\"><button type=\"submit\" class=\"btn btn-primary\">Submit Report</button> <a href=\"/platform/pwa\" hx-get=\"/platform/pwa\" hx-target=\"#base-content\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"btn btn-ghost\">Cancel</a></div></form></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -506,7 +506,7 @@ func PwaNotesForm() templ.Component {
 			templ_7745c5c3_Var22 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "<div class=\"p-4 max-w-2xl mx-auto space-y-4\"><div class=\"space-y-1\"><h1 class=\"text-2xl font-bold\">General Notes</h1><p class=\"text-sm text-base-content/60\">Capture field observations, reminders, and free-form notes.</p></div><form hx-post=\"/pwa/notes\" hx-swap=\"outerHTML\" class=\"space-y-4\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "<div class=\"p-4 max-w-2xl mx-auto space-y-4\"><div class=\"space-y-1\"><h1 class=\"text-2xl font-bold\">General Notes</h1><p class=\"text-sm text-base-content/60\">Capture field observations, reminders, and free-form notes.</p></div><form hx-post=\"/platform/pwa/notes\" hx-swap=\"outerHTML\" class=\"space-y-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -598,7 +598,7 @@ func PwaNotesForm() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "<div class=\"flex gap-2\"><button type=\"submit\" class=\"btn btn-primary\">Save Notes</button> <a href=\"/pwa\" hx-get=\"/pwa\" hx-target=\"#base-content\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"btn btn-ghost\">Cancel</a></div></form></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "<div class=\"flex gap-2\"><button type=\"submit\" class=\"btn btn-primary\">Save Notes</button> <a href=\"/platform/pwa\" hx-get=\"/platform/pwa\" hx-target=\"#base-content\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"btn btn-ghost\">Cancel</a></div></form></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -641,7 +641,7 @@ func PwaFormSuccess(message string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "</h2><p class=\"text-sm text-base-content/60\">Your data has been saved and will sync when online.</p><a href=\"/pwa\" hx-get=\"/pwa\" hx-target=\"#base-content\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"btn btn-primary btn-sm\">Back to Forms</a></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "</h2><p class=\"text-sm text-base-content/60\">Your data has been saved and will sync when online.</p><a href=\"/platform/pwa\" hx-get=\"/platform/pwa\" hx-target=\"#base-content\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"btn btn-primary btn-sm\">Back to Forms</a></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

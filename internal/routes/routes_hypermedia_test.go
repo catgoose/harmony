@@ -28,7 +28,7 @@ func crudContext(method, path string, body string) (echo.Context, *httptest.Resp
 
 func TestHandleCRUDCreate_WithName(t *testing.T) {
 	s := newHypermediaState()
-	c, rec := crudContext(http.MethodPost, "/hypermedia/crud/items", "name=TestItem&notes=hello")
+	c, rec := crudContext(http.MethodPost, "/patterns/crud/items", "name=TestItem&notes=hello")
 
 	err := s.handleCRUDCreate(c)
 	require.NoError(t, err)
@@ -38,7 +38,7 @@ func TestHandleCRUDCreate_WithName(t *testing.T) {
 
 func TestHandleCRUDCreate_WithoutName(t *testing.T) {
 	s := newHypermediaState()
-	c, rec := crudContext(http.MethodPost, "/hypermedia/crud/items", "name=&notes=hello")
+	c, rec := crudContext(http.MethodPost, "/patterns/crud/items", "name=&notes=hello")
 
 	err := s.handleCRUDCreate(c)
 	require.NoError(t, err)
@@ -52,7 +52,7 @@ func TestHandleCRUDCreate_WithoutName(t *testing.T) {
 
 func TestHandleCRUDUpdate_EmptyNameReturns400(t *testing.T) {
 	s := newHypermediaState()
-	c, _ := crudContext(http.MethodPut, "/hypermedia/crud/items/1", "name=&notes=updated")
+	c, _ := crudContext(http.MethodPut, "/patterns/crud/items/1", "name=&notes=updated")
 	c.SetParamNames("id")
 	c.SetParamValues("1")
 
@@ -63,7 +63,7 @@ func TestHandleCRUDUpdate_EmptyNameReturns400(t *testing.T) {
 
 func TestHandleCRUDUpdate_ValidName(t *testing.T) {
 	s := newHypermediaState()
-	c, rec := crudContext(http.MethodPut, "/hypermedia/crud/items/1", "name=Updated&notes=new")
+	c, rec := crudContext(http.MethodPut, "/patterns/crud/items/1", "name=Updated&notes=new")
 	c.SetParamNames("id")
 	c.SetParamValues("1")
 
@@ -80,7 +80,7 @@ func TestHandleCRUDUpdate_ValidName(t *testing.T) {
 
 func TestHandleCRUDDelete_ExistingID(t *testing.T) {
 	s := newHypermediaState()
-	c, rec := crudContext(http.MethodDelete, "/hypermedia/crud/items/1", "")
+	c, rec := crudContext(http.MethodDelete, "/patterns/crud/items/1", "")
 	c.SetParamNames("id")
 	c.SetParamValues("1")
 
@@ -96,7 +96,7 @@ func TestHandleCRUDDelete_ExistingID(t *testing.T) {
 
 func TestHandleCRUDDelete_NonExistingID(t *testing.T) {
 	s := newHypermediaState()
-	c, rec := crudContext(http.MethodDelete, "/hypermedia/crud/items/999", "")
+	c, rec := crudContext(http.MethodDelete, "/patterns/crud/items/999", "")
 	c.SetParamNames("id")
 	c.SetParamValues("999")
 
@@ -108,7 +108,7 @@ func TestHandleCRUDDelete_NonExistingID(t *testing.T) {
 func TestHandleCRUDPatchToggle(t *testing.T) {
 	s := newHypermediaState()
 	// Item 1 starts as "active".
-	c, rec := crudContext(http.MethodPatch, "/hypermedia/crud/items/1/toggle", "")
+	c, rec := crudContext(http.MethodPatch, "/patterns/crud/items/1/toggle", "")
 	c.SetParamNames("id")
 	c.SetParamValues("1")
 
@@ -131,19 +131,19 @@ func TestConcurrentHypermediaAccess(t *testing.T) {
 		wg.Add(3)
 		go func() {
 			defer wg.Done()
-			c, _ := crudContext(http.MethodPost, "/hypermedia/crud/items", "name=Concurrent&notes=test")
+			c, _ := crudContext(http.MethodPost, "/patterns/crud/items", "name=Concurrent&notes=test")
 			_ = s.handleCRUDCreate(c)
 		}()
 		go func() {
 			defer wg.Done()
-			c, _ := crudContext(http.MethodPatch, "/hypermedia/crud/items/1/toggle", "")
+			c, _ := crudContext(http.MethodPatch, "/patterns/crud/items/1/toggle", "")
 			c.SetParamNames("id")
 			c.SetParamValues("1")
 			_ = s.handleCRUDPatchToggle(c)
 		}()
 		go func() {
 			defer wg.Done()
-			c, _ := crudContext(http.MethodGet, "/hypermedia/crud/items", "")
+			c, _ := crudContext(http.MethodGet, "/patterns/crud/items", "")
 			_ = s.handleCRUDItems(c)
 		}()
 	}

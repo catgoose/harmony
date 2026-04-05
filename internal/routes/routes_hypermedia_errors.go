@@ -20,7 +20,7 @@ import (
 )
 
 func (ar *appRoutes) initErrorsRoutes() {
-	base := hypermediaBase + "/errors"
+	base := patternsBase + "/errors"
 	var flakyCount int64
 
 	ar.e.GET(base, handler.HandleComponent(views.ErrorsPage()))

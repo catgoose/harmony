@@ -15,8 +15,8 @@ templ PwaIndexPage() {
 		</div>
 		<div class="mb-2">
 			<a
-				href="/pwa/info"
-				hx-get="/pwa/info"
+				href="/platform/pwa/info"
+				hx-get="/platform/pwa/info"
 				hx-target="#base-content"
 				hx-swap="innerHTML"
 				hx-push-url="true"
@@ -24,9 +24,9 @@ templ PwaIndexPage() {
 			>Learn how the PWA works &rarr;</a>
 		</div>
 		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-			@pwaFormCard("/pwa/inspection", "Site Inspection", "On-site condition assessment with location, inspector, and photo references.", "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4")
-			@pwaFormCard("/pwa/report", "Field Report", "Incident and observation reports with priority classification and action tracking.", "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z")
-			@pwaFormCard("/pwa/notes", "General Notes", "Free-form notes with subject tagging for field observations and reminders.", "M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z")
+			@pwaFormCard("/platform/pwa/inspection", "Site Inspection", "On-site condition assessment with location, inspector, and photo references.", "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4")
+			@pwaFormCard("/platform/pwa/report", "Field Report", "Incident and observation reports with priority classification and action tracking.", "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z")
+			@pwaFormCard("/platform/pwa/notes", "General Notes", "Free-form notes with subject tagging for field observations and reminders.", "M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z")
 		</div>
 	</div>
 }
@@ -62,7 +62,7 @@ templ PwaSiteInspectionForm() {
 			<p class="text-sm text-base-content/60">Record on-site conditions and observations.</p>
 		</div>
 		<form
-			hx-post="/pwa/inspection"
+			hx-post="/platform/pwa/inspection"
 			hx-swap="outerHTML"
 			class="space-y-4"
 		>
@@ -92,7 +92,7 @@ templ PwaSiteInspectionForm() {
 			}
 			<div class="flex gap-2">
 				<button type="submit" class="btn btn-primary">Submit Inspection</button>
-				<a href="/pwa" hx-get="/pwa" hx-target="#base-content" hx-swap="innerHTML" hx-push-url="true" class="btn btn-ghost">Cancel</a>
+				<a href="/platform/pwa" hx-get="/platform/pwa" hx-target="#base-content" hx-swap="innerHTML" hx-push-url="true" class="btn btn-ghost">Cancel</a>
 			</div>
 		</form>
 	</div>
@@ -106,7 +106,7 @@ templ PwaFieldReportForm() {
 			<p class="text-sm text-base-content/60">Log incidents, observations, and corrective actions.</p>
 		</div>
 		<form
-			hx-post="/pwa/report"
+			hx-post="/platform/pwa/report"
 			hx-swap="outerHTML"
 			class="space-y-4"
 		>
@@ -143,7 +143,7 @@ templ PwaFieldReportForm() {
 			}
 			<div class="flex gap-2">
 				<button type="submit" class="btn btn-primary">Submit Report</button>
-				<a href="/pwa" hx-get="/pwa" hx-target="#base-content" hx-swap="innerHTML" hx-push-url="true" class="btn btn-ghost">Cancel</a>
+				<a href="/platform/pwa" hx-get="/platform/pwa" hx-target="#base-content" hx-swap="innerHTML" hx-push-url="true" class="btn btn-ghost">Cancel</a>
 			</div>
 		</form>
 	</div>
@@ -157,7 +157,7 @@ templ PwaNotesForm() {
 			<p class="text-sm text-base-content/60">Capture field observations, reminders, and free-form notes.</p>
 		</div>
 		<form
-			hx-post="/pwa/notes"
+			hx-post="/platform/pwa/notes"
 			hx-swap="outerHTML"
 			class="space-y-4"
 		>
@@ -175,7 +175,7 @@ templ PwaNotesForm() {
 			}
 			<div class="flex gap-2">
 				<button type="submit" class="btn btn-primary">Save Notes</button>
-				<a href="/pwa" hx-get="/pwa" hx-target="#base-content" hx-swap="innerHTML" hx-push-url="true" class="btn btn-ghost">Cancel</a>
+				<a href="/platform/pwa" hx-get="/platform/pwa" hx-target="#base-content" hx-swap="innerHTML" hx-push-url="true" class="btn btn-ghost">Cancel</a>
 			</div>
 		</form>
 	</div>
@@ -193,7 +193,7 @@ templ PwaFormSuccess(message string) {
 				</div>
 				<h2 class="card-title text-lg">{ message }</h2>
 				<p class="text-sm text-base-content/60">Your data has been saved and will sync when online.</p>
-				<a href="/pwa" hx-get="/pwa" hx-target="#base-content" hx-swap="innerHTML" hx-push-url="true" class="btn btn-primary btn-sm">Back to Forms</a>
+				<a href="/platform/pwa" hx-get="/platform/pwa" hx-target="#base-content" hx-swap="innerHTML" hx-push-url="true" class="btn btn-primary btn-sm">Back to Forms</a>
 			</div>
 		</div>
 	</div>

@@ -57,19 +57,19 @@ func NotFoundPage(path string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = notFoundLink("Inventory", "/demo/inventory").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = notFoundLink("Inventory", "/apps/inventory").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = notFoundLink("People", "/demo/people").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = notFoundLink("People", "/apps/people").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = notFoundLink("Kanban", "/demo/kanban").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = notFoundLink("Kanban", "/apps/kanban").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = notFoundLink("Approvals", "/demo/approvals").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = notFoundLink("Approvals", "/apps/approvals").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

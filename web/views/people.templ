@@ -36,7 +36,7 @@ templ PeopleTableBody(people []demo.Person, from string) {
 }
 
 templ PersonRow(p demo.Person, from string) {
-	{{ profileURL := linkwell.FromNav(fmt.Sprintf("/demo/people/%d", p.ID), from) }}
+	{{ profileURL := linkwell.FromNav(fmt.Sprintf("/apps/people/%d", p.ID), from) }}
 	<tr class="hover:bg-base-200/50 cursor-pointer" hx-get={ profileURL } hx-target="body" hx-push-url="true">
 		<td class="font-medium">{ p.FullName() }</td>
 		<td>{ p.Department }</td>
@@ -56,7 +56,7 @@ templ PersonProfilePage(p demo.Person, from string) {
 }
 
 templ PersonProfileCard(p demo.Person) {
-	{{ editURL := fmt.Sprintf("/demo/people/%d/edit", p.ID) }}
+	{{ editURL := fmt.Sprintf("/apps/people/%d/edit", p.ID) }}
 	<div id="person-profile-card" class="card bg-base-200 shadow-md">
 		<div class="card-body">
 			<div class="flex items-center justify-between">
@@ -104,8 +104,8 @@ templ PersonProfileCard(p demo.Person) {
 }
 
 templ PersonEditForm(p demo.Person) {
-	{{ saveURL := fmt.Sprintf("/demo/people/%d", p.ID) }}
-	{{ cancelURL := fmt.Sprintf("/demo/people/%d/card", p.ID) }}
+	{{ saveURL := fmt.Sprintf("/apps/people/%d", p.ID) }}
+	{{ cancelURL := fmt.Sprintf("/apps/people/%d/card", p.ID) }}
 	<div id="person-profile-card">
 		<div class="card bg-base-200 shadow-md">
 			<div class="card-body">

@@ -1,13 +1,10 @@
 // setup:feature:demo
 package views
 
-// InteractionsPage is the full-page layout for /hypermedia/interactions.
+// InteractionsPage is the full-page layout for /patterns/interactions.
 templ InteractionsPage(comments []string) {
 	<div class="p-4 space-y-6 max-w-4xl mx-auto">
-		<div class="flex items-center justify-between mb-4">
-			<h1 class="text-2xl font-bold">Interaction Patterns</h1>
-			<a href="/hypermedia/controls" class="btn btn-sm btn-ghost">← Overview</a>
-		</div>
+		<h1 class="text-2xl font-bold mb-4">Interaction Patterns</h1>
 		<div role="alert" class="alert alert-info text-sm">
 			<span>Demonstrates: <strong>submit</strong>, <strong>cancel</strong>, <strong>modal-open</strong>, <strong>modal-close</strong>, <strong>preview</strong>, <strong>comment</strong>, <strong>inline-edit</strong>, <strong>popover</strong>.</span>
 		</div>
@@ -19,7 +16,7 @@ templ InteractionsPage(comments []string) {
 				<div id="interaction-form-result">
 					<form
 						id="interaction-form"
-						hx-post="/hypermedia/interactions/submit"
+						hx-post="/patterns/interactions/submit"
 						hx-target="#interaction-form-result"
 						hx-swap="outerHTML"
 						class="space-y-3"
@@ -59,7 +56,7 @@ templ InteractionsPage(comments []string) {
 				<div>
 					<button
 						class="btn btn-sm btn-secondary"
-						hx-get="/hypermedia/interactions/modal"
+						hx-get="/patterns/interactions/modal"
 						hx-target="#modal-container"
 						hx-swap="innerHTML transition:false"
 						>Open Modal</button>
@@ -81,7 +78,7 @@ templ InteractionsPage(comments []string) {
 							rows="5"
 							placeholder="Type markdown-like text…"
 							class="textarea textarea-sm w-full"
-							hx-post="/hypermedia/interactions/preview"
+							hx-post="/patterns/interactions/preview"
 							hx-target="#preview-output"
 							hx-swap="innerHTML"
 							hx-trigger="keyup changed delay:500ms"
@@ -100,7 +97,7 @@ templ InteractionsPage(comments []string) {
 				<h2 class="card-title text-base">Append Comment</h2>
 				<p class="text-sm text-base-content/70 mb-3">Form posts a comment; server returns only the new <code class="text-xs bg-base-200 px-1 rounded">&lt;li&gt;</code> appended via <code class="text-xs bg-base-200 px-1 rounded">hx-swap="beforeend"</code>.</p>
 				<form
-					hx-post="/hypermedia/interactions/comment"
+					hx-post="/patterns/interactions/comment"
 					hx-target="#comment-list"
 					hx-swap="beforeend"
 					hx-on::after-request="this.reset()"
@@ -125,7 +122,7 @@ templ InteractionsPage(comments []string) {
 					contenteditable="plaintext-only"
 					class="text-xl font-bold border-b border-transparent hover:border-base-300 focus:border-primary focus:outline-none px-1 py-0.5 transition-colors"
 					hx-trigger="blur"
-					hx-post="/hypermedia/interactions/inline-title"
+					hx-post="/patterns/interactions/inline-title"
 					hx-swap="outerHTML"
 					hx-vals="js:{title: event.target.textContent}"
 				>
@@ -224,7 +221,7 @@ templ InteractionsSubmitResult(name, email, msg string) {
 		</div>
 		<button
 			class="btn btn-xs btn-ghost"
-			hx-get="/hypermedia/interactions"
+			hx-get="/patterns/interactions"
 			hx-target="#base-content"
 			hx-push-url="true"
 		>Reset</button>
@@ -254,7 +251,7 @@ templ InlineTitleFragment(title string) {
 		contenteditable="plaintext-only"
 		class="text-xl font-bold border-b border-transparent hover:border-base-300 focus:border-primary focus:outline-none px-1 py-0.5 transition-colors"
 		hx-trigger="blur"
-		hx-post="/hypermedia/interactions/inline-title"
+		hx-post="/patterns/interactions/inline-title"
 		hx-swap="outerHTML"
 		hx-vals="js:{title: event.target.textContent}"
 	>

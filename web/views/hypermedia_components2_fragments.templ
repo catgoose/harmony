@@ -48,7 +48,7 @@ templ CarouselSlideFragment(data CarouselSlideData) {
 			if data.Index > 0 {
 				<button
 					class="btn btn-sm btn-ghost"
-					hx-get={ fmt.Sprintf("/hypermedia/components2/carousel/%d", data.Index-1) }
+					hx-get={ fmt.Sprintf("/components/cards/carousel/%d", data.Index-1) }
 					hx-target="#carousel-panel"
 					hx-swap="outerHTML"
 				>← Prev</button>
@@ -58,7 +58,7 @@ templ CarouselSlideFragment(data CarouselSlideData) {
 			if data.Index < data.TotalSlides-1 {
 				<button
 					class="btn btn-sm btn-ghost"
-					hx-get={ fmt.Sprintf("/hypermedia/components2/carousel/%d", data.Index+1) }
+					hx-get={ fmt.Sprintf("/components/cards/carousel/%d", data.Index+1) }
 					hx-target="#carousel-panel"
 					hx-swap="outerHTML"
 				>Next →</button>
@@ -123,7 +123,7 @@ templ IndicatorBadgeFragment(count int) {
 	<span
 		id="indicator-badge"
 		class="indicator-item badge badge-primary"
-		hx-get="/hypermedia/components2/indicator/count"
+		hx-get="/components/cards/indicator/count"
 		hx-trigger="every 3s"
 		hx-swap="outerHTML"
 	>

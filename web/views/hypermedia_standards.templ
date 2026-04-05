@@ -1,13 +1,10 @@
 // setup:feature:demo
 package views
 
-// HypermediaStandardsPage renders the Web Standards showcase at /hypermedia/standards.
+// HypermediaStandardsPage renders the Web Standards showcase at /api/standards.
 templ HypermediaStandardsPage() {
 	<div class="p-4 space-y-6 max-w-4xl mx-auto">
-		<div class="flex items-center justify-between mb-4">
-			<h1 class="text-2xl font-bold">Web Standards</h1>
-			<a href="/hypermedia" class="btn btn-sm btn-ghost">&larr; Hypermedia</a>
-		</div>
+		<h1 class="text-2xl font-bold mb-4">Web Standards</h1>
 		<div role="alert" class="alert alert-info text-sm">
 			<span>
 				A catalog of the web standards used throughout this demo — HTTP headers, link relations,
@@ -38,7 +35,7 @@ templ standardsHTTP() {
 						Every page response includes
 						<code class="text-xs bg-base-200 px-1 rounded">Link</code>
 						headers declaring related resources.
-						Try <code class="text-xs bg-base-200 px-1 rounded">curl -I /demo/inventory</code> to see them.
+						Try <code class="text-xs bg-base-200 px-1 rounded">curl -I /apps/inventory</code> to see them.
 						The context bar and breadcrumbs are driven by these headers.
 					</p>
 				</div>
@@ -65,7 +62,7 @@ templ standardsHTTP() {
 						<code class="text-xs bg-base-200 px-1 rounded">303 See Other</code> { "for" } POST-Redirect-GET,
 						<code class="text-xs bg-base-200 px-1 rounded">409 Conflict</code> { "for" } optimistic concurrency,
 						<code class="text-xs bg-base-200 px-1 rounded">422 Unprocessable Entity</code> { "for" } validation errors.
-						See <a href="/hypermedia/errors" class="link link-primary">Errors</a>.
+						See <a href="/patterns/errors" class="link link-primary">Errors</a>.
 					</p>
 				</div>
 			</div>
@@ -103,7 +100,7 @@ templ standardsLinkRelations() {
 					<h3 class="font-semibold text-sm mb-1">One Registry, Many Surfaces</h3>
 					<p class="text-sm text-base-content/70">
 						Context bars, breadcrumbs, and the site map footer all read from the same link registry. No duplication.
-						See the full inspector at <a href="/hypermedia/links" class="link link-primary">Link Relations</a>.
+						See the full inspector at <a href="/api/links" class="link link-primary">Link Relations</a>.
 					</p>
 				</div>
 			</div>
@@ -180,9 +177,9 @@ templ standardsNativeHTML() {
 					<h3 class="font-semibold text-sm mb-1">Where to See Them</h3>
 					<p class="text-sm text-base-content/70">
 						Native elements are demonstrated in
-						<a href="/hypermedia/components3" class="link link-primary">Components 3</a>
+						<a href="/components/advanced" class="link link-primary">Components 3</a>
 						(details, datalist, meter, progress, mark) and
-						<a href="/hypermedia/interactions" class="link link-primary">Interactions</a>
+						<a href="/patterns/interactions" class="link link-primary">Interactions</a>
 						(dialog, popover).
 					</p>
 				</div>
@@ -223,7 +220,7 @@ templ standardsFormAttributes() {
 					<p class="text-sm text-base-content/70">
 						Proper <code class="text-xs bg-base-200 px-1 rounded">autocomplete</code> values
 						like name, email, tel let browsers autofill form fields.
-						See <a href="/hypermedia/controls" class="link link-primary">Controls</a> { "for" } live examples.
+						See <a href="/patterns/controls" class="link link-primary">Controls</a> { "for" } live examples.
 					</p>
 				</div>
 			</div>
@@ -300,7 +297,7 @@ templ standardsBrowserAPIs() {
 					<h3 class="font-semibold text-sm mb-1">Service Worker</h3>
 					<p class="text-sm text-base-content/70">
 						Offline caching for PWA support. Static assets and page shells are cached for offline reads.
-						See <a href="/demo/settings" class="link link-primary">Settings</a> { "for" } the service worker registration.
+						See <a href="/platform/settings" class="link link-primary">Settings</a> { "for" } the service worker registration.
 					</p>
 				</div>
 				<div class="border-l-2 border-primary/30 pl-3">
@@ -309,7 +306,7 @@ templ standardsBrowserAPIs() {
 						<code class="text-xs bg-base-200 px-1 rounded">Server-Timing</code> headers are read by
 						<code class="text-xs bg-base-200 px-1 rounded">PerformanceObserver</code>
 						to surface server-side timing data in client-side dashboards.
-						Visible in the <a href="/hypermedia/realtime" class="link link-primary">Realtime</a> page.
+						Visible in the <a href="/realtime/dashboard" class="link link-primary">Realtime</a> page.
 					</p>
 				</div>
 			</div>

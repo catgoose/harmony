@@ -8,16 +8,16 @@ import (
 	"log"
 	"os"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/catgoose/chuck/driver/sqlite"
 )
 
 func main() {
-	os.Remove("db/seed.db")
+	_ = os.Remove("db/seed.db")
 	db, err := sql.Open("sqlite3", "db/seed.db")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 
 	mustExec(db, `CREATE TABLE first_names (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,

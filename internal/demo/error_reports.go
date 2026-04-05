@@ -22,16 +22,16 @@ const (
 
 // ErrorReport represents a user-submitted error report stored in the demo DB.
 type ErrorReport struct {
-	ID          int
+	CreatedAt   time.Time
+	ResolvedAt  sql.NullTime
 	RequestID   string
 	Description string
 	Route       string
-	StatusCode  int
 	UserAgent   string
-	LogEntries  string // JSON text of captured log entries
+	LogEntries  string
 	Status      ErrorReportStatus
-	CreatedAt   time.Time
-	ResolvedAt  sql.NullTime
+	ID          int
+	StatusCode  int
 }
 
 // CreatedAtFormatted returns the created_at timestamp in a human-readable format.
@@ -181,7 +181,7 @@ func (d *DB) ListErrorReports(ctx context.Context, search, status, sortBy, sortD
 	if err != nil {
 		return nil, 0, fmt.Errorf("list error reports: %w", err)
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var reports []ErrorReport
 	for rows.Next() {

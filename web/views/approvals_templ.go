@@ -285,7 +285,7 @@ func ApprovalCard(r demo.ApprovalRequest) templ.Component {
 
 func approvalControls(id int, actions []string) []linkwell.Control {
 	var controls []linkwell.Control
-	url := fmt.Sprintf("/demo/approvals/%d", id)
+	url := fmt.Sprintf("/apps/approvals/%d", id)
 	target := fmt.Sprintf("#approval-%d", id)
 	for _, action := range actions {
 		variant := linkwell.VariantSecondary

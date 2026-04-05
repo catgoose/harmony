@@ -93,7 +93,7 @@ templ KanbanCard(t demo.KanbanTask) {
 
 templ kanbanMoveButtons(t demo.KanbanTask) {
 	{{ statusIdx := statusIndex(t.Status) }}
-	{{ taskURL := fmt.Sprintf("/demo/kanban/tasks/%d", t.ID) }}
+	{{ taskURL := fmt.Sprintf("/apps/kanban/tasks/%d", t.ID) }}
 	if statusIdx > 0 {
 		{{ prevStatus := demo.KanbanStatuses[statusIdx-1] }}
 		@components.Controls([]linkwell.Control{

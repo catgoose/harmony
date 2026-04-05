@@ -50,7 +50,7 @@ func comp2MultipartContext(t *testing.T, path, fieldName, fileName string, fileC
 
 func TestHandleCarouselSlide_ValidIndex(t *testing.T) {
 	s := newComponents2State()
-	c, rec := comp2Context(http.MethodGet, "/hypermedia/components2/carousel/0", "")
+	c, rec := comp2Context(http.MethodGet, "/components/cards/carousel/0", "")
 	c.SetParamNames("index")
 	c.SetParamValues("0")
 
@@ -62,7 +62,7 @@ func TestHandleCarouselSlide_ValidIndex(t *testing.T) {
 
 func TestHandleCarouselSlide_LastSlide(t *testing.T) {
 	s := newComponents2State()
-	c, rec := comp2Context(http.MethodGet, "/hypermedia/components2/carousel/4", "")
+	c, rec := comp2Context(http.MethodGet, "/components/cards/carousel/4", "")
 	c.SetParamNames("index")
 	c.SetParamValues("4")
 
@@ -74,7 +74,7 @@ func TestHandleCarouselSlide_LastSlide(t *testing.T) {
 
 func TestHandleCarouselSlide_ClampsNegative(t *testing.T) {
 	s := newComponents2State()
-	c, rec := comp2Context(http.MethodGet, "/hypermedia/components2/carousel/-1", "")
+	c, rec := comp2Context(http.MethodGet, "/components/cards/carousel/-1", "")
 	c.SetParamNames("index")
 	c.SetParamValues("-1")
 
@@ -87,7 +87,7 @@ func TestHandleCarouselSlide_ClampsNegative(t *testing.T) {
 
 func TestHandleCarouselSlide_ClampsOverflow(t *testing.T) {
 	s := newComponents2State()
-	c, rec := comp2Context(http.MethodGet, "/hypermedia/components2/carousel/99", "")
+	c, rec := comp2Context(http.MethodGet, "/components/cards/carousel/99", "")
 	c.SetParamNames("index")
 	c.SetParamValues("99")
 
@@ -100,7 +100,7 @@ func TestHandleCarouselSlide_ClampsOverflow(t *testing.T) {
 
 func TestHandleCarouselSlide_InvalidIndex(t *testing.T) {
 	s := newComponents2State()
-	c, _ := comp2Context(http.MethodGet, "/hypermedia/components2/carousel/abc", "")
+	c, _ := comp2Context(http.MethodGet, "/components/cards/carousel/abc", "")
 	c.SetParamNames("index")
 	c.SetParamValues("abc")
 
@@ -112,7 +112,7 @@ func TestHandleCarouselSlide_InvalidIndex(t *testing.T) {
 
 func TestHandleDropdownSearch_EmptyQuery(t *testing.T) {
 	s := newComponents2State()
-	c, rec := comp2Context(http.MethodGet, "/hypermedia/components2/dropdown/search", "")
+	c, rec := comp2Context(http.MethodGet, "/components/cards/dropdown/search", "")
 
 	err := s.handleDropdownSearch(c)
 	require.NoError(t, err)
@@ -127,7 +127,7 @@ func TestHandleDropdownSearch_EmptyQuery(t *testing.T) {
 func TestHandleDropdownSearch_FilterMatch(t *testing.T) {
 	s := newComponents2State()
 	e := echo.New()
-	req := httptest.NewRequest(http.MethodGet, "/hypermedia/components2/dropdown/search?q=rust", nil)
+	req := httptest.NewRequest(http.MethodGet, "/components/cards/dropdown/search?q=rust", nil)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 
@@ -142,7 +142,7 @@ func TestHandleDropdownSearch_FilterMatch(t *testing.T) {
 func TestHandleDropdownSearch_CaseInsensitive(t *testing.T) {
 	s := newComponents2State()
 	e := echo.New()
-	req := httptest.NewRequest(http.MethodGet, "/hypermedia/components2/dropdown/search?q=JAVA", nil)
+	req := httptest.NewRequest(http.MethodGet, "/components/cards/dropdown/search?q=JAVA", nil)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 
@@ -156,7 +156,7 @@ func TestHandleDropdownSearch_CaseInsensitive(t *testing.T) {
 func TestHandleDropdownSearch_NoMatch(t *testing.T) {
 	s := newComponents2State()
 	e := echo.New()
-	req := httptest.NewRequest(http.MethodGet, "/hypermedia/components2/dropdown/search?q=zzzzz", nil)
+	req := httptest.NewRequest(http.MethodGet, "/components/cards/dropdown/search?q=zzzzz", nil)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 
@@ -169,7 +169,7 @@ func TestHandleDropdownSearch_NoMatch(t *testing.T) {
 
 func TestHandleCascadingSelect_ValidCategory(t *testing.T) {
 	s := newComponents2State()
-	c, rec := comp2Context(http.MethodGet, "/hypermedia/components2/cascading/USA", "")
+	c, rec := comp2Context(http.MethodGet, "/components/cards/cascading/USA", "")
 	c.SetParamNames("category")
 	c.SetParamValues("USA")
 
@@ -183,7 +183,7 @@ func TestHandleCascadingSelect_ValidCategory(t *testing.T) {
 
 func TestHandleCascadingSelect_UnknownCategory(t *testing.T) {
 	s := newComponents2State()
-	c, _ := comp2Context(http.MethodGet, "/hypermedia/components2/cascading/Narnia", "")
+	c, _ := comp2Context(http.MethodGet, "/components/cards/cascading/Narnia", "")
 	c.SetParamNames("category")
 	c.SetParamValues("Narnia")
 
@@ -194,7 +194,7 @@ func TestHandleCascadingSelect_UnknownCategory(t *testing.T) {
 func TestHandleCascadingSelect_AllCategories(t *testing.T) {
 	s := newComponents2State()
 	for _, cat := range []string{"USA", "UK", "Japan", "Brazil"} {
-		c, rec := comp2Context(http.MethodGet, "/hypermedia/components2/cascading/"+cat, "")
+		c, rec := comp2Context(http.MethodGet, "/components/cards/cascading/"+cat, "")
 		c.SetParamNames("category")
 		c.SetParamValues(cat)
 
@@ -209,7 +209,7 @@ func TestHandleCascadingSelect_AllCategories(t *testing.T) {
 
 func TestHandleRange_ValidValue(t *testing.T) {
 	s := newComponents2State()
-	c, rec := comp2Context(http.MethodPost, "/hypermedia/components2/range", "range=40")
+	c, rec := comp2Context(http.MethodPost, "/components/cards/range", "range=40")
 
 	err := s.handleRange(c)
 	require.NoError(t, err)
@@ -225,7 +225,7 @@ func TestHandleRange_ValidValue(t *testing.T) {
 
 func TestHandleRange_ZeroValue(t *testing.T) {
 	s := newComponents2State()
-	c, rec := comp2Context(http.MethodPost, "/hypermedia/components2/range", "range=0")
+	c, rec := comp2Context(http.MethodPost, "/components/cards/range", "range=0")
 
 	err := s.handleRange(c)
 	require.NoError(t, err)
@@ -234,7 +234,7 @@ func TestHandleRange_ZeroValue(t *testing.T) {
 
 func TestHandleRange_MaxValue(t *testing.T) {
 	s := newComponents2State()
-	c, rec := comp2Context(http.MethodPost, "/hypermedia/components2/range", "range=100")
+	c, rec := comp2Context(http.MethodPost, "/components/cards/range", "range=100")
 
 	err := s.handleRange(c)
 	require.NoError(t, err)
@@ -243,7 +243,7 @@ func TestHandleRange_MaxValue(t *testing.T) {
 
 func TestHandleRange_InvalidDefaultsTo50(t *testing.T) {
 	s := newComponents2State()
-	c, rec := comp2Context(http.MethodPost, "/hypermedia/components2/range", "range=abc")
+	c, rec := comp2Context(http.MethodPost, "/components/cards/range", "range=abc")
 
 	err := s.handleRange(c)
 	require.NoError(t, err)
@@ -256,7 +256,7 @@ func TestHandleRange_InvalidDefaultsTo50(t *testing.T) {
 
 func TestHandleRange_OutOfRangeDefaultsTo50(t *testing.T) {
 	s := newComponents2State()
-	c, _ := comp2Context(http.MethodPost, "/hypermedia/components2/range", "range=200")
+	c, _ := comp2Context(http.MethodPost, "/components/cards/range", "range=200")
 
 	err := s.handleRange(c)
 	require.NoError(t, err)
@@ -271,7 +271,7 @@ func TestHandleRange_OutOfRangeDefaultsTo50(t *testing.T) {
 func TestHandleUpload_ValidFile(t *testing.T) {
 	s := newComponents2State()
 	content := []byte("hello world test content")
-	c, rec := comp2MultipartContext(t, "/hypermedia/components2/upload", "file", "test.txt", content)
+	c, rec := comp2MultipartContext(t, "/components/cards/upload", "file", "test.txt", content)
 
 	err := s.handleUpload(c)
 	require.NoError(t, err)
@@ -283,7 +283,7 @@ func TestHandleUpload_ValidFile(t *testing.T) {
 
 func TestHandleUpload_NoFile(t *testing.T) {
 	s := newComponents2State()
-	c, _ := comp2Context(http.MethodPost, "/hypermedia/components2/upload", "")
+	c, _ := comp2Context(http.MethodPost, "/components/cards/upload", "")
 
 	err := s.handleUpload(c)
 	require.Error(t, err)
@@ -295,7 +295,7 @@ func TestHandleUpload_LargerFile(t *testing.T) {
 	for i := range content {
 		content[i] = 'x'
 	}
-	c, rec := comp2MultipartContext(t, "/hypermedia/components2/upload", "file", "big.bin", content)
+	c, rec := comp2MultipartContext(t, "/components/cards/upload", "file", "big.bin", content)
 
 	err := s.handleUpload(c)
 	require.NoError(t, err)
@@ -307,7 +307,7 @@ func TestHandleUpload_LargerFile(t *testing.T) {
 func TestHandleAccordionPanel_Valid(t *testing.T) {
 	s := newComponents2State()
 	for i, expected := range []string{"HTMX", "DaisyUI", "templ"} {
-		c, rec := comp2Context(http.MethodGet, fmt.Sprintf("/hypermedia/components2/accordion/%d", i), "")
+		c, rec := comp2Context(http.MethodGet, fmt.Sprintf("/components/cards/accordion/%d", i), "")
 		c.SetParamNames("panel")
 		c.SetParamValues(fmt.Sprintf("%d", i))
 
@@ -320,7 +320,7 @@ func TestHandleAccordionPanel_Valid(t *testing.T) {
 
 func TestHandleAccordionPanel_OutOfRange(t *testing.T) {
 	s := newComponents2State()
-	c, _ := comp2Context(http.MethodGet, "/hypermedia/components2/accordion/99", "")
+	c, _ := comp2Context(http.MethodGet, "/components/cards/accordion/99", "")
 	c.SetParamNames("panel")
 	c.SetParamValues("99")
 
@@ -330,7 +330,7 @@ func TestHandleAccordionPanel_OutOfRange(t *testing.T) {
 
 func TestHandleAccordionPanel_InvalidParam(t *testing.T) {
 	s := newComponents2State()
-	c, _ := comp2Context(http.MethodGet, "/hypermedia/components2/accordion/abc", "")
+	c, _ := comp2Context(http.MethodGet, "/components/cards/accordion/abc", "")
 	c.SetParamNames("panel")
 	c.SetParamValues("abc")
 
@@ -343,7 +343,7 @@ func TestHandleAccordionPanel_InvalidParam(t *testing.T) {
 func TestHandleIndicatorCount_Increments(t *testing.T) {
 	s := newComponents2State()
 	initial := s.notifCount
-	c, rec := comp2Context(http.MethodGet, "/hypermedia/components2/indicator/count", "")
+	c, rec := comp2Context(http.MethodGet, "/components/cards/indicator/count", "")
 
 	err := s.handleIndicatorCount(c)
 	require.NoError(t, err)
@@ -358,7 +358,7 @@ func TestHandleIndicatorCount_Increments(t *testing.T) {
 func TestHandleIndicatorReset(t *testing.T) {
 	s := newComponents2State()
 	s.notifCount = 10
-	c, rec := comp2Context(http.MethodPost, "/hypermedia/components2/indicator/reset", "")
+	c, rec := comp2Context(http.MethodPost, "/components/cards/indicator/reset", "")
 
 	err := s.handleIndicatorReset(c)
 	require.NoError(t, err)
@@ -375,7 +375,7 @@ func TestHandleIndicatorReset(t *testing.T) {
 
 func TestHandleTheme_SetDark(t *testing.T) {
 	s := newComponents2State()
-	c, rec := comp2Context(http.MethodPost, "/hypermedia/components2/theme", "theme=dark")
+	c, rec := comp2Context(http.MethodPost, "/components/cards/theme", "theme=dark")
 
 	err := s.handleTheme(c)
 	require.NoError(t, err)
@@ -389,7 +389,7 @@ func TestHandleTheme_SetDark(t *testing.T) {
 
 func TestHandleTheme_EmptyDefaultsToDefault(t *testing.T) {
 	s := newComponents2State()
-	c, rec := comp2Context(http.MethodPost, "/hypermedia/components2/theme", "theme=")
+	c, rec := comp2Context(http.MethodPost, "/components/cards/theme", "theme=")
 
 	err := s.handleTheme(c)
 	require.NoError(t, err)
@@ -402,7 +402,7 @@ func TestHandleTheme_EmptyDefaultsToDefault(t *testing.T) {
 
 func TestHandleTheme_CustomValue(t *testing.T) {
 	s := newComponents2State()
-	c, rec := comp2Context(http.MethodPost, "/hypermedia/components2/theme", "theme=cyberpunk")
+	c, rec := comp2Context(http.MethodPost, "/components/cards/theme", "theme=cyberpunk")
 
 	err := s.handleTheme(c)
 	require.NoError(t, err)
@@ -426,15 +426,15 @@ func TestNewComponents2State_Defaults(t *testing.T) {
 
 func TestFormatFileSize(t *testing.T) {
 	tests := []struct {
-		bytes    int64
 		expected string
+		bytes    int64
 	}{
-		{0, "0 B"},
-		{512, "512 B"},
-		{1024, "1.00 KB"},
-		{1536, "1.50 KB"},
-		{1048576, "1.00 MB"},
-		{1073741824, "1.00 GB"},
+		{bytes: 0, expected: "0 B"},
+		{bytes: 512, expected: "512 B"},
+		{bytes: 1024, expected: "1.00 KB"},
+		{bytes: 1536, expected: "1.50 KB"},
+		{bytes: 1048576, expected: "1.00 MB"},
+		{bytes: 1073741824, expected: "1.00 GB"},
 	}
 	for _, tt := range tests {
 		assert.Equal(t, tt.expected, formatFileSize(tt.bytes), "bytes=%d", tt.bytes)
@@ -451,24 +451,24 @@ func TestConcurrentComponents2Access(t *testing.T) {
 		wg.Add(4)
 		go func() {
 			defer wg.Done()
-			c, _ := comp2Context(http.MethodGet, "/hypermedia/components2/carousel/2", "")
+			c, _ := comp2Context(http.MethodGet, "/components/cards/carousel/2", "")
 			c.SetParamNames("index")
 			c.SetParamValues("2")
 			_ = s.handleCarouselSlide(c)
 		}()
 		go func() {
 			defer wg.Done()
-			c, _ := comp2Context(http.MethodGet, "/hypermedia/components2/indicator/count", "")
+			c, _ := comp2Context(http.MethodGet, "/components/cards/indicator/count", "")
 			_ = s.handleIndicatorCount(c)
 		}()
 		go func() {
 			defer wg.Done()
-			c, _ := comp2Context(http.MethodPost, "/hypermedia/components2/indicator/reset", "")
+			c, _ := comp2Context(http.MethodPost, "/components/cards/indicator/reset", "")
 			_ = s.handleIndicatorReset(c)
 		}()
 		go func() {
 			defer wg.Done()
-			c, _ := comp2Context(http.MethodPost, "/hypermedia/components2/range", "range=75")
+			c, _ := comp2Context(http.MethodPost, "/components/cards/range", "range=75")
 			_ = s.handleRange(c)
 		}()
 	}

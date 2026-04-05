@@ -10,7 +10,7 @@ package views
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-// HypermediaStandardsPage renders the Web Standards showcase at /hypermedia/standards.
+// HypermediaStandardsPage renders the Web Standards showcase at /api/standards.
 func HypermediaStandardsPage() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -32,7 +32,7 @@ func HypermediaStandardsPage() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"p-4 space-y-6 max-w-4xl mx-auto\"><div class=\"flex items-center justify-between mb-4\"><h1 class=\"text-2xl font-bold\">Web Standards</h1><a href=\"/hypermedia\" class=\"btn btn-sm btn-ghost\">&larr; Hypermedia</a></div><div role=\"alert\" class=\"alert alert-info text-sm\"><span>A catalog of the web standards used throughout this demo — HTTP headers, link relations, navigation architecture, native HTML, form attributes, CSS features, and browser APIs.</span></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"p-4 space-y-6 max-w-4xl mx-auto\"><h1 class=\"text-2xl font-bold mb-4\">Web Standards</h1><div role=\"alert\" class=\"alert alert-info text-sm\"><span>A catalog of the web standards used throughout this demo — HTTP headers, link relations, navigation architecture, native HTML, form attributes, CSS features, and browser APIs.</span></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -93,14 +93,14 @@ func standardsHTTP() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body\"><h2 class=\"card-title text-base\">HTTP Standards</h2><p class=\"text-sm text-base-content/70 mb-3\">The demo uses HTTP semantics as the primary API contract, not just a transport layer.</p><div class=\"space-y-3\"><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Link Headers (RFC 8288)</h3><p class=\"text-sm text-base-content/70\">Every page response includes <code class=\"text-xs bg-base-200 px-1 rounded\">Link</code> headers declaring related resources. Try <code class=\"text-xs bg-base-200 px-1 rounded\">curl -I /demo/inventory</code> to see them. The context bar and breadcrumbs are driven by these headers.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Vary: HX-Request</h3><p class=\"text-sm text-base-content/70\">Responses include <code class=\"text-xs bg-base-200 px-1 rounded\">Vary: HX-Request</code> so caches distinguish between full-page loads and HTMX partial requests. Without this, a cached partial could be served as a full page.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Server-Timing</h3><p class=\"text-sm text-base-content/70\">Middleware injects <code class=\"text-xs bg-base-200 px-1 rounded\">Server-Timing</code> headers on every response. Visible in DevTools Network panel and consumable via the <code class=\"text-xs bg-base-200 px-1 rounded\">PerformanceObserver</code> API.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Status Codes</h3><p class=\"text-sm text-base-content/70\">Semantic HTTP status codes: <code class=\"text-xs bg-base-200 px-1 rounded\">303 See Other</code> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body\"><h2 class=\"card-title text-base\">HTTP Standards</h2><p class=\"text-sm text-base-content/70 mb-3\">The demo uses HTTP semantics as the primary API contract, not just a transport layer.</p><div class=\"space-y-3\"><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Link Headers (RFC 8288)</h3><p class=\"text-sm text-base-content/70\">Every page response includes <code class=\"text-xs bg-base-200 px-1 rounded\">Link</code> headers declaring related resources. Try <code class=\"text-xs bg-base-200 px-1 rounded\">curl -I /apps/inventory</code> to see them. The context bar and breadcrumbs are driven by these headers.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Vary: HX-Request</h3><p class=\"text-sm text-base-content/70\">Responses include <code class=\"text-xs bg-base-200 px-1 rounded\">Vary: HX-Request</code> so caches distinguish between full-page loads and HTMX partial requests. Without this, a cached partial could be served as a full page.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Server-Timing</h3><p class=\"text-sm text-base-content/70\">Middleware injects <code class=\"text-xs bg-base-200 px-1 rounded\">Server-Timing</code> headers on every response. Visible in DevTools Network panel and consumable via the <code class=\"text-xs bg-base-200 px-1 rounded\">PerformanceObserver</code> API.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Status Codes</h3><p class=\"text-sm text-base-content/70\">Semantic HTTP status codes: <code class=\"text-xs bg-base-200 px-1 rounded\">303 See Other</code> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs("for")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_standards.templ`, Line: 65, Col: 81}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_standards.templ`, Line: 62, Col: 81}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -113,7 +113,7 @@ func standardsHTTP() templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs("for")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_standards.templ`, Line: 66, Col: 80}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_standards.templ`, Line: 63, Col: 80}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -126,13 +126,13 @@ func standardsHTTP() templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs("for")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_standards.templ`, Line: 67, Col: 92}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_standards.templ`, Line: 64, Col: 92}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, " validation errors. See <a href=\"/hypermedia/errors\" class=\"link link-primary\">Errors</a>.</p></div></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, " validation errors. See <a href=\"/patterns/errors\" class=\"link link-primary\">Errors</a>.</p></div></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -168,7 +168,7 @@ func standardsLinkRelations() templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs("for")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_standards.templ`, Line: 97, Col: 81}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_standards.templ`, Line: 94, Col: 81}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -181,7 +181,7 @@ func standardsLinkRelations() templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs("for")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_standards.templ`, Line: 98, Col: 76}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_standards.templ`, Line: 95, Col: 76}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -194,13 +194,13 @@ func standardsLinkRelations() templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs("for")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_standards.templ`, Line: 99, Col: 85}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_standards.templ`, Line: 96, Col: 85}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, " forms that create resources.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">One Registry, Many Surfaces</h3><p class=\"text-sm text-base-content/70\">Context bars, breadcrumbs, and the site map footer all read from the same link registry. No duplication. See the full inspector at <a href=\"/hypermedia/links\" class=\"link link-primary\">Link Relations</a>.</p></div></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, " forms that create resources.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">One Registry, Many Surfaces</h3><p class=\"text-sm text-base-content/70\">Context bars, breadcrumbs, and the site map footer all read from the same link registry. No duplication. See the full inspector at <a href=\"/api/links\" class=\"link link-primary\">Link Relations</a>.</p></div></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -258,7 +258,7 @@ func standardsNativeHTML() templ.Component {
 			templ_7745c5c3_Var11 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body\"><h2 class=\"card-title text-base\">Native HTML Elements</h2><p class=\"text-sm text-base-content/70 mb-3\">The demo prefers native HTML elements over JavaScript widgets. These are accessible by default, styled by the browser, and work without JavaScript.</p><div class=\"space-y-3\"><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Elements Used</h3><p class=\"text-sm text-base-content/70\"><code class=\"text-xs bg-base-200 px-1 rounded\">dialog</code>, <code class=\"text-xs bg-base-200 px-1 rounded\">popover</code>, <code class=\"text-xs bg-base-200 px-1 rounded\">details</code>, <code class=\"text-xs bg-base-200 px-1 rounded\">datalist</code>, <code class=\"text-xs bg-base-200 px-1 rounded\">meter</code>, <code class=\"text-xs bg-base-200 px-1 rounded\">search</code>, <code class=\"text-xs bg-base-200 px-1 rounded\">mark</code>, <code class=\"text-xs bg-base-200 px-1 rounded\">progress</code>. Each replaces a JavaScript widget that used to require a library.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Where to See Them</h3><p class=\"text-sm text-base-content/70\">Native elements are demonstrated in <a href=\"/hypermedia/components3\" class=\"link link-primary\">Components 3</a> (details, datalist, meter, progress, mark) and <a href=\"/hypermedia/interactions\" class=\"link link-primary\">Interactions</a> (dialog, popover).</p></div></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body\"><h2 class=\"card-title text-base\">Native HTML Elements</h2><p class=\"text-sm text-base-content/70 mb-3\">The demo prefers native HTML elements over JavaScript widgets. These are accessible by default, styled by the browser, and work without JavaScript.</p><div class=\"space-y-3\"><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Elements Used</h3><p class=\"text-sm text-base-content/70\"><code class=\"text-xs bg-base-200 px-1 rounded\">dialog</code>, <code class=\"text-xs bg-base-200 px-1 rounded\">popover</code>, <code class=\"text-xs bg-base-200 px-1 rounded\">details</code>, <code class=\"text-xs bg-base-200 px-1 rounded\">datalist</code>, <code class=\"text-xs bg-base-200 px-1 rounded\">meter</code>, <code class=\"text-xs bg-base-200 px-1 rounded\">search</code>, <code class=\"text-xs bg-base-200 px-1 rounded\">mark</code>, <code class=\"text-xs bg-base-200 px-1 rounded\">progress</code>. Each replaces a JavaScript widget that used to require a library.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Where to See Them</h3><p class=\"text-sm text-base-content/70\">Native elements are demonstrated in <a href=\"/components/advanced\" class=\"link link-primary\">Components 3</a> (details, datalist, meter, progress, mark) and <a href=\"/patterns/interactions\" class=\"link link-primary\">Interactions</a> (dialog, popover).</p></div></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -287,14 +287,14 @@ func standardsFormAttributes() templ.Component {
 			templ_7745c5c3_Var12 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body\"><h2 class=\"card-title text-base\">Native Form Attributes</h2><p class=\"text-sm text-base-content/70 mb-3\">HTML form attributes that improve mobile UX and accessibility without JavaScript.</p><div class=\"space-y-3\"><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">inputmode</h3><p class=\"text-sm text-base-content/70\"><code class=\"text-xs bg-base-200 px-1 rounded\">inputmode=\"numeric\"</code>, <code class=\"text-xs bg-base-200 px-1 rounded\">tel</code>, <code class=\"text-xs bg-base-200 px-1 rounded\">email</code> — tells the mobile keyboard which layout to show. Used on price fields, phone inputs, and email fields.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">enterkeyhint</h3><p class=\"text-sm text-base-content/70\"><code class=\"text-xs bg-base-200 px-1 rounded\">enterkeyhint=\"search\"</code>, <code class=\"text-xs bg-base-200 px-1 rounded\">send</code> — changes the Enter key label on mobile keyboards. Used on search inputs and message fields.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">autocomplete</h3><p class=\"text-sm text-base-content/70\">Proper <code class=\"text-xs bg-base-200 px-1 rounded\">autocomplete</code> values like name, email, tel let browsers autofill form fields. See <a href=\"/hypermedia/controls\" class=\"link link-primary\">Controls</a> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body\"><h2 class=\"card-title text-base\">Native Form Attributes</h2><p class=\"text-sm text-base-content/70 mb-3\">HTML form attributes that improve mobile UX and accessibility without JavaScript.</p><div class=\"space-y-3\"><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">inputmode</h3><p class=\"text-sm text-base-content/70\"><code class=\"text-xs bg-base-200 px-1 rounded\">inputmode=\"numeric\"</code>, <code class=\"text-xs bg-base-200 px-1 rounded\">tel</code>, <code class=\"text-xs bg-base-200 px-1 rounded\">email</code> — tells the mobile keyboard which layout to show. Used on price fields, phone inputs, and email fields.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">enterkeyhint</h3><p class=\"text-sm text-base-content/70\"><code class=\"text-xs bg-base-200 px-1 rounded\">enterkeyhint=\"search\"</code>, <code class=\"text-xs bg-base-200 px-1 rounded\">send</code> — changes the Enter key label on mobile keyboards. Used on search inputs and message fields.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">autocomplete</h3><p class=\"text-sm text-base-content/70\">Proper <code class=\"text-xs bg-base-200 px-1 rounded\">autocomplete</code> values like name, email, tel let browsers autofill form fields. See <a href=\"/patterns/controls\" class=\"link link-primary\">Controls</a> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var13 string
 		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs("for")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_standards.templ`, Line: 226, Col: 87}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_standards.templ`, Line: 223, Col: 85}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {
@@ -358,20 +358,20 @@ func standardsBrowserAPIs() templ.Component {
 			templ_7745c5c3_Var15 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body\"><h2 class=\"card-title text-base\">Browser APIs</h2><p class=\"text-sm text-base-content/70 mb-3\">Standard browser APIs used for logging, communication, and offline support.</p><div class=\"space-y-3\"><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">navigator.sendBeacon</h3><p class=\"text-sm text-base-content/70\">Fire-and-forget logging that survives page unloads. Used for analytics and error reporting without blocking navigation.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">BroadcastChannel</h3><p class=\"text-sm text-base-content/70\">Cross-tab communication for theme sync. When you change the theme in one tab, all other tabs update immediately via a <code class=\"text-xs bg-base-200 px-1 rounded\">BroadcastChannel</code> message.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Service Worker</h3><p class=\"text-sm text-base-content/70\">Offline caching for PWA support. Static assets and page shells are cached for offline reads. See <a href=\"/demo/settings\" class=\"link link-primary\">Settings</a> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body\"><h2 class=\"card-title text-base\">Browser APIs</h2><p class=\"text-sm text-base-content/70 mb-3\">Standard browser APIs used for logging, communication, and offline support.</p><div class=\"space-y-3\"><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">navigator.sendBeacon</h3><p class=\"text-sm text-base-content/70\">Fire-and-forget logging that survives page unloads. Used for analytics and error reporting without blocking navigation.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">BroadcastChannel</h3><p class=\"text-sm text-base-content/70\">Cross-tab communication for theme sync. When you change the theme in one tab, all other tabs update immediately via a <code class=\"text-xs bg-base-200 px-1 rounded\">BroadcastChannel</code> message.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Service Worker</h3><p class=\"text-sm text-base-content/70\">Offline caching for PWA support. Static assets and page shells are cached for offline reads. See <a href=\"/platform/settings\" class=\"link link-primary\">Settings</a> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs("for")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_standards.templ`, Line: 303, Col: 81}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_standards.templ`, Line: 300, Col: 85}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, " the service worker registration.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Server-Timing + PerformanceObserver</h3><p class=\"text-sm text-base-content/70\"><code class=\"text-xs bg-base-200 px-1 rounded\">Server-Timing</code> headers are read by <code class=\"text-xs bg-base-200 px-1 rounded\">PerformanceObserver</code> to surface server-side timing data in client-side dashboards. Visible in the <a href=\"/hypermedia/realtime\" class=\"link link-primary\">Realtime</a> page.</p></div></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, " the service worker registration.</p></div><div class=\"border-l-2 border-primary/30 pl-3\"><h3 class=\"font-semibold text-sm mb-1\">Server-Timing + PerformanceObserver</h3><p class=\"text-sm text-base-content/70\"><code class=\"text-xs bg-base-200 px-1 rounded\">Server-Timing</code> headers are read by <code class=\"text-xs bg-base-200 px-1 rounded\">PerformanceObserver</code> to surface server-side timing data in client-side dashboards. Visible in the <a href=\"/realtime/dashboard\" class=\"link link-primary\">Realtime</a> page.</p></div></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

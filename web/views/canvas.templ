@@ -31,7 +31,7 @@ templ CanvasPage(startColor string) {
 						></button>
 					}
 				</div>
-				<button class="btn btn-ghost btn-xs" hx-post="/demo/canvas/reset" hx-swap="none">Clear</button>
+				<button class="btn btn-ghost btn-xs" hx-post="/realtime/canvas/reset" hx-swap="none">Clear</button>
 			</div>
 		</div>
 		<div class="flex items-center gap-2">
@@ -88,7 +88,7 @@ templ CanvasPage(startColor string) {
 					var color = window._canvasColor;
 					ctx.fillStyle = color;
 					ctx.fillRect(x, y, 1, 1);
-					fetch("/demo/canvas/place", {
+					fetch("/realtime/canvas/place", {
 						method: "POST",
 						body: new URLSearchParams({x: x, y: y, color: color})
 					});
@@ -172,7 +172,7 @@ templ CanvasPage(startColor string) {
 				});
 
 				/* Load initial state */
-				fetch("/demo/canvas/state").then(function(r) { return r.json(); }).then(function(cells) {
+				fetch("/realtime/canvas/state").then(function(r) { return r.json(); }).then(function(cells) {
 					for (var i = 0; i < cells.length; i++) {
 						if (cells[i]) {
 							ctx.fillStyle = cells[i];

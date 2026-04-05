@@ -11,7 +11,6 @@ import (
 
 // Person represents a person in the directory.
 type Person struct {
-	ID         int
 	FirstName  string
 	LastName   string
 	Email      string
@@ -22,6 +21,7 @@ type Person struct {
 	JobTitle   string
 	Bio        string
 	CreatedAt  string
+	ID         int
 }
 
 // FullName returns "First Last".
@@ -85,7 +85,7 @@ func (d *DB) ListPeople(ctx context.Context, search, department, sortBy, sortDir
 	if err != nil {
 		return nil, 0, err
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var people []Person
 	for rows.Next() {

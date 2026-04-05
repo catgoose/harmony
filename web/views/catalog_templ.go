@@ -19,7 +19,7 @@ import (
 	"github.com/catgoose/linkwell"
 )
 
-// CatalogPage is the full page content for /demo/catalog.
+// CatalogPage is the full page content for /apps/catalog.
 // The FilterBar lives outside the table container so it is never replaced by HTMX swaps.
 func CatalogPage(bar linkwell.FilterBar, tableContainer templ.Component) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -181,7 +181,7 @@ func CatalogItemRow(item demo.Item) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		rowID := fmt.Sprintf("item-row-%d", item.ID)
-		detailURL := fmt.Sprintf("/demo/catalog/items/%d/details", item.ID)
+		detailURL := fmt.Sprintf("/apps/catalog/items/%d/details", item.ID)
 		detailRowTarget := fmt.Sprintf("#detail-row-%d", item.ID)
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<tr id=\"")
 		if templ_7745c5c3_Err != nil {
@@ -201,7 +201,7 @@ func CatalogItemRow(item demo.Item) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var7 templ.SafeURL
-		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL(fmt.Sprintf("/demo/catalog/items/%d", item.ID)))
+		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL(fmt.Sprintf("/apps/catalog/items/%d", item.ID)))
 		if templ_7745c5c3_Err != nil {
 			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/catalog.templ`, Line: 49, Col: 73}
 		}

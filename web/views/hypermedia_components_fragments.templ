@@ -49,7 +49,7 @@ templ StepFragment(step int) {
 			if step > 1 {
 				<button
 					class="btn btn-sm btn-ghost"
-					hx-get={ fmt.Sprintf("/hypermedia/components/steps/%d", step-1) }
+					hx-get={ fmt.Sprintf("/components/widgets/steps/%d", step-1) }
 					hx-target="#wizard-panel"
 					hx-swap="outerHTML"
 				>← Previous</button>
@@ -59,7 +59,7 @@ templ StepFragment(step int) {
 			if step < 4 {
 				<button
 					class="btn btn-sm btn-primary"
-					hx-get={ fmt.Sprintf("/hypermedia/components/steps/%d", step+1) }
+					hx-get={ fmt.Sprintf("/components/widgets/steps/%d", step+1) }
 					hx-target="#wizard-panel"
 					hx-swap="outerHTML"
 				>Next →</button>
@@ -137,7 +137,7 @@ templ SwapLikeFragment(liked bool) {
 	<button
 		id="swap-like"
 		class={ "btn btn-sm", templ.KV("btn-error", liked), templ.KV("btn-ghost", !liked) }
-		hx-post="/hypermedia/components/swap/like"
+		hx-post="/components/widgets/swap/like"
 		hx-target="#swap-like"
 		hx-swap="outerHTML"
 	>
@@ -154,7 +154,7 @@ templ SwapBookmarkFragment(bookmarked bool) {
 	<button
 		id="swap-bookmark"
 		class={ "btn btn-sm", templ.KV("btn-warning", bookmarked), templ.KV("btn-ghost", !bookmarked) }
-		hx-post="/hypermedia/components/swap/bookmark"
+		hx-post="/components/widgets/swap/bookmark"
 		hx-target="#swap-bookmark"
 		hx-swap="outerHTML"
 	>
@@ -210,7 +210,7 @@ templ TimelineBatchFragment(events []TimelineEvent, nextAfter int, hasMore bool)
 	if hasMore {
 		<li
 			id="timeline-sentinel"
-			hx-get={ fmt.Sprintf("/hypermedia/components/timeline?after=%d", nextAfter) }
+			hx-get={ fmt.Sprintf("/components/widgets/timeline?after=%d", nextAfter) }
 			hx-trigger="intersect once"
 			hx-target="#timeline-sentinel"
 			hx-swap="outerHTML"
@@ -253,7 +253,7 @@ templ RatingFragment(rating int) {
 					name="rating"
 					class="mask mask-star-2 bg-warning"
 					checked?={ i == rating }
-					hx-post="/hypermedia/components/rating"
+					hx-post="/components/widgets/rating"
 					hx-target="#rating-demo"
 					hx-swap="outerHTML"
 					hx-vals={ fmt.Sprintf(`{"rating": "%d"}`, i) }

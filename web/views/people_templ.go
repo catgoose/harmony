@@ -160,7 +160,7 @@ func PersonRow(p demo.Person, from string) templ.Component {
 			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		profileURL := linkwell.FromNav(fmt.Sprintf("/demo/people/%d", p.ID), from)
+		profileURL := linkwell.FromNav(fmt.Sprintf("/apps/people/%d", p.ID), from)
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<tr class=\"hover:bg-base-200/50 cursor-pointer\" hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -331,7 +331,7 @@ func PersonProfileCard(p demo.Person) templ.Component {
 			templ_7745c5c3_Var14 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		editURL := fmt.Sprintf("/demo/people/%d/edit", p.ID)
+		editURL := fmt.Sprintf("/apps/people/%d/edit", p.ID)
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "<div id=\"person-profile-card\" class=\"card bg-base-200 shadow-md\"><div class=\"card-body\"><div class=\"flex items-center justify-between\"><h2 class=\"card-title text-2xl\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -505,8 +505,8 @@ func PersonEditForm(p demo.Person) templ.Component {
 			templ_7745c5c3_Var24 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		saveURL := fmt.Sprintf("/demo/people/%d", p.ID)
-		cancelURL := fmt.Sprintf("/demo/people/%d/card", p.ID)
+		saveURL := fmt.Sprintf("/apps/people/%d", p.ID)
+		cancelURL := fmt.Sprintf("/apps/people/%d/card", p.ID)
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "<div id=\"person-profile-card\"><div class=\"card bg-base-200 shadow-md\"><div class=\"card-body\"><h2 class=\"card-title text-2xl\">Edit Profile</h2><div class=\"grid grid-cols-1 md:grid-cols-2 gap-4 mt-4\"><div><label class=\"label label-text text-xs\">First Name</label> <input type=\"text\" name=\"first_name\" class=\"input input-sm w-full\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

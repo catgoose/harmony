@@ -6,7 +6,7 @@ import "time"
 // SyncOperation represents a single offline mutation queued by the client.
 type SyncOperation struct {
 	Method      string `json:"method"`       // POST, PUT, DELETE
-	URL         string `json:"url"`          // e.g. /demo/repository/tasks/42
+	URL         string `json:"url"`          // e.g. /platform/repository/tasks/42
 	Body        string `json:"body"`         // form-urlencoded payload
 	ContentType string `json:"content_type"` // Content-Type header
 	Version     *int   `json:"version"`      // row version at time of edit (nil for creates)
@@ -31,14 +31,14 @@ const (
 
 // SyncResult is the server's response for a single operation.
 type SyncResult struct {
-	Index      int              `json:"index"`
 	Status     SyncResultStatus `json:"status"`
 	Message    string           `json:"message,omitempty"`
+	Index      int              `json:"index"`
 	NewVersion int              `json:"new_version,omitempty"`
 }
 
 // SyncResponse is the batch response sent back to the client.
 type SyncResponse struct {
-	Results   []SyncResult `json:"results"`
 	Timestamp time.Time    `json:"server_time"`
+	Results   []SyncResult `json:"results"`
 }

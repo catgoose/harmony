@@ -9,21 +9,21 @@ import (
 
 // ActivityEvent represents a recorded action in the system.
 type ActivityEvent struct {
-	ID         int
-	Action     string // created, updated, deleted, moved, approved, rejected, etc.
-	Resource   string // person, task, request, contact, etc.
-	ResourceID int
-	Name       string // display name of the affected resource
-	Detail     string
 	Timestamp  time.Time
+	Action     string
+	Resource   string
+	Name       string
+	Detail     string
+	ID         int
+	ResourceID int
 }
 
 // ActivityLog is a thread-safe capped event log.
 type ActivityLog struct {
-	mu     sync.RWMutex
 	events []ActivityEvent
 	nextID int
 	maxLen int
+	mu     sync.RWMutex
 }
 
 // NewActivityLog creates a log that retains at most maxLen events.

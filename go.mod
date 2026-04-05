@@ -4,20 +4,20 @@ go 1.26.1
 
 require (
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.13.1
+	github.com/CAFxX/httpcompression v0.0.9
 	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/a-h/templ v0.3.1001
 	github.com/angelofallars/htmx-go v0.5.0
 	github.com/catgoose/crooner v1.4.15
-	github.com/catgoose/linkwell v0.2.20
-	github.com/catgoose/porter v0.4.9
+	github.com/catgoose/linkwell v0.2.21
+	github.com/catgoose/porter v0.4.10
 	github.com/catgoose/promolog/sqlite v0.0.0-20260404160355-64d49720300a
-	github.com/catgoose/tavern v0.4.36
+	github.com/catgoose/tavern v0.4.37
 	github.com/charmbracelet/huh v1.0.0
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/labstack/echo/v4 v4.15.1
 	github.com/magefile/mage v1.17.1
-	github.com/mattn/go-sqlite3 v1.14.40
 	github.com/microsoft/kiota-abstractions-go v1.9.4
 	github.com/microsoftgraph/msgraph-sdk-go v1.96.0
 	github.com/microsoftgraph/msgraph-sdk-go-core v1.4.0
@@ -26,7 +26,9 @@ require (
 )
 
 require (
+	github.com/klauspost/compress v1.18.5 // indirect
 	github.com/lib/pq v1.12.3 // indirect
+	github.com/mattn/go-sqlite3 v1.14.40 // indirect
 	github.com/ncruces/go-sqlite3 v0.33.2 // indirect
 	github.com/ncruces/go-sqlite3-wasm v1.0.5-0.20260329114232-2491c387476c // indirect
 	github.com/ncruces/julianday v1.0.0 // indirect
@@ -40,7 +42,7 @@ require (
 	github.com/a-h/parse v0.0.0-20250122154542-74294addb73e // indirect
 	github.com/air-verse/air v1.62.0 // indirect
 	github.com/alexedwards/scs/v2 v2.9.0 // indirect
-	github.com/andybalholm/brotli v1.1.0 // indirect
+	github.com/andybalholm/brotli v1.2.1 // indirect
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/bep/godartsass/v2 v2.5.0 // indirect

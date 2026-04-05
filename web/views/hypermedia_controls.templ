@@ -12,22 +12,22 @@ templ HypermediaControlsPage() {
 	<div class="p-4 space-y-6 max-w-5xl mx-auto">
 		<div class="flex items-center justify-between mb-4">
 			<h1 class="text-2xl font-bold">Controls Gallery</h1>
-			<a href="/demo/inventory" class="btn btn-sm btn-primary">Live Demo</a>
+			<a href="/apps/inventory" class="btn btn-sm btn-primary">Live Demo</a>
 		</div>
 		// ─── 1. Button Variants ──────────────────────────────────────────────
 		@controlsSection("1. Button Variants") {
 			<p class="text-sm text-base-content/70 mb-3">Click any button — each <code class="text-xs bg-base-200 px-1 rounded">POST</code>s to the server and the response shows which variant was clicked.</p>
 			@components.Controls([]linkwell.Control{
 				{Kind: linkwell.ControlKindHTMX, Label: "Primary", Variant: linkwell.VariantPrimary,
-					HxRequest: linkwell.HxPost("/hypermedia/controls/echo?v=primary", "#variant-result"), Swap: linkwell.SwapInnerHTML},
+					HxRequest: linkwell.HxPost("/patterns/controls/echo?v=primary", "#variant-result"), Swap: linkwell.SwapInnerHTML},
 				{Kind: linkwell.ControlKindHTMX, Label: "Secondary", Variant: linkwell.VariantSecondary,
-					HxRequest: linkwell.HxPost("/hypermedia/controls/echo?v=secondary", "#variant-result"), Swap: linkwell.SwapInnerHTML},
+					HxRequest: linkwell.HxPost("/patterns/controls/echo?v=secondary", "#variant-result"), Swap: linkwell.SwapInnerHTML},
 				{Kind: linkwell.ControlKindHTMX, Label: "Danger", Variant: linkwell.VariantDanger,
-					HxRequest: linkwell.HxPost("/hypermedia/controls/echo?v=danger", "#variant-result"), Swap: linkwell.SwapInnerHTML},
+					HxRequest: linkwell.HxPost("/patterns/controls/echo?v=danger", "#variant-result"), Swap: linkwell.SwapInnerHTML},
 				{Kind: linkwell.ControlKindHTMX, Label: "Ghost", Variant: linkwell.VariantGhost,
-					HxRequest: linkwell.HxPost("/hypermedia/controls/echo?v=ghost", "#variant-result"), Swap: linkwell.SwapInnerHTML},
+					HxRequest: linkwell.HxPost("/patterns/controls/echo?v=ghost", "#variant-result"), Swap: linkwell.SwapInnerHTML},
 				{Kind: linkwell.ControlKindHTMX, Label: "Link", Variant: linkwell.VariantLink,
-					HxRequest: linkwell.HxPost("/hypermedia/controls/echo?v=link", "#variant-result"), Swap: linkwell.SwapInnerHTML},
+					HxRequest: linkwell.HxPost("/patterns/controls/echo?v=link", "#variant-result"), Swap: linkwell.SwapInnerHTML},
 			})
 			<div id="variant-result" class="mt-3 text-sm text-base-content/50 italic">Click a button above…</div>
 		}
@@ -36,8 +36,8 @@ templ HypermediaControlsPage() {
 			<p class="text-sm text-base-content/70 mb-3">Each kind uses a different mechanism: HTMX request, HyperScript, or plain navigation.</p>
 			<div class="space-y-3">
 				@components.Controls([]linkwell.Control{
-					linkwell.RetryButton("Retry", linkwell.HxMethodGet, "/hypermedia/controls/retry", "#kind-result"),
-					linkwell.HTMXAction("HTMX Action", linkwell.HxPost("/hypermedia/controls/action", "#kind-result")),
+					linkwell.RetryButton("Retry", linkwell.HxMethodGet, "/patterns/controls/retry", "#kind-result"),
+					linkwell.HTMXAction("HTMX Action", linkwell.HxPost("/patterns/controls/action", "#kind-result")),
 					linkwell.BackButton("Go Back"),
 					linkwell.RedirectLink("Link", "/"),
 				})
@@ -49,7 +49,7 @@ templ HypermediaControlsPage() {
 				<button
 					id="dismiss-reset-btn"
 					class="btn btn-sm btn-outline hidden"
-					hx-get="/hypermedia/controls/dismiss-reset"
+					hx-get="/patterns/controls/dismiss-reset"
 					hx-target="#dismiss-demo"
 					hx-swap="innerHTML"
 				>Reset Dismiss Demo</button>
@@ -119,7 +119,7 @@ templ HypermediaControlsPage() {
 				<p class="text-sm font-medium text-base-content/60 mt-2">500 Internal Error controls (Retry + Dismiss):</p>
 				<div id="error-retry-demo">
 					@components.ErrorControls(linkwell.InternalErrorControls(linkwell.ErrorControlOpts{
-						RetryURL:    "/hypermedia/controls/retry",
+						RetryURL:    "/patterns/controls/retry",
 						RetryTarget: "#error-retry-demo",
 					}))
 				</div>
@@ -132,25 +132,25 @@ templ HypermediaControlsPage() {
 					{
 						Label: "Tables",
 						Children: []linkwell.NavItem{
-							{Label: "Inventory", Href: "/demo/inventory"},
-							{Label: "Catalog", Href: "/demo/catalog"},
-							{Label: "Bulk", Href: "/demo/bulk"},
+							{Label: "Inventory", Href: "/apps/inventory"},
+							{Label: "Catalog", Href: "/apps/catalog"},
+							{Label: "Bulk", Href: "/apps/bulk"},
 						},
 					},
 					{
 						Label: "Hypermedia Controls",
 						Children: []linkwell.NavItem{
-							{Label: "Controls", Href: "/hypermedia/controls"},
+							{Label: "Controls", Href: "/patterns/controls"},
 						},
 					},
-				}, "/hypermedia/controls"))
-				@components.Breadcrumbs(linkwell.BreadcrumbsFromPath("/demo/inventory", map[int]string{0: "Tables", 1: "Inventory"}))
+				}, "/patterns/controls"))
+				@components.Breadcrumbs(linkwell.BreadcrumbsFromPath("/apps/inventory", map[int]string{0: "Tables", 1: "Inventory"}))
 			</div>
 		}
 		// ─── 9. Filter Fields ────────────────────────────────────────────────
 		@controlsSection("9. Filter Fields") {
 			<p class="text-sm text-base-content/70 mb-3">Adjust any filter to see results update live. Each field fires <code class="text-xs bg-base-200 px-1 rounded">hx-get</code> with <code class="text-xs bg-base-200 px-1 rounded">hx-include</code> to send all field values.</p>
-			@components.FilterBar(linkwell.NewFilterBar("/hypermedia/controls/filter", "#filter-results",
+			@components.FilterBar(linkwell.NewFilterBar("/patterns/controls/filter", "#filter-results",
 				linkwell.SearchField("q", "Search\u2026", ""),
 				linkwell.SelectField("cat", "Category", "",
 					linkwell.SelectOptions("",
@@ -165,7 +165,7 @@ templ HypermediaControlsPage() {
 			))
 			<div
 				id="filter-results"
-				hx-get="/hypermedia/controls/filter"
+				hx-get="/patterns/controls/filter"
 				hx-trigger="load"
 				class="mt-4 text-sm text-base-content/50"
 			>
@@ -176,7 +176,7 @@ templ HypermediaControlsPage() {
 		@controlsSection("10. Live Demo") {
 			<div role="alert" class="alert alert-info">
 				<span>The live demo shows FilterBar + Table + PaginationBar with a real SQLite backend.</span>
-				<a href="/demo/inventory" class="btn btn-sm btn-primary">Open Inventory</a>
+				<a href="/apps/inventory" class="btn btn-sm btn-primary">Open Inventory</a>
 			</div>
 		}
 		// ─── 11. Row Actions (Edit / Delete) ─────────────────────────────────
@@ -236,7 +236,7 @@ templ HypermediaControlsPage() {
 						<p class="text-xs text-base-content/60 mb-2">Odd attempts fail, even attempts succeed. Click Retry inside the error panel to try again.</p>
 						<button
 							class="btn btn-sm btn-error"
-							hx-post="/hypermedia/controls/errors/transient"
+							hx-post="/patterns/controls/errors/transient"
 							hx-target="#transient-result"
 							hx-swap="innerHTML"
 						>Save Record</button>
@@ -249,7 +249,7 @@ templ HypermediaControlsPage() {
 						<h3 class="font-semibold text-sm">B. Validation Error (422)</h3>
 						<p class="text-xs text-base-content/60 mb-2">Bad data triggers 422. The error panel includes a pre-filled <em>fix form</em> so you can correct values and resubmit without leaving the page.</p>
 						<form
-							hx-post="/hypermedia/controls/errors/validate"
+							hx-post="/patterns/controls/errors/validate"
 							hx-target="#validate-result"
 							hx-swap="innerHTML"
 							class="flex items-end gap-2"
@@ -274,7 +274,7 @@ templ HypermediaControlsPage() {
 						<p class="text-xs text-base-content/60 mb-2">Name already exists. The error panel offers two paths: <strong>Update Existing</strong> or <strong>Create as Copy</strong>.</p>
 						<button
 							class="btn btn-sm btn-error"
-							hx-post="/hypermedia/controls/errors/conflict"
+							hx-post="/patterns/controls/errors/conflict"
 							hx-target="#conflict-result"
 							hx-swap="innerHTML"
 						>Create "Widget"</button>
@@ -287,7 +287,7 @@ templ HypermediaControlsPage() {
 						<h3 class="font-semibold text-sm">D. Stale Data (412)</h3>
 						<p class="text-xs text-base-content/60 mb-2">Version mismatch — someone else edited the record. The error panel lets you <strong>Refresh</strong> (get latest) or <strong>Force Save</strong> (overwrite).</p>
 						<form
-							hx-post="/hypermedia/controls/errors/stale"
+							hx-post="/patterns/controls/errors/stale"
 							hx-target="#stale-result"
 							hx-swap="innerHTML"
 							class="flex items-end gap-2"
@@ -309,7 +309,7 @@ templ HypermediaControlsPage() {
 						<p class="text-xs text-base-content/60 mb-2">Can't delete a category with items. The error panel lists dependent items and offers <strong>Reassign &amp; Delete</strong> or <strong>Force Delete</strong>.</p>
 						<button
 							class="btn btn-sm btn-error"
-							hx-delete="/hypermedia/controls/errors/cascade"
+							hx-delete="/patterns/controls/errors/cascade"
 							hx-target="#cascade-result"
 							hx-swap="innerHTML"
 						>Delete "Electronics"</button>
@@ -344,9 +344,9 @@ templ HypermediaControlsPage() {
 					<code class="text-xs bg-base-200 px-1 rounded">from=3</code> = bits 0+1 = <strong>Home + Dashboard</strong>. The destination page appends path-derived crumbs automatically. Click to see real breadcrumbs:
 				</p>
 				<div class="flex flex-wrap gap-2">
-					<a href="/demo/inventory?from=1" class="btn btn-sm btn-outline">Inventory (from=1: Home only)</a>
-					<a href="/demo/inventory?from=3" class="btn btn-sm btn-outline">Inventory (from=3: Home + Dashboard)</a>
-					<a href="/demo/people?from=3" class="btn btn-sm btn-outline">People (from=3: Home + Dashboard)</a>
+					<a href="/apps/inventory?from=1" class="btn btn-sm btn-outline">Inventory (from=1: Home only)</a>
+					<a href="/apps/inventory?from=3" class="btn btn-sm btn-outline">Inventory (from=3: Home + Dashboard)</a>
+					<a href="/apps/people?from=3" class="btn btn-sm btn-outline">People (from=3: Home + Dashboard)</a>
 				</div>
 				<p class="text-sm text-base-content/70">
 					Use <code class="text-xs bg-base-200 px-1 rounded">FromNav(href, from)</code> to forward the param on outbound links. Use <code class="text-xs bg-base-200 px-1 rounded">SetPageLabel(c, name)</code> to replace the terminal crumb's auto-generated label with a human name (e.g., a person's name instead of their ID).

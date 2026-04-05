@@ -27,12 +27,9 @@ type HALLinkView struct {
 
 templ HALPage(rawJSON string, resource HALResourceView) {
 	<div class="p-4 space-y-6 max-w-5xl mx-auto">
-		<div class="flex items-center justify-between mb-4">
-			<div>
-				<h1 class="text-2xl font-bold">HAL — Hypertext Application Language</h1>
-				<p class="text-sm text-base-content/60 mt-1">RFC draft — <code class="text-xs bg-base-200 px-1 rounded">application/hal+json</code></p>
-			</div>
-			<a href="/hypermedia" class="btn btn-sm btn-ghost">← Hypermedia</a>
+		<div class="mb-4">
+			<h1 class="text-2xl font-bold">HAL — Hypertext Application Language</h1>
+			<p class="text-sm text-base-content/60 mt-1">RFC draft — <code class="text-xs bg-base-200 px-1 rounded">application/hal+json</code></p>
 		</div>
 
 		<div role="alert" class="alert alert-info text-sm">
@@ -63,7 +60,7 @@ templ HALPage(rawJSON string, resource HALResourceView) {
 					renders the response as an interactive card. The raw HAL+JSON is shown alongside.
 				</p>
 				<div id="hal-explorer">
-					@HALExploreFragment(rawJSON, resource, "/hypermedia/hal/api/catalog")
+					@HALExploreFragment(rawJSON, resource, "/api/hal/api/catalog")
 				</div>
 			</div>
 		</div>
@@ -96,7 +93,7 @@ templ HALExploreFragment(rawJSON string, resource HALResourceView, currentURL st
 			<code class="text-xs bg-base-200 px-2 py-1 rounded flex-1 overflow-x-auto">{ currentURL }</code>
 			<button
 				class="btn btn-xs btn-ghost"
-				hx-get={ fmt.Sprintf("/hypermedia/hal/explore?url=%s", "/hypermedia/hal/api/catalog") }
+				hx-get={ fmt.Sprintf("/api/hal/explore?url=%s", "/api/hal/api/catalog") }
 				hx-target="#hal-explorer"
 				hx-swap="outerHTML"
 			>⌂ Root</button>
@@ -135,7 +132,7 @@ templ HALExploreFragment(rawJSON string, resource HALResourceView, currentURL st
 										<span class="badge badge-sm badge-outline font-mono min-w-[70px] text-center">{ l.Rel }</span>
 										<button
 											class="btn btn-xs btn-ghost text-left flex-1 justify-start font-mono truncate group-hover:btn-primary group-hover:text-primary-content transition-colors"
-											hx-get={ fmt.Sprintf("/hypermedia/hal/explore?url=%s", l.Href) }
+											hx-get={ fmt.Sprintf("/api/hal/explore?url=%s", l.Href) }
 											hx-target="#hal-explorer"
 											hx-swap="outerHTML"
 											hx-indicator="#hal-loading"
@@ -202,7 +199,7 @@ templ HALErrorFragment(url string, errMsg string) {
 		</div>
 		<button
 			class="btn btn-sm btn-primary"
-			hx-get={ fmt.Sprintf("/hypermedia/hal/explore?url=%s", "/hypermedia/hal/api/catalog") }
+			hx-get={ fmt.Sprintf("/api/hal/explore?url=%s", "/api/hal/api/catalog") }
 			hx-target="#hal-explorer"
 			hx-swap="outerHTML"
 		>← Back to Catalog</button>
@@ -224,18 +221,18 @@ templ halTemplatedLink(l HALLinkView) {
 					class="input input-xs input-bordered join-item w-40"
 					placeholder="Search books…"
 					name="q"
-					hx-get="/hypermedia/hal/explore"
+					hx-get="/api/hal/explore"
 					hx-target="#hal-explorer"
 					hx-swap="outerHTML"
 					hx-trigger="keyup[keyCode==13]"
-					hx-vals={ fmt.Sprintf(`js:{url: '%s/api/books?q=' + document.getElementById('hal-search-input').value}`, "/hypermedia/hal") }
+					hx-vals={ fmt.Sprintf(`js:{url: '%s/api/books?q=' + document.getElementById('hal-search-input').value}`, "/api/hal") }
 				/>
 				<button
 					class="btn btn-xs btn-primary join-item"
-					hx-get="/hypermedia/hal/explore"
+					hx-get="/api/hal/explore"
 					hx-target="#hal-explorer"
 					hx-swap="outerHTML"
-					hx-vals={ fmt.Sprintf(`js:{url: '%s/api/books?q=' + document.getElementById('hal-search-input').value}`, "/hypermedia/hal") }
+					hx-vals={ fmt.Sprintf(`js:{url: '%s/api/books?q=' + document.getElementById('hal-search-input').value}`, "/api/hal") }
 				>Search</button>
 			</div>
 		}
@@ -275,7 +272,7 @@ templ halEmbeddedCard(book HALResourceView) {
 							<span class="badge badge-xs badge-outline font-mono">{ l.Rel }</span>
 							<button
 								class="btn btn-xs btn-ghost font-mono truncate text-left"
-								hx-get={ fmt.Sprintf("/hypermedia/hal/explore?url=%s", l.Href) }
+								hx-get={ fmt.Sprintf("/api/hal/explore?url=%s", l.Href) }
 								hx-target="#hal-explorer"
 								hx-swap="outerHTML"
 							>

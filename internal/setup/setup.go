@@ -30,25 +30,25 @@ const setupEnvPrefix = "# setup:env "
 
 // Feature tags for the interactive feature selector.
 const (
-	FeatureAuth     = "auth"
-	FeatureGraph    = "graph"
-	FeatureDatabase = "database"
-	FeatureMSSQL    = "mssql"
-	FeaturePostgres = "postgres"
-	FeatureSSE      = "sse"
-	FeatureCaddy    = "caddy"
-	FeatureAvatar   = "avatar"
-	FeatureDemo             = "demo"
-	FeatureSessionSettings  = "session_settings"
-	FeatureAlpine           = "alpine"
-	FeatureCapacitor        = "capacitor"
-	FeatureOffline          = "offline"
-	FeatureSync             = "sync"
-	FeatureCSRF             = "csrf"
-	FeatureLinkRelations    = "link_relations"
-	FeatureWebStandards     = "web_standards"
-	FeatureBrowserAPIs      = "browser_apis"
-	FeaturePWA              = "pwa"
+	FeatureAuth            = "auth"
+	FeatureGraph           = "graph"
+	FeatureDatabase        = "database"
+	FeatureMSSQL           = "mssql"
+	FeaturePostgres        = "postgres"
+	FeatureSSE             = "sse"
+	FeatureCaddy           = "caddy"
+	FeatureAvatar          = "avatar"
+	FeatureDemo            = "demo"
+	FeatureSessionSettings = "session_settings"
+	FeatureAlpine          = "alpine"
+	FeatureCapacitor       = "capacitor"
+	FeatureOffline         = "offline"
+	FeatureSync            = "sync"
+	FeatureCSRF            = "csrf"
+	FeatureLinkRelations   = "link_relations"
+	FeatureWebStandards    = "web_standards"
+	FeatureBrowserAPIs     = "browser_apis"
+	FeaturePWA             = "pwa"
 )
 
 // AllFeatures lists every selectable feature tag.
@@ -63,13 +63,13 @@ var ImplicitFeatures = []string{FeatureDatabase, FeatureAlpine}
 // featureDeps maps a feature to the features it implies.
 // pwa -> sync -> offline.  capacitor is a separate opt-in for native wrapping.
 var featureDeps = map[string][]string{
-	FeatureSync:           {FeatureOffline},
-	FeaturePWA:            {FeatureOffline, FeatureSync},
-	FeatureDemo:            {FeatureSessionSettings},
-	FeatureCSRF:           {},
-	FeatureLinkRelations:  {},
-	FeatureBrowserAPIs:    {FeatureSSE},
-	FeatureWebStandards:   {},
+	FeatureSync:          {FeatureOffline},
+	FeaturePWA:           {FeatureOffline, FeatureSync},
+	FeatureDemo:          {FeatureSessionSettings},
+	FeatureCSRF:          {},
+	FeatureLinkRelations: {},
+	FeatureBrowserAPIs:   {FeatureSSE},
+	FeatureWebStandards:  {},
 }
 
 // ExpandFeatureDeps adds any transitive dependencies implied by the
@@ -116,17 +116,13 @@ func ExpandFeatureDeps(features []string) []string {
 
 // Options configures the template setup run.
 type Options struct {
-	AppName    string
-	ModulePath string
-	BasePort   string
-	Features   []string
-	Force      bool
-	NoCaddy    bool
-
-	// ConfirmFunc is an optional interactive confirm callback.  When non-nil
-	// it is used to prompt the user (e.g. for certificate generation).  When
-	// nil, any prompt-gated action is executed silently.
 	ConfirmFunc func(msg string) (bool, error)
+	AppName     string
+	ModulePath  string
+	BasePort    string
+	Features    []string
+	Force       bool
+	NoCaddy     bool
 }
 
 func binaryNameFromApp(name string) string {
@@ -393,13 +389,11 @@ func Run(ctx context.Context, dir string, opts Options) error {
 
 	if data, err := os.ReadFile(filepath.Join(dir, "package-lock.json")); err == nil {
 		content := strings.ReplaceAll(string(data), `"name": "`+templateName+`"`, `"name": "`+binaryName+`"`)
-		content = regexp.MustCompile(`"name":\s*"` + regexp.QuoteMeta(templateName) + `"`).ReplaceAllString(content, `"name": "`+binaryName+`"`)
+		content = regexp.MustCompile(`"name":\s*"`+regexp.QuoteMeta(templateName)+`"`).ReplaceAllString(content, `"name": "`+binaryName+`"`)
 		if err := os.WriteFile(filepath.Join(dir, "package-lock.json"), []byte(content), 0644); err != nil {
 			return err
 		}
 	}
-
-
 
 	loggerPath := filepath.Join(dir, "internal", "logger", "logger.go")
 	if data, err := os.ReadFile(loggerPath); err == nil {

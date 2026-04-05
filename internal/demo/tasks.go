@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"time"
 
+	"catgoose/harmony/internal/database/schema"
 	dialect "github.com/catgoose/chuck"
 	"github.com/catgoose/chuck/dbrepo"
-	"catgoose/harmony/internal/database/schema"
 )
 
 // TaskStatuses is the list of valid task statuses.
@@ -48,18 +48,18 @@ var TasksTable = schema.NewTable("Tasks").
 
 // Task represents a single task row using repository domain patterns.
 type Task struct {
-	ID          int            `db:"ID"`
-	Title       string         `db:"Title"`
-	Description sql.NullString `db:"Description"`
-	Status      string         `db:"Status"`
-	SortOrder   int            `db:"SortOrder"`
-	Version     int            `db:"Version"`
-	Notes       sql.NullString `db:"Notes"`
-	ArchivedAt  sql.NullTime   `db:"ArchivedAt"`
-	ReplacedBy  sql.NullInt64  `db:"ReplacedByID"`
 	CreatedAt   time.Time      `db:"CreatedAt"`
 	UpdatedAt   time.Time      `db:"UpdatedAt"`
+	ArchivedAt  sql.NullTime   `db:"ArchivedAt"`
 	DeletedAt   sql.NullTime   `db:"DeletedAt"`
+	Title       string         `db:"Title"`
+	Status      string         `db:"Status"`
+	Description sql.NullString `db:"Description"`
+	Notes       sql.NullString `db:"Notes"`
+	ReplacedBy  sql.NullInt64  `db:"ReplacedByID"`
+	ID          int            `db:"ID"`
+	SortOrder   int            `db:"SortOrder"`
+	Version     int            `db:"Version"`
 }
 
 // TaskStore provides CRUD operations on the Tasks table using the repository pattern.
@@ -127,7 +127,7 @@ func (s *TaskStore) ListTasks(ctx context.Context, search, status, showArchived,
 	if err != nil {
 		return nil, 0, fmt.Errorf("list tasks: %w", err)
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var tasks []Task
 	for rows.Next() {

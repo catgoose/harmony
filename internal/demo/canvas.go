@@ -27,15 +27,15 @@ var CanvasPalette = []string{
 
 // CanvasClient tracks a connected client.
 type CanvasClient struct {
-	Color    string `json:"color"`
 	LastSeen time.Time `json:"-"`
+	Color    string    `json:"color"`
 }
 
 // PixelCanvas is a thread-safe in-memory pixel grid with client tracking.
 type PixelCanvas struct {
-	mu      sync.RWMutex
-	Cells   [CanvasSize * CanvasSize]string
 	clients map[string]*CanvasClient
+	Cells   [CanvasSize * CanvasSize]string
+	mu      sync.RWMutex
 }
 
 // NewPixelCanvas creates an empty canvas.

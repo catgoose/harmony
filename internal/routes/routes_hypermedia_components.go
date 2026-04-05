@@ -16,32 +16,32 @@ import (
 
 // chatMsg is a single chat message.
 type chatMsg struct {
-	ID     int
 	Author string
 	Text   string
 	Time   string
+	ID     int
 }
 
 // timelineEvt is a single timeline event.
 type timelineEvt struct {
-	ID    int
 	Title string
 	Desc  string
 	Time  string
-	Kind  string // "primary", "secondary", "accent"
+	Kind  string
+	ID    int
 }
 
-// componentsState holds mutable demo state for /hypermedia/components.
+// componentsState holds mutable demo state for /components/widgets.
 type componentsState struct {
-	mu           sync.RWMutex
-	wizardStep   int
 	chatMsgs     []chatMsg
-	nextMsgID    int
-	bookmarked   bool
-	liked        bool
 	timelineEvts []timelineEvt
+	wizardStep   int
+	nextMsgID    int
 	nextEvtID    int
 	rating       int
+	mu           sync.RWMutex
+	bookmarked   bool
+	liked        bool
 }
 
 func newComponentsState() *componentsState {
@@ -70,7 +70,7 @@ func newComponentsState() *componentsState {
 	return s
 }
 
-const componentsBase = hypermediaBase + "/components"
+const componentsBase = "/components/widgets"
 
 func (ar *appRoutes) initComponentsRoutes() {
 	s := newComponentsState()
@@ -114,14 +114,14 @@ func (s *componentsState) handleComponentsPage(c echo.Context) error {
 	s.mu.Unlock()
 
 	return handler.RenderBaseLayout(c, views.ComponentsPage(views.ComponentsPageData{
-		WizardStep:    step,
-		ChatMessages:  chatMsgsToView(msgs),
-		Liked:         liked,
-		Bookmarked:    bookmarked,
-		TimelineEvts:  timelineEvtsToView(evts),
-		TimelineNext:  len(evts) + 1,
-		TimelineMore:  true,
-		Rating:        rating,
+		WizardStep:   step,
+		ChatMessages: chatMsgsToView(msgs),
+		Liked:        liked,
+		Bookmarked:   bookmarked,
+		TimelineEvts: timelineEvtsToView(evts),
+		TimelineNext: len(evts) + 1,
+		TimelineMore: true,
+		Rating:       rating,
 	}))
 }
 

@@ -10,18 +10,18 @@ import (
 )
 
 type Vendor struct {
-	ID       int
 	Name     string
 	Category string
+	ID       int
 }
 
 type Contact struct {
-	ID       int
-	VendorID int
 	Name     string
 	Email    string
 	Phone    string
 	Role     string
+	ID       int
+	VendorID int
 }
 
 func (d *DB) ListVendors(ctx context.Context, search, category string) ([]Vendor, error) {
@@ -43,7 +43,7 @@ func (d *DB) ListVendors(ctx context.Context, search, category string) ([]Vendor
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 	var vendors []Vendor
 	for rows.Next() {
 		var v Vendor
@@ -66,7 +66,7 @@ func (d *DB) ListContacts(ctx context.Context, vendorID int) ([]Contact, error) 
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 	var contacts []Contact
 	for rows.Next() {
 		var c Contact
@@ -143,28 +143,33 @@ func (d *DB) initVendors() error {
 		{"Silverline Media", "Marketing"},
 	}
 
-	type cs struct{ vendorIdx int; name, email, role string }
+	type cs struct {
+		name      string
+		email     string
+		role      string
+		vendorIdx int
+	}
 	contacts := []cs{
-		{0, "Alice Reed", "alice@acme.com", "Account Manager"},
-		{0, "Bob Chen", "bob@acme.com", "Sales Rep"},
-		{1, "Carol West", "carol@techflow.com", "CTO"},
-		{1, "Dan Kim", "dan@techflow.com", "Lead Engineer"},
-		{2, "Eve Santos", "eve@greenleaf.com", "Operations"},
-		{3, "Frank Liu", "frank@byteworks.com", "CEO"},
-		{3, "Grace Park", "grace@byteworks.com", "VP Engineering"},
-		{4, "Hank Mueller", "hank@steelbridge.com", "Procurement"},
-		{5, "Iris Tanaka", "iris@cloudnine.com", "Solutions Architect"},
-		{5, "Jack Rivera", "jack@cloudnine.com", "Support Lead"},
-		{6, "Karen Osei", "karen@pacifictrading.com", "Import Manager"},
-		{7, "Leo Barnes", "leo@redwood.com", "Senior Consultant"},
-		{8, "Mia Torres", "mia@summit.com", "Sales Director"},
-		{9, "Noah Petrov", "noah@blueocean.com", "Logistics Coordinator"},
-		{10, "Olivia Grant", "olivia@pinnacle.com", "Partner"},
-		{11, "Pete Yamada", "pete@quantumlabs.com", "Research Lead"},
-		{12, "Quinn Marsh", "quinn@eagleeye.com", "Security Analyst"},
-		{13, "Rosa Vega", "rosa@freshstart.com", "Supply Chain"},
-		{14, "Sam Taylor", "sam@silverline.com", "Creative Director"},
-		{14, "Tina Novak", "tina@silverline.com", "Account Executive"},
+		{vendorIdx: 0, name: "Alice Reed", email: "alice@acme.com", role: "Account Manager"},
+		{vendorIdx: 0, name: "Bob Chen", email: "bob@acme.com", role: "Sales Rep"},
+		{vendorIdx: 1, name: "Carol West", email: "carol@techflow.com", role: "CTO"},
+		{vendorIdx: 1, name: "Dan Kim", email: "dan@techflow.com", role: "Lead Engineer"},
+		{vendorIdx: 2, name: "Eve Santos", email: "eve@greenleaf.com", role: "Operations"},
+		{vendorIdx: 3, name: "Frank Liu", email: "frank@byteworks.com", role: "CEO"},
+		{vendorIdx: 3, name: "Grace Park", email: "grace@byteworks.com", role: "VP Engineering"},
+		{vendorIdx: 4, name: "Hank Mueller", email: "hank@steelbridge.com", role: "Procurement"},
+		{vendorIdx: 5, name: "Iris Tanaka", email: "iris@cloudnine.com", role: "Solutions Architect"},
+		{vendorIdx: 5, name: "Jack Rivera", email: "jack@cloudnine.com", role: "Support Lead"},
+		{vendorIdx: 6, name: "Karen Osei", email: "karen@pacifictrading.com", role: "Import Manager"},
+		{vendorIdx: 7, name: "Leo Barnes", email: "leo@redwood.com", role: "Senior Consultant"},
+		{vendorIdx: 8, name: "Mia Torres", email: "mia@summit.com", role: "Sales Director"},
+		{vendorIdx: 9, name: "Noah Petrov", email: "noah@blueocean.com", role: "Logistics Coordinator"},
+		{vendorIdx: 10, name: "Olivia Grant", email: "olivia@pinnacle.com", role: "Partner"},
+		{vendorIdx: 11, name: "Pete Yamada", email: "pete@quantumlabs.com", role: "Research Lead"},
+		{vendorIdx: 12, name: "Quinn Marsh", email: "quinn@eagleeye.com", role: "Security Analyst"},
+		{vendorIdx: 13, name: "Rosa Vega", email: "rosa@freshstart.com", role: "Supply Chain"},
+		{vendorIdx: 14, name: "Sam Taylor", email: "sam@silverline.com", role: "Creative Director"},
+		{vendorIdx: 14, name: "Tina Novak", email: "tina@silverline.com", role: "Account Executive"},
 	}
 
 	if err := seedBulk(d.db,

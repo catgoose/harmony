@@ -12,13 +12,10 @@ type Components3PageData struct {
 	UndoItems []UndoItemData
 }
 
-// Components3Page is the full-page layout for /hypermedia/components3.
+// Components3Page is the full-page layout for /components/advanced.
 templ Components3Page(data Components3PageData) {
 	<div class="p-4 space-y-6 max-w-4xl mx-auto">
-		<div class="flex items-center justify-between mb-4">
-			<h1 class="text-2xl font-bold">Component Patterns 3</h1>
-			<a href="/hypermedia/components2" class="btn btn-sm btn-ghost">← Components 2</a>
-		</div>
+		<h1 class="text-2xl font-bold mb-4">Component Patterns 3</h1>
 		<div role="alert" class="alert alert-info text-sm">
 			<span>Demonstrates: <strong>infinite scroll</strong>, <strong>optimistic UI</strong>, <strong>undo / soft delete</strong>, <strong>native HTML elements</strong>, <strong>locale formatting</strong>.</span>
 		</div>
@@ -166,7 +163,7 @@ templ Components3Page(data Components3PageData) {
 				<h3 class="font-semibold text-sm mt-4 mb-1">Accessible Results — <code class="text-xs bg-base-200 px-1 rounded">&lt;output&gt;</code></h3>
 				<p class="text-xs text-base-content/60 mb-2">Implicit aria-live region. Screen readers announce changes automatically.</p>
 				<div class="flex items-center gap-3">
-					<button class="btn btn-sm btn-primary" hx-get="/hypermedia/components3/calculate" hx-target="#calc-result" hx-swap="innerHTML">Calculate</button>
+					<button class="btn btn-sm btn-primary" hx-get="/components/advanced/calculate" hx-target="#calc-result" hx-swap="innerHTML">Calculate</button>
 					<output id="calc-result" class="font-mono text-sm">—</output>
 				</div>
 			</div>
@@ -180,21 +177,21 @@ templ Components3Page(data Components3PageData) {
 					Server renders raw data, Alpine formats for your locale.
 				</p>
 				<div class="space-y-2 mt-2">
-					<div x-data class="flex justify-between">
+					<div x-data="intlRelativeTime" class="flex justify-between">
 						<span class="text-sm text-base-content/60">Relative time:</span>
-						<span class="text-sm font-mono" x-text="new Intl.RelativeTimeFormat(navigator.language, {numeric:'auto'}).format(-2, 'hour')">2 hours ago</span>
+						<span class="text-sm font-mono" x-text="formatted">2 hours ago</span>
 					</div>
-					<div x-data class="flex justify-between">
+					<div x-data="intlCurrency" class="flex justify-between">
 						<span class="text-sm text-base-content/60">Currency:</span>
-						<span class="text-sm font-mono" x-text="new Intl.NumberFormat(navigator.language, {style:'currency', currency:'USD'}).format(1234.56)">$1,234.56</span>
+						<span class="text-sm font-mono" x-text="formatted">$1,234.56</span>
 					</div>
-					<div x-data class="flex justify-between">
+					<div x-data="intlList" class="flex justify-between">
 						<span class="text-sm text-base-content/60">List:</span>
-						<span class="text-sm font-mono" x-text="new Intl.ListFormat(navigator.language, {style:'long', type:'conjunction'}).format(['Alice','Bob','Charlie'])">Alice, Bob, and Charlie</span>
+						<span class="text-sm font-mono" x-text="formatted">Alice, Bob, and Charlie</span>
 					</div>
-					<div x-data class="flex justify-between">
+					<div x-data="intlDate" class="flex justify-between">
 						<span class="text-sm text-base-content/60">Date:</span>
-						<span class="text-sm font-mono" x-text="new Intl.DateTimeFormat(navigator.language, {dateStyle:'full'}).format(new Date())">Friday, March 28, 2026</span>
+						<span class="text-sm font-mono" x-text="formatted">Friday, March 28, 2026</span>
 					</div>
 				</div>
 			</div>
@@ -224,7 +221,7 @@ templ feedItemCard(item FeedItemData) {
 
 templ feedSentinel(nextPage int) {
 	<div
-		hx-get={ fmt.Sprintf("/hypermedia/components3/feed?page=%d", nextPage) }
+		hx-get={ fmt.Sprintf("/components/advanced/feed?page=%d", nextPage) }
 		hx-trigger="revealed"
 		hx-swap="outerHTML"
 		class="flex justify-center p-4"

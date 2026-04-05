@@ -54,12 +54,12 @@ func (vc *SQLVersionChecker) CurrentVersion(ctx context.Context, table string, i
 }
 
 // parseResourceURL extracts a table name hint and row ID from a sync operation URL.
-// Expected format: /demo/repository/{resource}/{id} or /demo/{resource}/{id}
+// Expected format: /platform/repository/{resource}/{id} or /apps/{resource}/{id}
 // Returns empty table and 0 id if the URL doesn't match a known pattern.
-var resourceURLPattern = regexp.MustCompile(`/demo/(?:repository/)?(\w+)/(\d+)$`)
+var resourceURLPattern = regexp.MustCompile(`/(?:platform/repository|apps)/(\w+)/(\d+)$`)
 
 func parseResourceURL(url string) (table string, id int, ok bool) {
-	// Match patterns like /demo/repository/tasks/42 or /demo/items/7
+	// Match patterns like /platform/repository/tasks/42 or /apps/items/7
 	matches := resourceURLPattern.FindStringSubmatch(url)
 	if len(matches) != 3 {
 		return "", 0, false

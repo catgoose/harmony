@@ -50,7 +50,7 @@ func SettingsPage(sections []demo.SettingsSection) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		for i, sec := range sections {
-			loadURL := fmt.Sprintf("/demo/settings/%s", sec.ID)
+			loadURL := fmt.Sprintf("/platform/settings/%s", sec.ID)
 			var templ_7745c5c3_Var2 = []any{"settings-tab w-full text-left px-3 py-2.5 rounded-lg flex items-center gap-3 transition-colors",
 				templ.KV("active", i == 0)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
@@ -203,7 +203,7 @@ func SettingsSectionForm(sec demo.SettingsSection) templ.Component {
 			templ_7745c5c3_Var9 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		saveURL := fmt.Sprintf("/demo/settings/%s", sec.ID)
+		saveURL := fmt.Sprintf("/platform/settings/%s", sec.ID)
 		formID := "settings-form-" + sec.ID
 		resultID := "settings-result-" + sec.ID
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<div><h2 class=\"text-lg font-bold mb-1\">")

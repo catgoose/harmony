@@ -118,13 +118,13 @@ func DashboardPage(s DashboardStats) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</span> <span class=\"text-base-content/60 ml-1\">active</span></div></div><div class=\"flex gap-2 mt-3\"><a href=\"/demo/inventory?from=3\" class=\"btn btn-primary btn-sm\">Inventory</a> <a href=\"/demo/catalog?from=3\" class=\"btn btn-ghost btn-sm\">Catalog</a> <a href=\"/demo/bulk?from=3\" class=\"btn btn-ghost btn-sm\">Bulk Ops</a></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</span> <span class=\"text-base-content/60 ml-1\">active</span></div></div><div class=\"flex gap-2 mt-3\"><a href=\"/apps/inventory?from=3\" class=\"btn btn-primary btn-sm\">Inventory</a> <a href=\"/apps/catalog?from=3\" class=\"btn btn-ghost btn-sm\">Catalog</a> <a href=\"/apps/bulk?from=3\" class=\"btn btn-ghost btn-sm\">Bulk Ops</a></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = dashCard("Inventory", "/demo/inventory?from=3", "Filterable, sortable item table with inline editing and CRUD operations.").Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = dashCard("Inventory", "/apps/inventory?from=3", "Filterable, sortable item table with inline editing and CRUD operations.").Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -199,13 +199,13 @@ func DashboardPage(s DashboardStats) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "</div><div class=\"mt-3\"><a href=\"/demo/kanban?from=3\" class=\"btn btn-accent btn-sm\">View Board</a></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "</div><div class=\"mt-3\"><a href=\"/apps/kanban?from=3\" class=\"btn btn-accent btn-sm\">View Board</a></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = dashCard("Kanban Board", "/demo/kanban?from=3", "Drag-free task board with status columns and priority tracking.").Render(templ.WithChildren(ctx, templ_7745c5c3_Var5), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = dashCard("Kanban Board", "/apps/kanban?from=3", "Drag-free task board with status columns and priority tracking.").Render(templ.WithChildren(ctx, templ_7745c5c3_Var5), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -303,13 +303,13 @@ func DashboardPage(s DashboardStats) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, " <div class=\"mt-3\"><a href=\"/demo/approvals?from=3\" class=\"btn btn-warning btn-sm\">View Queue</a></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, " <div class=\"mt-3\"><a href=\"/apps/approvals?from=3\" class=\"btn btn-warning btn-sm\">View Queue</a></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = dashCard("Approvals", "/demo/approvals?from=3", "HATEOAS state machine for request workflows: approve, reject, escalate.").Render(templ.WithChildren(ctx, templ_7745c5c3_Var10), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = dashCard("Approvals", "/apps/approvals?from=3", "HATEOAS state machine for request workflows: approve, reject, escalate.").Render(templ.WithChildren(ctx, templ_7745c5c3_Var10), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -342,13 +342,13 @@ func DashboardPage(s DashboardStats) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "</span> <span class=\"text-base-content/60 text-sm ml-1\">people</span></div><div class=\"mt-3\"><a href=\"/demo/people?from=3\" class=\"btn btn-secondary btn-sm\">View Directory</a></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "</span> <span class=\"text-base-content/60 text-sm ml-1\">people</span></div><div class=\"mt-3\"><a href=\"/apps/people?from=3\" class=\"btn btn-secondary btn-sm\">View Directory</a></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = dashCard("People Directory", "/demo/people?from=3", "Searchable directory with profile detail pages and live SSE updates.").Render(templ.WithChildren(ctx, templ_7745c5c3_Var16), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = dashCard("People Directory", "/apps/people?from=3", "Searchable directory with profile detail pages and live SSE updates.").Render(templ.WithChildren(ctx, templ_7745c5c3_Var16), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -381,13 +381,13 @@ func DashboardPage(s DashboardStats) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "</span> <span class=\"text-base-content/60 text-sm ml-1\">vendors</span></div><div class=\"mt-3\"><a href=\"/demo/vendors?from=3\" class=\"btn btn-info btn-sm\">View Vendors</a></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "</span> <span class=\"text-base-content/60 text-sm ml-1\">vendors</span></div><div class=\"mt-3\"><a href=\"/apps/vendors?from=3\" class=\"btn btn-info btn-sm\">View Vendors</a></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = dashCard("Vendors & Contacts", "/demo/vendors?from=3", "Master-detail split view with vendor list and inline contact editing.").Render(templ.WithChildren(ctx, templ_7745c5c3_Var18), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = dashCard("Vendors & Contacts", "/apps/vendors?from=3", "Master-detail split view with vendor list and inline contact editing.").Render(templ.WithChildren(ctx, templ_7745c5c3_Var18), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -407,13 +407,13 @@ func DashboardPage(s DashboardStats) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "<div class=\"flex gap-2 flex-wrap text-xs\"><span class=\"badge badge-outline\">General</span> <span class=\"badge badge-outline\">Notifications</span> <span class=\"badge badge-outline\">Security</span> <span class=\"badge badge-outline\">Appearance</span></div><div class=\"mt-3\"><a href=\"/demo/settings?from=3\" class=\"btn btn-neutral btn-sm\">View Settings</a></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "<div class=\"flex gap-2 flex-wrap text-xs\"><span class=\"badge badge-outline\">General</span> <span class=\"badge badge-outline\">Notifications</span> <span class=\"badge badge-outline\">Security</span> <span class=\"badge badge-outline\">Appearance</span></div><div class=\"mt-3\"><a href=\"/platform/settings?from=3\" class=\"btn btn-neutral btn-sm\">View Settings</a></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = dashCard("Settings", "/demo/settings?from=3", "Tabbed settings panels with toggles, selects, and lazy-loaded content.").Render(templ.WithChildren(ctx, templ_7745c5c3_Var20), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = dashCard("Settings", "/platform/settings?from=3", "Tabbed settings panels with toggles, selects, and lazy-loaded content.").Render(templ.WithChildren(ctx, templ_7745c5c3_Var20), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -422,7 +422,7 @@ func DashboardPage(s DashboardStats) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if len(s.RecentEvents) > 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "<div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body\"><div class=\"flex items-center justify-between\"><h2 class=\"card-title text-lg\">Recent Activity</h2><a href=\"/demo/feed\" class=\"btn btn-ghost btn-sm\">View Full Feed</a></div><div class=\"divide-y divide-base-200\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "<div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body\"><div class=\"flex items-center justify-between\"><h2 class=\"card-title text-lg\">Recent Activity</h2><a href=\"/realtime/feed\" class=\"btn btn-ghost btn-sm\">View Full Feed</a></div><div class=\"divide-y divide-base-200\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -511,7 +511,7 @@ func DashboardPage(s DashboardStats) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "<!-- Hypermedia controls link --><div class=\"card bg-base-200 border border-base-300\"><div class=\"card-body flex-row items-center justify-between\"><div><h3 class=\"font-semibold\">Hypermedia Controls Gallery</h3><p class=\"text-sm text-base-content/60\">Explore the building blocks: buttons, filters, tables, pagination, error recovery, and more.</p></div><a href=\"/hypermedia/controls\" class=\"btn btn-secondary btn-sm\">Browse Controls</a></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "<!-- Hypermedia controls link --><div class=\"card bg-base-200 border border-base-300\"><div class=\"card-body flex-row items-center justify-between\"><div><h3 class=\"font-semibold\">Hypermedia Controls Gallery</h3><p class=\"text-sm text-base-content/60\">Explore the building blocks: buttons, filters, tables, pagination, error recovery, and more.</p></div><a href=\"/patterns/controls\" class=\"btn btn-secondary btn-sm\">Browse Controls</a></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

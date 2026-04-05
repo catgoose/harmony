@@ -46,7 +46,7 @@ var (
 	htmxSSEURL             = "https://unpkg.com/htmx-ext-sse"
 	// setup:feature:sse:end
 	hyperscriptURL         = "https://unpkg.com/hyperscript.org"
-	alpineURL              = "https://unpkg.com/alpinejs@3/dist/cdn.min.js"
+	alpineURL              = "https://unpkg.com/@alpinejs/csp@3/dist/cdn.min.js"
 	alpineMorphURL         = "https://unpkg.com/@alpinejs/morph@3/dist/cdn.min.js"
 	htmxAlpineMorphURL     = "https://unpkg.com/htmx-ext-alpine-morph@2.0.0/alpine-morph.js"
 	publicSourceDir        = "web/assets/public"
@@ -331,7 +331,7 @@ func Air() error {
 
 	return sh.Run("go", "tool", "air",
 		"-c", ".air/server.toml",
-		"-build.cmd", fmt.Sprintf("go build -o ./tmp/main . && %s",
+		"-build.cmd", fmt.Sprintf("CGO_ENABLED=0 go build -o ./tmp/main . && %s",
 			getTemplNotifyProxyCmd()))
 }
 

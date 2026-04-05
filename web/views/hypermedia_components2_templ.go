@@ -28,7 +28,7 @@ type Components2PageData struct {
 	SelectedTheme string
 }
 
-// Components2Page is the full-page layout for /hypermedia/components2.
+// Components2Page is the full-page layout for /components/cards.
 func Components2Page(data Components2PageData) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -50,7 +50,7 @@ func Components2Page(data Components2PageData) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"p-4 space-y-6 max-w-4xl mx-auto\"><div class=\"flex items-center justify-between mb-4\"><h1 class=\"text-2xl font-bold\">Component Patterns 2</h1><a href=\"/hypermedia/components\" class=\"btn btn-sm btn-ghost\">← Components 1</a></div><div role=\"alert\" class=\"alert alert-info text-sm\"><span>Demonstrates: <strong>carousel</strong>, <strong>dropdown/typeahead</strong>, <strong>cascading select</strong>, <strong>range slider</strong>, <strong>file upload</strong>, <strong>accordion</strong>, <strong>indicator</strong>, <strong>theme controller</strong>.</span></div><!-- 1. Carousel --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Carousel — Slide Navigation</h2><p class=\"text-sm text-base-content/70 mb-3\">Prev/Next buttons use <code class=\"text-xs bg-base-200 px-1 rounded\">hx-get</code> to fetch slides from the server. Clamped at boundaries so you can't go past the first or last slide.</p><div id=\"carousel-panel\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"p-4 space-y-6 max-w-4xl mx-auto\"><h1 class=\"text-2xl font-bold mb-4\">Component Patterns 2</h1><div role=\"alert\" class=\"alert alert-info text-sm\"><span>Demonstrates: <strong>carousel</strong>, <strong>dropdown/typeahead</strong>, <strong>cascading select</strong>, <strong>range slider</strong>, <strong>file upload</strong>, <strong>accordion</strong>, <strong>indicator</strong>, <strong>theme controller</strong>.</span></div><!-- 1. Carousel --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Carousel — Slide Navigation</h2><p class=\"text-sm text-base-content/70 mb-3\">Prev/Next buttons use <code class=\"text-xs bg-base-200 px-1 rounded\">hx-get</code> to fetch slides from the server. Clamped at boundaries so you can't go past the first or last slide.</p><div id=\"carousel-panel\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -71,13 +71,13 @@ func Components2Page(data Components2PageData) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs("for")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 52, Col: 192}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 49, Col: 192}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, " debounced server-side filtering.</p><input type=\"text\" name=\"q\" placeholder=\"Search languages…\" class=\"input input-sm w-full max-w-xs\" autocomplete=\"off\" hx-get=\"/hypermedia/components2/dropdown/search\" hx-trigger=\"keyup changed delay:300ms, load\" hx-target=\"#dropdown-results\"><div id=\"dropdown-results\" class=\"mt-2\"></div></div></div><!-- 3. Cascading Select --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Cascading Select — Dependent Dropdowns</h2><p class=\"text-sm text-base-content/70 mb-3\">Selecting a country populates the city dropdown via <code class=\"text-xs bg-base-200 px-1 rounded\">hx-get</code>. The second select's options are loaded from the server.</p><div class=\"flex gap-3 items-end flex-wrap\"><div class=\"fieldset\"><label class=\"label\">Country</label> <select id=\"country-select\" class=\"select select-sm\" hx-get=\"/hypermedia/components2/cascading/placeholder\" hx-target=\"#sub-select\" hx-swap=\"innerHTML\" hx-trigger=\"change\" _=\"on htmx:configRequest(detail) set detail.path to '/hypermedia/components2/cascading/' + my value\"><option disabled selected>Pick a country</option> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, " debounced server-side filtering.</p><input type=\"text\" name=\"q\" placeholder=\"Search languages…\" class=\"input input-sm w-full max-w-xs\" autocomplete=\"off\" hx-get=\"/components/cards/dropdown/search\" hx-trigger=\"keyup changed delay:300ms, load\" hx-target=\"#dropdown-results\"><div id=\"dropdown-results\" class=\"mt-2\"></div></div></div><!-- 3. Cascading Select --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Cascading Select — Dependent Dropdowns</h2><p class=\"text-sm text-base-content/70 mb-3\">Selecting a country populates the city dropdown via <code class=\"text-xs bg-base-200 px-1 rounded\">hx-get</code>. The second select's options are loaded from the server.</p><div class=\"flex gap-3 items-end flex-wrap\"><div class=\"fieldset\"><label class=\"label\">Country</label> <select id=\"country-select\" class=\"select select-sm\" hx-get=\"/components/cards/cascading/placeholder\" hx-target=\"#sub-select\" hx-swap=\"innerHTML\" hx-trigger=\"change\" _=\"on htmx:configRequest(detail) set detail.path to '/components/cards/cascading/' + my value\"><option disabled selected>Pick a country</option> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -89,7 +89,7 @@ func Components2Page(data Components2PageData) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(cat)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 85, Col: 27}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 82, Col: 27}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -102,7 +102,7 @@ func Components2Page(data Components2PageData) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(cat)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 85, Col: 35}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 82, Col: 35}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -120,13 +120,13 @@ func Components2Page(data Components2PageData) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", data.RangeValue))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 109, Col: 48}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 106, Col: 48}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "\" class=\"range range-primary range-sm flex-1\" hx-post=\"/hypermedia/components2/range\" hx-trigger=\"input changed delay:300ms\" hx-target=\"#range-result\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "\" class=\"range range-primary range-sm flex-1\" hx-post=\"/components/cards/range\" hx-trigger=\"input changed delay:300ms\" hx-target=\"#range-result\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -134,7 +134,7 @@ func Components2Page(data Components2PageData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</div></div></div><!-- 6. File Upload --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">File Input — Multipart Upload</h2><p class=\"text-sm text-base-content/70 mb-3\">Uses <code class=\"text-xs bg-base-200 px-1 rounded\">hx-encoding=\"multipart/form-data\"</code> to upload a file. Server parses metadata only (no storage).</p><form hx-post=\"/hypermedia/components2/upload\" hx-encoding=\"multipart/form-data\" hx-target=\"#upload-result\" class=\"flex gap-3 items-end flex-wrap\"><input type=\"file\" name=\"file\" class=\"file-input file-input-sm w-full max-w-xs\"> <button type=\"submit\" class=\"btn btn-sm btn-primary\">Upload</button></form><div id=\"upload-result\" class=\"mt-2\"></div></div></div><!-- 7. Accordion --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Accordion — Lazy-Loaded Panels</h2><p class=\"text-sm text-base-content/70 mb-3\">Each panel uses <code class=\"text-xs bg-base-200 px-1 rounded\">hx-trigger=\"click once\"</code> to load content only on first expand. Subsequent toggles use cached content.</p><div class=\"space-y-2\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</div></div></div><!-- 6. File Upload --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">File Input — Multipart Upload</h2><p class=\"text-sm text-base-content/70 mb-3\">Uses <code class=\"text-xs bg-base-200 px-1 rounded\">hx-encoding=\"multipart/form-data\"</code> to upload a file. Server parses metadata only (no storage).</p><form hx-post=\"/components/cards/upload\" hx-encoding=\"multipart/form-data\" hx-target=\"#upload-result\" class=\"flex gap-3 items-end flex-wrap\"><input type=\"file\" name=\"file\" class=\"file-input file-input-sm w-full max-w-xs\"> <button type=\"submit\" class=\"btn btn-sm btn-primary\">Upload</button></form><div id=\"upload-result\" class=\"mt-2\"></div></div></div><!-- 7. Accordion --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Accordion — Lazy-Loaded Panels</h2><p class=\"text-sm text-base-content/70 mb-3\">Each panel uses <code class=\"text-xs bg-base-200 px-1 rounded\">hx-trigger=\"click once\"</code> to load content only on first expand. Subsequent toggles use cached content.</p><div class=\"space-y-2\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -144,9 +144,9 @@ func Components2Page(data Components2PageData) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var6 string
-			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/hypermedia/components2/accordion/%d", panel.ID))
+			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/components/cards/accordion/%d", panel.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 147, Col: 78}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 144, Col: 72}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -159,7 +159,7 @@ func Components2Page(data Components2PageData) templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("#accordion-body-%d", panel.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 149, Col: 63}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 146, Col: 63}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
@@ -172,7 +172,7 @@ func Components2Page(data Components2PageData) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(panel.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 151, Col: 21}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 148, Col: 21}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
@@ -185,7 +185,7 @@ func Components2Page(data Components2PageData) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("accordion-body-%d", panel.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 154, Col: 60}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 151, Col: 60}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
@@ -204,7 +204,7 @@ func Components2Page(data Components2PageData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<button class=\"btn btn-sm btn-outline\">Notifications</button></div><button class=\"btn btn-sm btn-ghost\" hx-post=\"/hypermedia/components2/indicator/reset\" hx-target=\"#indicator-badge\" hx-swap=\"outerHTML\">Mark all read</button></div></div></div><!-- 9. Theme Controller --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Theme Controller — Server-Persisted Preference</h2><p class=\"text-sm text-base-content/70 mb-3\">Radio buttons use <code class=\"text-xs bg-base-200 px-1 rounded\">hx-post</code> with <code class=\"text-xs bg-base-200 px-1 rounded\">hx-vals</code> to persist theme selection on the server. Demonstrates preference storage pattern.</p><div class=\"flex gap-2 flex-wrap\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<button class=\"btn btn-sm btn-outline\">Notifications</button></div><button class=\"btn btn-sm btn-ghost\" hx-post=\"/components/cards/indicator/reset\" hx-target=\"#indicator-badge\" hx-swap=\"outerHTML\">Mark all read</button></div></div></div><!-- 9. Theme Controller --><div class=\"card bg-base-100 shadow border border-base-300\"><div class=\"card-body p-4\"><h2 class=\"card-title text-base\">Theme Controller — Server-Persisted Preference</h2><p class=\"text-sm text-base-content/70 mb-3\">Radio buttons use <code class=\"text-xs bg-base-200 px-1 rounded\">hx-post</code> with <code class=\"text-xs bg-base-200 px-1 rounded\">hx-vals</code> to persist theme selection on the server. Demonstrates preference storage pattern.</p><div class=\"flex gap-2 flex-wrap\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -216,7 +216,7 @@ func Components2Page(data Components2PageData) templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(theme)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 193, Col: 25}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 190, Col: 25}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
@@ -229,7 +229,7 @@ func Components2Page(data Components2PageData) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(theme)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 194, Col: 20}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 191, Col: 20}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {
@@ -245,14 +245,14 @@ func Components2Page(data Components2PageData) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, " hx-post=\"/hypermedia/components2/theme\" hx-vals=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, " hx-post=\"/components/cards/theme\" hx-vals=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf(`{"theme":"%s"}`, theme))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 197, Col: 53}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 194, Col: 53}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
@@ -270,7 +270,7 @@ func Components2Page(data Components2PageData) templ.Component {
 		var templ_7745c5c3_Var13 string
 		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(data.SelectedTheme)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 203, Col: 40}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 200, Col: 40}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {
@@ -355,7 +355,7 @@ func componentPatternCard2(title, method, desc string) templ.Component {
 		var templ_7745c5c3_Var15 string
 		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 232, Col: 44}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 229, Col: 44}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 		if templ_7745c5c3_Err != nil {
@@ -368,7 +368,7 @@ func componentPatternCard2(title, method, desc string) templ.Component {
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(method)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 233, Col: 76}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 230, Col: 76}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {
@@ -381,7 +381,7 @@ func componentPatternCard2(title, method, desc string) templ.Component {
 		var templ_7745c5c3_Var17 string
 		templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(desc)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 234, Col: 49}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/hypermedia_components2.templ`, Line: 231, Col: 49}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 		if templ_7745c5c3_Err != nil {

@@ -11,26 +11,26 @@ import (
 	"net/http"
 
 	"catgoose/harmony/internal/logger"
-	"github.com/catgoose/promolog"
 	"catgoose/harmony/internal/routes/handler"
 	"catgoose/harmony/internal/shared"
-	"github.com/catgoose/tavern"
 	"catgoose/harmony/web/views"
+	"github.com/catgoose/promolog"
+	"github.com/catgoose/tavern"
 
 	"github.com/labstack/echo/v4"
 )
 
-const loggingBase = "/demo/logging"
+const loggingBase = "/platform/logging"
 
-func (ar *appRoutes) initLoggingRoutes() {
+func (ar *appRoutes) initLoggingRoutes(broker *tavern.SSEBroker) {
 	// Client beacon endpoint — fire-and-forget analytics via navigator.sendBeacon.
 	ar.e.POST("/log/beacon", func(c echo.Context) error {
 		var entry struct {
+			Data      map[string]any `json:"data"`
 			Event     string         `json:"event"`
 			Path      string         `json:"path"`
 			Referrer  string         `json:"referrer"`
 			Timestamp string         `json:"timestamp"`
-			Data      map[string]any `json:"data"`
 		}
 		if err := c.Bind(&entry); err != nil {
 			return c.NoContent(http.StatusBadRequest)
@@ -46,11 +46,9 @@ func (ar *appRoutes) initLoggingRoutes() {
 	})
 
 	// setup:feature:sse:start
-	broker := tavern.NewSSEBroker()
-
 	// Wire up SSE broadcasting on error trace promotion.
-	if ar.reqLogStore != nil {
-		ar.reqLogStore.SetOnPromote(func(summary promolog.TraceSummary) {
+	if ar.repos.ReqLogStore != nil {
+		ar.repos.ReqLogStore.SetOnPromote(func(summary promolog.TraceSummary) {
 			broadcastErrorTrace(broker, summary)
 		})
 	}
@@ -109,10 +107,10 @@ func (ar *appRoutes) initLoggingRoutes() {
 
 	// List recent traces
 	ar.e.GET(loggingBase+"/traces", func(c echo.Context) error {
-		if ar.reqLogStore == nil {
+		if ar.repos.ReqLogStore == nil {
 			return handler.RenderComponent(c, views.LoggingTracesList(nil))
 		}
-		traces, _, err := ar.reqLogStore.ListTraces(c.Request().Context(), promolog.TraceFilter{
+		traces, _, err := ar.repos.ReqLogStore.ListTraces(c.Request().Context(), promolog.TraceFilter{
 			Sort: "CreatedAt", Dir: "desc", Page: 1, PerPage: 20,
 		})
 		if err != nil {
@@ -124,10 +122,10 @@ func (ar *appRoutes) initLoggingRoutes() {
 	// Simulate support report — returns formatted JSON of what IssueReporter would receive.
 	ar.e.GET(loggingBase+"/report/:requestID", func(c echo.Context) error {
 		requestID := c.Param("requestID")
-		if ar.reqLogStore == nil {
+		if ar.repos.ReqLogStore == nil {
 			return handler.HandleHypermediaError(c, 404, "Store not configured", nil)
 		}
-		trace, err := ar.reqLogStore.Get(c.Request().Context(), requestID)
+		trace, err := ar.repos.ReqLogStore.Get(c.Request().Context(), requestID)
 		if err != nil {
 			logger.WithContext(c.Request().Context()).Error("Failed to retrieve error trace",
 				"request_id", requestID, "error", err)
@@ -165,7 +163,10 @@ func handleErrorTracesSSE(broker *tavern.SSEBroker) echo.HandlerFunc {
 		c.Response().Header().Set("Connection", "keep-alive")
 		c.Response().WriteHeader(http.StatusOK)
 
-		flusher := c.Response().Writer.(http.Flusher)
+		flusher, ok := c.Response().Writer.(http.Flusher)
+		if !ok {
+			return fmt.Errorf("streaming unsupported")
+		}
 		ch, unsub := broker.Subscribe(TopicErrorTraces)
 		defer unsub()
 
@@ -178,7 +179,7 @@ func handleErrorTracesSSE(broker *tavern.SSEBroker) echo.HandlerFunc {
 				if !ok {
 					return nil
 				}
-				fmt.Fprint(c.Response(), msg)
+				_, _ = fmt.Fprint(c.Response(), msg)
 				flusher.Flush()
 			}
 		}

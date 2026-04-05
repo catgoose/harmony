@@ -10,12 +10,12 @@ import (
 
 // Response is the public health metadata returned by /health.
 type Response struct {
+	Stats    any    `json:"stats,omitempty"`
 	Name     string `json:"name"`
 	Status   string `json:"status"`
 	Version  string `json:"version"`
 	Uptime   string `json:"uptime"`
 	Database string `json:"database,omitempty"`
-	Stats    any    `json:"stats,omitempty"`
 }
 
 // StatsFunc returns app-specific metrics for the health response.
@@ -29,11 +29,11 @@ type Pinger interface {
 
 // Config holds the dependencies for building a health response.
 type Config struct {
+	StartTime time.Time
+	DB        Pinger
+	Stats     StatsFunc
 	Name      string
 	Version   string
-	StartTime time.Time
-	DB        Pinger    // nil = skip DB check
-	Stats     StatsFunc // nil = no stats
 }
 
 // Check builds a health response by pinging the database (if configured)

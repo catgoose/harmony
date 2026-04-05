@@ -10,37 +10,48 @@ import "github.com/catgoose/linkwell"
 func (ar *appRoutes) initLinkRelations() {
 	// ── Hubs (discovery / index pages) ──────────────────────────────
 
-	linkwell.Hub("/demo", "Demo",
-		linkwell.Rel("/demo/inventory", "Inventory"),
-		linkwell.Rel("/demo/catalog", "Catalog"),
-		linkwell.Rel("/demo/people", "People"),
-		linkwell.Rel("/demo/kanban", "Kanban"),
-		linkwell.Rel("/demo/approvals", "Approvals"),
-		linkwell.Rel("/demo/vendors", "Vendors"),
-		linkwell.Rel("/demo/feed", "Feed"),
-		linkwell.Rel("/demo/canvas", "Canvas"),
-		linkwell.Rel("/demo/settings", "Settings"),
-		linkwell.Rel("/demo/bulk", "Bulk"),
-		linkwell.Rel("/demo/logging", "Logging"),
-		linkwell.Rel("/demo/repository", "Repository"),
-		linkwell.Rel("/dashboard", "Dashboard"),
-		linkwell.Rel("/pwa", "PWA Offline"),
+	linkwell.Hub("/apps", "Applications",
+		linkwell.Rel("/apps/inventory", "Inventory"),
+		linkwell.Rel("/apps/catalog", "Catalog"),
+		linkwell.Rel("/apps/people", "People"),
+		linkwell.Rel("/apps/kanban", "Kanban"),
+		linkwell.Rel("/apps/approvals", "Approvals"),
+		linkwell.Rel("/apps/vendors", "Vendors"),
+		linkwell.Rel("/apps/bulk", "Bulk"),
 	)
 
-	linkwell.Hub("/hypermedia", "Hypermedia",
-		linkwell.Rel("/hypermedia/controls", "Controls"),
-		linkwell.Rel("/hypermedia/crud", "CRUD"),
-		linkwell.Rel("/hypermedia/lists", "Lists"),
-		linkwell.Rel("/hypermedia/interactions", "Interactions"),
-		linkwell.Rel("/hypermedia/state", "State"),
-		linkwell.Rel("/hypermedia/errors", "Errors"),
-		linkwell.Rel("/hypermedia/components", "Components"),
-		linkwell.Rel("/hypermedia/components2", "Components 2"),
-		linkwell.Rel("/hypermedia/components3", "Components 3"),
-		linkwell.Rel("/hypermedia/realtime", "Realtime"),
-		linkwell.Rel("/hypermedia/links", "Links"),
-		linkwell.Rel("/hypermedia/hal", "HAL"),
-		linkwell.Rel("/hypermedia/standards", "Standards"),
+	linkwell.Hub("/platform", "Platform",
+		linkwell.Rel("/platform/logging", "Logging"),
+		linkwell.Rel("/platform/repository", "Repository"),
+		linkwell.Rel("/platform/settings", "Settings"),
+		linkwell.Rel("/platform/pwa", "PWA Offline"),
+	)
+
+	linkwell.Hub("/patterns", "Patterns",
+		linkwell.Rel("/patterns/controls", "Controls"),
+		linkwell.Rel("/patterns/crud", "CRUD"),
+		linkwell.Rel("/patterns/lists", "Lists"),
+		linkwell.Rel("/patterns/interactions", "Interactions"),
+		linkwell.Rel("/patterns/state", "State"),
+		linkwell.Rel("/patterns/errors", "Errors"),
+	)
+
+	linkwell.Hub("/components", "Components",
+		linkwell.Rel("/components/widgets", "Widgets"),
+		linkwell.Rel("/components/cards", "Cards & Data"),
+		linkwell.Rel("/components/advanced", "Advanced"),
+	)
+
+	linkwell.Hub("/realtime", "Real-time",
+		linkwell.Rel("/realtime/dashboard", "Dashboard"),
+		linkwell.Rel("/realtime/feed", "Feed"),
+		linkwell.Rel("/realtime/canvas", "Canvas"),
+	)
+
+	linkwell.Hub("/api", "API",
+		linkwell.Rel("/api/hal", "HAL"),
+		linkwell.Rel("/api/links", "Link Relations"),
+		linkwell.Rel("/api/standards", "Web Standards"),
 	)
 
 	linkwell.Hub("/admin", "Admin",
@@ -54,69 +65,79 @@ func (ar *appRoutes) initLinkRelations() {
 	)
 
 	linkwell.Hub("/dashboard", "Dashboard",
-		linkwell.Rel("/demo/inventory", "Inventory"),
-		linkwell.Rel("/demo/people", "People"),
-		linkwell.Rel("/demo/kanban", "Kanban"),
-		linkwell.Rel("/demo/approvals", "Approvals"),
-		linkwell.Rel("/demo/vendors", "Vendors"),
-		linkwell.Rel("/demo/feed", "Feed"),
+		linkwell.Rel("/apps/inventory", "Inventory"),
+		linkwell.Rel("/apps/people", "People"),
+		linkwell.Rel("/apps/kanban", "Kanban"),
+		linkwell.Rel("/apps/approvals", "Approvals"),
+		linkwell.Rel("/apps/vendors", "Vendors"),
+		linkwell.Rel("/realtime/feed", "Feed"),
 	)
 
 	// ── Rings (peer groups) ─────────────────────────────────────────
 
-	// Demo: data management pages
+	// Applications: data management pages
 	linkwell.Ring("Data",
-		linkwell.Rel("/demo/inventory", "Inventory"),
-		linkwell.Rel("/demo/catalog", "Catalog"),
-		linkwell.Rel("/demo/bulk", "Bulk Ops"),
-		linkwell.Rel("/demo/people", "People"),
-		linkwell.Rel("/demo/vendors", "Vendors"),
+		linkwell.Rel("/apps/inventory", "Inventory"),
+		linkwell.Rel("/apps/catalog", "Catalog"),
+		linkwell.Rel("/apps/bulk", "Bulk Ops"),
+		linkwell.Rel("/apps/people", "People"),
+		linkwell.Rel("/apps/vendors", "Vendors"),
 	)
 
-	// Demo: workflow and process pages
+	// Applications: workflow and process pages
 	linkwell.Ring("Workflow",
-		linkwell.Rel("/demo/kanban", "Kanban"),
-		linkwell.Rel("/demo/approvals", "Approvals"),
-		linkwell.Rel("/demo/feed", "Feed"),
+		linkwell.Rel("/apps/kanban", "Kanban"),
+		linkwell.Rel("/apps/approvals", "Approvals"),
+		linkwell.Rel("/realtime/feed", "Feed"),
 	)
 
-	// Demo: tools and utilities
+	// Platform: tools and utilities
 	linkwell.Ring("Utility",
-		linkwell.Rel("/demo/logging", "Logging"),
-		linkwell.Rel("/demo/canvas", "Canvas"),
-		linkwell.Rel("/demo/settings", "Settings"),
-		linkwell.Rel("/demo/repository", "Repository"),
+		linkwell.Rel("/platform/logging", "Logging"),
+		linkwell.Rel("/realtime/canvas", "Canvas"),
+		linkwell.Rel("/platform/settings", "Settings"),
+		linkwell.Rel("/platform/repository", "Repository"),
 	)
 
-	// Demo: dashboard children are also peers
+	// Dashboard children are also peers
 	linkwell.Ring("Dashboard",
-		linkwell.Rel("/demo/inventory", "Inventory"),
-		linkwell.Rel("/demo/people", "People"),
-		linkwell.Rel("/demo/kanban", "Kanban"),
-		linkwell.Rel("/demo/approvals", "Approvals"),
-		linkwell.Rel("/demo/vendors", "Vendors"),
-		linkwell.Rel("/demo/feed", "Feed"),
+		linkwell.Rel("/apps/inventory", "Inventory"),
+		linkwell.Rel("/apps/people", "People"),
+		linkwell.Rel("/apps/kanban", "Kanban"),
+		linkwell.Rel("/apps/approvals", "Approvals"),
+		linkwell.Rel("/apps/vendors", "Vendors"),
+		linkwell.Rel("/realtime/feed", "Feed"),
 	)
 
-	// Hypermedia: pattern pages
+	// Patterns: pattern pages
 	linkwell.Ring("Patterns",
-		linkwell.Rel("/hypermedia/controls", "Controls"),
-		linkwell.Rel("/hypermedia/crud", "CRUD"),
-		linkwell.Rel("/hypermedia/lists", "Lists"),
-		linkwell.Rel("/hypermedia/interactions", "Interactions"),
-		linkwell.Rel("/hypermedia/state", "State"),
-		linkwell.Rel("/hypermedia/errors", "Errors"),
-		linkwell.Rel("/hypermedia/realtime", "Realtime"),
-		linkwell.Rel("/hypermedia/links", "Links"),
-		linkwell.Rel("/hypermedia/hal", "HAL"),
-		linkwell.Rel("/hypermedia/standards", "Standards"),
+		linkwell.Rel("/patterns/controls", "Controls"),
+		linkwell.Rel("/patterns/crud", "CRUD"),
+		linkwell.Rel("/patterns/lists", "Lists"),
+		linkwell.Rel("/patterns/interactions", "Interactions"),
+		linkwell.Rel("/patterns/state", "State"),
+		linkwell.Rel("/patterns/errors", "Errors"),
 	)
 
-	// Hypermedia: component gallery pages
+	// Real-time pages
+	linkwell.Ring("Real-time",
+		linkwell.Rel("/realtime/dashboard", "Dashboard"),
+		linkwell.Rel("/realtime/feed", "Feed"),
+		linkwell.Rel("/realtime/canvas", "Canvas"),
+	)
+
+	// API pages
+	linkwell.Ring("API",
+		linkwell.Rel("/api/hal", "HAL"),
+		linkwell.Rel("/api/links", "Link Relations"),
+		linkwell.Rel("/api/standards", "Web Standards"),
+	)
+
+	// Component gallery pages
 	linkwell.Ring("Components",
-		linkwell.Rel("/hypermedia/components", "Components"),
-		linkwell.Rel("/hypermedia/components2", "Components 2"),
-		linkwell.Rel("/hypermedia/components3", "Components 3"),
+		linkwell.Rel("/components/widgets", "Widgets"),
+		linkwell.Rel("/components/cards", "Cards & Data"),
+		linkwell.Rel("/components/advanced", "Advanced"),
 	)
 
 	// Admin: operational pages
@@ -145,6 +166,6 @@ func (ar *appRoutes) initLinkRelations() {
 	// ── Action relations ────────────────────────────────────────────
 
 	// List pages with create forms
-	linkwell.Link("/demo/inventory", "create-form", "/demo/inventory/items/new", "New Item")
-	linkwell.Link("/demo/repository", "create-form", "/demo/repository/tasks", "New Task")
+	linkwell.Link("/apps/inventory", "create-form", "/apps/inventory/items/new", "New Item")
+	linkwell.Link("/platform/repository", "create-form", "/platform/repository/tasks", "New Task")
 }

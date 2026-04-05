@@ -18,11 +18,11 @@ import (
 
 // HALLink represents a single link in a HAL _links object.
 type HALLink struct {
-	Href       string `json:"href"`
-	Title      string `json:"title,omitempty"`
-	Templated  bool   `json:"templated,omitempty"`
-	Type       string `json:"type,omitempty"`
+	Href        string `json:"href"`
+	Title       string `json:"title,omitempty"`
+	Type        string `json:"type,omitempty"`
 	Deprecation string `json:"deprecation,omitempty"`
+	Templated   bool   `json:"templated,omitempty"`
 }
 
 // HALResource is a generic HAL+JSON resource with _links and _embedded.
@@ -47,7 +47,7 @@ func (r HALResource) MarshalJSON() ([]byte, error) {
 
 // ─── demo data ───────────────────────────────────────────────────────────────
 
-const halBase = hypermediaBase + "/hal"
+const halBase = "/api/hal"
 
 func buildHALCatalog() HALResource {
 	return HALResource{
@@ -108,26 +108,28 @@ func bookResource(id int, title, author string, year int, summary string) HALRes
 
 func buildHALBook(id int) (HALResource, bool) {
 	books := []struct {
-		title, author, summary string
-		year                   int
-		tags                   []string
+		title   string
+		author  string
+		summary string
+		tags    []string
+		year    int
 	}{
-		{"Hypermedia Systems", "Carson Gross, Adam Stepinski, Deniz Aksimsek",
-			"A practical guide to building hypermedia-driven applications with htmx. " +
-				"Covers the philosophy of hypermedia, REST constraints, and hands-on patterns.", 2023,
-			[]string{"htmx", "hypermedia", "web"}},
-		{"RESTful Web APIs", "Leonard Richardson, Mike Amundsen",
-			"Covers hypermedia API design including HAL, Collection+JSON, and Siren. " +
-				"A comprehensive reference for designing APIs that leverage the web.", 2013,
-			[]string{"REST", "HAL", "API design"}},
-		{"REST in Practice", "Jim Webber, Savas Parastatidis, Ian Robinson",
-			"Hypermedia and systems architecture using HTTP and REST. " +
-				"Shows how to apply REST constraints to real distributed systems.", 2010,
-			[]string{"REST", "HTTP", "architecture"}},
-		{"Building Hypermedia APIs with HTML5 and Node", "Mike Amundsen",
-			"Explores hypermedia types including HAL for building evolvable APIs. " +
-				"Practical examples of multiple hypermedia formats.", 2011,
-			[]string{"HAL", "Node.js", "hypermedia"}},
+		{title: "Hypermedia Systems", author: "Carson Gross, Adam Stepinski, Deniz Aksimsek",
+			summary: "A practical guide to building hypermedia-driven applications with htmx. " +
+				"Covers the philosophy of hypermedia, REST constraints, and hands-on patterns.",
+			tags: []string{"htmx", "hypermedia", "web"}, year: 2023},
+		{title: "RESTful Web APIs", author: "Leonard Richardson, Mike Amundsen",
+			summary: "Covers hypermedia API design including HAL, Collection+JSON, and Siren. " +
+				"A comprehensive reference for designing APIs that leverage the web.",
+			tags: []string{"REST", "HAL", "API design"}, year: 2013},
+		{title: "REST in Practice", author: "Jim Webber, Savas Parastatidis, Ian Robinson",
+			summary: "Hypermedia and systems architecture using HTTP and REST. " +
+				"Shows how to apply REST constraints to real distributed systems.",
+			tags: []string{"REST", "HTTP", "architecture"}, year: 2010},
+		{title: "Building Hypermedia APIs with HTML5 and Node", author: "Mike Amundsen",
+			summary: "Explores hypermedia types including HAL for building evolvable APIs. " +
+				"Practical examples of multiple hypermedia formats.",
+			tags: []string{"HAL", "Node.js", "hypermedia"}, year: 2011},
 	}
 	if id < 1 || id > len(books) {
 		return HALResource{}, false
@@ -347,9 +349,9 @@ func halJSON(c echo.Context, status int, r HALResource) error {
 func halError(c echo.Context, status int, msg string) error {
 	c.Response().Header().Set("Content-Type", "application/hal+json")
 	return c.JSON(status, map[string]any{
-		"_links":  map[string]any{"self": HALLink{Href: c.Request().URL.String()}},
-		"error":   msg,
-		"status":  status,
+		"_links": map[string]any{"self": HALLink{Href: c.Request().URL.String()}},
+		"error":  msg,
+		"status": status,
 	})
 }
 

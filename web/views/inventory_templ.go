@@ -19,7 +19,7 @@ import (
 	"github.com/catgoose/linkwell"
 )
 
-// InventoryPage is the full page content for /demo/inventory.
+// InventoryPage is the full page content for /apps/inventory.
 // The FilterBar lives outside the table container so it is never replaced by HTMX swaps.
 func InventoryPage(bar linkwell.FilterBar, tableContainer templ.Component) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -52,13 +52,13 @@ func InventoryPage(bar linkwell.FilterBar, tableContainer templ.Component) templ
 				Label:     "+ Add Item",
 				Variant:   linkwell.VariantPrimary,
 				Swap:      linkwell.SwapOuterHTML,
-				HxRequest: linkwell.HxGet("/demo/inventory/items/new", "#new-item-row"),
+				HxRequest: linkwell.HxGet("/apps/inventory/items/new", "#new-item-row"),
 			},
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<a href=\"/hypermedia/controls\" class=\"btn btn-sm btn-ghost\">Hypermedia Controls →</a></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<a href=\"/patterns/controls\" class=\"btn btn-sm btn-ghost\">Hypermedia Controls →</a></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -179,8 +179,8 @@ func InventoryItemRow(item demo.Item) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		rowID := fmt.Sprintf("item-row-%d", item.ID)
-		editURL := fmt.Sprintf("/demo/inventory/items/%d/edit", item.ID)
-		deleteURL := fmt.Sprintf("/demo/inventory/items/%d", item.ID)
+		editURL := fmt.Sprintf("/apps/inventory/items/%d/edit", item.ID)
+		deleteURL := fmt.Sprintf("/apps/inventory/items/%d", item.ID)
 		rowTarget := "#" + rowID
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<tr id=\"")
 		if templ_7745c5c3_Err != nil {
@@ -200,7 +200,7 @@ func InventoryItemRow(item demo.Item) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var6 templ.SafeURL
-		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL(fmt.Sprintf("/demo/inventory/items/%d", item.ID)))
+		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL(fmt.Sprintf("/apps/inventory/items/%d", item.ID)))
 		if templ_7745c5c3_Err != nil {
 			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/inventory.templ`, Line: 61, Col: 75}
 		}
@@ -349,8 +349,8 @@ func InventoryDetailPage(item demo.Item) templ.Component {
 			templ_7745c5c3_Var12 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		editURL := fmt.Sprintf("/demo/inventory/items/%d/edit", item.ID)
-		deleteURL := fmt.Sprintf("/demo/inventory/items/%d", item.ID)
+		editURL := fmt.Sprintf("/apps/inventory/items/%d/edit", item.ID)
+		deleteURL := fmt.Sprintf("/apps/inventory/items/%d", item.ID)
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "<div class=\"max-w-3xl mx-auto p-4 space-y-6\"><div id=\"inventory-detail\" class=\"card bg-base-200 shadow-md\"><div class=\"card-body\"><div class=\"flex items-center justify-between\"><h2 class=\"card-title text-2xl\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

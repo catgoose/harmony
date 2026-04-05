@@ -6,7 +6,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/catgoose/chuck/driver/sqlite"
 )
 
 // OpenMemoryDB opens a new in-memory SQLite database for admin/seed operations.
@@ -19,7 +19,7 @@ func OpenMemoryDB() (*sql.DB, error) {
 	}
 	db.SetMaxOpenConns(1)
 	if err := db.Ping(); err != nil {
-		db.Close()
+		_ = db.Close()
 		return nil, fmt.Errorf("ping in-memory db: %w", err)
 	}
 	return db, nil

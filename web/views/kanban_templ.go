@@ -331,7 +331,7 @@ func kanbanMoveButtons(t demo.KanbanTask) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		statusIdx := statusIndex(t.Status)
-		taskURL := fmt.Sprintf("/demo/kanban/tasks/%d", t.ID)
+		taskURL := fmt.Sprintf("/apps/kanban/tasks/%d", t.ID)
 		if statusIdx > 0 {
 			prevStatus := demo.KanbanStatuses[statusIdx-1]
 			templ_7745c5c3_Err = components.Controls([]linkwell.Control{

@@ -43,11 +43,11 @@ func parseTableParams(c echo.Context, perPage int) tableParams {
 
 // tableContent holds the shared components built from tableParams.
 type tableContent struct {
-	Items []demo.Item
-	Total int
 	Bar   linkwell.FilterBar
+	Items []demo.Item
 	Cols  []linkwell.TableCol
 	Info  linkwell.PageInfo
+	Total int
 }
 
 // buildTableContent queries the DB and builds the filter bar, sortable columns, and pagination info.
@@ -104,7 +104,7 @@ func setTableReplaceURL(c echo.Context, basePath string) {
 	if q := c.Request().URL.RawQuery; q != "" {
 		pushURL += "?" + q
 	}
-	htmx.NewResponse().ReplaceURL(pushURL).Write(c.Response())
+	_ = htmx.NewResponse().ReplaceURL(pushURL).Write(c.Response())
 }
 
 // applyFilterFromCurrentURL reads HX-Current-URL and sets the request URL's query string

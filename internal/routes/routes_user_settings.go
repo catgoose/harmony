@@ -16,14 +16,14 @@ import (
 )
 
 type prefsEntry struct {
-	prefs   admininfo.UserPreferences
 	touchedAt time.Time
+	prefs     admininfo.UserPreferences
 }
 
 // prefsStore is a simple in-memory store keyed by session UUID with TTL eviction.
 var prefsStore = struct {
-	sync.RWMutex
 	m map[string]prefsEntry
+	sync.RWMutex
 }{m: make(map[string]prefsEntry)}
 
 const prefsTTL = 24 * time.Hour

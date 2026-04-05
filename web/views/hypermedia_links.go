@@ -38,7 +38,7 @@ func storedLinkID(stored []demo.StoredLinkRelation, source, rel, target string) 
 
 // linkDeleteURL returns the HTMX delete endpoint for a stored link.
 func linkDeleteURL(id int) string {
-	return fmt.Sprintf("/hypermedia/links/%d", id)
+	return fmt.Sprintf("/api/links/%d", id)
 }
 
 // sortedLinkPaths returns the keys of a link map in alphabetical order.
@@ -52,7 +52,7 @@ func sortedLinkPaths(links map[string][]linkwell.LinkRelation) []string {
 }
 
 func codeLinkExample() string {
-	return `linkwell.Link("/demo/inventory", "related", "/demo/people", "People")
+	return `linkwell.Link("/apps/inventory", "related", "/apps/people", "People")
 // Result: inventory <-> people (bidirectional)`
 }
 
@@ -68,9 +68,9 @@ func codeRingExample() string {
 
 func codeHubExample() string {
 	return `linkwell.Hub("/dashboard", "Dashboard",
-    linkwell.Rel("/demo/inventory", "Inventory"),
-    linkwell.Rel("/demo/people", "People"),
-    linkwell.Rel("/demo/kanban", "Kanban"),
+    linkwell.Rel("/apps/inventory", "Inventory"),
+    linkwell.Rel("/apps/people", "People"),
+    linkwell.Rel("/apps/kanban", "Kanban"),
 )
 // Result: dashboard -> inventory, people, kanban
 //         inventory -> dashboard (only)

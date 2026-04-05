@@ -9,13 +9,13 @@ import (
 	"time"
 
 	"catgoose/harmony/internal/logger"
-	"github.com/catgoose/promolog"
-"catgoose/harmony/internal/routes/handler"
-	"github.com/catgoose/linkwell"
+	"catgoose/harmony/internal/routes/handler"
 	"catgoose/harmony/web/views"
+	"github.com/catgoose/linkwell"
+	"github.com/catgoose/promolog"
 
-	htmx "github.com/angelofallars/htmx-go"
 	corecomponents "catgoose/harmony/web/components/core"
+	htmx "github.com/angelofallars/htmx-go"
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
@@ -24,7 +24,7 @@ import (
 const errorTracesBase = "/admin/error-traces"
 
 func (ar *appRoutes) initErrorTracesRoutes() {
-	if ar.reqLogStore == nil {
+	if ar.repos.ReqLogStore == nil {
 		return
 	}
 	ar.e.GET(errorTracesBase, ar.handleErrorTracesPage)
@@ -51,7 +51,7 @@ func (ar *appRoutes) handleErrorTracesList(c echo.Context) error {
 		if q := c.Request().URL.RawQuery; q != "" {
 			pushURL += "?" + q
 		}
-		htmx.NewResponse().ReplaceURL(pushURL).Write(c.Response())
+		_ = htmx.NewResponse().ReplaceURL(pushURL).Write(c.Response())
 	}
 	ctx := c.Request().Context()
 	w := c.Response()
@@ -63,7 +63,7 @@ func (ar *appRoutes) handleErrorTracesList(c echo.Context) error {
 
 func (ar *appRoutes) handleErrorTraceDetail(c echo.Context) error {
 	requestID := c.Param("requestID")
-	trace, err := ar.reqLogStore.Get(c.Request().Context(), requestID)
+	trace, err := ar.repos.ReqLogStore.Get(c.Request().Context(), requestID)
 	if err != nil {
 		logger.WithContext(c.Request().Context()).Error("Failed to retrieve error trace",
 			"request_id", requestID, "error", err)
@@ -76,7 +76,7 @@ func (ar *appRoutes) handleErrorTraceDetail(c echo.Context) error {
 
 func (ar *appRoutes) handleErrorTraceDelete(c echo.Context) error {
 	requestID := c.Param("requestID")
-	if err := ar.reqLogStore.DeleteTrace(c.Request().Context(), requestID); err != nil {
+	if err := ar.repos.ReqLogStore.DeleteTrace(c.Request().Context(), requestID); err != nil {
 		return handler.HandleHypermediaError(c, 500, "Failed to delete trace", err)
 	}
 	// Re-apply current filters from HX-Current-URL
@@ -113,12 +113,12 @@ func (ar *appRoutes) buildErrorTracesContent(c echo.Context) (linkwell.FilterGro
 		PerPage: perPage,
 	}
 
-	traces, total, err := ar.reqLogStore.ListTraces(c.Request().Context(), f)
+	traces, total, err := ar.repos.ReqLogStore.ListTraces(c.Request().Context(), f)
 	if err != nil {
 		return linkwell.FilterGroup{}, nil, err
 	}
 
-	avail, err := ar.reqLogStore.AvailableFilters(c.Request().Context(), f)
+	avail, err := ar.repos.ReqLogStore.AvailableFilters(c.Request().Context(), f)
 	if err != nil {
 		return linkwell.FilterGroup{}, nil, err
 	}
@@ -211,19 +211,22 @@ func SeedErrorTraces(store promolog.Storer) {
 		return
 	}
 
+	type seedEntry struct {
+		Level, Message, Attrs string
+	}
 	type errorTemplate struct {
 		ErrorChain string
-		StatusCode int
 		Route      string
 		Method     string
-		Entries    []promolog.Entry
+		Entries    []seedEntry
+		StatusCode int
 	}
 
 	templates := []errorTemplate{
 		{
 			ErrorChain: "get user {id}: sql: no rows in result set",
 			StatusCode: 404, Route: "/api/users/{id}", Method: "GET",
-			Entries: []promolog.Entry{
+			Entries: []seedEntry{
 				{Level: "INFO", Message: "Request started", Attrs: "method=GET path=/api/users/{id}"},
 				{Level: "INFO", Message: "Querying user by ID", Attrs: "table=users query=SELECT * FROM users WHERE id=? params={id} duration_ms=3"},
 				{Level: "INFO", Message: "Database query completed", Attrs: "table=users rows_returned=0 duration_ms=3"},
@@ -233,7 +236,7 @@ func SeedErrorTraces(store promolog.Storer) {
 		{
 			ErrorChain: "process order: validate inventory: insufficient stock for SKU-{id}",
 			StatusCode: 422, Route: "/api/orders/{id}", Method: "POST",
-			Entries: []promolog.Entry{
+			Entries: []seedEntry{
 				{Level: "INFO", Message: "Request started", Attrs: "method=POST path=/api/orders"},
 				{Level: "INFO", Message: "Parsing order payload", Attrs: "content_type=application/json items=3 total_cents=14995"},
 				{Level: "INFO", Message: "Validating inventory", Attrs: "sku=SKU-{id} requested_qty=10 warehouse=us-east-1"},
@@ -244,7 +247,7 @@ func SeedErrorTraces(store promolog.Storer) {
 		{
 			ErrorChain: "render dashboard: query metrics: context deadline exceeded",
 			StatusCode: 504, Route: "/dashboard", Method: "GET",
-			Entries: []promolog.Entry{
+			Entries: []seedEntry{
 				{Level: "INFO", Message: "Request started", Attrs: "method=GET path=/dashboard"},
 				{Level: "INFO", Message: "Fetching metrics", Attrs: "range=7d source=prometheus endpoint=http://metrics:9090/api/v1/query_range"},
 				{Level: "INFO", Message: "Query executing", Attrs: "query=rate(http_requests_total[5m]) elapsed_ms=2100"},
@@ -255,7 +258,7 @@ func SeedErrorTraces(store promolog.Storer) {
 		{
 			ErrorChain: "upload file: multipart: NextPart: unexpected EOF",
 			StatusCode: 400, Route: "/api/files/upload", Method: "POST",
-			Entries: []promolog.Entry{
+			Entries: []seedEntry{
 				{Level: "INFO", Message: "Request started", Attrs: "method=POST path=/api/files/upload content_length=1048576"},
 				{Level: "INFO", Message: "Parsing multipart form", Attrs: "content_type=multipart/form-data boundary=----WebKitFormBoundary{hex} max_size=10485760"},
 				{Level: "ERROR", Message: "Multipart parse failed", Attrs: "error=unexpected EOF bytes_read=524288 expected=1048576"},
@@ -264,7 +267,7 @@ func SeedErrorTraces(store promolog.Storer) {
 		{
 			ErrorChain: "save settings: database is locked",
 			StatusCode: 500, Route: "/settings/theme", Method: "POST",
-			Entries: []promolog.Entry{
+			Entries: []seedEntry{
 				{Level: "INFO", Message: "Request started", Attrs: "method=POST path=/settings/theme"},
 				{Level: "INFO", Message: "Updating theme", Attrs: "theme=dark session=sess-{hex} table=SessionSettings"},
 				{Level: "INFO", Message: "Acquiring write lock", Attrs: "table=SessionSettings timeout_ms=30000"},
@@ -274,7 +277,7 @@ func SeedErrorTraces(store promolog.Storer) {
 		{
 			ErrorChain: "fetch report: connect: connection refused",
 			StatusCode: 502, Route: "/api/reports/monthly", Method: "GET",
-			Entries: []promolog.Entry{
+			Entries: []seedEntry{
 				{Level: "INFO", Message: "Request started", Attrs: "method=GET path=/api/reports/monthly"},
 				{Level: "INFO", Message: "Calling reporting service", Attrs: "url=http://reports-svc:8080/v2/monthly timeout=10s"},
 				{Level: "INFO", Message: "DNS resolved", Attrs: "host=reports-svc addr=10.0.5.42 duration_ms=2"},
@@ -284,7 +287,7 @@ func SeedErrorTraces(store promolog.Storer) {
 		{
 			ErrorChain: "authenticate: token expired",
 			StatusCode: 401, Route: "/api/protected/data", Method: "GET",
-			Entries: []promolog.Entry{
+			Entries: []seedEntry{
 				{Level: "INFO", Message: "Request started", Attrs: "method=GET path=/api/protected/data"},
 				{Level: "INFO", Message: "Extracting bearer token", Attrs: "header=Authorization scheme=Bearer"},
 				{Level: "WARN", Message: "Token validation failed", Attrs: "reason=expired exp=2026-03-13T23:59:59Z now=2026-03-14T00:01:12Z issuer=login.microsoftonline.com"},
@@ -293,9 +296,9 @@ func SeedErrorTraces(store promolog.Storer) {
 		},
 		{
 			ErrorChain: "create item: UNIQUE constraint failed: items.name",
-			StatusCode: 409, Route: "/demo/inventory/items", Method: "POST",
-			Entries: []promolog.Entry{
-				{Level: "INFO", Message: "Request started", Attrs: "method=POST path=/demo/inventory/items"},
+			StatusCode: 409, Route: "/apps/inventory/items", Method: "POST",
+			Entries: []seedEntry{
+				{Level: "INFO", Message: "Request started", Attrs: "method=POST path=/apps/inventory/items"},
 				{Level: "INFO", Message: "Parsing item form", Attrs: "name=Widget-{id} category=Electronics price=29.99"},
 				{Level: "INFO", Message: "Creating item", Attrs: "table=items name=Widget-{id} category=Electronics"},
 				{Level: "ERROR", Message: "Insert failed", Attrs: "error=UNIQUE constraint failed: items.name table=items name=Widget-{id} constraint=idx_items_name"},
@@ -304,7 +307,7 @@ func SeedErrorTraces(store promolog.Storer) {
 		{
 			ErrorChain: "authorize /admin/settings: role viewer cannot access admin resource",
 			StatusCode: 403, Route: "/admin/settings", Method: "GET",
-			Entries: []promolog.Entry{
+			Entries: []seedEntry{
 				{Level: "INFO", Message: "Request started", Attrs: "method=GET path=/admin/settings"},
 				{Level: "INFO", Message: "Authenticating user", Attrs: "session_id=sess-{hex} method=bearer_token"},
 				{Level: "INFO", Message: "User authenticated", Attrs: "user_id=usr-{id} email=user{id}@example.com roles=[viewer]"},
@@ -315,7 +318,7 @@ func SeedErrorTraces(store promolog.Storer) {
 		{
 			ErrorChain: "update item {id}: optimistic lock: version mismatch",
 			StatusCode: 409, Route: "/api/items/{id}", Method: "PUT",
-			Entries: []promolog.Entry{
+			Entries: []seedEntry{
 				{Level: "INFO", Message: "Request started", Attrs: "method=PUT path=/api/items/{id}"},
 				{Level: "INFO", Message: "Loading item for update", Attrs: "item_id={id} table=items"},
 				{Level: "INFO", Message: "Comparing versions", Attrs: "item_id={id} client_version=3 server_version=4"},
@@ -325,7 +328,7 @@ func SeedErrorTraces(store promolog.Storer) {
 		{
 			ErrorChain: "delete user {id}: foreign key constraint: user has active orders",
 			StatusCode: 409, Route: "/api/users/{id}", Method: "DELETE",
-			Entries: []promolog.Entry{
+			Entries: []seedEntry{
 				{Level: "INFO", Message: "Request started", Attrs: "method=DELETE path=/api/users/{id}"},
 				{Level: "INFO", Message: "Checking user dependencies", Attrs: "user_id={id} tables=[orders,sessions,audit_log]"},
 				{Level: "INFO", Message: "Found active references", Attrs: "user_id={id} orders=5 sessions=1 audit_entries=142"},
@@ -335,7 +338,7 @@ func SeedErrorTraces(store promolog.Storer) {
 		{
 			ErrorChain: "parse JSON body: unexpected end of JSON input",
 			StatusCode: 400, Route: "/api/webhooks/stripe", Method: "POST",
-			Entries: []promolog.Entry{
+			Entries: []seedEntry{
 				{Level: "INFO", Message: "Request started", Attrs: "method=POST path=/api/webhooks/stripe"},
 				{Level: "INFO", Message: "Receiving webhook", Attrs: "source=stripe event_type=payment_intent.succeeded content_length=2048"},
 				{Level: "INFO", Message: "Verifying signature", Attrs: "header=Stripe-Signature algo=hmac-sha256"},
@@ -382,14 +385,20 @@ func SeedErrorTraces(store promolog.Storer) {
 		// Format attrs with the current id so they have realistic values
 		entries := make([]promolog.Entry, len(tmpl.Entries))
 		for j, e := range tmpl.Entries {
+			attrMap := make(map[string]string)
+			for _, part := range strings.Fields(replacer.Replace(e.Attrs)) {
+				if k, v, ok := strings.Cut(part, "="); ok {
+					attrMap[k] = v
+				}
+			}
 			entries[j] = promolog.Entry{
 				Level:   e.Level,
 				Message: e.Message,
-				Attrs:   replacer.Replace(e.Attrs),
+				Attrs:   attrMap,
 			}
 		}
 
-		store.PromoteAt(ctx, promolog.ErrorTrace{
+		_ = store.PromoteAt(ctx, promolog.Trace{
 			RequestID:  fmt.Sprintf("seed-%08x", i),
 			ErrorChain: errorChain,
 			StatusCode: tmpl.StatusCode,

@@ -38,6 +38,7 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - Security: SECURITY.md
   - Packages:
       - config: packages/config.md
       - logger: packages/logger.md

@@ -23,8 +23,8 @@ type SettingsSection struct {
 
 // SettingsStore is a thread-safe in-memory store for application settings.
 type SettingsStore struct {
-	mu       sync.RWMutex
 	sections []SettingsSection
+	mu       sync.RWMutex
 }
 
 // NewSettingsStore creates a SettingsStore seeded with default sections.

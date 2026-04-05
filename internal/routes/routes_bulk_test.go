@@ -14,8 +14,8 @@ import (
 )
 
 type mockAction struct {
-	calledIDs []int
 	failOn    map[int]bool
+	calledIDs []int
 }
 
 func (m *mockAction) fn(_ context.Context, id int) error {
@@ -29,7 +29,7 @@ func (m *mockAction) fn(_ context.Context, id int) error {
 func bulkContext(ids ...string) echo.Context {
 	e := echo.New()
 	form := "ids=" + strings.Join(ids, "&ids=")
-	req := httptest.NewRequest(http.MethodPost, "/demo/bulk/items", strings.NewReader(form))
+	req := httptest.NewRequest(http.MethodPost, "/apps/bulk/items", strings.NewReader(form))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	rec := httptest.NewRecorder()
 	return e.NewContext(req, rec)
@@ -69,7 +69,7 @@ func TestDoBulkAction_EmptyForm(t *testing.T) {
 	b := &bulkRoutes{}
 	m := &mockAction{}
 	e := echo.New()
-	req := httptest.NewRequest(http.MethodDelete, "/demo/bulk/items", nil)
+	req := httptest.NewRequest(http.MethodDelete, "/apps/bulk/items", nil)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 

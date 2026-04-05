@@ -43,8 +43,8 @@ func (ar *appRoutes) handleTheme(broker *tavern.SSEBroker) echo.HandlerFunc {
 		}
 		settings := session.GetSettings(c.Request())
 		settings.Theme = theme
-		if ar.settingsRepo != nil {
-			if err := ar.settingsRepo.Upsert(c.Request().Context(), settings); err != nil {
+		if ar.repos.Settings != nil {
+			if err := ar.repos.Settings.Upsert(c.Request().Context(), settings); err != nil {
 				logger.WithContext(c.Request().Context()).Error("Failed to save theme setting", "error", err)
 			}
 		}
@@ -72,8 +72,8 @@ func (ar *appRoutes) handleLayout() echo.HandlerFunc {
 		}
 		settings := session.GetSettings(c.Request())
 		settings.Layout = layout
-		if ar.settingsRepo != nil {
-			if err := ar.settingsRepo.Upsert(c.Request().Context(), settings); err != nil {
+		if ar.repos.Settings != nil {
+			if err := ar.repos.Settings.Upsert(c.Request().Context(), settings); err != nil {
 				logger.WithContext(c.Request().Context()).Error("Failed to save layout setting", "error", err)
 			}
 		}
@@ -109,7 +109,7 @@ func handleSSETheme(broker *tavern.SSEBroker) echo.HandlerFunc {
 				if !ok {
 					return nil
 				}
-				fmt.Fprint(c.Response(), msg)
+				_, _ = fmt.Fprint(c.Response(), msg)
 				flusher.Flush()
 			}
 		}

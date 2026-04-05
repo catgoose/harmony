@@ -27,8 +27,8 @@ type feedRoutes struct {
 
 func (ar *appRoutes) initFeedRoutes(actLog *demo.ActivityLog, broker *tavern.SSEBroker) {
 	f := &feedRoutes{actLog: actLog, broker: broker}
-	ar.e.GET("/demo/feed", f.handleFeedPage)
-	ar.e.GET("/demo/feed/more", f.handleFeedMore)
+	ar.e.GET("/realtime/feed", f.handleFeedPage)
+	ar.e.GET("/realtime/feed/more", f.handleFeedMore)
 	ar.e.GET("/sse/activity", f.handleActivitySSE)
 
 	// Seed some initial events so the feed isn't empty on first load.
@@ -91,7 +91,7 @@ func (f *feedRoutes) handleActivitySSE(c echo.Context) error {
 			if !ok {
 				return nil
 			}
-			fmt.Fprint(c.Response(), msg)
+			_, _ = fmt.Fprint(c.Response(), msg)
 			flusher.Flush()
 		}
 	}

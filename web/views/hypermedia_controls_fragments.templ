@@ -90,8 +90,8 @@ templ ResourceViewFragment(name, desc string) {
 			<p class="text-sm text-base-content/70">{ desc }</p>
 		</div>
 		@components.Controls(linkwell.ResourceActions(linkwell.ResourceActionCfg{
-			EditURL:    "/hypermedia/controls/resource/edit",
-			DeleteURL:  "/hypermedia/controls/resource",
+			EditURL:    "/patterns/controls/resource/edit",
+			DeleteURL:  "/patterns/controls/resource",
 			ConfirmMsg: "Delete this resource?",
 			Target:     "#resource-demo",
 		}))
@@ -112,14 +112,14 @@ templ ResourceEditFragment(name, desc string) {
 			<button
 				type="button"
 				class="btn btn-sm btn-primary"
-				hx-put="/hypermedia/controls/resource"
+				hx-put="/patterns/controls/resource"
 				hx-target="#resource-demo"
 				hx-include="#resource-edit-form"
 			>Save</button>
 			<button
 				type="button"
 				class="btn btn-sm btn-ghost"
-				hx-get="/hypermedia/controls/resource"
+				hx-get="/patterns/controls/resource"
 				hx-target="#resource-demo"
 			>Cancel</button>
 		</div>
@@ -131,7 +131,7 @@ templ ResourceDeletedFragment() {
 		<span>Resource deleted!</span>
 		<button
 			class="btn btn-sm btn-ghost"
-			hx-get="/hypermedia/controls/resource"
+			hx-get="/patterns/controls/resource"
 			hx-target="#resource-demo"
 		>Undo</button>
 	</div>
@@ -141,7 +141,7 @@ templ ResourceDeletedFragment() {
 
 templ FormDemoFragment() {
 	<form
-		hx-post="/hypermedia/controls/form"
+		hx-post="/patterns/controls/form"
 		hx-target="#form-demo"
 		hx-swap="innerHTML"
 		class="space-y-3"
@@ -156,7 +156,7 @@ templ FormDemoFragment() {
 				<input name="value" class="input input-sm" value="42"/>
 			</div>
 		</div>
-		@components.Controls(linkwell.FormActions("/hypermedia/controls"))
+		@components.Controls(linkwell.FormActions("/patterns/controls"))
 	</form>
 }
 
@@ -168,7 +168,7 @@ templ FormSubmitResultFragment(label, value string) {
 		</div>
 		<button
 			class="btn btn-sm btn-ghost"
-			hx-get="/hypermedia/controls/form/reset"
+			hx-get="/patterns/controls/form/reset"
 			hx-target="#form-demo"
 			hx-swap="innerHTML"
 		>Reset</button>
@@ -185,7 +185,7 @@ templ EmptyStateFragment() {
 				Kind:      linkwell.ControlKindHTMX,
 				Label:     "Create Item",
 				Variant:   linkwell.VariantPrimary,
-				HxRequest: linkwell.HxPost("/hypermedia/controls/items", "#items-demo"),
+				HxRequest: linkwell.HxPost("/patterns/controls/items", "#items-demo"),
 				Swap:      linkwell.SwapInnerHTML,
 			},
 		})
@@ -205,13 +205,13 @@ templ ItemsListFragment(items []GalleryItem) {
 		<div class="flex gap-2">
 			<button
 				class="btn btn-sm btn-primary"
-				hx-post="/hypermedia/controls/items"
+				hx-post="/patterns/controls/items"
 				hx-target="#items-demo"
 				hx-swap="innerHTML"
 			>Create Another</button>
 			<button
 				class="btn btn-sm btn-ghost"
-				hx-get="/hypermedia/controls/items/reset"
+				hx-get="/patterns/controls/items/reset"
 				hx-target="#items-demo"
 				hx-swap="innerHTML"
 			>Reset</button>
@@ -275,8 +275,8 @@ templ RowViewFragment(item GalleryRowItem) {
 		</td>
 		<td>
 			@components.Controls(linkwell.RowActions(linkwell.RowActionCfg{
-				EditURL:    fmt.Sprintf("/hypermedia/controls/rows/%d/edit", item.ID),
-				DeleteURL:  fmt.Sprintf("/hypermedia/controls/rows/%d", item.ID),
+				EditURL:    fmt.Sprintf("/patterns/controls/rows/%d/edit", item.ID),
+				DeleteURL:  fmt.Sprintf("/patterns/controls/rows/%d", item.ID),
 				RowTarget:  fmt.Sprintf("#cg-row-%d", item.ID),
 				ConfirmMsg: "Delete this item?",
 			}))
@@ -300,8 +300,8 @@ templ RowEditFragment(item GalleryRowItem) {
 		<td><input type="checkbox" name="active" value="true" class="toggle toggle-sm" checked?={ item.Active }/></td>
 		<td>
 			@components.Controls(linkwell.RowFormActions(linkwell.RowFormActionCfg{
-				SaveURL:      fmt.Sprintf("/hypermedia/controls/rows/%d", item.ID),
-				CancelURL:    fmt.Sprintf("/hypermedia/controls/rows/%d", item.ID),
+				SaveURL:      fmt.Sprintf("/patterns/controls/rows/%d", item.ID),
+				CancelURL:    fmt.Sprintf("/patterns/controls/rows/%d", item.ID),
 				SaveTarget:   fmt.Sprintf("#cg-row-%d", item.ID),
 				CancelTarget: fmt.Sprintf("#cg-row-%d", item.ID),
 			}))
@@ -342,7 +342,7 @@ templ ValidationFixForm(name, price string) {
 	<div class="p-4 bg-base-200 rounded-lg space-y-3">
 		<p class="text-sm font-medium">Fix the data and resubmit:</p>
 		<form
-			hx-post="/hypermedia/controls/errors/validate"
+			hx-post="/patterns/controls/errors/validate"
 			hx-target="#validate-result"
 			hx-swap="innerHTML"
 			class="space-y-2"
@@ -370,7 +370,7 @@ templ StaleRefreshForm(name string, version int) {
 			Fresh data loaded (v{ strconv.Itoa(version) }) — edit and save:
 		</p>
 		<form
-			hx-post="/hypermedia/controls/errors/stale"
+			hx-post="/patterns/controls/errors/stale"
 			hx-target="#stale-result"
 			hx-swap="innerHTML"
 			class="space-y-2"
@@ -393,7 +393,7 @@ templ CascadeReassignForm(items []string) {
 			}
 		</ul>
 		<form
-			hx-post="/hypermedia/controls/errors/cascade/reassign"
+			hx-post="/patterns/controls/errors/cascade/reassign"
 			hx-target="#cascade-result"
 			hx-swap="innerHTML"
 			class="flex items-end gap-2"

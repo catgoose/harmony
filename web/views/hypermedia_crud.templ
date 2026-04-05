@@ -11,13 +11,10 @@ type CRUDViewItem struct {
 	ID     int
 }
 
-// CRUDPage is the full-page layout for /hypermedia/crud.
+// CRUDPage is the full-page layout for /patterns/crud.
 templ CRUDPage(items []CRUDViewItem) {
 	<div class="p-4 space-y-6 max-w-4xl mx-auto">
-		<div class="flex items-center justify-between mb-4">
-			<h1 class="text-2xl font-bold">CRUD Patterns</h1>
-			<a href="/hypermedia/controls" class="btn btn-sm btn-ghost">← Overview</a>
-		</div>
+		<h1 class="text-2xl font-bold mb-4">CRUD Patterns</h1>
 		<div role="alert" class="alert alert-info text-sm">
 			<span>Demonstrates: <strong>create</strong>, <strong>edit</strong>, <strong>patch</strong>, <strong>update</strong>, <strong>delete</strong> — all inline, no page reload.</span>
 		</div>
@@ -27,7 +24,7 @@ templ CRUDPage(items []CRUDViewItem) {
 					<h2 class="card-title text-base">Items</h2>
 					<button
 						class="btn btn-sm btn-primary"
-						hx-post="/hypermedia/crud/items"
+						hx-post="/patterns/crud/items"
 						hx-target="#crud-new-row"
 						hx-swap="outerHTML"
 						hx-vals='{"name":"New Item","notes":""}'
@@ -37,11 +34,11 @@ templ CRUDPage(items []CRUDViewItem) {
 			</div>
 		</div>
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-			@crudPatternCard("Create", "POST /hypermedia/crud/items", "Appends a new row by posting a form and swapping the placeholder row with the returned row fragment.")
-			@crudPatternCard("Edit", "GET /hypermedia/crud/items/:id/edit", "Replaces the display row with an inline edit form (outerHTML swap).")
-			@crudPatternCard("Update (PUT)", "PUT /hypermedia/crud/items/:id", "Submits the edit form; server returns the updated display row.")
-			@crudPatternCard("Patch (toggle)", "PATCH /hypermedia/crud/items/:id/toggle", "Flips the status field without a full edit form.")
-			@crudPatternCard("Delete", "DELETE /hypermedia/crud/items/:id", "Removes the row from the DOM via hx-swap=\"delete\" (no server fragment returned).")
+			@crudPatternCard("Create", "POST /patterns/crud/items", "Appends a new row by posting a form and swapping the placeholder row with the returned row fragment.")
+			@crudPatternCard("Edit", "GET /patterns/crud/items/:id/edit", "Replaces the display row with an inline edit form (outerHTML swap).")
+			@crudPatternCard("Update (PUT)", "PUT /patterns/crud/items/:id", "Submits the edit form; server returns the updated display row.")
+			@crudPatternCard("Patch (toggle)", "PATCH /patterns/crud/items/:id/toggle", "Flips the status field without a full edit form.")
+			@crudPatternCard("Delete", "DELETE /patterns/crud/items/:id", "Removes the row from the DOM via hx-swap=\"delete\" (no server fragment returned).")
 		</div>
 	</div>
 }
@@ -72,9 +69,9 @@ templ CRUDItemsTable(items []CRUDViewItem) {
 // CRUDItemRow renders a single read-only display row.
 templ CRUDItemRow(item CRUDViewItem) {
 	{{ rowID := fmt.Sprintf("crud-row-%d", item.ID) }}
-	{{ editURL := fmt.Sprintf("/hypermedia/crud/items/%d/edit", item.ID) }}
-	{{ toggleURL := fmt.Sprintf("/hypermedia/crud/items/%d/toggle", item.ID) }}
-	{{ deleteURL := fmt.Sprintf("/hypermedia/crud/items/%d", item.ID) }}
+	{{ editURL := fmt.Sprintf("/patterns/crud/items/%d/edit", item.ID) }}
+	{{ toggleURL := fmt.Sprintf("/patterns/crud/items/%d/toggle", item.ID) }}
+	{{ deleteURL := fmt.Sprintf("/patterns/crud/items/%d", item.ID) }}
 	<tr id={ rowID }>
 		<td class="text-base-content/50 text-xs">{ fmt.Sprintf("%d", item.ID) }</td>
 		<td class="font-medium">{ item.Name }</td>
@@ -115,8 +112,8 @@ templ CRUDItemRow(item CRUDViewItem) {
 // CRUDEditRow renders an inline edit form row.
 templ CRUDEditRow(item CRUDViewItem) {
 	{{ rowID := fmt.Sprintf("crud-row-%d", item.ID) }}
-	{{ saveURL := fmt.Sprintf("/hypermedia/crud/items/%d", item.ID) }}
-	{{ cancelURL := fmt.Sprintf("/hypermedia/crud/items/%d", item.ID) }}
+	{{ saveURL := fmt.Sprintf("/patterns/crud/items/%d", item.ID) }}
+	{{ cancelURL := fmt.Sprintf("/patterns/crud/items/%d", item.ID) }}
 	<tr id={ rowID }>
 		<td class="text-base-content/50 text-xs">{ fmt.Sprintf("%d", item.ID) }</td>
 		<td><input type="text" name="name" class="input input-xs w-full" value={ item.Name }/></td>

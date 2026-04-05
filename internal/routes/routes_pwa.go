@@ -10,19 +10,19 @@ import (
 )
 
 func (ar *appRoutes) initPwaRoutes() {
-	ar.e.GET("/pwa", handler.HandleComponent(views.PwaIndexPage()))
-	ar.e.GET("/pwa/inspection", handler.HandleComponent(views.PwaSiteInspectionForm()))
-	ar.e.GET("/pwa/report", handler.HandleComponent(views.PwaFieldReportForm()))
-	ar.e.GET("/pwa/notes", handler.HandleComponent(views.PwaNotesForm()))
-	ar.e.GET("/pwa/info", handler.HandleComponent(views.PwaInfoPage()))
+	ar.e.GET("/platform/pwa", handler.HandleComponent(views.PwaIndexPage()))
+	ar.e.GET("/platform/pwa/inspection", handler.HandleComponent(views.PwaSiteInspectionForm()))
+	ar.e.GET("/platform/pwa/report", handler.HandleComponent(views.PwaFieldReportForm()))
+	ar.e.GET("/platform/pwa/notes", handler.HandleComponent(views.PwaNotesForm()))
+	ar.e.GET("/platform/pwa/info", handler.HandleComponent(views.PwaInfoPage()))
 
-	ar.e.POST("/pwa/inspection", func(c echo.Context) error {
+	ar.e.POST("/platform/pwa/inspection", func(c echo.Context) error {
 		return handler.RenderComponent(c, views.PwaFormSuccess("Site inspection saved."))
 	})
-	ar.e.POST("/pwa/report", func(c echo.Context) error {
+	ar.e.POST("/platform/pwa/report", func(c echo.Context) error {
 		return handler.RenderComponent(c, views.PwaFormSuccess("Field report saved."))
 	})
-	ar.e.POST("/pwa/notes", func(c echo.Context) error {
+	ar.e.POST("/platform/pwa/notes", func(c echo.Context) error {
 		return handler.RenderComponent(c, views.PwaFormSuccess("Notes saved."))
 	})
 }

@@ -15,23 +15,23 @@ var ApprovalCategories = []string{"Travel", "Equipment", "Software", "Training",
 
 // ApprovalRequest represents a single approval workflow item.
 type ApprovalRequest struct {
-	ID          int
-	Title       string
-	Requester   string
-	Amount      float64
-	Category    string
-	Status      string
 	SubmittedAt time.Time
 	ReviewedAt  *time.Time
+	Title       string
+	Requester   string
+	Category    string
+	Status      string
 	ReviewedBy  string
 	Notes       string
+	ID          int
+	Amount      float64
 }
 
 // ApprovalQueue is a thread-safe in-memory store for approval requests.
 type ApprovalQueue struct {
-	mu       sync.RWMutex
 	requests []ApprovalRequest
 	nextID   int
+	mu       sync.RWMutex
 }
 
 // AllowedActions returns the valid actions for a given status based on the

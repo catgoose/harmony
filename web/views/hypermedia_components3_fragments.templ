@@ -40,7 +40,7 @@ templ FeedItemsFragment(items []FeedItemData, currentPage int, hasMore bool) {
 	}
 	if hasMore {
 		<div
-			hx-get={ fmt.Sprintf("/hypermedia/components3/feed?page=%d", currentPage+1) }
+			hx-get={ fmt.Sprintf("/components/advanced/feed?page=%d", currentPage+1) }
 			hx-trigger="revealed"
 			hx-swap="outerHTML"
 			class="flex justify-center p-4"
@@ -67,7 +67,7 @@ templ FavoriteItemFragment(item FavoriteItemData) {
 		<span class="text-sm font-medium">{ item.Title }</span>
 		<button
 			class={ "btn btn-sm btn-circle", heartClass }
-			hx-post={ fmt.Sprintf("/hypermedia/components3/favorite/%d", item.ID) }
+			hx-post={ fmt.Sprintf("/components/advanced/favorite/%d", item.ID) }
 			hx-target={ "#" + itemID }
 			hx-swap="outerHTML"
 			_={ fmt.Sprintf(`on click
@@ -111,7 +111,7 @@ templ UndoItemRowFragment(item UndoItemData) {
 		<span class="text-sm font-medium">{ item.Name }</span>
 		<button
 			class="btn btn-xs btn-error btn-outline"
-			hx-delete={ fmt.Sprintf("/hypermedia/components3/undo/%d", item.ID) }
+			hx-delete={ fmt.Sprintf("/components/advanced/undo/%d", item.ID) }
 			hx-target={ "#" + rowID }
 			hx-swap="outerHTML"
 		>Delete</button>
@@ -134,7 +134,7 @@ templ UndoToastFragment(item UndoItemData) {
 		<span>Deleted <strong>{ item.Name }</strong></span>
 		<button
 			class="btn btn-xs btn-ghost"
-			hx-post={ fmt.Sprintf("/hypermedia/components3/undo/%d/restore", item.ID) }
+			hx-post={ fmt.Sprintf("/components/advanced/undo/%d/restore", item.ID) }
 			hx-target={ "#undo-list" }
 			hx-select="#undo-list > div"
 			_={ fmt.Sprintf(`on click remove #%s`, toastID) }

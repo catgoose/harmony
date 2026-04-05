@@ -22,8 +22,8 @@ type approvalRoutes struct {
 
 func (ar *appRoutes) initApprovalRoutes(queue *demo.ApprovalQueue, actLog *demo.ActivityLog, broker *tavern.SSEBroker) {
 	a := &approvalRoutes{queue: queue, actLog: actLog, broker: broker}
-	ar.e.GET("/demo/approvals", a.handleApprovalsPage)
-	ar.e.PATCH("/demo/approvals/:id", a.handleApprovalAction)
+	ar.e.GET("/apps/approvals", a.handleApprovalsPage)
+	ar.e.PATCH("/apps/approvals/:id", a.handleApprovalAction)
 }
 
 func (a *approvalRoutes) handleApprovalsPage(c echo.Context) error {
