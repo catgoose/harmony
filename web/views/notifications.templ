@@ -40,7 +40,7 @@ templ NotificationsPage(identity demo.NotificationIdentity, filters map[demo.Not
 			</button>
 		</div>
 		<p class="text-xs text-base-content/50">
-			Per-user scoped notifications with presence, categories, replay, and auto-expiry (60s TTL).
+			Per-user scoped notifications with presence, categories, and Last-Event-ID replay.
 		</p>
 		<div class="flex gap-6">
 			<!-- Main: notification list -->
@@ -103,7 +103,7 @@ templ NotificationsPage(identity demo.NotificationIdentity, filters map[demo.Not
 				</div>
 				<div class="bg-base-200 rounded-lg p-3 space-y-1">
 					<h3 class="text-xs font-semibold uppercase tracking-wider text-base-content/50">Info</h3>
-					<p class="text-xs text-base-content/50">Notifications auto-expire after 60s via TTL.</p>
+					<p class="text-xs text-base-content/50">Replay log is count-limited per user topic.</p>
 					<p class="text-xs text-base-content/50">Disconnect button demos Last-Event-ID replay.</p>
 				</div>
 			</div>
