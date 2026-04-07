@@ -11,7 +11,7 @@ require (
 	github.com/catgoose/crooner v1.4.16
 	github.com/catgoose/dorman v0.1.9
 	github.com/catgoose/linkwell v0.2.25
-	github.com/catgoose/promolog/sqlite v0.0.0-20260404160355-64d49720300a
+	github.com/catgoose/promolog/sqlite v0.0.0-20260407192233-a572f60912e8
 	github.com/catgoose/tavern v0.4.62
 	github.com/charmbracelet/huh v1.0.0
 	github.com/fsnotify/fsnotify v1.9.0
