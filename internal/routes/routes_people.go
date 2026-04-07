@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"sync/atomic"
+	"time"
 
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
@@ -23,9 +25,10 @@ import (
 const peopleBase = "/apps/people"
 
 type peopleRoutes struct {
-	db     *demo.DB
-	broker *tavern.SSEBroker
-	actLog *demo.ActivityLog
+	db      *demo.DB
+	broker  *tavern.SSEBroker
+	actLog  *demo.ActivityLog
+	counter atomic.Int64
 }
 
 func (ar *appRoutes) initPeopleRoutes(db *demo.DB, broker *tavern.SSEBroker, actLog *demo.ActivityLog) {
@@ -142,9 +145,12 @@ func (p *peopleRoutes) broadcastPersonUpdate(person demo.Person) {
 		statsBufPool.Put(buf)
 		return
 	}
-	msg := tavern.NewSSEMessage("person-update", buf.String()).String()
+	eventID := fmt.Sprintf("pu%d", p.counter.Add(1))
+	msg := tavern.NewSSEMessage("person-update", buf.String()).
+		WithID(eventID).
+		String()
 	statsBufPool.Put(buf)
-	p.broker.Publish(topic, msg)
+	p.broker.PublishWithTTL(topic, msg, 60*time.Second)
 }
 
 func (p *peopleRoutes) handlePersonSSE(c echo.Context) error {
@@ -153,6 +159,9 @@ func (p *peopleRoutes) handlePersonSSE(c echo.Context) error {
 		return handler.HandleHypermediaError(c, 400, "Invalid person ID", err)
 	}
 	topic := fmt.Sprintf("%s-%d", TopicPeopleUpdate, id)
+
+	// Set replay policy so reconnecting clients receive missed updates.
+	p.broker.SetReplayPolicy(topic, 5)
 
 	c.Response().Header().Set("Content-Type", "text/event-stream")
 	c.Response().Header().Set("Cache-Control", "no-cache")
@@ -164,7 +173,15 @@ func (p *peopleRoutes) handlePersonSSE(c echo.Context) error {
 		return fmt.Errorf("streaming unsupported")
 	}
 
-	ch, unsub := p.broker.Subscribe(topic)
+	// Check for Last-Event-ID for replay on reconnect.
+	lastEventID := c.Request().Header.Get("Last-Event-ID")
+	var ch <-chan string
+	var unsub func()
+	if lastEventID != "" {
+		ch, unsub = p.broker.SubscribeFromID(topic, lastEventID)
+	} else {
+		ch, unsub = p.broker.Subscribe(topic)
+	}
 	defer unsub()
 
 	ctx := c.Request().Context()
