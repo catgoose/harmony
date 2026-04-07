@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"strconv"
 	"sync/atomic"
-	"time"
 
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
@@ -150,7 +149,7 @@ func (p *peopleRoutes) broadcastPersonUpdate(person demo.Person) {
 		WithID(eventID).
 		String()
 	statsBufPool.Put(buf)
-	p.broker.PublishWithTTL(topic, msg, 60*time.Second)
+	p.broker.PublishWithID(topic, eventID, msg)
 }
 
 func (p *peopleRoutes) handlePersonSSE(c echo.Context) error {
@@ -162,6 +161,7 @@ func (p *peopleRoutes) handlePersonSSE(c echo.Context) error {
 
 	// Set replay policy so reconnecting clients receive missed updates.
 	p.broker.SetReplayPolicy(topic, 5)
+	p.broker.SetReplayGapPolicy(topic, tavern.GapFallbackToSnapshot, nil)
 
 	c.Response().Header().Set("Content-Type", "text/event-stream")
 	c.Response().Header().Set("Cache-Control", "no-cache")

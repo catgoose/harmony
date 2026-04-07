@@ -27,6 +27,7 @@ func (ar *appRoutes) initFeedRoutes(actLog *demo.ActivityLog, broker *tavern.SSE
 	f := &feedRoutes{actLog: actLog, broker: broker}
 	ar.e.GET("/realtime/feed", f.handleFeedPage)
 	ar.e.GET("/realtime/feed/more", f.handleFeedMore)
+	broker.SetReplayGapPolicy(TopicActivityFeed, tavern.GapFallbackToSnapshot, nil)
 	ar.e.GET("/sse/activity", echo.WrapHandler(broker.SSEHandler(TopicActivityFeed)))
 
 	// Seed some initial events so the feed isn't empty on first load.

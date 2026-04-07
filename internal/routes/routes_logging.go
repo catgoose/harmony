@@ -31,6 +31,7 @@ func (ar *appRoutes) initLoggingRoutes(broker *tavern.SSEBroker) {
 		})
 	}
 
+	broker.SetReplayGapPolicy(TopicErrorTraces, tavern.GapFallbackToSnapshot, nil)
 	ar.e.GET("/sse/error-traces", echo.WrapHandler(broker.SSEHandler(TopicErrorTraces)))
 	// setup:feature:sse:end
 

@@ -23,6 +23,7 @@ import (
 func (ar *appRoutes) initThemeRoutes(broker *tavern.SSEBroker) {
 	ar.e.POST("/settings/theme", ar.handleTheme(broker))
 	ar.e.POST("/settings/layout", ar.handleLayout())
+	broker.SetReplayGapPolicy(TopicThemeChange, tavern.GapFallbackToSnapshot, nil)
 	ar.e.GET("/sse/theme", echo.WrapHandler(broker.SSEHandler(TopicThemeChange)))
 }
 

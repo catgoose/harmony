@@ -97,7 +97,8 @@ func (n *notificationRoutes) handleSSE(c echo.Context) error {
 	// Each user gets a dedicated topic so that replay via Last-Event-ID is
 	// inherently scoped — no risk of leaking another user's notifications.
 	userTopic := notifUserTopic(identity.ID)
-	n.broker.SetReplayPolicy(userTopic, 20)
+	n.broker.SetReplayPolicy(userTopic, 50)
+	n.broker.SetReplayGapPolicy(userTopic, tavern.GapFallbackToSnapshot, nil)
 
 	// Build a filter that checks the user's current category preferences.
 	// The rendered HTML includes data-cat="<category>" so we can detect it.
@@ -110,7 +111,11 @@ func (n *notificationRoutes) handleSSE(c echo.Context) error {
 		return true
 	}
 
-	// Check for Last-Event-ID for replay
+	// Check for Last-Event-ID for replay.
+	// Both paths apply the same filterFn: SubscribeWith uses it natively for
+	// live messages, while SubscribeFromID doesn't support filters so we apply
+	// the filter in the write loop below. This ensures category preferences
+	// survive SSE reconnections.
 	lastEventID := c.Request().Header.Get("Last-Event-ID")
 	var msgs <-chan string
 	var unsub func()
@@ -134,6 +139,9 @@ func (n *notificationRoutes) handleSSE(c echo.Context) error {
 		case msg, ok := <-msgs:
 			if !ok {
 				return nil
+			}
+			if !filterFn(msg) {
+				continue
 			}
 			_, _ = fmt.Fprint(c.Response(), msg)
 			flusher.Flush()
@@ -180,11 +188,10 @@ func (n *notificationRoutes) startSimulator(ctx context.Context) {
 				WithID(notifID).
 				String()
 
-			n.broker.PublishWithTTL(
+			n.broker.PublishWithID(
 				notifUserTopic(target.UserID),
+				notifID,
 				sseMsg,
-				60*time.Second,
-				tavern.WithAutoRemove("notif-"+notifID),
 			)
 		}
 	}
