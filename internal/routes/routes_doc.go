@@ -58,13 +58,13 @@ func (ar *appRoutes) initDocRoutes(broker *tavern.SSEBroker) {
 	// After hooks: content changes trigger stats + sentiment + history recalculation.
 	broker.After(topicDocContent, func() {
 		statsHTML := renderDocStats(doc)
-		broker.Publish(topicDocStats, tavern.NewSSEMessage("stats", statsHTML).String())
+		broker.Publish(topicDocStats, statsHTML)
 
 		sentimentHTML := renderDocSentiment(doc)
-		broker.Publish(topicDocSentiment, tavern.NewSSEMessage("sentiment", sentimentHTML).String())
+		broker.Publish(topicDocSentiment, sentimentHTML)
 
 		historyHTML := renderDocHistory(doc)
-		broker.Publish(topicDocHistory, tavern.NewSSEMessage("history", historyHTML).String())
+		broker.Publish(topicDocHistory, historyHTML)
 	})
 
 	// OnMutate: edit POSTs trigger content publish via mutation signal.
@@ -72,7 +72,7 @@ func (ar *appRoutes) initDocRoutes(broker *tavern.SSEBroker) {
 		content := evt.Data.(string)
 		doc.Update(content)
 		html := renderDocContent(doc)
-		broker.Publish(topicDocContent, tavern.NewSSEMessage("content", html).String())
+		broker.Publish(topicDocContent, html)
 	})
 
 	// Define topic group for a single SSE endpoint.
@@ -108,10 +108,10 @@ func (d *docRoutes) handleBatchEdit(c echo.Context) error {
 	newContent := d.doc.BatchEdit(action)
 
 	batch := d.broker.Batch()
-	batch.Publish(topicDocContent, tavern.NewSSEMessage("content", renderDocContent(d.doc)).String())
-	batch.Publish(topicDocStats, tavern.NewSSEMessage("stats", renderDocStats(d.doc)).String())
-	batch.Publish(topicDocSentiment, tavern.NewSSEMessage("sentiment", renderDocSentiment(d.doc)).String())
-	batch.Publish(topicDocHistory, tavern.NewSSEMessage("history", renderDocHistory(d.doc)).String())
+	batch.Publish(topicDocContent, renderDocContent(d.doc))
+	batch.Publish(topicDocStats, renderDocStats(d.doc))
+	batch.Publish(topicDocSentiment, renderDocSentiment(d.doc))
+	batch.Publish(topicDocHistory, renderDocHistory(d.doc))
 	batch.Flush()
 
 	_ = newContent

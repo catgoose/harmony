@@ -85,8 +85,7 @@ func (a *auctionRoutes) handleBid(c echo.Context) error {
 
 	topic := a.house.Topic(itemID)
 	html := renderAuctionCardUpdateHTML(item)
-	sseMsg := tavern.NewSSEMessage(topic, html).String()
-	a.broker.PublishWithReplay(topic, sseMsg)
+	a.broker.PublishWithReplay(topic, html)
 
 	return c.HTML(http.StatusOK, html)
 }
@@ -158,8 +157,7 @@ func (a *auctionRoutes) startBotBidder(ctx context.Context) {
 			}
 
 			html := renderAuctionCardUpdateHTML(item)
-			sseMsg := tavern.NewSSEMessage(topic, html).String()
-			a.broker.PublishWithReplay(topic, sseMsg)
+			a.broker.PublishWithReplay(topic, html)
 		}
 	}
 }
