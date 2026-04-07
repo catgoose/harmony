@@ -11,5 +11,7 @@ const (
 	TopicThemeChange  = "theme-change"
 	TopicCanvasUpdate  = "canvas-update"
 	TopicAdminPanel    = "admin-panel"
-	TopicNumericalDash = "numerical-dash"
+	TopicNumericalDash    = "numerical-dash"
+	TopicNotifications    = "notifications"
+	TopicObservatory      = "observatory"
 )

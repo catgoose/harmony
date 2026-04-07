@@ -1,0 +1,194 @@
+// setup:feature:demo
+
+package views
+
+import (
+	"catgoose/harmony/internal/demo"
+	"fmt"
+	"math"
+	"strings"
+)
+
+var sensorBadgeClass = map[demo.SensorType]string{
+	demo.SensorTemp:     "badge-error",
+	demo.SensorHumidity: "badge-info",
+	demo.SensorPressure: "badge-warning",
+	demo.SensorLight:    "badge-success",
+}
+
+func sensorTopicSlug(topic string) string {
+	return strings.ReplaceAll(strings.ReplaceAll(topic, "/", "-"), " ", "-")
+}
+
+func sparklinePoints(history []float64) string {
+	if len(history) == 0 {
+		return ""
+	}
+	minVal, maxVal := history[0], history[0]
+	for _, v := range history {
+		if v < minVal {
+			minVal = v
+		}
+		if v > maxVal {
+			maxVal = v
+		}
+	}
+	spread := maxVal - minVal
+	if spread == 0 {
+		spread = 1
+	}
+	points := make([]string, len(history))
+	for i, v := range history {
+		x := float64(i) / math.Max(float64(len(history)-1), 1) * 100
+		y := 28 - ((v-minVal)/spread)*26
+		points[i] = fmt.Sprintf("%.1f,%.1f", x, y)
+	}
+	return strings.Join(points, " ")
+}
+
+templ SensorsPage(sensors []demo.SensorReading) {
+	<div class="max-w-5xl mx-auto p-4 space-y-4">
+		<div class="flex items-center justify-between flex-wrap gap-2">
+			<h1 class="text-2xl font-bold">IoT Sensor Grid</h1>
+			<div class="flex items-center gap-2">
+				<button
+					id="flood-btn"
+					class="btn btn-outline btn-xs btn-warning"
+					hx-post="/realtime/sensors/flood"
+					hx-swap="outerHTML"
+				>
+					Flood Test
+				</button>
+			</div>
+		</div>
+		<div class="flex items-center gap-3 flex-wrap">
+			<label class="text-xs font-semibold text-base-content/50 uppercase tracking-wider">Pattern</label>
+			<input
+				id="sensor-pattern"
+				type="text"
+				class="input input-xs input-bordered font-mono w-64"
+				value="sensors/**"
+				placeholder="sensors/**"
+			/>
+			<button
+				class="btn btn-xs btn-primary"
+				onclick="connectSensors(document.getElementById('sensor-pattern').value)"
+			>
+				Subscribe
+			</button>
+			<span class="text-xs text-base-content/40">
+				Try: sensors/floor1/*, sensors/**/temp, sensors/floor2/humidity
+			</span>
+		</div>
+		<p class="text-xs text-base-content/50">
+			16 simulated sensors across 4 floors. Subscribe with glob patterns. Flood Test ramps publish rate to demo coalescing.
+		</p>
+		<div id="sensor-grid" class="grid grid-cols-4 gap-3">
+			for _, r := range sensors {
+				@SensorCard(r, []float64{r.Value})
+			}
+		</div>
+	</div>
+	@sensorsScript()
+}
+
+templ SensorCard(reading demo.SensorReading, history []float64) {
+	<div
+		id={ "sensor-" + sensorTopicSlug(reading.Topic) }
+		data-topic={ reading.Topic }
+		class="card bg-base-200 p-3 space-y-1 transition-colors duration-300"
+	>
+		<div class="flex justify-between items-center">
+			<span class="text-xs font-mono text-base-content/50">Floor { fmt.Sprintf("%d", reading.Floor) }</span>
+			<span class={ "badge badge-xs " + sensorBadgeClass[reading.Type] }>{ string(reading.Type) }</span>
+		</div>
+		<div class="text-2xl font-bold tabular-nums">
+			{ fmt.Sprintf("%.1f", reading.Value) }
+			<span class="text-sm font-normal ml-1">{ reading.Unit }</span>
+		</div>
+		<svg class="w-full h-8" viewBox="0 0 100 30" preserveAspectRatio="none">
+			<polyline points={ sparklinePoints(history) } fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+		</svg>
+	</div>
+}
+
+templ FloodButton(flooding bool) {
+	if flooding {
+		<button
+			id="flood-btn"
+			class="btn btn-xs btn-error"
+			hx-post="/realtime/sensors/flood"
+			hx-swap="outerHTML"
+		>
+			Stop Flood
+		</button>
+	} else {
+		<button
+			id="flood-btn"
+			class="btn btn-outline btn-xs btn-warning"
+			hx-post="/realtime/sensors/flood"
+			hx-swap="outerHTML"
+		>
+			Flood Test
+		</button>
+	}
+}
+
+templ sensorsScript() {
+	<script>
+		let evtSource;
+		let currentPattern = 'sensors/**';
+
+		function connectSensors(pattern) {
+			if (evtSource) evtSource.close();
+			currentPattern = pattern || 'sensors/**';
+
+			// Gray out all cards, they'll be un-grayed when we get updates
+			document.querySelectorAll('#sensor-grid > div').forEach(function(card) {
+				card.classList.add('opacity-30');
+			});
+
+			evtSource = new EventSource('/sse/sensors?pattern=' + encodeURIComponent(currentPattern));
+			evtSource.addEventListener('sensor-update', function(e) {
+				const wrapper = document.createElement('div');
+				wrapper.innerHTML = e.data.trim();
+				const newCard = wrapper.firstElementChild;
+				if (!newCard) return;
+
+				const topic = newCard.getAttribute('data-topic');
+				if (!topic) return;
+
+				const id = newCard.id;
+				const existing = document.getElementById(id);
+				if (existing) {
+					existing.outerHTML = newCard.outerHTML;
+					// Brief highlight
+					const replaced = document.getElementById(id);
+					if (replaced) {
+						replaced.classList.remove('opacity-30');
+						replaced.classList.add('ring', 'ring-primary/40');
+						setTimeout(function() {
+							replaced.classList.remove('ring', 'ring-primary/40');
+						}, 300);
+					}
+				}
+			});
+
+			evtSource.onerror = function() {
+				setTimeout(function() {
+					connectSensors(currentPattern);
+				}, 2000);
+			};
+		}
+
+		// Connect with default pattern on load
+		connectSensors('sensors/**');
+
+		// Allow Enter key in the pattern input
+		document.getElementById('sensor-pattern').addEventListener('keydown', function(e) {
+			if (e.key === 'Enter') {
+				connectSensors(this.value);
+			}
+		});
+	</script>
+}

@@ -9,10 +9,10 @@ require (
 	github.com/a-h/templ v0.3.1001
 	github.com/angelofallars/htmx-go v0.5.0
 	github.com/catgoose/crooner v1.4.15
+	github.com/catgoose/dorman v0.0.1
 	github.com/catgoose/linkwell v0.2.21
-	github.com/catgoose/porter v0.4.10
 	github.com/catgoose/promolog/sqlite v0.0.0-20260404160355-64d49720300a
-	github.com/catgoose/tavern v0.4.46
+	github.com/catgoose/tavern v0.4.62
 	github.com/charmbracelet/huh v1.0.0
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/jmoiron/sqlx v1.4.0
@@ -28,9 +28,9 @@ require (
 require (
 	github.com/klauspost/compress v1.18.5 // indirect
 	github.com/lib/pq v1.12.3 // indirect
-	github.com/mattn/go-sqlite3 v1.14.40 // indirect
+	github.com/mattn/go-sqlite3 v1.14.41 // indirect
 	github.com/ncruces/go-sqlite3 v0.33.2 // indirect
-	github.com/ncruces/go-sqlite3-wasm v1.0.5-0.20260329114232-2491c387476c // indirect
+	github.com/ncruces/go-sqlite3-wasm v1.0.5-0.20260406124437-9d20f9df3ecf // indirect
 	github.com/ncruces/julianday v1.0.0 // indirect
 )
 
@@ -112,14 +112,14 @@ require (
 	go.opentelemetry.io/otel/metric v1.43.0 // indirect
 	go.opentelemetry.io/otel/trace v1.43.0 // indirect
 	golang.org/x/crypto v0.49.0 // indirect
-	golang.org/x/mod v0.33.0 // indirect
+	golang.org/x/mod v0.34.0 // indirect
 	golang.org/x/net v0.52.0 // indirect
 	golang.org/x/oauth2 v0.36.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
 	golang.org/x/sys v0.42.0 // indirect
 	golang.org/x/text v0.35.0 // indirect
 	golang.org/x/time v0.15.0 // indirect
-	golang.org/x/tools v0.42.0 // indirect
+	golang.org/x/tools v0.43.0 // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

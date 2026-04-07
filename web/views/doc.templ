@@ -1,0 +1,191 @@
+// setup:feature:demo
+
+package views
+
+import (
+	"catgoose/harmony/internal/demo"
+	"fmt"
+	"strconv"
+)
+
+templ DocumentPage(content string, wordCount, charCount int, sentiment string, revisions []demo.DocRevision) {
+	<div class="max-w-6xl mx-auto p-4 space-y-4">
+		<div class="flex items-center justify-between flex-wrap gap-2">
+			<div>
+				<h1 class="text-2xl font-bold">Collaborative Document</h1>
+				<p class="text-xs text-base-content/50">
+					Edits cascade through After hooks to derived panels. The POST handler only calls NotifyMutate.
+				</p>
+			</div>
+			<div
+				id="middleware-stats"
+				hx-get="/realtime/document/stats-badge"
+				hx-trigger="load, every 3s"
+				hx-swap="innerHTML"
+			>
+				<span class="badge badge-ghost badge-sm font-mono">loading...</span>
+			</div>
+		</div>
+		<div
+			hx-ext="sse"
+			sse-connect="/sse/document"
+			data-tavern-reconnecting-class="opacity-50"
+			data-tavern-gap-action="reload"
+		>
+			<div data-tavern-status class="hidden text-xs text-warning flex items-center gap-1 py-1 px-2 rounded bg-warning/10 mb-2">
+				<span class="loading loading-spinner loading-xs"></span>
+				Reconnecting...
+			</div>
+			<div sse-swap="content" hx-target="#doc-content-display" hx-swap="innerHTML" style="display:none"></div>
+			<div sse-swap="stats" hx-target="#doc-stats" hx-swap="innerHTML" style="display:none"></div>
+			<div sse-swap="sentiment" hx-target="#doc-sentiment" hx-swap="innerHTML" style="display:none"></div>
+			<div sse-swap="history" hx-target="#doc-history" hx-swap="innerHTML" style="display:none"></div>
+			<div class="flex gap-6">
+				<!-- Left column: editor -->
+				<div class="flex-[2] min-w-0 space-y-4">
+					<div class="card bg-base-200 shadow-sm">
+						<div class="card-body p-4">
+							<h2 class="card-title text-sm font-semibold uppercase tracking-wider text-base-content/50">Editor</h2>
+							<textarea
+								name="content"
+								class="textarea textarea-bordered w-full h-48 font-mono text-sm leading-relaxed"
+								hx-post="/realtime/document/edit"
+								hx-trigger="keyup changed delay:300ms"
+								hx-swap="none"
+							>{ content }</textarea>
+						</div>
+					</div>
+					<div class="card bg-base-200 shadow-sm">
+						<div class="card-body p-4">
+							<h2 class="card-title text-sm font-semibold uppercase tracking-wider text-base-content/50">Live Preview</h2>
+							<div id="doc-content-display" class="prose prose-sm max-w-none">
+								@DocContentDisplay(content)
+							</div>
+						</div>
+					</div>
+					<div class="flex gap-2 flex-wrap">
+						<button
+							class="btn btn-sm btn-outline btn-primary"
+							hx-post="/realtime/document/batch"
+							hx-vals='{"action":"Fix Typos"}'
+							hx-swap="none"
+						>
+							Fix Typos
+						</button>
+						<button
+							class="btn btn-sm btn-outline btn-secondary"
+							hx-post="/realtime/document/batch"
+							hx-vals='{"action":"Add Header"}'
+							hx-swap="none"
+						>
+							Add Header
+						</button>
+						<button
+							class="btn btn-sm btn-outline btn-accent"
+							hx-post="/realtime/document/batch"
+							hx-vals='{"action":"Clean Whitespace"}'
+							hx-swap="none"
+						>
+							Clean Whitespace
+						</button>
+					</div>
+				</div>
+				<!-- Right column: derived panels -->
+				<div class="flex-1 min-w-0 space-y-4">
+					<div class="card bg-base-200 shadow-sm">
+						<div class="card-body p-4">
+							<h2 class="card-title text-sm font-semibold uppercase tracking-wider text-base-content/50">Stats</h2>
+							<div id="doc-stats">
+								@DocStatsPanel(wordCount, charCount)
+							</div>
+						</div>
+					</div>
+					<div class="card bg-base-200 shadow-sm">
+						<div class="card-body p-4">
+							<h2 class="card-title text-sm font-semibold uppercase tracking-wider text-base-content/50">Sentiment</h2>
+							<div id="doc-sentiment">
+								@DocSentimentBadge(sentiment)
+							</div>
+						</div>
+					</div>
+					<div class="card bg-base-200 shadow-sm">
+						<div class="card-body p-4">
+							<h2 class="card-title text-sm font-semibold uppercase tracking-wider text-base-content/50">Revision History</h2>
+							<div id="doc-history" class="max-h-64 overflow-y-auto">
+								@DocHistoryList(revisions)
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+templ DocContentDisplay(content string) {
+	<p class="whitespace-pre-wrap text-sm text-base-content/80">{ content }</p>
+}
+
+templ DocStatsPanel(wordCount, charCount int) {
+	<div class="flex gap-4">
+		<div class="stat p-0">
+			<div class="stat-title text-xs">Words</div>
+			<div class="stat-value text-lg tabular-nums">{ strconv.Itoa(wordCount) }</div>
+		</div>
+		<div class="stat p-0">
+			<div class="stat-title text-xs">Characters</div>
+			<div class="stat-value text-lg tabular-nums">{ strconv.Itoa(charCount) }</div>
+		</div>
+	</div>
+}
+
+templ DocSentimentBadge(sentiment string) {
+	<span class={ "badge", sentimentBadgeClass(sentiment) }>{ sentiment }</span>
+}
+
+templ DocHistoryList(revisions []demo.DocRevision) {
+	if len(revisions) == 0 {
+		<p class="text-xs text-base-content/40">No revisions yet.</p>
+	} else {
+		for _, rev := range revisions {
+			<div class="flex items-center gap-2 py-1 border-b border-base-300 last:border-0">
+				<span class="text-xs text-base-content/40 tabular-nums font-mono shrink-0">
+					{ rev.Timestamp.Format("15:04:05") }
+				</span>
+				<span class="text-sm flex-1 truncate">{ rev.Summary }</span>
+				<span class={ "badge badge-xs font-mono", deltaClass(rev.WordDelta) }>
+					{ formatDelta(rev.WordDelta) }
+				</span>
+			</div>
+		}
+	}
+}
+
+func sentimentBadgeClass(s string) string {
+	switch s {
+	case "positive":
+		return "badge-success"
+	case "negative":
+		return "badge-error"
+	default:
+		return "badge-ghost"
+	}
+}
+
+func deltaClass(d int) string {
+	switch {
+	case d > 0:
+		return "badge-success"
+	case d < 0:
+		return "badge-error"
+	default:
+		return "badge-ghost"
+	}
+}
+
+func formatDelta(d int) string {
+	if d > 0 {
+		return fmt.Sprintf("+%d", d)
+	}
+	return strconv.Itoa(d)
+}

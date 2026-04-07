@@ -1,0 +1,240 @@
+// setup:feature:demo
+
+package views
+
+import (
+	"catgoose/harmony/internal/demo"
+	"fmt"
+	"strconv"
+)
+
+templ AuctionPage(items []demo.AuctionItem, watched map[int]bool) {
+	<div class="max-w-6xl mx-auto p-4 space-y-4">
+		<div class="flex items-center justify-between flex-wrap gap-2">
+			<div>
+				<h1 class="text-2xl font-bold">Auction House</h1>
+				<p class="text-xs text-base-content/50 mt-1">
+					Dynamic SSE groups: watch items to build a personal feed. Bot bidders keep auctions lively.
+				</p>
+			</div>
+			<div class="flex items-center gap-2">
+				<span id="sse-status" class="badge badge-xs badge-ghost">disconnected</span>
+				<button
+					id="reconnect-btn"
+					class="btn btn-outline btn-xs"
+					onclick="connectAuctions()"
+				>
+					Reconnect
+				</button>
+			</div>
+		</div>
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="auction-grid">
+			for _, item := range items {
+				@AuctionCard(item, watched[item.ID])
+			}
+		</div>
+	</div>
+	@auctionScript()
+}
+
+templ AuctionCard(item demo.AuctionItem, isWatched bool) {
+	<div
+		id={ fmt.Sprintf("auction-card-%d", item.ID) }
+		class="card bg-base-200 shadow-sm"
+		data-item-id={ strconv.Itoa(item.ID) }
+	>
+		<div class="card-body p-4 gap-2">
+			<div class="flex items-center gap-2">
+				<span class="text-2xl">{ item.ImageEmoji }</span>
+				<h2 class="card-title text-sm font-semibold flex-1 min-w-0 truncate">{ item.Name }</h2>
+			</div>
+			<p class="text-xs text-base-content/50">{ item.Description }</p>
+			<div id={ fmt.Sprintf("auction-inner-%d", item.ID) }>
+				@auctionCardInner(item)
+			</div>
+			<div class="divider my-0"></div>
+			<div class="flex items-center gap-2">
+				@AuctionWatchButton(item, isWatched)
+				<button
+					class="btn btn-primary btn-xs flex-1"
+					data-item-id={ strconv.Itoa(item.ID) }
+					data-current-bid={ strconv.Itoa(item.CurrentBid) }
+					onclick="openBidForm(+this.dataset.itemId, +this.dataset.currentBid)"
+				>
+					Bid
+				</button>
+			</div>
+			<div id={ fmt.Sprintf("bid-form-%d", item.ID) } class="hidden">
+				@auctionBidForm(item)
+			</div>
+		</div>
+	</div>
+}
+
+templ auctionCardInner(item demo.AuctionItem) {
+	<div class="space-y-1">
+		<div class="text-xl font-bold tabular-nums">{ demo.FormatPrice(item.CurrentBid) }</div>
+		<div class="flex items-center gap-2 text-xs text-base-content/60">
+			<span class="tabular-nums">{ strconv.Itoa(item.BidCount) } bids</span>
+			if item.HighBidder != "" {
+				<span>&middot;</span>
+				<span class="truncate">{ item.HighBidder }</span>
+			}
+		</div>
+	</div>
+}
+
+templ AuctionCardUpdate(item demo.AuctionItem) {
+	<div id={ fmt.Sprintf("auction-inner-%d", item.ID) }>
+		@auctionCardInner(item)
+	</div>
+}
+
+templ AuctionWatchButton(item demo.AuctionItem, isWatched bool) {
+	<button
+		id={ fmt.Sprintf("watch-btn-%d", item.ID) }
+		class={
+			"btn btn-xs",
+			templ.KV("btn-warning", isWatched),
+			templ.KV("btn-outline btn-ghost", !isWatched),
+		}
+		hx-post="/realtime/auction/watch"
+		hx-vals={ fmt.Sprintf(`{"item_id":"%d"}`, item.ID) }
+		hx-target={ fmt.Sprintf("#watch-btn-%d", item.ID) }
+		hx-swap="outerHTML"
+		hx-on::after-request="reconnectAuctions()"
+	>
+		if isWatched {
+			&#9733; Watching
+		} else {
+			&#9734; Watch
+		}
+	</button>
+}
+
+templ auctionBidForm(item demo.AuctionItem) {
+	<form
+		class="flex items-end gap-2 mt-2"
+		hx-post="/realtime/auction/bid"
+		hx-target={ fmt.Sprintf("#auction-inner-%d", item.ID) }
+		hx-swap="outerHTML"
+	>
+		<input type="hidden" name="item_id" value={ strconv.Itoa(item.ID) }/>
+		<div class="form-control flex-1">
+			<label class="label py-0">
+				<span class="label-text text-xs">Your name</span>
+			</label>
+			<input
+				type="text"
+				name="bidder"
+				placeholder="Anonymous"
+				class="input input-xs input-bordered w-full"
+			/>
+		</div>
+		<div class="form-control flex-1">
+			<label class="label py-0">
+				<span class="label-text text-xs">Amount ($)</span>
+			</label>
+			<input
+				type="number"
+				name="amount"
+				step="0.01"
+				min={ fmt.Sprintf("%.2f", float64(item.CurrentBid+1)/100) }
+				placeholder={ fmt.Sprintf("%.2f", float64(item.CurrentBid+100)/100) }
+				class="input input-xs input-bordered w-full tabular-nums"
+				required
+			/>
+		</div>
+		<button type="submit" class="btn btn-primary btn-xs">Place</button>
+		<button type="button" class="btn btn-ghost btn-xs" data-item-id={ strconv.Itoa(item.ID) } onclick="closeBidForm(+this.dataset.itemId)">
+			&times;
+		</button>
+	</form>
+}
+
+templ auctionScript() {
+	<script>
+		var auctionSSE;
+
+		function connectAuctions() {
+			if (auctionSSE) {
+				auctionSSE.close();
+				auctionSSE = null;
+			}
+			var statusEl = document.getElementById('sse-status');
+
+			auctionSSE = new EventSource('/sse/auction');
+			auctionSSE.onopen = function() {
+				if (statusEl) {
+					statusEl.textContent = 'connected';
+					statusEl.classList.remove('badge-ghost', 'badge-error');
+					statusEl.classList.add('badge-success');
+				}
+			};
+			auctionSSE.onerror = function() {
+				if (statusEl) {
+					statusEl.textContent = 'disconnected';
+					statusEl.classList.remove('badge-success');
+					statusEl.classList.add('badge-error');
+				}
+			};
+
+			// Listen for auction topic events. The SSE event type is the topic
+			// name (e.g. "auction/item-3"). We listen on all 8 possible topics.
+			for (var i = 1; i <= 8; i++) {
+				(function(id) {
+					var topic = 'auction/item-' + id;
+					auctionSSE.addEventListener(topic, function(e) {
+						var inner = document.getElementById('auction-inner-' + id);
+						if (!inner) return;
+
+						// Parse the incoming HTML and swap inner content.
+						var wrapper = document.createElement('div');
+						wrapper.innerHTML = e.data.trim();
+						var newEl = wrapper.firstElementChild;
+						if (newEl) {
+							inner.replaceWith(newEl);
+						}
+
+						// Pulse animation on the card.
+						var card = document.getElementById('auction-card-' + id);
+						if (card) {
+							card.classList.add('ring', 'ring-primary', 'ring-opacity-50');
+							setTimeout(function() {
+								card.classList.remove('ring', 'ring-primary', 'ring-opacity-50');
+							}, 600);
+						}
+					});
+				})(i);
+			}
+		}
+
+		// Called after watch toggle to reconnect with updated cookie.
+		function reconnectAuctions() {
+			// Small delay to let the cookie settle after the HTMX response.
+			setTimeout(function() { connectAuctions(); }, 100);
+		}
+
+		function openBidForm(itemId, currentBidCents) {
+			var form = document.getElementById('bid-form-' + itemId);
+			if (form) {
+				form.classList.remove('hidden');
+				var amountInput = form.querySelector('input[name="amount"]');
+				if (amountInput) {
+					amountInput.min = ((currentBidCents + 1) / 100).toFixed(2);
+					amountInput.placeholder = ((currentBidCents + 100) / 100).toFixed(2);
+				}
+			}
+		}
+
+		function closeBidForm(itemId) {
+			var form = document.getElementById('bid-form-' + itemId);
+			if (form) {
+				form.classList.add('hidden');
+			}
+		}
+
+		// Connect on page load.
+		connectAuctions();
+	</script>
+}
