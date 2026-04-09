@@ -6,12 +6,10 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"net/http"
 	"time"
 
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/shared"
 	"catgoose/harmony/web/views"
 
 	"github.com/catgoose/tavern"
@@ -45,14 +43,9 @@ func (s *sensorRoutes) handleSSE(c echo.Context) error {
 		pattern = "sensors/**"
 	}
 
-	c.Response().Header().Set("Content-Type", "text/event-stream")
-	c.Response().Header().Set("Cache-Control", "no-cache")
-	c.Response().Header().Set("Connection", "keep-alive")
-	c.Response().WriteHeader(http.StatusOK)
-
-	flusher, ok := c.Response().Writer.(http.Flusher)
-	if !ok {
-		return fmt.Errorf("streaming unsupported")
+	flusher, err := startSSEResponse(c)
+	if err != nil {
+		return err
 	}
 
 	// Build snapshot function for initial state delivery
@@ -145,11 +138,5 @@ func (s *sensorRoutes) startPublisher(ctx context.Context) {
 }
 
 func (s *sensorRoutes) renderSensorCard(r demo.SensorReading) string {
-	history := s.grid.History(r.Topic)
-	buf := &bytes.Buffer{}
-	cmp := views.SensorCard(r, history)
-	if err := cmp.Render(shared.WithContextIDAndDescription(context.Background(), shared.GenerateContextID(), "render sensor card"), buf); err != nil {
-		return ""
-	}
-	return buf.String()
+	return renderToString("render sensor card", views.SensorCard(r, s.grid.History(r.Topic)))
 }

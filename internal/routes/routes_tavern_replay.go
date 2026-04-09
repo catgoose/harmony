@@ -3,7 +3,6 @@
 package routes
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"net/http"
@@ -13,7 +12,6 @@ import (
 
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/shared"
 	"catgoose/harmony/web/views"
 
 	"github.com/catgoose/tavern"
@@ -206,28 +204,13 @@ func (r *tavernReplayRoutes) startPublisher(ctx context.Context) {
 }
 
 func renderReplayEvent(seq int64, id, timestamp string) string {
-	buf := &bytes.Buffer{}
-	ctx := shared.WithContextIDAndDescription(context.Background(), shared.GenerateContextID(), "render replay event")
-	if err := views.ReplayEvent(seq, id, timestamp).Render(ctx, buf); err != nil {
-		return ""
-	}
-	return buf.String()
+	return renderToString("render replay event", views.ReplayEvent(seq, id, timestamp))
 }
 
 func renderReplaySnapshot(message string) string {
-	buf := &bytes.Buffer{}
-	ctx := shared.WithContextIDAndDescription(context.Background(), shared.GenerateContextID(), "render replay snapshot")
-	if err := views.ReplaySnapshot(message).Render(ctx, buf); err != nil {
-		return ""
-	}
-	return buf.String()
+	return renderToString("render replay snapshot", views.ReplaySnapshot(message))
 }
 
 func renderReplayDebug(lastEventID string, delivered, dropped int, gap time.Duration, gapDetected bool) string {
-	buf := &bytes.Buffer{}
-	ctx := shared.WithContextIDAndDescription(context.Background(), shared.GenerateContextID(), "render replay debug")
-	if err := views.ReplayDebug(lastEventID, delivered, dropped, gap, gapDetected).Render(ctx, buf); err != nil {
-		return ""
-	}
-	return buf.String()
+	return renderToString("render replay debug", views.ReplayDebug(lastEventID, delivered, dropped, gap, gapDetected))
 }

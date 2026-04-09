@@ -3,7 +3,6 @@
 package routes
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"math/rand/v2"
@@ -16,7 +15,6 @@ import (
 	appenv "catgoose/harmony/internal/env"
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/shared"
 	"catgoose/harmony/web/views"
 
 	"github.com/catgoose/tavern"
@@ -48,9 +46,7 @@ func (ar *appRoutes) initAuctionRoutes(broker *tavern.SSEBroker) {
 	}
 
 	// Dynamic group: per-request topic resolution based on watched items cookie.
-	broker.DynamicGroup("my-auctions", func(r *http.Request) []string {
-		return a.watchedTopicsFromRequest(r)
-	})
+	broker.DynamicGroup("my-auctions", dynamicGroupFromCookie(auctionWatchCookie, nil, a.parseWatchedTopics))
 
 	ar.e.GET("/realtime/auction", a.handlePage)
 	ar.e.GET("/sse/auction", echo.WrapHandler(broker.DynamicGroupHandler("my-auctions")))
@@ -118,12 +114,11 @@ func (a *auctionRoutes) handleWatchToggle(c echo.Context) error {
 		return c.String(http.StatusNotFound, "item not found")
 	}
 	nowWatched := !isWatched
-	buf := &bytes.Buffer{}
-	cmp := views.AuctionWatchButton(item, nowWatched)
-	if err := cmp.Render(shared.WithContextIDAndDescription(context.Background(), shared.GenerateContextID(), "render watch button"), buf); err != nil {
+	html := renderToString("render watch button", views.AuctionWatchButton(item, nowWatched))
+	if html == "" {
 		return c.String(http.StatusInternalServerError, "render error")
 	}
-	return c.HTML(http.StatusOK, buf.String())
+	return c.HTML(http.StatusOK, html)
 }
 
 func (a *auctionRoutes) startBotBidder(ctx context.Context) {
@@ -168,15 +163,11 @@ func (a *auctionRoutes) startBotBidder(ctx context.Context) {
 	}
 }
 
-// watchedTopicsFromRequest reads the watched cookie from an http.Request
-// and returns the corresponding SSE topics.
-func (a *auctionRoutes) watchedTopicsFromRequest(r *http.Request) []string {
-	cookie, err := r.Cookie(auctionWatchCookie)
-	if err != nil || cookie.Value == "" {
-		return nil
-	}
+// parseWatchedTopics maps a comma-separated list of item IDs to the SSE
+// topics for those items. Used by the dynamic-group cookie callback.
+func (a *auctionRoutes) parseWatchedTopics(value string) []string {
 	var topics []string
-	for _, s := range strings.Split(cookie.Value, ",") {
+	for _, s := range strings.Split(value, ",") {
 		id, err := strconv.Atoi(strings.TrimSpace(s))
 		if err != nil {
 			continue
@@ -221,10 +212,5 @@ func (a *auctionRoutes) setWatchCookie(c echo.Context, watched map[int]bool) {
 }
 
 func renderAuctionCardUpdateHTML(item demo.AuctionItem) string {
-	buf := &bytes.Buffer{}
-	cmp := views.AuctionCardUpdate(item)
-	if err := cmp.Render(shared.WithContextIDAndDescription(context.Background(), shared.GenerateContextID(), "render auction card"), buf); err != nil {
-		return ""
-	}
-	return buf.String()
+	return renderToString("render auction card", views.AuctionCardUpdate(item))
 }

@@ -3,8 +3,6 @@
 package routes
 
 import (
-	"bytes"
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -13,7 +11,6 @@ import (
 
 	"catgoose/harmony/internal/logger"
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/shared"
 	"catgoose/harmony/web/views"
 	"github.com/catgoose/promolog"
 	"github.com/catgoose/tavern"
@@ -140,13 +137,12 @@ func (ar *appRoutes) initLoggingRoutes(broker *tavern.SSEBroker) {
 var traceCounter atomic.Int64
 
 func broadcastErrorTrace(broker *tavern.SSEBroker, summary promolog.TraceSummary) {
-	buf := new(bytes.Buffer)
-	ctx := shared.WithContextIDAndDescription(context.Background(), shared.GenerateContextID(), "broadcast error trace")
-	if err := views.LoggingTraceRowOOB(summary).Render(ctx, buf); err != nil {
+	html := renderToString("broadcast error trace", views.LoggingTraceRowOOB(summary))
+	if html == "" {
 		return
 	}
 	eventID := fmt.Sprintf("et%d", traceCounter.Add(1))
-	msg := tavern.NewSSEMessage("error-trace", buf.String()).
+	msg := tavern.NewSSEMessage("error-trace", html).
 		WithID(eventID).
 		String()
 	broker.PublishWithID(TopicErrorTraces, eventID, msg)

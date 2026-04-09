@@ -677,6 +677,39 @@ func TestSetup_FeaturesDemo(t *testing.T) {
 	assertDirExists(t, filepath.Join(dest, "db", "gen_seed"))
 }
 
+// TestSetup_FeaturesDemoWithoutSSE pins down the regression where the demo
+// block in routes.go used `ar.broker` outside of `setup:feature:sse` markers.
+// When sse was stripped but demo was kept, derived apps failed to build
+// with "ar.broker undefined" (#606). This test forces that exact combo and
+// ensures the demo block stays buildable when SSE is absent.
+func TestSetup_FeaturesDemoWithoutSSE(t *testing.T) {
+	t.Parallel()
+	repoRoot, err := findRepoRoot()
+	require.NoError(t, err)
+
+	dest := setupTempDir(t)
+	err = copyDirExcluding(repoRoot, dest, ".git", ".claude", ".cursor", "bin", "build", "log", "node_modules", "test-results", "tmp")
+	require.NoError(t, err)
+
+	err = setup.Run(context.Background(), dest, setup.Options{
+		AppName:    "Demo No SSE App",
+		ModulePath: "github.com/test/demo-no-sse-app",
+		BasePort:   "20650",
+		NoCaddy:    true,
+		Force:      true,
+		Features:   []string{"demo"},
+	})
+	require.NoError(t, err)
+
+	assertNoSetupMarkers(t, dest)
+	assertBuildSucceeds(t, dest)
+	assertDirExists(t, filepath.Join(dest, "internal", "demo"))
+
+	// SSE-only assets should be removed even though demo was kept.
+	_, err = os.Stat(filepath.Join(dest, "web", "assets", "public", "js", "htmx.ext.sse.js"))
+	require.True(t, os.IsNotExist(err), "htmx.ext.sse.js should be removed when sse stripped")
+}
+
 // TestSetup_PWAWithoutCapacitor verifies that selecting PWA does not pull in
 // Capacitor files (#353). PWA is a web feature; Capacitor is a separate opt-in.
 func TestSetup_PWAWithoutCapacitor(t *testing.T) {

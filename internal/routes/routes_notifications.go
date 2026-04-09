@@ -3,7 +3,6 @@
 package routes
 
 import (
-	"bytes"
 	"context"
 	crand "crypto/rand"
 	"encoding/hex"
@@ -17,7 +16,6 @@ import (
 
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/shared"
 	"catgoose/harmony/web/views"
 
 	"github.com/catgoose/tavern"
@@ -139,14 +137,9 @@ func (n *notificationRoutes) handleSimulatorSpeed(c echo.Context) error {
 func (n *notificationRoutes) handleSSE(c echo.Context) error {
 	identity := resolveNotifIdentity(c.QueryParam("identity"))
 
-	c.Response().Header().Set("Content-Type", "text/event-stream")
-	c.Response().Header().Set("Cache-Control", "no-cache")
-	c.Response().Header().Set("Connection", "keep-alive")
-	c.Response().WriteHeader(http.StatusOK)
-
-	flusher, ok := c.Response().Writer.(http.Flusher)
-	if !ok {
-		return fmt.Errorf("streaming unsupported")
+	flusher, err := startSSEResponse(c)
+	if err != nil {
+		return err
 	}
 
 	// Each SSE connection gets a unique presence key so that multiple tabs
@@ -290,21 +283,11 @@ func (n *notificationRoutes) startSimulator(ctx context.Context) {
 }
 
 func renderNotifItemHTML(id string, cat demo.NotificationCategory, message, timestamp string) string {
-	buf := &bytes.Buffer{}
-	cmp := views.NotificationItem(id, cat, message, timestamp)
-	if err := cmp.Render(shared.WithContextIDAndDescription(context.Background(), shared.GenerateContextID(), "render notification"), buf); err != nil {
-		return ""
-	}
-	return buf.String()
+	return renderToString("render notification", views.NotificationItem(id, cat, message, timestamp))
 }
 
 func renderPresenceHTML(users []views.NotifPresenceUser, currentUserID string) string {
-	buf := &bytes.Buffer{}
-	cmp := views.PresenceList(users, currentUserID)
-	if err := cmp.Render(shared.WithContextIDAndDescription(context.Background(), shared.GenerateContextID(), "render presence"), buf); err != nil {
-		return ""
-	}
-	return buf.String()
+	return renderToString("render presence", views.PresenceList(users, currentUserID))
 }
 
 // notifUserTopic returns a per-user notification topic so that publish, subscribe,

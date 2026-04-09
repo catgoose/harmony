@@ -1,0 +1,188 @@
+// setup:feature:demo
+
+package views
+
+import "fmt"
+
+templ TavernRecoveryPage(initialSnapshot string) {
+	<style>
+		body:has(#recovery-page) main { view-transition-name: none !important; }
+	</style>
+	<div id="recovery-page" class="max-w-5xl mx-auto p-4 space-y-4" style="overflow-anchor:none">
+		<div class="flex items-center justify-between flex-wrap gap-2">
+			<div>
+				<h1 class="text-2xl font-bold">Recovery Lab</h1>
+				<p class="text-xs text-base-content/50">
+					One page, one SSE connection, three regions — each with a different
+					recovery strategy. Click <strong>Disconnect</strong> to drop the connection;
+					each region will indicate how it recovered.
+				</p>
+			</div>
+			<div class="flex items-center gap-2">
+				<button id="recovery-disconnect" class="btn btn-warning btn-xs" onclick="recoveryDisconnect()">Disconnect</button>
+				<button class="btn btn-ghost btn-xs" hx-post="/realtime/tavern/recovery/reset" hx-swap="none" onclick="recoveryReset()">Reset</button>
+			</div>
+		</div>
+
+		<div id="recovery-mode" class="text-xs text-base-content/60 font-mono"></div>
+
+		<!-- Connection container holding all three regions on a single SSE stream. -->
+		<div
+			id="recovery-container"
+			hx-ext="sse"
+			sse-connect="/sse/tavern/recovery"
+			data-tavern-reconnecting-class="opacity-60 pointer-events-none"
+		>
+			<div sse-swap="recovery-replay" hx-target="#recovery-replay-list" hx-swap="afterbegin settle:0 transition:false" style="display:none"></div>
+			<div sse-swap="recovery-snapshot" hx-target="#recovery-snapshot-display" hx-swap="innerHTML settle:0 transition:false" style="display:none"></div>
+			<div sse-swap="recovery-live" hx-target="#recovery-live-list" hx-swap="afterbegin settle:0 transition:false" style="display:none"></div>
+
+			<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+				<!-- REPLAY region -->
+				<div class="card bg-base-200 shadow-sm">
+					<div class="card-body p-4 space-y-2">
+						<div class="flex items-center justify-between">
+							<h2 class="card-title text-sm font-semibold uppercase tracking-wider text-base-content/60">Replay</h2>
+							<span class="badge badge-xs badge-primary">Last-Event-ID</span>
+						</div>
+						<p class="text-xs text-base-content/40">
+							New events get a stable ID and are buffered. Reconnects send <code class="font-mono">Last-Event-ID</code> and replay missed events.
+						</p>
+						<div id="recovery-replay-list" class="max-h-72 overflow-y-auto overflow-x-hidden space-y-0.5 font-mono text-xs" style="contain:paint">
+							<p class="text-base-content/30 py-2">Waiting for events...</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- SNAPSHOT region -->
+				<div class="card bg-base-200 shadow-sm">
+					<div class="card-body p-4 space-y-2">
+						<div class="flex items-center justify-between">
+							<h2 class="card-title text-sm font-semibold uppercase tracking-wider text-base-content/60">Snapshot</h2>
+							<span class="badge badge-xs badge-secondary">SubscribeWithSnapshot</span>
+						</div>
+						<p class="text-xs text-base-content/40">
+							Single current value. Reconnects atomically receive the latest snapshot before any live updates — no event history needed.
+						</p>
+						<div id="recovery-snapshot-display" class="font-mono text-sm py-2 px-3 rounded bg-base-100 border border-base-300 min-h-12">
+							@RecoverySnapshotEvent(initialSnapshot, "—", true)
+						</div>
+						<form
+							class="flex gap-2 mt-2"
+							hx-post="/realtime/tavern/recovery/snapshot"
+							hx-swap="none"
+							hx-on::after-request="this.querySelector('input[name=value]').value=''"
+						>
+							<input type="text" name="value" placeholder="Update snapshot" class="input input-xs input-bordered flex-1" required/>
+							<button type="submit" class="btn btn-primary btn-xs">Set</button>
+						</form>
+					</div>
+				</div>
+
+				<!-- LIVE region -->
+				<div class="card bg-base-200 shadow-sm">
+					<div class="card-body p-4 space-y-2">
+						<div class="flex items-center justify-between">
+							<h2 class="card-title text-sm font-semibold uppercase tracking-wider text-base-content/60">Live</h2>
+							<span class="badge badge-xs badge-accent">no replay</span>
+						</div>
+						<p class="text-xs text-base-content/40">
+							Pure live stream. No replay buffer, no snapshot. Reconnects only see events that arrive after the new connection is up.
+						</p>
+						<div id="recovery-live-list" class="max-h-72 overflow-y-auto overflow-x-hidden space-y-0.5 font-mono text-xs" style="contain:paint">
+							<p class="text-base-content/30 py-2">Waiting for events...</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="card bg-base-200 shadow-sm">
+			<div class="card-body p-4">
+				<h2 class="card-title text-sm font-semibold uppercase tracking-wider text-base-content/60">How to read this</h2>
+				<ul class="text-xs text-base-content/60 space-y-1 list-disc list-inside">
+					<li><strong>Replay:</strong> on reconnect, missed events are marked <span class="badge badge-xs badge-primary">replayed</span>.</li>
+					<li><strong>Snapshot:</strong> on reconnect, the current value re-renders with a <span class="badge badge-xs badge-secondary">snapshot</span> badge.</li>
+					<li><strong>Live:</strong> on reconnect, you see only new events. Anything published while disconnected is lost.</li>
+				</ul>
+			</div>
+		</div>
+		@tavernRecoveryScript()
+	</div>
+}
+
+// RecoveryReplayEvent renders a single event row in the replay region.
+templ RecoveryReplayEvent(seq int64, id, timestamp string, replayed bool) {
+	<div class="flex items-center gap-2 py-0.5 border-b border-base-300/50 last:border-0">
+		<span class="text-base-content/40 tabular-nums">{ timestamp }</span>
+		<span class="badge badge-xs badge-ghost font-mono">{ id }</span>
+		<span class="text-base-content/70">seq #{ fmt.Sprintf("%d", seq) }</span>
+		if replayed {
+			<span class="badge badge-xs badge-primary ml-auto">replayed</span>
+		}
+	</div>
+}
+
+// RecoverySnapshotEvent renders the snapshot display content.
+templ RecoverySnapshotEvent(value, timestamp string, snapshot bool) {
+	<div class="flex items-center gap-2">
+		<span class="flex-1 truncate">{ value }</span>
+		<span class="text-xs text-base-content/40 tabular-nums">{ timestamp }</span>
+		if snapshot {
+			<span class="badge badge-xs badge-secondary">snapshot</span>
+		} else {
+			<span class="badge badge-xs badge-ghost">live</span>
+		}
+	</div>
+}
+
+// RecoveryLiveEvent renders a single event row in the live region.
+templ RecoveryLiveEvent(seq int64, timestamp string) {
+	<div class="flex items-center gap-2 py-0.5 border-b border-base-300/50 last:border-0">
+		<span class="text-base-content/40 tabular-nums">{ timestamp }</span>
+		<span class="text-base-content/70">live #{ fmt.Sprintf("%d", seq) }</span>
+	</div>
+}
+
+templ tavernRecoveryScript() {
+	<script>
+		// Show whether we're on a fresh connect or a reconnect.
+		document.body.addEventListener('htmx:sseMessage', function(evt) {
+			if (evt.detail.type === 'recovery-mode') {
+				var el = document.getElementById('recovery-mode');
+				if (el) {
+					el.textContent = 'mode: ' + evt.detail.data;
+				}
+			}
+		});
+
+		function recoveryDisconnect() {
+			var btn = document.getElementById('recovery-disconnect');
+			var container = document.getElementById('recovery-container');
+			if (!container || !btn) return;
+
+			var sseConnect = container.getAttribute('sse-connect');
+			container.removeAttribute('sse-connect');
+			htmx.process(container);
+
+			btn.textContent = 'Reconnecting in 3s...';
+			btn.disabled = true;
+			btn.classList.add('btn-error');
+			btn.classList.remove('btn-warning');
+
+			setTimeout(function() {
+				container.setAttribute('sse-connect', sseConnect);
+				htmx.process(container);
+				btn.textContent = 'Disconnect';
+				btn.disabled = false;
+				btn.classList.remove('btn-error');
+				btn.classList.add('btn-warning');
+			}, 3000);
+		}
+
+		function recoveryReset() {
+			document.getElementById('recovery-replay-list').innerHTML = '<p class="text-base-content/30 py-2">Reset — waiting for events...</p>';
+			document.getElementById('recovery-live-list').innerHTML = '<p class="text-base-content/30 py-2">Reset — waiting for events...</p>';
+		}
+	</script>
+}

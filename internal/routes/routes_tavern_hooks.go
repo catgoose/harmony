@@ -3,8 +3,6 @@
 package routes
 
 import (
-	"bytes"
-	"context"
 	"fmt"
 	"net/http"
 	"strings"
@@ -12,7 +10,6 @@ import (
 
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/shared"
 	"catgoose/harmony/web/views"
 
 	"github.com/catgoose/tavern"
@@ -95,14 +92,9 @@ func (h *tavernHooksRoutes) handleMutate(c echo.Context) error {
 }
 
 func (h *tavernHooksRoutes) handleSSE(c echo.Context) error {
-	c.Response().Header().Set("Content-Type", "text/event-stream")
-	c.Response().Header().Set("Cache-Control", "no-cache")
-	c.Response().Header().Set("Connection", "keep-alive")
-	c.Response().WriteHeader(http.StatusOK)
-
-	flusher, ok := c.Response().Writer.(http.Flusher)
-	if !ok {
-		return fmt.Errorf("streaming unsupported")
+	flusher, err := startSSEResponse(c)
+	if err != nil {
+		return err
 	}
 
 	// Deliver snapshot on subscribe.
@@ -163,37 +155,17 @@ func computeDerived(source string) string {
 }
 
 func renderHooksSource(source string) string {
-	buf := &bytes.Buffer{}
-	ctx := shared.WithContextIDAndDescription(context.Background(), shared.GenerateContextID(), "render hooks source")
-	if err := views.HooksSourceDisplay(source).Render(ctx, buf); err != nil {
-		return ""
-	}
-	return buf.String()
+	return renderToString("render hooks source", views.HooksSourceDisplay(source))
 }
 
 func renderHooksDerived(derived string) string {
-	buf := &bytes.Buffer{}
-	ctx := shared.WithContextIDAndDescription(context.Background(), shared.GenerateContextID(), "render hooks derived")
-	if err := views.HooksDerivedDisplay(derived).Render(ctx, buf); err != nil {
-		return ""
-	}
-	return buf.String()
+	return renderToString("render hooks derived", views.HooksDerivedDisplay(derived))
 }
 
 func renderHooksLog(events []demo.HookEvent) string {
-	buf := &bytes.Buffer{}
-	ctx := shared.WithContextIDAndDescription(context.Background(), shared.GenerateContextID(), "render hooks log")
-	if err := views.HooksLogEntries(events).Render(ctx, buf); err != nil {
-		return ""
-	}
-	return buf.String()
+	return renderToString("render hooks log", views.HooksLogEntries(events))
 }
 
 func renderHooksStats(count, byteCount int64) string {
-	buf := &bytes.Buffer{}
-	ctx := shared.WithContextIDAndDescription(context.Background(), shared.GenerateContextID(), "render hooks stats")
-	if err := views.HooksStatsDisplay(count, byteCount).Render(ctx, buf); err != nil {
-		return ""
-	}
-	return buf.String()
+	return renderToString("render hooks stats", views.HooksStatsDisplay(count, byteCount))
 }

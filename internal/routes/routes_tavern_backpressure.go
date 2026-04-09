@@ -15,7 +15,6 @@ import (
 
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/shared"
 	"catgoose/harmony/web/views"
 
 	"github.com/catgoose/tavern"
@@ -91,13 +90,9 @@ func (bp *tavernBackpressRoutes) handleBatch(c echo.Context) error {
 }
 
 func (bp *tavernBackpressRoutes) handleStreamSSE(c echo.Context) error {
-	c.Response().Header().Set("Content-Type", "text/event-stream")
-	c.Response().Header().Set("Cache-Control", "no-cache")
-	c.Response().Header().Set("Connection", "keep-alive")
-	c.Response().WriteHeader(http.StatusOK)
-	flusher, ok := c.Response().Writer.(http.Flusher)
-	if !ok {
-		return fmt.Errorf("streaming unsupported")
+	flusher, err := startSSEResponse(c)
+	if err != nil {
+		return err
 	}
 
 	msgs, unsub := bp.demoBroker.SubscribeMulti("bp-alpha", "bp-beta", "bp-gamma")
@@ -240,39 +235,19 @@ func bpTierNameFromInt(tier int) string {
 }
 
 func renderBPMetrics(data views.TavernBackpressureData) string {
-	buf := &bytes.Buffer{}
-	ctx := shared.WithContextIDAndDescription(context.Background(), shared.GenerateContextID(), "render bp metrics")
-	if err := views.TavernBackpressureMetrics(data).Render(ctx, buf); err != nil {
-		return ""
-	}
-	return buf.String()
+	return renderToString("render bp metrics", views.TavernBackpressureMetrics(data))
 }
 
 func renderBPTierLog(data views.TavernBackpressureData) string {
-	buf := &bytes.Buffer{}
-	ctx := shared.WithContextIDAndDescription(context.Background(), shared.GenerateContextID(), "render bp tier log")
-	if err := views.TavernBackpressureTierLog(data).Render(ctx, buf); err != nil {
-		return ""
-	}
-	return buf.String()
+	return renderToString("render bp tier log", views.TavernBackpressureTierLog(data))
 }
 
 func renderBPStreamEvent(topic, message string, simplified bool) string {
-	buf := &bytes.Buffer{}
-	ctx := shared.WithContextIDAndDescription(context.Background(), shared.GenerateContextID(), "render bp stream event")
-	if err := views.BackpressureStreamEvent(topic, message, simplified).Render(ctx, buf); err != nil {
-		return ""
-	}
-	return buf.String()
+	return renderToString("render bp stream event", views.BackpressureStreamEvent(topic, message, simplified))
 }
 
 func renderBPTierBadge(tierName string) string {
-	buf := &bytes.Buffer{}
-	ctx := shared.WithContextIDAndDescription(context.Background(), shared.GenerateContextID(), "render bp tier badge")
-	if err := views.BackpressureTierBadge(tierName).Render(ctx, buf); err != nil {
-		return ""
-	}
-	return buf.String()
+	return renderToString("render bp tier badge", views.BackpressureTierBadge(tierName))
 }
 
 func bpTierExplanation(tierName string) string {

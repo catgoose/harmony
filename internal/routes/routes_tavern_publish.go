@@ -3,15 +3,12 @@
 package routes
 
 import (
-	"bytes"
-	"context"
 	"fmt"
 	"net/http"
 	"time"
 
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
-	"catgoose/harmony/internal/shared"
 	"catgoose/harmony/web/views"
 
 	"github.com/catgoose/tavern"
@@ -107,10 +104,5 @@ func (p *tavernPublishRoutes) handleReset(c echo.Context) error {
 }
 
 func renderPubEvent(seq int, message, timestamp string) string {
-	buf := &bytes.Buffer{}
-	ctx := shared.WithContextIDAndDescription(context.Background(), shared.GenerateContextID(), "render pub event")
-	if err := views.PubEventEntry(seq, message, timestamp).Render(ctx, buf); err != nil {
-		return ""
-	}
-	return buf.String()
+	return renderToString("render pub event", views.PubEventEntry(seq, message, timestamp))
 }
