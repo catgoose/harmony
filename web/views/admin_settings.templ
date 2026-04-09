@@ -18,6 +18,7 @@ type AdminPanelData struct {
 	SSECounts map[string]int
 	Features  []FeatureFlag
 	Routes    []RouteInfo
+	Intervals map[string]int // current per-section interval in ms
 }
 
 type FeatureFlag struct {
@@ -55,7 +56,7 @@ templ AdminSettingsPage(data AdminPanelData) {
 					<h2 class="text-xs font-semibold uppercase tracking-wider text-base-content/40">System Metrics</h2>
 					@components.IntervalSlider(components.IntervalSliderCfg{
 						TargetKey: "section", TargetValue: "system-metrics",
-						IntervalMs: 5000, Scale: "s", PostURL: "/admin/settings/interval",
+						IntervalMs: data.IntervalMs("system-metrics", 5000), Scale: components.AutoScale(data.IntervalMs("system-metrics", 5000)), PostURL: "/admin/settings/interval",
 					})
 				</div>
 				<div id="admin-system-metrics">
@@ -71,7 +72,7 @@ templ AdminSettingsPage(data AdminPanelData) {
 					<h2 class="text-xs font-semibold uppercase tracking-wider text-base-content/40">SSE Connections</h2>
 					@components.IntervalSlider(components.IntervalSliderCfg{
 						TargetKey: "section", TargetValue: "sse-counts",
-						IntervalMs: 3000, Scale: "s", PostURL: "/admin/settings/interval",
+						IntervalMs: data.IntervalMs("sse-counts", 3000), Scale: components.AutoScale(data.IntervalMs("sse-counts", 3000)), PostURL: "/admin/settings/interval",
 					})
 				</div>
 				<div id="admin-sse-counts">
@@ -157,7 +158,7 @@ templ AdminSettingsPage(data AdminPanelData) {
 	<div hx-ext="sse" sse-connect="/sse/admin" hx-swap="innerHTML settle:0 transition:false"
 		data-tavern-reconnecting-class="opacity-50"
 	>
-		<div sse-swap="admin-panel" style="display:none"></div>
+		<div sse-swap="admin-panel" hx-swap="innerHTML settle:0 transition:false" style="display:none"></div>
 	</div>
 	@debugScript()
 }

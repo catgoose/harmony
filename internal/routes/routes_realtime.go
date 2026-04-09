@@ -284,7 +284,33 @@ func (ar *appRoutes) handleRealtimePage() echo.HandlerFunc {
 			masterMs = 2000 // default
 		}
 
-		return handler.RenderBaseLayout(c, views.RealtimePage(stats, snap, services, svcLatencies, tiles, masterEnabled, masterMs))
+		cards := snapshotDashboardCardState()
+		return handler.RenderBaseLayout(c, views.RealtimePage(stats, snap, services, svcLatencies, tiles, masterEnabled, masterMs, cards))
+	}
+}
+
+// snapshotDashboardCardState reads current per-section intervals, units, and
+// pin state under a single lock and returns a copy for template rendering.
+func snapshotDashboardCardState() views.DashboardCardState {
+	rtIntervals.mu.RLock()
+	defer rtIntervals.mu.RUnlock()
+
+	intervals := make(map[string]int, len(rtIntervals.intervals))
+	for k, v := range rtIntervals.intervals {
+		intervals[k] = v
+	}
+	units := make(map[string]string, len(rtIntervals.units))
+	for k, v := range rtIntervals.units {
+		units[k] = v
+	}
+	pinned := make(map[string]bool, len(rtIntervals.pinned))
+	for k, v := range rtIntervals.pinned {
+		pinned[k] = v
+	}
+	return views.DashboardCardState{
+		Intervals: intervals,
+		Units:     units,
+		Pinned:    pinned,
 	}
 }
 

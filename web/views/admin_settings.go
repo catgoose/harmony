@@ -39,6 +39,14 @@ func sseCountBadge(count int) string {
 	return "badge-ghost"
 }
 
+// IntervalMs returns the current interval for a section, falling back to fallback.
+func (d AdminPanelData) IntervalMs(section string, fallback int) int {
+	if v, ok := d.Intervals[section]; ok {
+		return v
+	}
+	return fallback
+}
+
 func sortedTopics(counts map[string]int) []string {
 	topics := make([]string, 0, len(counts))
 	for t := range counts {

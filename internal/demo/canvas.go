@@ -97,6 +97,13 @@ func (pc *PixelCanvas) ActiveClients() []CanvasClient {
 	return out
 }
 
+// RemoveClient removes a client by ID (used when an SSE connection closes).
+func (pc *PixelCanvas) RemoveClient(clientID string) {
+	pc.mu.Lock()
+	defer pc.mu.Unlock()
+	delete(pc.clients, clientID)
+}
+
 // PruneStale removes clients not seen in the last 60 seconds.
 func (pc *PixelCanvas) PruneStale() {
 	pc.mu.Lock()

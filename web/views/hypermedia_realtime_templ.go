@@ -18,7 +18,7 @@ import (
 )
 
 // RealtimePage is the full-page layout for /realtime/dashboard.
-func RealtimePage(initial health.SystemStats, snap MetricsSnapshot, services []ServiceStatus, svcLatencies []ServiceLatency, tiles []NumTile, masterEnabled bool, masterMs int) templ.Component {
+func RealtimePage(initial health.SystemStats, snap MetricsSnapshot, services []ServiceStatus, svcLatencies []ServiceLatency, tiles []NumTile, masterEnabled bool, masterMs int, cards DashboardCardState) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -92,12 +92,12 @@ func RealtimePage(initial health.SystemStats, snap MetricsSnapshot, services []S
 		templ_7745c5c3_Err = components.IntervalSlider(components.IntervalSliderCfg{
 			ID:        "iv-network",
 			TargetKey: "section", TargetValue: "network",
-			IntervalMs: 1000, Scale: "s", PostURL: "/realtime/dashboard/interval",
+			IntervalMs: cards.CardMs("network", 1000), Scale: cards.CardScale("network", "s"), PostURL: "/realtime/dashboard/interval",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.PinButton("network", "/realtime/dashboard/pin", false, false).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.PinButton("network", "/realtime/dashboard/pin", cards.CardPinned("network"), false).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -116,12 +116,12 @@ func RealtimePage(initial health.SystemStats, snap MetricsSnapshot, services []S
 		templ_7745c5c3_Err = components.IntervalSlider(components.IntervalSliderCfg{
 			ID:        "iv-services",
 			TargetKey: "section", TargetValue: "services",
-			IntervalMs: 3000, Scale: "s", PostURL: "/realtime/dashboard/interval",
+			IntervalMs: cards.CardMs("services", 3000), Scale: cards.CardScale("services", "s"), PostURL: "/realtime/dashboard/interval",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.PinButton("services", "/realtime/dashboard/pin", false, false).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.PinButton("services", "/realtime/dashboard/pin", cards.CardPinned("services"), false).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -140,12 +140,12 @@ func RealtimePage(initial health.SystemStats, snap MetricsSnapshot, services []S
 		templ_7745c5c3_Err = components.IntervalSlider(components.IntervalSliderCfg{
 			ID:        "iv-latency",
 			TargetKey: "section", TargetValue: "latency",
-			IntervalMs: 2000, Scale: "s", PostURL: "/realtime/dashboard/interval",
+			IntervalMs: cards.CardMs("latency", 2000), Scale: cards.CardScale("latency", "s"), PostURL: "/realtime/dashboard/interval",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.PinButton("latency", "/realtime/dashboard/pin", false, false).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.PinButton("latency", "/realtime/dashboard/pin", cards.CardPinned("latency"), false).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -164,12 +164,12 @@ func RealtimePage(initial health.SystemStats, snap MetricsSnapshot, services []S
 		templ_7745c5c3_Err = components.IntervalSlider(components.IntervalSliderCfg{
 			ID:        "iv-error-spark",
 			TargetKey: "section", TargetValue: "error-spark",
-			IntervalMs: 2000, Scale: "s", PostURL: "/realtime/dashboard/interval",
+			IntervalMs: cards.CardMs("error-spark", 2000), Scale: cards.CardScale("error-spark", "s"), PostURL: "/realtime/dashboard/interval",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.PinButton("error-spark", "/realtime/dashboard/pin", false, false).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.PinButton("error-spark", "/realtime/dashboard/pin", cards.CardPinned("error-spark"), false).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -188,12 +188,12 @@ func RealtimePage(initial health.SystemStats, snap MetricsSnapshot, services []S
 		templ_7745c5c3_Err = components.IntervalSlider(components.IntervalSliderCfg{
 			ID:        "iv-req-dist",
 			TargetKey: "section", TargetValue: "req-dist",
-			IntervalMs: 2000, Scale: "s", PostURL: "/realtime/dashboard/interval",
+			IntervalMs: cards.CardMs("req-dist", 2000), Scale: cards.CardScale("req-dist", "s"), PostURL: "/realtime/dashboard/interval",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.PinButton("req-dist", "/realtime/dashboard/pin", false, false).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.PinButton("req-dist", "/realtime/dashboard/pin", cards.CardPinned("req-dist"), false).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -212,12 +212,12 @@ func RealtimePage(initial health.SystemStats, snap MetricsSnapshot, services []S
 		templ_7745c5c3_Err = components.IntervalSlider(components.IntervalSliderCfg{
 			ID:        "iv-throughput",
 			TargetKey: "section", TargetValue: "throughput",
-			IntervalMs: 2000, Scale: "s", PostURL: "/realtime/dashboard/interval",
+			IntervalMs: cards.CardMs("throughput", 2000), Scale: cards.CardScale("throughput", "s"), PostURL: "/realtime/dashboard/interval",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.PinButton("throughput", "/realtime/dashboard/pin", false, false).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.PinButton("throughput", "/realtime/dashboard/pin", cards.CardPinned("throughput"), false).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -236,12 +236,12 @@ func RealtimePage(initial health.SystemStats, snap MetricsSnapshot, services []S
 		templ_7745c5c3_Err = components.IntervalSlider(components.IntervalSliderCfg{
 			ID:        "iv-svc-latency",
 			TargetKey: "section", TargetValue: "svc-latency",
-			IntervalMs: 3000, Scale: "s", PostURL: "/realtime/dashboard/interval",
+			IntervalMs: cards.CardMs("svc-latency", 3000), Scale: cards.CardScale("svc-latency", "s"), PostURL: "/realtime/dashboard/interval",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.PinButton("svc-latency", "/realtime/dashboard/pin", false, false).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.PinButton("svc-latency", "/realtime/dashboard/pin", cards.CardPinned("svc-latency"), false).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -260,12 +260,12 @@ func RealtimePage(initial health.SystemStats, snap MetricsSnapshot, services []S
 		templ_7745c5c3_Err = components.IntervalSlider(components.IntervalSliderCfg{
 			ID:        "iv-gauges",
 			TargetKey: "section", TargetValue: "gauges",
-			IntervalMs: 2000, Scale: "s", PostURL: "/realtime/dashboard/interval",
+			IntervalMs: cards.CardMs("gauges", 2000), Scale: cards.CardScale("gauges", "s"), PostURL: "/realtime/dashboard/interval",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.PinButton("gauges", "/realtime/dashboard/pin", false, false).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.PinButton("gauges", "/realtime/dashboard/pin", cards.CardPinned("gauges"), false).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -284,12 +284,12 @@ func RealtimePage(initial health.SystemStats, snap MetricsSnapshot, services []S
 		templ_7745c5c3_Err = components.IntervalSlider(components.IntervalSliderCfg{
 			ID:        "iv-disk-io",
 			TargetKey: "section", TargetValue: "disk-io",
-			IntervalMs: 3000, Scale: "s", PostURL: "/realtime/dashboard/interval",
+			IntervalMs: cards.CardMs("disk-io", 3000), Scale: cards.CardScale("disk-io", "s"), PostURL: "/realtime/dashboard/interval",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.PinButton("disk-io", "/realtime/dashboard/pin", false, false).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.PinButton("disk-io", "/realtime/dashboard/pin", cards.CardPinned("disk-io"), false).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -308,12 +308,12 @@ func RealtimePage(initial health.SystemStats, snap MetricsSnapshot, services []S
 		templ_7745c5c3_Err = components.IntervalSlider(components.IntervalSliderCfg{
 			ID:        "iv-conn-pool",
 			TargetKey: "section", TargetValue: "conn-pool",
-			IntervalMs: 3000, Scale: "s", PostURL: "/realtime/dashboard/interval",
+			IntervalMs: cards.CardMs("conn-pool", 3000), Scale: cards.CardScale("conn-pool", "s"), PostURL: "/realtime/dashboard/interval",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.PinButton("conn-pool", "/realtime/dashboard/pin", false, false).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.PinButton("conn-pool", "/realtime/dashboard/pin", cards.CardPinned("conn-pool"), false).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -332,12 +332,12 @@ func RealtimePage(initial health.SystemStats, snap MetricsSnapshot, services []S
 		templ_7745c5c3_Err = components.IntervalSlider(components.IntervalSliderCfg{
 			ID:        "iv-sys-stats",
 			TargetKey: "section", TargetValue: "sys-stats",
-			IntervalMs: 5000, Scale: "s", PostURL: "/realtime/dashboard/interval",
+			IntervalMs: cards.CardMs("sys-stats", 5000), Scale: cards.CardScale("sys-stats", "s"), PostURL: "/realtime/dashboard/interval",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.PinButton("sys-stats", "/realtime/dashboard/pin", false, false).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.PinButton("sys-stats", "/realtime/dashboard/pin", cards.CardPinned("sys-stats"), false).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -356,12 +356,12 @@ func RealtimePage(initial health.SystemStats, snap MetricsSnapshot, services []S
 		templ_7745c5c3_Err = components.IntervalSlider(components.IntervalSliderCfg{
 			ID:        "iv-events",
 			TargetKey: "section", TargetValue: "events",
-			IntervalMs: 1500, Scale: "s", PostURL: "/realtime/dashboard/interval",
+			IntervalMs: cards.CardMs("events", 1500), Scale: cards.CardScale("events", "s"), PostURL: "/realtime/dashboard/interval",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.PinButton("events", "/realtime/dashboard/pin", false, false).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.PinButton("events", "/realtime/dashboard/pin", cards.CardPinned("events"), false).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

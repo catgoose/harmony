@@ -5,14 +5,16 @@ package routes
 import (
 	"bytes"
 	"context"
+	crand "crypto/rand"
+	"encoding/hex"
 	"fmt"
+	"sort"
 	"math/rand/v2"
 	"net/http"
 	"strings"
 	"sync/atomic"
 	"time"
 
-	appenv "catgoose/harmony/internal/env"
 	"catgoose/harmony/internal/demo"
 	"catgoose/harmony/internal/routes/handler"
 	"catgoose/harmony/internal/shared"
@@ -23,13 +25,14 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-const notifCookie = "notif_identity"
-
 type notificationRoutes struct {
-	broker  *tavern.SSEBroker
-	tracker *presence.Tracker
-	filters *demo.NotificationFilters
-	counter atomic.Int64
+	broker   *tavern.SSEBroker
+	tracker  *presence.Tracker
+	filters  *demo.NotificationFilters
+	counter  atomic.Int64
+	paused   atomic.Bool
+	minDelay atomic.Int64 // nanoseconds
+	maxDelay atomic.Int64 // nanoseconds
 }
 
 func (ar *appRoutes) initNotificationsRoutes(broker *tavern.SSEBroker) {
@@ -39,20 +42,38 @@ func (ar *appRoutes) initNotificationsRoutes(broker *tavern.SSEBroker) {
 		broker:  broker,
 		filters: filters,
 	}
+	n.minDelay.Store(int64(2 * time.Second))
+	n.maxDelay.Store(int64(5 * time.Second))
 
 	n.tracker = presence.New(broker, presence.Config{
 		StaleTimeout:        30 * time.Second,
 		PresenceTopicSuffix: ":presence",
 		TargetID:            "presence-list",
 		RenderFunc: func(topic string, users []presence.Info) string {
-			vu := make([]views.NotifPresenceUser, len(users))
-			for i, u := range users {
-				vu[i] = views.NotifPresenceUser{
-					ID:    u.UserID,
+			// Multiple SSE connections may share the same identity (e.g.
+			// multiple tabs). Collapse by identity ID so each user appears
+			// once in the rendered list. Sort by identity ID for stable
+			// rendering order across reconnects.
+			seen := make(map[string]struct{})
+			var vu []views.NotifPresenceUser
+			for _, u := range users {
+				identityID, _ := u.Metadata["identity_id"].(string)
+				if identityID == "" {
+					identityID = u.UserID
+				}
+				if _, ok := seen[identityID]; ok {
+					continue
+				}
+				seen[identityID] = struct{}{}
+				vu = append(vu, views.NotifPresenceUser{
+					ID:    identityID,
 					Name:  u.Name,
 					Color: u.Avatar,
-				}
+				})
 			}
+			sort.Slice(vu, func(i, j int) bool {
+				return vu[i].ID < vu[j].ID
+			})
 			// We render without a "current user" context here — the presence
 			// list is broadcast to all subscribers so "(you)" is omitted in
 			// the OOB swap. The initial render in the page template shows it.
@@ -63,18 +84,60 @@ func (ar *appRoutes) initNotificationsRoutes(broker *tavern.SSEBroker) {
 	ar.e.GET("/realtime/notifications", n.handlePage)
 	ar.e.GET("/sse/notifications", n.handleSSE)
 	ar.e.POST("/realtime/notifications/filter", n.handleFilterUpdate)
+	ar.e.POST("/realtime/notifications/identity", n.handleIdentitySwitch)
+	ar.e.POST("/realtime/notifications/simulator/pause", n.handleSimulatorPause)
+	ar.e.POST("/realtime/notifications/simulator/speed", n.handleSimulatorSpeed)
 
 	broker.RunPublisher(ar.ctx, n.startSimulator)
 }
 
 func (n *notificationRoutes) handlePage(c echo.Context) error {
-	identity := getOrCreateNotifIdentity(c)
-	filters := n.filters.EnabledCategories(identity.ID)
-	return handler.RenderBaseLayout(c, views.NotificationsPage(identity, filters))
+	identity := resolveNotifIdentity(c.QueryParam("identity"))
+	return handler.RenderBaseLayout(c, views.NotificationsPage(identity, n.filters.EnabledCategories(identity.ID), n.simState()))
+}
+
+func (n *notificationRoutes) handleIdentitySwitch(c echo.Context) error {
+	identity := resolveNotifIdentity(c.FormValue("identity"))
+	return handler.RenderComponent(c, views.NotificationsPage(identity, n.filters.EnabledCategories(identity.ID), n.simState()))
+}
+
+func (n *notificationRoutes) simState() views.NotifSimulatorState {
+	return views.NotifSimulatorState{
+		Paused:   n.paused.Load(),
+		MinDelay: time.Duration(n.minDelay.Load()),
+		MaxDelay: time.Duration(n.maxDelay.Load()),
+	}
+}
+
+func (n *notificationRoutes) handleSimulatorPause(c echo.Context) error {
+	n.paused.Store(!n.paused.Load())
+	if n.paused.Load() {
+		return c.HTML(http.StatusOK, "Resume")
+	}
+	return c.HTML(http.StatusOK, "Pause")
+}
+
+func (n *notificationRoutes) handleSimulatorSpeed(c echo.Context) error {
+	var minMs, maxMs int
+	switch c.FormValue("speed") {
+	case "slow":
+		minMs, maxMs = 5000, 10000
+	case "normal":
+		minMs, maxMs = 2000, 5000
+	case "fast":
+		minMs, maxMs = 500, 1500
+	case "flood":
+		minMs, maxMs = 50, 200
+	default:
+		return c.String(http.StatusBadRequest, "unknown speed")
+	}
+	n.minDelay.Store(int64(time.Duration(minMs) * time.Millisecond))
+	n.maxDelay.Store(int64(time.Duration(maxMs) * time.Millisecond))
+	return c.NoContent(http.StatusNoContent)
 }
 
 func (n *notificationRoutes) handleSSE(c echo.Context) error {
-	identity := getOrCreateNotifIdentity(c)
+	identity := resolveNotifIdentity(c.QueryParam("identity"))
 
 	c.Response().Header().Set("Content-Type", "text/event-stream")
 	c.Response().Header().Set("Cache-Control", "no-cache")
@@ -86,13 +149,22 @@ func (n *notificationRoutes) handleSSE(c echo.Context) error {
 		return fmt.Errorf("streaming unsupported")
 	}
 
-	// Join presence
+	// Each SSE connection gets a unique presence key so that multiple tabs
+	// sharing the same identity cookie track independently. The real identity
+	// ID is stored in metadata for notification routing and deduplication.
+	b := make([]byte, 4)
+	_, _ = crand.Read(b)
+	connID := hex.EncodeToString(b)
+
 	n.tracker.Join(TopicNotifications, presence.Info{
-		UserID: identity.ID,
+		UserID: connID,
 		Name:   identity.Name,
 		Avatar: identity.Color,
+		Metadata: map[string]any{
+			"identity_id": identity.ID,
+		},
 	})
-	defer n.tracker.Leave(TopicNotifications, identity.ID)
+	defer n.tracker.Leave(TopicNotifications, connID)
 
 	// Each user gets a dedicated topic so that replay via Last-Event-ID is
 	// inherently scoped — no risk of leaking another user's notifications.
@@ -146,7 +218,7 @@ func (n *notificationRoutes) handleSSE(c echo.Context) error {
 			_, _ = fmt.Fprint(c.Response(), msg)
 			flusher.Flush()
 		case <-heartbeat.C:
-			n.tracker.Heartbeat(TopicNotifications, identity.ID)
+			n.tracker.Heartbeat(TopicNotifications, connID)
 			_, _ = fmt.Fprintf(c.Response(), ": heartbeat\n\n")
 			flusher.Flush()
 		}
@@ -154,28 +226,48 @@ func (n *notificationRoutes) handleSSE(c echo.Context) error {
 }
 
 func (n *notificationRoutes) handleFilterUpdate(c echo.Context) error {
-	identity := getOrCreateNotifIdentity(c)
+	identity := resolveNotifIdentity(c.FormValue("identity"))
 	cat := demo.NotificationCategory(c.FormValue("category"))
-	// Toggle: if "disabled" is set, turn off; otherwise turn on
-	enabled := c.FormValue("disabled") == ""
+	enabled := c.FormValue("enabled") == "true"
 	n.filters.SetFilter(identity.ID, cat, enabled)
 	return c.NoContent(http.StatusNoContent)
 }
 
 func (n *notificationRoutes) startSimulator(ctx context.Context) {
 	for {
-		delay := time.Duration(2000+rand.IntN(3000)) * time.Millisecond
+		minD := time.Duration(n.minDelay.Load())
+		maxD := time.Duration(n.maxDelay.Load())
+		if maxD < minD {
+			maxD = minD
+		}
+		spread := maxD - minD
+		var delay time.Duration
+		if spread > 0 {
+			delay = minD + time.Duration(rand.Int64N(int64(spread)))
+		} else {
+			delay = minD
+		}
 		timer := time.NewTimer(delay)
 		select {
 		case <-ctx.Done():
 			timer.Stop()
 			return
 		case <-timer.C:
+			if n.paused.Load() {
+				continue
+			}
 			online := n.tracker.List(TopicNotifications)
 			if len(online) == 0 {
 				continue
 			}
 			target := online[rand.IntN(len(online))]
+
+			// The presence UserID is a per-connection key; the real identity
+			// ID used for notification routing lives in metadata.
+			identityID, _ := target.Metadata["identity_id"].(string)
+			if identityID == "" {
+				continue
+			}
 
 			cat := demo.AllNotificationCategories[rand.IntN(len(demo.AllNotificationCategories))]
 			message := demo.FormatNotification(cat)
@@ -189,7 +281,7 @@ func (n *notificationRoutes) startSimulator(ctx context.Context) {
 				String()
 
 			n.broker.PublishWithID(
-				notifUserTopic(target.UserID),
+				notifUserTopic(identityID),
 				notifID,
 				sseMsg,
 			)
@@ -221,23 +313,13 @@ func notifUserTopic(userID string) string {
 	return TopicNotifications + "-" + userID
 }
 
-func getOrCreateNotifIdentity(c echo.Context) demo.NotificationIdentity {
-	if cookie, err := c.Cookie(notifCookie); err == nil && cookie.Value != "" {
-		// Parse index from cookie value
-		var idx int
-		if _, err := fmt.Sscanf(cookie.Value, "%d", &idx); err == nil {
+// resolveNotifIdentity returns the identity matching the given ID, or the
+// first identity in the pool if id is empty or unknown.
+func resolveNotifIdentity(id string) demo.NotificationIdentity {
+	if id != "" {
+		if idx := demo.IdentityIndexByID(id); idx >= 0 {
 			return demo.AssignIdentity(idx)
 		}
 	}
-	idx := demo.RandomIdentityIndex()
-	c.SetCookie(&http.Cookie{
-		Name:     notifCookie,
-		Value:    fmt.Sprintf("%d", idx),
-		Path:     "/",
-		MaxAge:   86400 * 30,
-		HttpOnly: true,
-		Secure:   !appenv.Dev(),
-		SameSite: http.SameSiteLaxMode,
-	})
-	return demo.AssignIdentity(idx)
+	return demo.AssignIdentity(0)
 }

@@ -16,7 +16,7 @@ import (
 )
 
 // AdminHealthPage renders the /admin/health page with live health status.
-func AdminHealthPage(h health.Response) templ.Component {
+func AdminHealthPage(h health.Response, intervals map[string]int) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -43,7 +43,7 @@ func AdminHealthPage(h health.Response) templ.Component {
 		}
 		templ_7745c5c3_Err = components.IntervalSlider(components.IntervalSliderCfg{
 			TargetKey: "section", TargetValue: "health",
-			IntervalMs: 5000, Scale: "s", PostURL: "/admin/settings/interval",
+			IntervalMs: intervalOr(intervals, "health", 5000), Scale: components.AutoScale(intervalOr(intervals, "health", 5000)), PostURL: "/admin/settings/interval",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -56,7 +56,7 @@ func AdminHealthPage(h health.Response) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div><!-- SSE connection (shared admin stream) --><div hx-ext=\"sse\" sse-connect=\"/sse/admin\" hx-swap=\"innerHTML settle:0 transition:false\" data-tavern-reconnecting-class=\"opacity-50\"><div sse-swap=\"admin-panel\" style=\"display:none\"></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div><!-- SSE connection (shared admin stream) --><div hx-ext=\"sse\" sse-connect=\"/sse/admin\" hx-swap=\"innerHTML settle:0 transition:false\" data-tavern-reconnecting-class=\"opacity-50\"><div sse-swap=\"admin-panel\" hx-swap=\"innerHTML settle:0 transition:false\" style=\"display:none\"></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

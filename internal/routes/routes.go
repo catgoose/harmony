@@ -183,6 +183,7 @@ func (ar *appRoutes) InitRoutes() error {
 
 	// setup:feature:sse:start
 	ar.broker = tavern.NewSSEBroker(
+		tavern.WithBufferSize(128),
 		tavern.WithKeepalive(30*time.Second),
 		tavern.WithSlowSubscriberEviction(100),
 		tavern.WithSlowSubscriberCallback(func(topic string) {
@@ -209,12 +210,19 @@ func (ar *appRoutes) InitRoutes() error {
 		})
 	}
 	// setup:feature:sse:end
+	// setup:feature:sse:start
+	ar.initLifelineRoutes(ar.broker)
+	// setup:feature:sse:end
 	// setup:feature:session_settings:start
+	// setup:feature:sse:start
 	ar.initThemeRoutes(ar.broker)
+	// setup:feature:sse:end
 	// setup:feature:session_settings:end
 
 	// setup:feature:demo:start
+	// setup:feature:sse:start
 	ar.initLoggingRoutes(ar.broker)
+	// setup:feature:sse:end
 	// setup:feature:demo:end
 
 	// setup:feature:demo:start
@@ -228,6 +236,12 @@ func (ar *appRoutes) InitRoutes() error {
 	ar.initSensorRoutes(ar.broker)
 	ar.initObservatoryRoutes(ar.broker)
 	ar.initAuctionRoutes(ar.broker)
+	ar.e.GET("/realtime/tavern", handler.HandleComponent(views.TavernIndexPage()))
+	ar.initTavernReplayRoutes(ar.broker)
+	ar.initTavernBackpressRoutes(ar.broker)
+	ar.initTavernSubsRoutes(ar.broker)
+	ar.initTavernPublishRoutes(ar.broker)
+	ar.initTavernHooksRoutes(ar.broker)
 	// setup:feature:sse:end
 
 	db, err := demo.Open("db/demo.db")
@@ -257,15 +271,22 @@ func (ar *appRoutes) InitRoutes() error {
 	actLog := demo.NewActivityLog(200)
 	board := demo.NewKanbanBoard()
 	queue := demo.NewApprovalQueue()
+	// setup:feature:sse:start
 	ar.initAdminSettingsRoutes(ar.broker)
 	ar.initAdminRoutes(db, actLog, ar.broker)
 	ar.initPeopleRoutes(db, ar.broker, actLog)
 	ar.initKanbanRoutes(board, actLog, ar.broker)
 	ar.initApprovalRoutes(queue, actLog, ar.broker)
 	ar.initFeedRoutes(actLog, ar.broker)
+	// setup:feature:sse:end
+	ar.initCalendarRoutes()
+	// setup:feature:sse:start
 	ar.initCanvasRoutes(demo.NewPixelCanvas(), ar.broker)
+	// setup:feature:sse:end
 	ar.initSettingsRoutes(demo.NewSettingsStore())
+	// setup:feature:sse:start
 	ar.initVendorContactRoutes(db, actLog, ar.broker)
+	// setup:feature:sse:end
 	ar.initDashboardRoutes(db, board, queue, actLog)
 	ar.initAdminErrorReportsRoutes(db)
 

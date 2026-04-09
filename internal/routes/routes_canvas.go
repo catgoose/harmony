@@ -95,12 +95,18 @@ func (cr *canvasRoutes) handleReset(c echo.Context) error {
 }
 
 func (cr *canvasRoutes) handleCanvasSSE(c echo.Context) error {
-	clientID := getOrCreateClientID(c)
+	// Each SSE connection gets its own presence ID so multiple tabs count
+	// as separate connected clients (each tab picks its own color).
+	b := make([]byte, 4)
+	_, _ = rand.Read(b)
+	connID := hex.EncodeToString(b)
+
 	color := c.QueryParam("color")
 	if color == "" {
 		color = demo.CanvasPalette[0]
 	}
-	cr.canvas.TouchClient(clientID, color)
+	cr.canvas.TouchClient(connID, color)
+	defer cr.canvas.RemoveClient(connID)
 
 	c.Response().Header().Set("Content-Type", "text/event-stream")
 	c.Response().Header().Set("Cache-Control", "no-cache")
@@ -124,7 +130,7 @@ func (cr *canvasRoutes) handleCanvasSSE(c echo.Context) error {
 		case <-ctx.Done():
 			return nil
 		case <-heartbeat.C:
-			cr.canvas.TouchClient(clientID, color)
+			cr.canvas.TouchClient(connID, color)
 		case msg, ok := <-ch:
 			if !ok {
 				return nil

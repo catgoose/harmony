@@ -70,14 +70,18 @@ func (s *ObservatoryState) RecentTierChanges() []TierChangeEvent {
 	return out
 }
 
-// SetMaxPerTopic stores the subscriber cap used by the demo broker.
-func (s *ObservatoryState) SetMaxPerTopic(n int) {
-	s.maxPerTopic.Store(int32(n))
-}
-
 // MaxPerTopic returns the current per-topic subscriber cap.
 func (s *ObservatoryState) MaxPerTopic() int {
 	return int(s.maxPerTopic.Load())
+}
+
+// SetMaxPerTopic updates the per-topic subscriber cap. The cap takes effect
+// for new subscriptions on the next admission check.
+func (s *ObservatoryState) SetMaxPerTopic(n int) {
+	if n < 0 {
+		n = 0
+	}
+	s.maxPerTopic.Store(int32(n))
 }
 
 // StressActive reports whether the stress test is running.

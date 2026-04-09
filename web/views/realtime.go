@@ -225,6 +225,35 @@ func fmtRPS(v float64) string {
 	return fmt.Sprintf("%.0f", math.Round(v))
 }
 
+// DashboardCardState carries the current per-section interval and pin state
+// so templates render sliders with live values instead of hardcoded defaults.
+type DashboardCardState struct {
+	Intervals map[string]int    // section -> current ms
+	Units     map[string]string // section -> current scale unit
+	Pinned    map[string]bool   // section -> pinned flag
+}
+
+// CardMs returns the current interval for a section, falling back to fallback.
+func (s DashboardCardState) CardMs(section string, fallback int) int {
+	if v, ok := s.Intervals[section]; ok {
+		return v
+	}
+	return fallback
+}
+
+// CardScale returns the current scale unit for a section, falling back to fallback.
+func (s DashboardCardState) CardScale(section, fallback string) string {
+	if v, ok := s.Units[section]; ok {
+		return v
+	}
+	return fallback
+}
+
+// CardPinned returns whether a section is pinned.
+func (s DashboardCardState) CardPinned(section string) bool {
+	return s.Pinned[section]
+}
+
 type statsEntry struct {
 	ID      string
 	Label   string
