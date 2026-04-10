@@ -215,7 +215,7 @@ func main() {
 			logger.Fatal("Failed to initialize user cache", "error", err)
 		}
 	} else {
-		logger.Info("Azure credentials not configured; skipping user and photo sync")
+		logger.Debug("Azure credentials not configured; skipping user and photo sync")
 	}
 	// setup:feature:avatar:end
 
