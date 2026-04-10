@@ -214,8 +214,6 @@ func main() {
 		if err := graph.InitAndSyncUserCache(appCtx, userCache, cfg.GraphUserCacheRefreshHour, graphClient.FetchAllEnabledUsers, afterSync); err != nil {
 			logger.Fatal("Failed to initialize user cache", "error", err)
 		}
-	} else {
-		logger.Debug("Azure credentials not configured; skipping user and photo sync")
 	}
 	// setup:feature:avatar:end
 
