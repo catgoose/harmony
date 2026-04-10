@@ -38,7 +38,7 @@ templ TavernCalendarPage(data CalendarLabData) {
 			data-tavern-reconnecting-class="opacity-60"
 		>
 			<div sse-swap="cal-month" hx-target="#cal-lab-month" hx-swap="innerHTML settle:0 transition:false" style="display:none"></div>
-			<div sse-swap="cal-day" hx-target="#cal-lab-day" hx-swap="innerHTML settle:0 transition:false" style="display:none"></div>
+			<div sse-swap="cal-day" hx-target="#cal-lab-day-events" hx-swap="innerHTML settle:0 transition:false" style="display:none"></div>
 			<div sse-swap="cal-stats" hx-target="#cal-lab-stats" hx-swap="innerHTML settle:0 transition:false" style="display:none"></div>
 			<div sse-swap="cal-activity" hx-target="#cal-lab-activity-list" hx-swap="innerHTML settle:0 transition:false" style="display:none"></div>
 
@@ -72,9 +72,9 @@ templ TavernCalendarPage(data CalendarLabData) {
 
 				<!-- Right rail: day inspector + controls (4 cols) -->
 				<div class="lg:col-span-4 space-y-4">
-					<div id="cal-lab-day" class="card bg-base-200 shadow-sm">
+					<div id="cal-lab-day-events" class="card bg-base-200 shadow-sm overflow-visible">
 						if !data.MonthData.Selected.IsZero() {
-							@CalendarLabDay(data.MonthData.Selected, data.DayEvents, data.Settings)
+							@CalendarLabDayFull(data.MonthData.Selected, data.DayEvents, data.Settings)
 						} else {
 							@CalendarLabDayEmpty()
 						}
@@ -199,25 +199,33 @@ templ CalendarLabDayEmpty() {
 	</div>
 }
 
-// CalendarLabDay renders the day inspector panel.
-templ CalendarLabDay(day time.Time, events []demo.CalendarEvent, settings demo.CalendarLabSettings) {
+// CalendarLabDayFull renders the complete day inspector: event list + add form.
+// Used for SSE swaps from user actions (select day, add/delete event).
+templ CalendarLabDayFull(day time.Time, events []demo.CalendarEvent, settings demo.CalendarLabSettings) {
 	<div class="card-body p-4 space-y-3">
-		<div>
-			<h2 class="text-sm font-semibold uppercase tracking-wider text-base-content/50">{ day.Format("Mon Jan 2, 2006") }</h2>
-			<p class="text-xs text-base-content/40">{ fmt.Sprintf("%d event(s)", len(events)) }</p>
-		</div>
-		<div class="space-y-1 max-h-64 overflow-y-auto">
-			if len(events) == 0 {
-				<p class="text-xs text-base-content/30 py-2">No events on this day.</p>
-			} else {
-				for _, e := range events {
-					if settings.VisibleCategories[e.Category] && (settings.Assignee == "" || settings.Assignee == e.Assignee) {
-						@calLabEventRow(e, day)
-					}
+		@CalendarLabDayEvents(day, events, settings)
+		@calLabAddEventForm(day)
+	</div>
+}
+
+// CalendarLabDayEvents renders just the event list portion of the day inspector.
+// Used for SSE swaps from the simulator (month-level changes that update the
+// event list but shouldn't destroy the form).
+templ CalendarLabDayEvents(day time.Time, events []demo.CalendarEvent, settings demo.CalendarLabSettings) {
+	<div>
+		<h2 class="text-sm font-semibold uppercase tracking-wider text-base-content/50">{ day.Format("Mon Jan 2, 2006") }</h2>
+		<p class="text-xs text-base-content/40">{ fmt.Sprintf("%d event(s)", len(events)) }</p>
+	</div>
+	<div class="space-y-1 max-h-64 overflow-y-auto">
+		if len(events) == 0 {
+			<p class="text-xs text-base-content/30 py-2">No events on this day.</p>
+		} else {
+			for _, e := range events {
+				if settings.VisibleCategories[e.Category] && (settings.Assignee == "" || settings.Assignee == e.Assignee) {
+					@calLabEventRow(e, day)
 				}
 			}
-		</div>
-		@calLabAddEventForm(day)
+		}
 	</div>
 }
 
@@ -258,14 +266,12 @@ templ calLabAddEventForm(day time.Time) {
 				required
 			/>
 		</div>
-		<div class="grid grid-cols-[1fr_auto] gap-2">
-			<select name="category" class="select select-xs select-bordered w-full">
-				for _, cat := range demo.AllCalendarCategories {
-					<option value={ string(cat) }>{ string(cat) }</option>
-				}
-			</select>
-			<button type="submit" class="btn btn-primary btn-xs">Add</button>
-		</div>
+		<select name="category" class="select select-sm select-bordered w-full">
+			for _, cat := range demo.AllCalendarCategories {
+				<option value={ string(cat) }>{ string(cat) }</option>
+			}
+		</select>
+		<button type="submit" class="btn btn-primary btn-xs w-full">Add</button>
 	</form>
 }
 
@@ -319,7 +325,7 @@ templ CalendarLabActivityLog(activity []demo.CalendarLabActivity) {
 
 // calendarLabControls renders the control rail.
 templ calendarLabControls(settings demo.CalendarLabSettings, paused bool) {
-	<div class="card bg-base-200 shadow-sm">
+	<div class="card bg-base-200 shadow-sm overflow-visible">
 		<div class="card-body p-4 space-y-3">
 			<h2 class="card-title text-sm font-semibold uppercase tracking-wider text-base-content/60">Controls</h2>
 
@@ -387,7 +393,7 @@ templ calendarLabControls(settings demo.CalendarLabSettings, paused bool) {
 				</label>
 				<select
 					name="assignee"
-					class="select select-xs select-bordered w-full"
+					class="select select-sm select-bordered w-full"
 					hx-post="/realtime/tavern/calendar/controls"
 					hx-trigger="change"
 					hx-swap="none"
@@ -403,20 +409,20 @@ templ calendarLabControls(settings demo.CalendarLabSettings, paused bool) {
 			<!-- Category toggles -->
 			<div class="space-y-1">
 				<span class="text-xs text-base-content/60">Categories</span>
-				<div class="flex flex-wrap gap-1">
+				<div class="flex flex-wrap gap-1.5">
 					for _, cat := range demo.AllCalendarCategories {
-						<label class="swap swap-flip">
+						<label class="cursor-pointer flex items-center gap-1">
 							<input
 								type="checkbox"
 								name={ "cat_" + string(cat) }
+								class="checkbox checkbox-xs"
 								checked?={ settings.VisibleCategories[cat] }
 								hx-post="/realtime/tavern/calendar/controls"
 								hx-trigger="change"
 								hx-swap="none"
 								hx-include="closest .card-body"
 							/>
-							<span class={ "swap-on badge badge-xs cursor-pointer " + calCategoryBadge[cat] }>{ string(cat) }</span>
-							<span class="swap-off badge badge-xs badge-ghost cursor-pointer line-through opacity-50">{ string(cat) }</span>
+							<span class={ "text-xs", calCategoryTextColor[cat] }>{ string(cat) }</span>
 						</label>
 					}
 				</div>
