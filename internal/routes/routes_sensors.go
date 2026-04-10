@@ -5,7 +5,6 @@ package routes
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"time"
 
 	"catgoose/harmony/internal/demo"
@@ -43,12 +42,8 @@ func (s *sensorRoutes) handleSSE(c echo.Context) error {
 		pattern = "sensors/**"
 	}
 
-	flusher, err := startSSEResponse(c)
-	if err != nil {
-		return err
-	}
-
-	// Build snapshot function for initial state delivery
+	// Snapshot is delivered at the broker layer via SubWithSnapshot, so the
+	// initial frame still arrives atomically with the subscription.
 	snapshotFn := func() string {
 		snap := s.grid.Snapshot(pattern)
 		var buf bytes.Buffer
@@ -72,26 +67,15 @@ func (s *sensorRoutes) handleSSE(c echo.Context) error {
 	)
 	defer unsub()
 
-	heartbeat := time.NewTicker(10 * time.Second)
-	defer heartbeat.Stop()
-
-	ctx := c.Request().Context()
-	for {
-		select {
-		case <-ctx.Done():
-			return nil
-		case tm, ok := <-msgs:
-			if !ok {
-				return nil
-			}
-			msg := tavern.NewSSEMessage("sensor-update", tm.Data).String()
-			_, _ = fmt.Fprint(c.Response(), msg)
-			flusher.Flush()
-		case <-heartbeat.C:
-			_, _ = fmt.Fprintf(c.Response(), ": heartbeat\n\n")
-			flusher.Flush()
-		}
-	}
+	return tavern.StreamSSE(
+		c.Request().Context(),
+		c.Response(),
+		msgs,
+		func(tm tavern.TopicMessage) string {
+			return tavern.NewSSEMessage("sensor-update", tm.Data).String()
+		},
+		tavern.WithStreamHeartbeat(10*time.Second),
+	)
 }
 
 func (s *sensorRoutes) handleFloodToggle(c echo.Context) error {

@@ -137,11 +137,6 @@ func (n *notificationRoutes) handleSimulatorSpeed(c echo.Context) error {
 func (n *notificationRoutes) handleSSE(c echo.Context) error {
 	identity := resolveNotifIdentity(c.QueryParam("identity"))
 
-	flusher, err := startSSEResponse(c)
-	if err != nil {
-		return err
-	}
-
 	// Each SSE connection gets a unique presence key so that multiple tabs
 	// sharing the same identity cookie track independently. The real identity
 	// ID is stored in metadata for notification routing and deduplication.
@@ -177,10 +172,11 @@ func (n *notificationRoutes) handleSSE(c echo.Context) error {
 	}
 
 	// Check for Last-Event-ID for replay.
-	// Both paths apply the same filterFn: SubscribeWith uses it natively for
-	// live messages, while SubscribeFromID doesn't support filters so we apply
-	// the filter in the write loop below. This ensures category preferences
-	// survive SSE reconnections.
+	// Both paths apply the same filterFn: SubscribeWith uses it natively at
+	// the broker level for live messages; SubscribeFromID doesn't support
+	// filters, so the encode function below re-applies it. Returning an
+	// empty string from the encoder skips a value without terminating the
+	// stream, so category preferences survive SSE reconnections.
 	lastEventID := c.Request().Header.Get("Last-Event-ID")
 	var msgs <-chan string
 	var unsub func()
@@ -193,29 +189,36 @@ func (n *notificationRoutes) handleSSE(c echo.Context) error {
 	}
 	defer unsub()
 
-	heartbeat := time.NewTicker(10 * time.Second)
-	defer heartbeat.Stop()
-
+	// Presence bookkeeping: refresh the tracker entry every 10s so the user
+	// stays in the online list. This is independent of the SSE keepalive
+	// (which is handled below by WithStreamHeartbeat) — it just happens to
+	// share the same cadence the original loop used.
 	ctx := c.Request().Context()
-	for {
-		select {
-		case <-ctx.Done():
-			return nil
-		case msg, ok := <-msgs:
-			if !ok {
-				return nil
+	go func() {
+		ticker := time.NewTicker(10 * time.Second)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-ticker.C:
+				n.tracker.Heartbeat(TopicNotifications, connID)
 			}
-			if !filterFn(msg) {
-				continue
-			}
-			_, _ = fmt.Fprint(c.Response(), msg)
-			flusher.Flush()
-		case <-heartbeat.C:
-			n.tracker.Heartbeat(TopicNotifications, connID)
-			_, _ = fmt.Fprintf(c.Response(), ": heartbeat\n\n")
-			flusher.Flush()
 		}
-	}
+	}()
+
+	return tavern.StreamSSE(
+		ctx,
+		c.Response(),
+		msgs,
+		func(msg string) string {
+			if !filterFn(msg) {
+				return ""
+			}
+			return msg
+		},
+		tavern.WithStreamHeartbeat(10*time.Second),
+	)
 }
 
 func (n *notificationRoutes) handleFilterUpdate(c echo.Context) error {

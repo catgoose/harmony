@@ -92,37 +92,24 @@ func (h *tavernHooksRoutes) handleMutate(c echo.Context) error {
 }
 
 func (h *tavernHooksRoutes) handleSSE(c echo.Context) error {
-	flusher, err := startSSEResponse(c)
-	if err != nil {
-		return err
-	}
-
-	// Deliver snapshot on subscribe.
-	snapshot := h.buildSnapshot()
-	_, _ = fmt.Fprint(c.Response(), snapshot)
-	flusher.Flush()
-
 	ch, unsub := h.broker.SubscribeMulti(TopicTavernHooksSource, TopicTavernHooksDeriv, TopicTavernHooksLog, TopicTavernHooksStats)
 	defer unsub()
 
-	ctx := c.Request().Context()
-	for {
-		select {
-		case <-ctx.Done():
-			return nil
-		case tm, ok := <-ch:
-			if !ok {
-				return nil
+	return tavern.StreamSSE(
+		c.Request().Context(),
+		c.Response(),
+		ch,
+		func(tm tavern.TopicMessage) string {
+			// Preserve SSE comment/control frames such as keepalives so
+			// broker-emitted control frames pass through unmodified;
+			// regular topic messages get wrapped as a labelled SSE event.
+			if strings.HasPrefix(tm.Data, ":") || strings.HasPrefix(tm.Data, "event: tavern-") {
+				return tm.Data
 			}
-			// Preserve SSE comment/control frames such as keepalives.
-			msg := tm.Data
-			if !strings.HasPrefix(msg, ":") && !strings.HasPrefix(msg, "event: tavern-") {
-				msg = tavern.NewSSEMessage(tm.Topic, tm.Data).String()
-			}
-			_, _ = fmt.Fprint(c.Response(), msg)
-			flusher.Flush()
-		}
-	}
+			return tavern.NewSSEMessage(tm.Topic, tm.Data).String()
+		},
+		tavern.WithStreamSnapshot(h.buildSnapshot),
+	)
 }
 
 func (h *tavernHooksRoutes) buildSnapshot() string {
