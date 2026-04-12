@@ -131,7 +131,6 @@ func (ar *appRoutes) InitRoutes() error {
 	if err != nil {
 		return fmt.Errorf("handler init: %w", err)
 	}
-	ar.e.GET("/", handler.HandleComponent(views.HomePage(cfg.AppName)))
 	// setup:feature:demo:start
 	ar.e.GET("/", handler.HandleComponent(views.ArchitecturePage()))
 	// setup:feature:demo:end
@@ -245,6 +244,8 @@ func (ar *appRoutes) InitRoutes() error {
 	ar.initRecoveryRoutes(ar.broker)
 	ar.initFailuresRoutes(ar.broker)
 	ar.initTavernCalendarRoutes(ar.broker)
+	ar.initTavernHotZoneRoutes(ar.broker)
+	ar.initTavernToastRoutes(ar.broker)
 	// setup:feature:sse:end
 
 	db, err := demo.Open("db/demo.db")

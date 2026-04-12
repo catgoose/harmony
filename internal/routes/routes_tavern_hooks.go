@@ -30,6 +30,7 @@ func (ar *appRoutes) initTavernHooksRoutes(broker *tavern.SSEBroker) {
 	// registered explicitly.
 	for _, topic := range []string{
 		TopicTavernHooksSource,
+		TopicTavernHooksInput,
 		TopicTavernHooksDeriv,
 		TopicTavernHooksLog,
 		TopicTavernHooksStats,
@@ -61,6 +62,8 @@ func (ar *appRoutes) initTavernHooksRoutes(broker *tavern.SSEBroker) {
 		lab.RecordHook("on-mutate", fmt.Sprintf("source updated (%d chars)", len(content)))
 		html := renderHooksSource(content)
 		broker.Publish(TopicTavernHooksSource, html)
+		// Publish raw text so other clients can sync the textarea value.
+		broker.Publish(TopicTavernHooksInput, tavern.NewSSEMessage(TopicTavernHooksInput, content).String())
 	})
 
 	// Group for the SSE endpoint with snapshot support.
@@ -92,7 +95,7 @@ func (h *tavernHooksRoutes) handleMutate(c echo.Context) error {
 }
 
 func (h *tavernHooksRoutes) handleSSE(c echo.Context) error {
-	ch, unsub := h.broker.SubscribeMulti(TopicTavernHooksSource, TopicTavernHooksDeriv, TopicTavernHooksLog, TopicTavernHooksStats)
+	ch, unsub := h.broker.SubscribeMulti(TopicTavernHooksSource, TopicTavernHooksInput, TopicTavernHooksDeriv, TopicTavernHooksLog, TopicTavernHooksStats)
 	defer unsub()
 
 	return tavern.StreamSSE(
@@ -118,6 +121,7 @@ func (h *tavernHooksRoutes) buildSnapshot() string {
 
 	var buf strings.Builder
 	buf.WriteString(tavern.NewSSEMessage(TopicTavernHooksSource, renderHooksSource(source)).String())
+	buf.WriteString(tavern.NewSSEMessage(TopicTavernHooksInput, source).String())
 	buf.WriteString(tavern.NewSSEMessage(TopicTavernHooksDeriv, renderHooksDerived(derived)).String())
 	buf.WriteString(tavern.NewSSEMessage(TopicTavernHooksLog, renderHooksLog(h.lab.HookLog())).String())
 	count, bytes := h.lab.PublishStats()

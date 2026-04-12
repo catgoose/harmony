@@ -34,9 +34,9 @@ templ TavernHooksPage(data TavernHooksData) {
 		<div
 			hx-ext="sse"
 			sse-connect="/sse/tavern/hooks"
-			data-tavern-reconnecting-class="opacity-50"
+			tavern-reconnecting-class="opacity-50"
 		>
-			<div data-tavern-status class="hidden text-xs text-warning flex items-center gap-1 py-1 px-2 rounded bg-warning/10 mb-2">
+			<div tavern-status class="hidden text-xs text-warning flex items-center gap-1 py-1 px-2 rounded bg-warning/10 mb-2">
 				<span class="loading loading-spinner loading-xs"></span>
 				Reconnecting...
 			</div>
@@ -117,7 +117,22 @@ templ TavernHooksPage(data TavernHooksData) {
 				</div>
 			</div>
 		</div>
+		@hooksInputSyncScript()
 	</div>
+}
+
+// hooksInputSyncScript syncs the textarea value from SSE for other
+// clients. It skips the update when the textarea is focused so the
+// typing user is not disrupted.
+templ hooksInputSyncScript() {
+	<script>
+		document.body.addEventListener('htmx:sseMessage', function(evt) {
+			if (evt.detail.type !== 'tavern/hooks/input') return;
+			var ta = document.querySelector('#hooks-page textarea[name="content"]');
+			if (!ta || document.activeElement === ta) return;
+			ta.value = evt.detail.data;
+		});
+	</script>
 }
 
 templ HooksSourceDisplay(source string) {

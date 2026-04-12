@@ -25,6 +25,7 @@ const (
 	TopicTavernPubChanged  = "tavern/pub/ifchanged"
 	TopicTavernPubTTL      = "tavern/pub/ttl"
 	TopicTavernHooksSource = "tavern/hooks/source"
+	TopicTavernHooksInput  = "tavern/hooks/input"
 	TopicTavernHooksDeriv  = "tavern/hooks/derived"
 	TopicTavernHooksLog    = "tavern/hooks/log"
 	TopicTavernHooksStats  = "tavern/hooks/stats"

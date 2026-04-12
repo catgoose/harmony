@@ -45,7 +45,7 @@ func TavernHooksPage(data TavernHooksData) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<style>\n\t\tbody:has(#hooks-page) main { view-transition-name: none !important; }\n\t</style><div id=\"hooks-page\" class=\"max-w-5xl mx-auto p-4 space-y-4\" style=\"overflow-anchor:none\"><div class=\"flex items-center justify-between flex-wrap gap-2\"><div><h1 class=\"text-2xl font-bold\">Hooks Lab</h1><p class=\"text-xs text-base-content/50\">Before/After hooks, OnMutate, UseTopics middleware, and snapshot-on-subscribe. Type in the source to trigger the mutation chain.</p></div></div><div hx-ext=\"sse\" sse-connect=\"/sse/tavern/hooks\" data-tavern-reconnecting-class=\"opacity-50\"><div data-tavern-status class=\"hidden text-xs text-warning flex items-center gap-1 py-1 px-2 rounded bg-warning/10 mb-2\"><span class=\"loading loading-spinner loading-xs\"></span> Reconnecting...</div><div sse-swap=\"tavern/hooks/source\" hx-target=\"#hooks-source-display\" hx-swap=\"innerHTML settle:0 transition:false\" style=\"display:none\"></div><div sse-swap=\"tavern/hooks/derived\" hx-target=\"#hooks-derived-display\" hx-swap=\"innerHTML settle:0 transition:false\" style=\"display:none\"></div><div sse-swap=\"tavern/hooks/log\" hx-target=\"#hooks-log\" hx-swap=\"innerHTML settle:0 transition:false\" style=\"display:none\"></div><div sse-swap=\"tavern/hooks/stats\" hx-target=\"#hooks-stats\" hx-swap=\"innerHTML settle:0 transition:false\" style=\"display:none\"></div><div class=\"flex gap-4\"><!-- Left: Source + Derived --><div class=\"flex-[2] min-w-0 space-y-4\"><div class=\"card bg-base-200 shadow-sm\"><div class=\"card-body p-4\"><h2 class=\"card-title text-sm font-semibold uppercase tracking-wider text-base-content/50\">Source (OnMutate trigger)</h2><textarea name=\"content\" class=\"textarea textarea-bordered w-full h-24 font-mono text-sm\" hx-post=\"/realtime/tavern/hooks/mutate\" hx-trigger=\"keyup changed delay:300ms\" hx-swap=\"none\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<style>\n\t\tbody:has(#hooks-page) main { view-transition-name: none !important; }\n\t</style><div id=\"hooks-page\" class=\"max-w-5xl mx-auto p-4 space-y-4\" style=\"overflow-anchor:none\"><div class=\"flex items-center justify-between flex-wrap gap-2\"><div><h1 class=\"text-2xl font-bold\">Hooks Lab</h1><p class=\"text-xs text-base-content/50\">Before/After hooks, OnMutate, UseTopics middleware, and snapshot-on-subscribe. Type in the source to trigger the mutation chain.</p></div></div><div hx-ext=\"sse\" sse-connect=\"/sse/tavern/hooks\" tavern-reconnecting-class=\"opacity-50\"><div tavern-status class=\"hidden text-xs text-warning flex items-center gap-1 py-1 px-2 rounded bg-warning/10 mb-2\"><span class=\"loading loading-spinner loading-xs\"></span> Reconnecting...</div><div sse-swap=\"tavern/hooks/source\" hx-target=\"#hooks-source-display\" hx-swap=\"innerHTML settle:0 transition:false\" style=\"display:none\"></div><div sse-swap=\"tavern/hooks/derived\" hx-target=\"#hooks-derived-display\" hx-swap=\"innerHTML settle:0 transition:false\" style=\"display:none\"></div><div sse-swap=\"tavern/hooks/log\" hx-target=\"#hooks-log\" hx-swap=\"innerHTML settle:0 transition:false\" style=\"display:none\"></div><div sse-swap=\"tavern/hooks/stats\" hx-target=\"#hooks-stats\" hx-swap=\"innerHTML settle:0 transition:false\" style=\"display:none\"></div><div class=\"flex gap-4\"><!-- Left: Source + Derived --><div class=\"flex-[2] min-w-0 space-y-4\"><div class=\"card bg-base-200 shadow-sm\"><div class=\"card-body p-4\"><h2 class=\"card-title text-sm font-semibold uppercase tracking-wider text-base-content/50\">Source (OnMutate trigger)</h2><textarea name=\"content\" class=\"textarea textarea-bordered w-full h-24 font-mono text-sm\" hx-post=\"/realtime/tavern/hooks/mutate\" hx-trigger=\"keyup changed delay:300ms\" hx-swap=\"none\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -90,7 +90,47 @@ func TavernHooksPage(data TavernHooksData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div></div></div><div class=\"card bg-base-200 shadow-sm\"><div class=\"card-body p-4\"><h2 class=\"card-title text-sm font-semibold uppercase tracking-wider text-base-content/50\">How It Works</h2><ol class=\"text-xs text-base-content/50 list-decimal list-inside space-y-1\"><li>Type in the source textarea</li><li>POST triggers NotifyMutate(\"tavern-hooks\")</li><li>OnMutate handler updates source, publishes to source topic</li><li>After hook fires, computes derived value, publishes to derived topic</li><li>UseTopics middleware counts all publishes on tavern/hooks/*</li><li>Open a new tab to see snapshot-on-subscribe deliver initial state</li></ol></div></div></div></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div></div></div><div class=\"card bg-base-200 shadow-sm\"><div class=\"card-body p-4\"><h2 class=\"card-title text-sm font-semibold uppercase tracking-wider text-base-content/50\">How It Works</h2><ol class=\"text-xs text-base-content/50 list-decimal list-inside space-y-1\"><li>Type in the source textarea</li><li>POST triggers NotifyMutate(\"tavern-hooks\")</li><li>OnMutate handler updates source, publishes to source topic</li><li>After hook fires, computes derived value, publishes to derived topic</li><li>UseTopics middleware counts all publishes on tavern/hooks/*</li><li>Open a new tab to see snapshot-on-subscribe deliver initial state</li></ol></div></div></div></div></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = hooksInputSyncScript().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
+// hooksInputSyncScript syncs the textarea value from SSE for other
+// clients. It skips the update when the textarea is focused so the
+// typing user is not disrupted.
+func hooksInputSyncScript() templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var3 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var3 == nil {
+			templ_7745c5c3_Var3 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<script>\n\t\tdocument.body.addEventListener('htmx:sseMessage', function(evt) {\n\t\t\tif (evt.detail.type !== 'tavern/hooks/input') return;\n\t\t\tvar ta = document.querySelector('#hooks-page textarea[name=\"content\"]');\n\t\t\tif (!ta || document.activeElement === ta) return;\n\t\t\tta.value = evt.detail.data;\n\t\t});\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -114,25 +154,25 @@ func HooksSourceDisplay(source string) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var3 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var3 == nil {
-			templ_7745c5c3_Var3 = templ.NopComponent
+		templ_7745c5c3_Var4 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var4 == nil {
+			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<p class=\"whitespace-pre-wrap text-sm text-base-content/80 font-mono\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<p class=\"whitespace-pre-wrap text-sm text-base-content/80 font-mono\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var4 string
-		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(source)
+		var templ_7745c5c3_Var5 string
+		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(source)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/tavern_hooks.templ`, Line: 124, Col: 79}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/tavern_hooks.templ`, Line: 139, Col: 79}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</p>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -156,25 +196,25 @@ func HooksDerivedDisplay(derived string) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var5 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var5 == nil {
-			templ_7745c5c3_Var5 = templ.NopComponent
+		templ_7745c5c3_Var6 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var6 == nil {
+			templ_7745c5c3_Var6 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<p class=\"whitespace-pre-wrap text-sm text-base-content/80\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<p class=\"whitespace-pre-wrap text-sm text-base-content/80\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var6 string
-		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(derived)
+		var templ_7745c5c3_Var7 string
+		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(derived)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/tavern_hooks.templ`, Line: 128, Col: 70}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/tavern_hooks.templ`, Line: 143, Col: 70}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</p>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "</p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -198,80 +238,80 @@ func HooksLogEntries(events []demo.HookEvent) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var7 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var7 == nil {
-			templ_7745c5c3_Var7 = templ.NopComponent
+		templ_7745c5c3_Var8 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var8 == nil {
+			templ_7745c5c3_Var8 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
 		if len(events) == 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<p class=\"text-xs text-base-content/30\">No hooks fired yet.</p>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<p class=\"text-xs text-base-content/30\">No hooks fired yet.</p>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
 			for i := len(events) - 1; i >= 0; i-- {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<div class=\"flex items-center gap-2 py-0.5 border-b border-base-300 last:border-0 text-xs\"><span class=\"text-base-content/40 tabular-nums font-mono shrink-0\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "<div class=\"flex items-center gap-2 py-0.5 border-b border-base-300 last:border-0 text-xs\"><span class=\"text-base-content/40 tabular-nums font-mono shrink-0\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var8 string
-				templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(events[i].Timestamp.Format("15:04:05"))
+				var templ_7745c5c3_Var9 string
+				templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(events[i].Timestamp.Format("15:04:05"))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/tavern_hooks.templ`, Line: 137, Col: 111}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/tavern_hooks.templ`, Line: 152, Col: 111}
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "</span> ")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var9 = []any{"badge badge-xs shrink-0 whitespace-nowrap", hookBadgeClass(events[i].HookType)}
-				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var9...)
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "</span> ")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "<span class=\"")
+				var templ_7745c5c3_Var10 = []any{"badge badge-xs shrink-0 whitespace-nowrap", hookBadgeClass(events[i].HookType)}
+				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var10...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var10 string
-				templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(templ.CSSClasses(templ_7745c5c3_Var9).String())
-				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/tavern_hooks.templ`, Line: 1, Col: 0}
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<span class=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var11 string
-				templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(events[i].HookType)
+				templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(templ.CSSClasses(templ_7745c5c3_Var10).String())
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/tavern_hooks.templ`, Line: 138, Col: 120}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/tavern_hooks.templ`, Line: 1, Col: 0}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "</span> <span class=\"text-base-content/60 truncate\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var12 string
-				templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(events[i].Detail)
+				templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(events[i].HookType)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/tavern_hooks.templ`, Line: 139, Col: 66}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/tavern_hooks.templ`, Line: 153, Col: 120}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "</span></div>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "</span> <span class=\"text-base-content/60 truncate\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var13 string
+				templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(events[i].Detail)
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/tavern_hooks.templ`, Line: 154, Col: 66}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "</span></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -297,38 +337,38 @@ func HooksStatsDisplay(pubCount, pubBytes int64) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var13 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var13 == nil {
-			templ_7745c5c3_Var13 = templ.NopComponent
+		templ_7745c5c3_Var14 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var14 == nil {
+			templ_7745c5c3_Var14 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<div class=\"flex gap-4\"><div class=\"stat p-0\"><div class=\"stat-title text-xs\">Publishes</div><div class=\"stat-value text-lg tabular-nums\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var14 string
-		templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", pubCount))
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/tavern_hooks.templ`, Line: 149, Col: 77}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "</div></div><div class=\"stat p-0\"><div class=\"stat-title text-xs\">Bytes</div><div class=\"stat-value text-lg tabular-nums\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "<div class=\"flex gap-4\"><div class=\"stat p-0\"><div class=\"stat-title text-xs\">Publishes</div><div class=\"stat-value text-lg tabular-nums\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var15 string
-		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(formatHooksBytes(pubBytes))
+		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", pubCount))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/tavern_hooks.templ`, Line: 153, Col: 76}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/tavern_hooks.templ`, Line: 164, Col: 77}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "</div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "</div></div><div class=\"stat p-0\"><div class=\"stat-title text-xs\">Bytes</div><div class=\"stat-value text-lg tabular-nums\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var16 string
+		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(formatHooksBytes(pubBytes))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/views/tavern_hooks.templ`, Line: 168, Col: 76}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "</div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

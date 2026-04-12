@@ -59,7 +59,7 @@ test.describe("Inventory Page", () => {
     await addBtn.click();
     await waitForHtmx(page);
     // A new row or form should appear
-    const newRow = page.locator("#new-item-row, [id*=new-item]");
+    const newRow = page.locator("#new-item-row").first();
     await expect(newRow).toBeVisible();
   });
 

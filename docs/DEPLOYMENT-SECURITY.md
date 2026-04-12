@@ -218,7 +218,7 @@ server {
 - **UDP firewall**: HTTP/3 uses UDP 443. If your corporate firewall only allows TCP 443, browsers will fall back to HTTP/2 over TCP automatically. H3 is a progressive enhancement.
 - **SSE over H3**: Works transparently. The browser opens the SSE connection over whichever protocol it negotiated (H2 or H3). The nginx-to-app connection is always HTTP/1.1 regardless.
 - **Tavern keepalive**: Tavern sends `:keepalive` comments every 30 seconds by default (`WithKeepalive(30*time.Second)`). This keeps the SSE connection alive through proxies that would otherwise close idle connections. The 300s `proxy_read_timeout` is intentionally higher to tolerate temporary network hiccups without dropping clients.
-- **Last-Event-ID resumption**: Tavern supports `SubscribeFromID` which uses the `Last-Event-ID` header. This works through nginx with no extra config — the header passes through naturally. If a client reconnects after a dropped connection, it resumes from where it left off.
+- **Last-Event-ID resumption**: Tavern supports `SubscribeFromIDWith` which uses the `Last-Event-ID` header with a gap-fallback policy. This works through nginx with no extra config — the header passes through naturally. If a client reconnects after a dropped connection, it resumes from where it left off.
 
 **Multi-app setup:**
 

@@ -99,7 +99,8 @@ func TestSetupReplacesAppNameAndModule(t *testing.T) {
 			return errWalk
 		}
 		if info.IsDir() {
-			if filepath.Base(path) == "_template_setup" || filepath.Base(path) == ".git" {
+			base := filepath.Base(path)
+			if base == "_template_setup" || base == ".git" || base == "vendor" {
 				return filepath.SkipDir
 			}
 			return nil
@@ -785,6 +786,7 @@ func TestSetup_NoDothogReferences(t *testing.T) {
 		"log":              true,
 		"node_modules":     true,
 		"_template_setup":  true,
+		"vendor":           true,
 	}
 
 	var violations []string

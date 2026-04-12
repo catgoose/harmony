@@ -24,7 +24,7 @@ templ TavernCalendarPage(data CalendarLabData) {
 	<style>
 		body:has(#calendar-lab-page) main { view-transition-name: none !important; }
 	</style>
-	<div id="calendar-lab-page" class="max-w-6xl mx-auto p-4 space-y-4" style="overflow-anchor:none">
+	<div id="calendar-lab-page" class="max-w-[90rem] mx-auto p-4 space-y-3" style="overflow-anchor:none" onclick="calLabDeselect(event)">
 		<div>
 			<h1 class="text-2xl font-bold">Calendar Lab</h1>
 			<p class="text-xs text-base-content/50">
@@ -33,56 +33,85 @@ templ TavernCalendarPage(data CalendarLabData) {
 			</p>
 		</div>
 
+		<script>
+			// Click-outside deselect: not a hot-region command, just a UI behavior.
+			// Guard: if the click target was detached by an SSE swap between
+			// pointerdown and click (common at high churn), skip the deselect.
+			function calLabDeselect(e) {
+				if (!e.target.isConnected) return;
+				if (e.target.closest('#cal-lab-month') || e.target.closest('#cal-lab-day-events') || e.target.closest('.card-body')) return;
+				document.querySelectorAll('[command-url]').forEach(function(el) { el.classList.remove('ring-2', 'ring-accent'); });
+				Tavern.command('/realtime/tavern/calendar/day/deselect');
+			}
+			// Optimistic day-cell highlight: applied immediately on command-sent,
+			// before the server round-trip completes.
+			document.addEventListener('tavern:command-sent', function(e) {
+				if (!e.detail.url || e.detail.url.indexOf('/calendar/day?d=') === -1) return;
+				document.querySelectorAll('[command-url]').forEach(function(el) { el.classList.remove('ring-2', 'ring-accent'); });
+				if (e.target) e.target.classList.add('ring-2', 'ring-accent');
+			});
+		</script>
+
 		<div
 			id="calendar-lab-container"
 			hx-ext="sse"
 			sse-connect="/sse/tavern/calendar"
-			data-tavern-reconnecting-class="opacity-60"
+			tavern-reconnecting-class="opacity-60"
+			tavern-stale-class="opacity-40 pointer-events-none"
+			tavern-live-class=""
+			tavern-hearth
+			tavern-hot-policy="pause-on-pointerdown defer-on-focus"
 		>
+			<div tavern-status-recovering class="hidden text-xs text-warning flex items-center gap-1 py-1 px-2 rounded bg-warning/10 mb-2">
+				<span>&#9888;</span> Reconnecting&hellip;
+			</div>
+			<div tavern-status-stale class="hidden text-xs text-error flex items-center gap-1 py-1 px-2 rounded bg-error/10 mb-2">
+				<span>&#9888;</span> Connection lost — data may be stale.
+			</div>
 			<div sse-swap="cal-month" hx-target="#cal-lab-month" hx-swap="innerHTML settle:0 transition:false" style="display:none"></div>
 			<div sse-swap="cal-day" hx-target="#cal-lab-day-events" hx-swap="innerHTML settle:0 transition:false" style="display:none"></div>
 			<div sse-swap="cal-day-list" hx-target="#cal-lab-day-list" hx-swap="innerHTML settle:0 transition:false" style="display:none"></div>
 			<div sse-swap="cal-stats" hx-target="#cal-lab-stats" hx-swap="innerHTML settle:0 transition:false" style="display:none"></div>
 			<div sse-swap="cal-activity" hx-target="#cal-lab-activity-list" hx-swap="innerHTML settle:0 transition:false" style="display:none"></div>
 
-			<div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-				<!-- Month grid (left, 8 cols) -->
-				<div class="lg:col-span-8 space-y-4">
-					<div id="cal-lab-month" class="card bg-base-200 shadow-sm">
-						@CalendarLabMonth(data.MonthData, data.Settings, data.DayEventsMap)
-					</div>
-
-					<!-- Stats + Activity -->
-					<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-						<div class="card bg-base-200 shadow-sm">
-							<div class="card-body p-4 space-y-2">
-								<h2 class="card-title text-sm font-semibold uppercase tracking-wider text-base-content/60">Stats</h2>
-								<div id="cal-lab-stats">
-									@CalendarLabStats(data.EventCount, data.FilteredEventCount, data.Settings, data.Paused)
-								</div>
+			<div class="grid grid-cols-1 lg:grid-cols-12 gap-3">
+				<!-- Left rail: controls, stats, activity -->
+				<div class="lg:col-span-3 space-y-3">
+					@calendarLabControls(data.Settings, data.Paused)
+					<div class="card bg-base-200 shadow-sm">
+						<div class="card-body p-3 space-y-1">
+							<h2 class="text-xs font-semibold uppercase tracking-wider text-base-content/60">Stats</h2>
+							<div id="cal-lab-stats">
+								@CalendarLabStats(data.EventCount, data.FilteredEventCount, data.Settings, data.Paused)
 							</div>
 						</div>
-						<div class="card bg-base-200 shadow-sm">
-							<div class="card-body p-4 space-y-2">
-								<h2 class="card-title text-sm font-semibold uppercase tracking-wider text-base-content/60">Activity</h2>
-								<div id="cal-lab-activity-list" class="max-h-48 overflow-y-auto overflow-x-hidden text-xs font-mono space-y-0.5" style="contain:paint">
-									@CalendarLabActivityLog(data.Activity)
-								</div>
+					</div>
+					<div class="card bg-base-200 shadow-sm">
+						<div class="card-body p-3 space-y-1">
+							<h2 class="text-xs font-semibold uppercase tracking-wider text-base-content/60">Activity</h2>
+							<div id="cal-lab-activity-list" class="max-h-40 overflow-y-auto overflow-x-hidden text-xs font-mono space-y-0.5" style="contain:paint">
+								@CalendarLabActivityLog(data.Activity)
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<!-- Right rail: day inspector + controls (4 cols) -->
-				<div class="lg:col-span-4 space-y-4">
-					<div id="cal-lab-day-events" class="card bg-base-200 shadow-sm overflow-visible">
+				<!-- Center: month grid -->
+				<div class="lg:col-span-6">
+					<div id="cal-lab-month" class="card bg-base-200 shadow-sm">
+						@CalendarLabMonth(data.MonthData, data.Settings, data.DayEventsMap)
+					</div>
+				</div>
+
+				<!-- Right rail: day inspector / month breakdown -->
+				<div class="lg:col-span-3">
+					<div id="cal-lab-day-events" class="card bg-base-200 shadow-sm overflow-visible h-[32rem]">
 						if !data.MonthData.Selected.IsZero() {
 							@CalendarLabDayFull(data.MonthData.Selected, data.DayEvents, data.Settings)
 						} else {
-							@CalendarLabDayEmpty()
+							@CalendarLabMonthBreakdown(data.MonthData, data.DayEventsMap, data.Settings)
 						}
 					</div>
-					@calendarLabControls(data.Settings, data.Paused)
 				</div>
 			</div>
 		</div>
@@ -96,8 +125,7 @@ templ CalendarLabMonth(data CalendarMonthData, settings demo.CalendarLabSettings
 		<div class="flex items-center justify-between gap-2">
 			<button
 				class="btn btn-xs btn-ghost"
-				hx-post={ fmt.Sprintf("/realtime/tavern/calendar/month?dir=prev") }
-				hx-swap="none"
+				command-url="/realtime/tavern/calendar/month?dir=prev"
 				aria-label="previous month"
 			>
 				&#9664;
@@ -105,8 +133,7 @@ templ CalendarLabMonth(data CalendarMonthData, settings demo.CalendarLabSettings
 			<h2 class="text-base font-semibold tabular-nums">{ fmt.Sprintf("%s %d", data.Month.String(), data.Year) }</h2>
 			<button
 				class="btn btn-xs btn-ghost"
-				hx-post={ fmt.Sprintf("/realtime/tavern/calendar/month?dir=next") }
-				hx-swap="none"
+				command-url="/realtime/tavern/calendar/month?dir=next"
 				aria-label="next month"
 			>
 				&#9654;
@@ -182,9 +209,7 @@ templ calLabDayCell(cellDate time.Time, data CalendarMonthData, settings demo.Ca
 	<button
 		type="button"
 		class={ calLabCellClass(inMonth, isToday, isSelected, isWeekend && settings.HighlightWeekends, settings.CompactMode) }
-		hx-post={ "/realtime/tavern/calendar/day?d=" + dateStr }
-		hx-swap="none"
-		data-cal-cell={ dateStr }
+		command-url={ "/realtime/tavern/calendar/day?d=" + dateStr }
 	>
 		<span class="text-xs tabular-nums">{ fmt.Sprintf("%d", cellDate.Day()) }</span>
 		if inMonth && settings.Density <= 2 {
@@ -200,45 +225,41 @@ templ calLabDayCell(cellDate time.Time, data CalendarMonthData, settings demo.Ca
 			}
 		} else if inMonth && len(cellEvents) > 0 {
 			<!-- Density 3+: event title chips -->
-			<div class="w-full space-y-0.5 mt-0.5">
+			{{ filtered := calLabFilteredCount(cellEvents, settings) }}
+			<div class="w-full flex-1 min-h-0 overflow-hidden space-y-0.5 mt-0.5">
 				{{ shown := 0 }}
 				for _, e := range cellEvents {
 					if shown < settings.Density && settings.VisibleCategories[e.Category] && (settings.Assignee == "" || settings.Assignee == e.Assignee) {
 						{{ shown++ }}
-						<div class={ "text-xs truncate px-0.5 rounded leading-tight", calCategoryBadgeBg[e.Category] } title={ e.Title }>{ calLabShortTitle(e.Title, settings.Density) }</div>
+						<div class={ "text-[0.65rem] truncate px-0.5 rounded leading-tight", calCategoryBadgeBg[e.Category] } title={ e.Title }>{ calLabShortTitle(e.Title, settings.Density) }</div>
 					}
 				}
-				if shown < calLabFilteredCount(cellEvents, settings) {
-					<div class="text-xs text-base-content/40 text-center">+{ fmt.Sprintf("%d", calLabFilteredCount(cellEvents, settings)-shown) }</div>
-				}
 			</div>
+			if filtered > settings.Density {
+				<div class="text-[0.6rem] text-base-content/40 text-center shrink-0">+{ fmt.Sprintf("%d", filtered-settings.Density) } more</div>
+			}
 		}
 	</button>
 }
 
 func calLabCellClass(inMonth, isToday, isSelected, highlightWeekend, compact bool) string {
-	h := "min-h-12"
+	h := "h-24"
 	if compact {
-		h = "min-h-8"
+		h = "h-12"
 	}
-	base := "flex flex-col items-center justify-start p-1 rounded text-base-content cursor-pointer hover:bg-base-300 " + h
+	base := "flex flex-col items-center justify-start p-1 rounded text-base-content cursor-pointer hover:bg-base-300 overflow-hidden " + h
 	if !inMonth {
 		base += " opacity-30"
 	}
 	if highlightWeekend {
 		base += " bg-base-300/50"
 	} else {
-		if isSelected {
-			base += " bg-primary/20"
-		} else {
-			base += " bg-base-100"
-		}
+		base += " bg-base-100"
 	}
-	if isToday {
+	if isSelected {
+		base += " ring-2 ring-accent"
+	} else if isToday {
 		base += " ring-1 ring-primary"
-	}
-	if isSelected && highlightWeekend {
-		base += " ring-2 ring-primary"
 	}
 	return base
 }
@@ -251,17 +272,57 @@ templ CalendarLabDayEmpty() {
 	</div>
 }
 
+// CalendarLabMonthBreakdown renders a category breakdown of events for the
+// current month, shown when no day is selected.
+templ CalendarLabMonthBreakdown(data CalendarMonthData, dayEvents map[int][]demo.CalendarEvent, settings demo.CalendarLabSettings) {
+	{{
+		// Count events per category across the whole month.
+		catCounts := make(map[demo.CalendarEventCategory]int)
+		total := 0
+		for _, evts := range dayEvents {
+			for _, e := range evts {
+				if settings.VisibleCategories[e.Category] && (settings.Assignee == "" || settings.Assignee == e.Assignee) {
+					catCounts[e.Category]++
+					total++
+				}
+			}
+		}
+	}}
+	<div class="card-body p-3 space-y-2">
+		<div>
+			<h2 class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{ fmt.Sprintf("%s %d", data.Month.String(), data.Year) }</h2>
+			<p class="text-xs text-base-content/40">{ fmt.Sprintf("%d event(s) matching filters", total) }</p>
+		</div>
+		<div class="space-y-1.5">
+			for _, cat := range demo.AllCalendarCategories {
+				if catCounts[cat] > 0 {
+					<div class="flex items-center gap-2">
+						<span class={ "w-2 h-2 rounded-full shrink-0", calCategoryDot[cat] }></span>
+						<span class="text-xs flex-1">{ string(cat) }</span>
+						<span class="text-xs font-mono tabular-nums">{ fmt.Sprintf("%d", catCounts[cat]) }</span>
+					</div>
+				}
+			}
+		</div>
+		<p class="text-xs text-base-content/40 pt-1">Click a day to inspect or add events.</p>
+		<!-- Stable SSE target: cal-day-list always has a target even in month-breakdown mode. -->
+		<div id="cal-lab-day-list" class="hidden"></div>
+	</div>
+}
+
 // CalendarLabDayFull renders the complete day inspector: header, event list,
 // and add form. Used for SSE swaps from user actions (select day, add/delete).
 // The event list is wrapped in #cal-lab-day-list so the simulator can update
 // it independently without touching the form.
 templ CalendarLabDayFull(day time.Time, events []demo.CalendarEvent, settings demo.CalendarLabSettings) {
-	<div class="card-body p-4 space-y-3">
+	<div class="card-body p-3 space-y-2 h-full flex flex-col">
 		@calLabDayHeader(day, events, settings)
-		<div id="cal-lab-day-list">
+		<div id="cal-lab-day-list" class="flex-1 min-h-0">
 			@CalendarLabDayList(events, day, settings)
 		</div>
-		@calLabAddEventForm(day)
+		<div class="shrink-0">
+			@calLabAddEventForm(day)
+		</div>
 	</div>
 }
 
@@ -282,7 +343,7 @@ templ calLabDayHeader(day time.Time, events []demo.CalendarEvent, settings demo.
 // This is the simulator-safe region: it is published as cal-day-list and
 // targets #cal-lab-day-list, leaving the form untouched.
 templ CalendarLabDayList(events []demo.CalendarEvent, day time.Time, settings demo.CalendarLabSettings) {
-	<div class="space-y-1 max-h-64 overflow-y-auto">
+	<div class="space-y-1 h-full overflow-y-auto">
 		if calLabFilteredCount(events, settings) == 0 {
 			<p class="text-xs text-base-content/30 py-2">No events on this day.</p>
 		} else {
@@ -306,8 +367,7 @@ templ calLabEventRow(e demo.CalendarEvent, day time.Time) {
 		</div>
 		<button
 			class="btn btn-ghost btn-xs"
-			hx-post={ fmt.Sprintf("/realtime/tavern/calendar/event/delete?id=%d&d=%s", e.ID, day.Format("2006-01-02")) }
-			hx-swap="none"
+			command-url={ fmt.Sprintf("/realtime/tavern/calendar/event/delete?id=%d", e.ID) }
 			aria-label="remove event"
 		>
 			&times;
@@ -333,12 +393,12 @@ templ calLabAddEventForm(day time.Time) {
 			/>
 		</div>
 		<div class="grid grid-cols-2 gap-1">
-			<select name="category" class="select select-xs select-bordered w-full">
+			<select name="category" class="select select-sm select-bordered w-full">
 				for _, cat := range demo.AllCalendarCategories {
 					<option value={ string(cat) }>{ string(cat) }</option>
 				}
 			</select>
-			<select name="assignee" class="select select-xs select-bordered w-full">
+			<select name="assignee" class="select select-sm select-bordered w-full">
 				<option value="">unassigned</option>
 				for _, a := range []string{"Jordan", "Maria", "Sam", "Pat", "ops-team"} {
 					<option value={ a }>{ a }</option>
@@ -404,8 +464,37 @@ templ CalendarLabActivityLog(activity []demo.CalendarLabActivity) {
 // calendarLabControls renders the control rail.
 templ calendarLabControls(settings demo.CalendarLabSettings, paused bool) {
 	<div class="card bg-base-200 shadow-sm overflow-visible">
-		<div class="card-body p-4 space-y-3">
-			<h2 class="card-title text-sm font-semibold uppercase tracking-wider text-base-content/60">Controls</h2>
+		<div class="card-body p-3 space-y-2">
+			<h2 class="text-xs font-semibold uppercase tracking-wider text-base-content/60">Controls</h2>
+
+			<!-- Presets -->
+			<div class="flex flex-wrap gap-1">
+				for _, p := range demo.CalendarLabPresets {
+					<button
+						class="btn btn-xs btn-outline"
+						hx-post={ "/realtime/tavern/calendar/preset?name=" + p.Name }
+						hx-swap="none"
+						data-density={ fmt.Sprintf("%d", p.Density) }
+						data-speed={ fmt.Sprintf("%d", p.SimSpeed) }
+						data-burst={ fmt.Sprintf("%d", p.BurstSize) }
+						onclick="applyCalPreset(this)"
+					>
+						{ p.Name }
+					</button>
+				}
+			</div>
+			<script>
+				function applyCalPreset(btn) {
+					var card = btn.closest('.card-body');
+					var d = btn.dataset.density, s = btn.dataset.speed, b = btn.dataset.burst;
+					card.querySelector('[name=density]').value = d;
+					document.getElementById('cal-density-val').textContent = d;
+					card.querySelector('[name=sim_speed]').value = s;
+					document.getElementById('cal-speed-val').textContent = s + 'ms';
+					card.querySelector('[name=burst_size]').value = b;
+					document.getElementById('cal-burst-val').textContent = b;
+				}
+			</script>
 
 			<!-- Density slider -->
 			<div class="form-control">
@@ -414,7 +503,7 @@ templ calendarLabControls(settings demo.CalendarLabSettings, paused bool) {
 					<span class="label-text-alt text-xs font-mono" id="cal-density-val">{ fmt.Sprintf("%d", settings.Density) }</span>
 				</label>
 				<input
-					type="range" min="1" max="8"
+					type="range" min="1" max="12"
 					value={ fmt.Sprintf("%d", settings.Density) }
 					class="range range-xs range-primary"
 					name="density"
@@ -433,7 +522,7 @@ templ calendarLabControls(settings demo.CalendarLabSettings, paused bool) {
 					<span class="label-text-alt text-xs font-mono" id="cal-speed-val">{ fmt.Sprintf("%dms", settings.SimSpeed) }</span>
 				</label>
 				<input
-					type="range" min="200" max="5000" step="200"
+					type="range" min="10" max="5000" step="1"
 					value={ fmt.Sprintf("%d", settings.SimSpeed) }
 					class="range range-xs range-secondary"
 					name="sim_speed"
@@ -452,7 +541,7 @@ templ calendarLabControls(settings demo.CalendarLabSettings, paused bool) {
 					<span class="label-text-alt text-xs font-mono" id="cal-burst-val">{ fmt.Sprintf("%d", settings.BurstSize) }</span>
 				</label>
 				<input
-					type="range" min="1" max="5"
+					type="range" min="1" max="8"
 					value={ fmt.Sprintf("%d", settings.BurstSize) }
 					class="range range-xs range-accent"
 					name="burst_size"
