@@ -75,7 +75,7 @@ test.describe("Repository Demo Page", () => {
     if (await statusSelect.isVisible()) {
       await statusSelect.selectOption("active");
       await waitForHtmx(page);
-      await expect(page.locator("#repo-table-container")).toBeVisible();
+      await expect(page.locator("#repo-table-container").first()).toBeVisible();
     }
   });
 
@@ -87,7 +87,7 @@ test.describe("Repository Demo Page", () => {
       if (await sortLink.isVisible()) {
         await sortLink.click();
         await waitForHtmx(page);
-        await expect(page.locator("#repo-table-container")).toBeVisible();
+        await expect(page.locator("#repo-table-container").first()).toBeVisible();
       }
     }
   });
