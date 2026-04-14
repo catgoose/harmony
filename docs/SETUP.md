@@ -73,7 +73,7 @@ If `sse` is not selected, everything between `:start` and `:end` (inclusive) is 
 
 ### Implicit Features
 
-`database` and `alpine` are always included and not presented in the wizard. SQLite is the base database engine; Alpine.js (CSP build) is the standard client-side state layer. The CSP build eliminates `unsafe-eval` from Content Security Policy requirements; all components are registered via `Alpine.data()` in `alpine-components.js`.
+`database` and `alpine` are always included and not presented in the wizard. SQLite is the base database engine. `_hyperscript` is the default tool for client-side DOM behavior (loaded with HTMX); Alpine.js (CSP build) is kept available for coordinated view state and browser-API bridges — currently the theme picker and offline indicator. The CSP build eliminates `unsafe-eval` from Content Security Policy requirements; any remaining Alpine component is registered via `Alpine.data()` in `alpine-components.js`.
 
 ### Feature Dependencies
 

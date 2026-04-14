@@ -57,7 +57,9 @@ var AllFeatures = []string{FeatureAuth, FeatureGraph, FeatureDatabase, FeatureMS
 
 // ImplicitFeatures are always selected and not presented to the user.
 // "database" is implicit because SQLite is the base database engine.
-// "alpine" is implicit because Alpine.js is the standard client-side state layer.
+// "alpine" is implicit because Alpine.js is kept available for coordinated view state
+// and browser-API bridges (theme picker, offline indicator). _hyperscript handles the
+// common local-DOM case and ships with HTMX.
 var ImplicitFeatures = []string{FeatureDatabase, FeatureAlpine}
 
 // featureDeps maps a feature to the features it implies.
@@ -1149,7 +1151,7 @@ var featureDescriptions = map[string]struct{ label, desc string }{
 	FeatureCaddy:           {"Caddy (HTTPS)", "Caddy reverse proxy with TLS termination"},
 	FeatureDemo:            {"Demo Content", "Demo pages, seed data, and example routes"},
 	FeatureSessionSettings: {"Session Settings", "Per-session theme and layout preferences"},
-	FeatureAlpine:          {"Alpine.js", "Client-side state management"},
+	FeatureAlpine:          {"Alpine.js", "Coordinated view state and browser-API bridges"},
 	FeatureCapacitor:       {"Capacitor", "Native mobile wrapper (iOS/Android)"},
 	FeatureOffline:         {"Offline Mode", "Service worker and write queue for offline use"},
 	FeatureSync:            {"Sync", "SQLite data synchronization between client and server"},
@@ -1321,7 +1323,7 @@ func buildTechStack(features []string) string {
 		sb.WriteString("| [Caddy](https://caddyserver.com/) | HTTPS reverse proxy |\n")
 	}
 	if keep[FeatureAlpine] {
-		sb.WriteString("| [Alpine.js](https://alpinejs.dev/) | Client-side state management |\n")
+		sb.WriteString("| [Alpine.js](https://alpinejs.dev/) | Coordinated view state and browser-API bridges |\n")
 	}
 
 	// Always included (dev tools)

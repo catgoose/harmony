@@ -17,9 +17,9 @@ These are active in every generated app by default.
 
 Provided via `dorman.SecurityHeaders()` middleware.
 
-### Alpine.js CSP Build
+### CSP-Friendly Client Behavior
 
-Uses `@alpinejs/csp` which eliminates `eval()` and `new Function()`. All components registered via `Alpine.data()`. Downstream apps do not need `unsafe-eval` in their Content Security Policy.
+`_hyperscript` is the default tool for local DOM behavior and runs without `eval()` or `new Function()`. The small remaining Alpine.js footprint (coordinated view state, browser-API bridges) uses `@alpinejs/csp`, which also eliminates `eval()` and `new Function()`; any Alpine component is registered via `Alpine.data()`. Downstream apps do not need `unsafe-eval` in their Content Security Policy.
 
 ### Template Auto-Escaping
 

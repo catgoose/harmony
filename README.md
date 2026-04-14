@@ -493,9 +493,9 @@ Every tool in the stack exists because HTML alone could not express something. Y
     |  +--------------------------------------------------+
     |  |  inline <script>    locality bent                  |
     |  +--------------------------------------------------+
-    |  |  Alpine.js          reactive client state         |
+    |  |  Alpine.js          coordinated view state        |
     |  +--------------------------------------------------+---------------------+
-    |  |  _hyperscript       client-side behavior          |  Tailwind utilities |
+    |  |  _hyperscript       local DOM behavior            |  Tailwind utilities |
     |  +--------------------------------------------------+  layout + spacing   |
     |  |  HTMX               completes hypertext           +---------------------+
     |  +--------------------------------------------------+  DaisyUI components |
@@ -519,14 +519,14 @@ Map two dimensions -- **where it runs** and **what it manages** -- and six domai
            |                  |                      |                      |
            +------------------+----------------------+----------------------+
            |                  |                      |                      |
-  Client   |  Alpine.js       |  _hyperscript        |  Tailwind + CSS      |
-           |  view state      |  DOM interactions    |  layout, spacing     |
-           |  ephemeral       |  transitions, toggles|  visual adjustments  |
+  Client   |  _hyperscript    |  _hyperscript        |  Tailwind + CSS      |
+           |  + Alpine.js     |  DOM interactions    |  layout, spacing     |
+           |  local + bridges |  transitions, toggles|  visual adjustments  |
            |                  |                      |                      |
            +------------------+----------------------+----------------------+
 ```
 
-The left column is authority. **Server state** (Go + SQL) is the single source of truth. **Client state** (Alpine.js) is ephemeral view data the server does not need to know about. Nothing in the client row pretends to be the server row.
+The left column is authority. **Server state** (Go + SQL) is the single source of truth. **Client state** is ephemeral view data the server does not need to know about -- `_hyperscript` handles the common case (local DOM toggles, transitions, one-off bindings) and `Alpine.js` stays in reserve for the rarer cases that need coordinated view state or a browser-API bridge (theme picker, offline indicator). Nothing in the client row pretends to be the server row.
 
 The handler layer is the thickest: it knows the domain, selects templates, and assembles hypermedia controls. The service layer handles business logic. The repository layer is a thin SQL interface. Each layer does less than the one above it.
 
